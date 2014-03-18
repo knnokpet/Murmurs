@@ -1,0 +1,172 @@
+//
+//  MBTwitterAccesser.m
+//  MBTwitter
+//
+//  Created by Masayuki Ikeda on 2014/03/14.
+//  Copyright (c) 2014年 Masayuki Ikeda. All rights reserved.
+//
+
+#import "MBTwitterAccesser.h"
+#import "OAAccessibility.h"
+
+#define REQUEST_TOKEN_URL @"https://api.twitter.com/oauth/request_token"
+#define ACCESS_TOKEN_URL @"https://api.twitter.com/oauth/access_token"
+#define AUTHORIZE_URL @"https://api.twitter.com/oauth/authorize"
+
+typedef void (^CompletionHandler)(NSMutableData *, NSHTTPURLResponse *);
+typedef void (^FailedHandler)(NSHTTPURLResponse *);
+
+@interface MBTwitterAccesser()
+
+@property (nonatomic) OAConsumer *consumer;
+@property (nonatomic) OAToken *requestToken;
+@property (nonatomic) OAToken *accessToken;
+
+@end
+
+@implementation MBTwitterAccesser
+
+#pragma mark -
+
+- (BOOL)isAuthorized
+{
+    if (_accessToken.key && _accessToken.secret) {
+        return YES;
+    }
+    
+    _accessToken = [[OAToken alloc] initWithKey:nil secret:nil];
+    return NO;
+}
+
+- (OAConsumer *)consumer
+{
+    if (_consumer) {
+        return _consumer;
+    }
+    
+    if (_consumerKey.length == 0 || _consumerSecret.length == 0) {
+        NSLog(@"Please set consumer key & secret");
+    }
+    
+    _consumer = [[OAConsumer alloc] initWithKey:self.consumerKey secret:self.consumerSecret];
+    return _consumer;
+}
+
+- (void)setConsumerKey:(NSString *)consumerKey
+{
+    _consumerKey = consumerKey;
+}
+
+- (void)setConsumerSecret:(NSString *)consumerSecret
+{
+    _consumerSecret = consumerSecret;
+}
+
+#pragma mark
+- (void)requestRequestToken
+{
+    NSURL *url = [NSURL URLWithString:REQUEST_TOKEN_URL];
+
+    [self sendRequestURL:url token:nil completionHandler:^(NSMutableData *data, NSHTTPURLResponse *response){
+        NSUInteger status = [response statusCode];
+        NSLog(@"status = %d", (int)status);
+        if (!(status < 200 && status > 300) || !data) {
+            return;
+        }
+        
+        
+        NSLog(@"Get Request Token !");
+        NSString *dataString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+        if (!dataString) {
+            return;
+        }
+        
+        OAToken *requestToken = [[OAToken alloc] initWithHTTPResponse:dataString];
+        self.requestToken = requestToken;
+        
+        
+    } failedHandler:^(NSHTTPURLResponse *response){
+        
+        NSLog(@"Getting Request Token Error");
+        
+        NSUInteger status = [response statusCode];
+        if (status >= 400 && status < 500) {
+            NSLog(@"Client Error");
+        } else if (status >= 500 && status < 600) {
+            NSLog(@"Server Error");
+        }
+    }];
+}
+
+- (void)requestAccessToken
+{
+    NSURL *url = [NSURL URLWithString:ACCESS_TOKEN_URL];
+    [self sendRequestURL:url token:nil completionHandler:^(NSMutableData *data, NSHTTPURLResponse *response){
+        NSUInteger status = [response statusCode];
+        if (!(status < 200 && status > 300) || !data) {
+            return;
+        }
+        
+        
+        NSLog(@"Get Access Token !");
+        NSString *dataString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+        if (!dataString) {
+            return;
+        }
+        
+        [self storeMyAccountFromHTTPBody:dataString];
+        
+        OAToken *accessToken = [[OAToken alloc] initWithHTTPResponse:dataString];
+        self.accessToken = accessToken;
+        
+    } failedHandler:^(NSHTTPURLResponse *response){
+        
+        NSLog(@"Getting Request Token Error");
+        
+        NSUInteger status = [response statusCode];
+        if (status >= 400 && status < 500) {
+            NSLog(@"Client Error");
+        } else if (status >= 500 && status < 600) {
+            NSLog(@"Server Error");
+        }
+    }];
+}
+
+- (void)sendRequestURL:(NSURL *)url token:(OAToken *)token completionHandler:(CompletionHandler)completion failedHandler:(FailedHandler)failed
+{
+    if (self.pin.length > 0) {
+        token.pin = self.pin;
+    }
+    
+    OAMutableRequest *request = [[OAMutableRequest alloc] initWithURL:url consumer:self.consumer token:token realm:nil signatureProvider:nil];
+    if (!request) {
+        return;
+    }
+    [request setHTTPMethod:@"POST"];
+    
+    // for returning PIN
+    OARequestparameter *callbackParameter = [OARequestparameter requestParameterWithName:@"oauth_callback" value:@"oob"];
+    NSMutableArray *parameters = [NSMutableArray arrayWithArray:[request parameters]];
+    [parameters addObject:callbackParameter];
+    [request setParameter:parameters];
+    
+    OAAuthFetcher *fetcher = [[OAAuthFetcher alloc] initWithRequest:request completionHandler:completion failedHandler:failed];
+    [fetcher start];
+}
+
+- (void)storeMyAccountFromHTTPBody:(NSString *)httpBody
+{
+    if (!httpBody) {
+        return;
+    }
+    
+    NSArray *nameValuePairs = [httpBody componentsSeparatedByString:@"&"];
+    for (NSString *nameValuePair in nameValuePairs) {
+        NSArray *keyAndValue = [nameValuePair componentsSeparatedByString:@"="];
+        NSString *key = [keyAndValue firstObject];
+        NSString *value = [ keyAndValue lastObject];
+        
+    }
+}
+
+@end
