@@ -69,8 +69,14 @@ typedef void (^FailedHandler)(NSHTTPURLResponse *);
 
     [self sendRequestURL:url token:nil completionHandler:^(NSMutableData *data, NSHTTPURLResponse *response){
         NSUInteger status = [response statusCode];
-        NSLog(@"status = %d", (int)status);
-        if (!(status < 200 && status > 300) || !data) {
+
+        if (!(status >= 200 && status < 300) || !data) {
+            NSLog(@"response ");
+            NSDictionary *responseDic = [response allHeaderFields];
+            [responseDic enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
+                NSLog(@"%@ = %@", key, obj);
+            }];
+            
             return;
         }
         
@@ -145,10 +151,10 @@ typedef void (^FailedHandler)(NSHTTPURLResponse *);
     [request setHTTPMethod:@"POST"];
     
     // for returning PIN
-    OARequestparameter *callbackParameter = [OARequestparameter requestParameterWithName:@"oauth_callback" value:@"oob"];
-    NSMutableArray *parameters = [NSMutableArray arrayWithArray:[request parameters]];
-    [parameters addObject:callbackParameter];
-    [request setParameter:parameters];
+    OARequestparameter *callbackParameter = [OARequestparameter requestParameterWithName:@"oauth_callback" value:@"http://192.168.11.0/callback"];
+    NSMutableArray *addingParameters = [NSMutableArray arrayWithArray:[request parameters]];
+    //[addingParameters addObject:callbackParameter];
+    [request setParameters:addingParameters];
     
     OAAuthFetcher *fetcher = [[OAAuthFetcher alloc] initWithRequest:request completionHandler:completion failedHandler:failed];
     [fetcher start];

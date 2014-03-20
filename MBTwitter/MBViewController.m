@@ -11,8 +11,11 @@
 
 #import "MBTwitterAccesser.h"
 
-#define CONSUMER_KEY    @"0v5ijUEgBgoOorJMRhHIw"
-#define CONSUMER_SECRET @"hUp7JgMXMecwdoWhUMxSmYE0j1cWnp9NRBtOsHso"
+#define CONSUMER_KEY    @"AosTsb1nT61TS292imejQ"
+#define CONSUMER_SECRET @"L2h0eN7dIKon8OhkcwVJ7KFDUuMoFFkSFKd33auJA"
+//#define CONSUMER_KEY    @"MCD8BKwGdgPHvAuvgvz4EQpqDAtx89grbuNMRd7Eh98"
+//#define CONSUMER_SECRET @"MCD8BKwGdgPHvAuvgvz4EQpqDAtx89grbuNMRd7Eh98"
+
 
 @interface MBViewController ()
 @property (weak, nonatomic) IBOutlet UIButton *authorizationButton;
@@ -38,7 +41,7 @@
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-    if ([[segue identifier] isEqualToString:@"AuthorizationIdentifier"]) {
+    if (YES == [[segue identifier] isEqualToString:@"AuthorizationIdentifier"]) {
         MBAuthorizationViewController *authorizationController = [segue destinationViewController];
         MBTwitterAccesser *accesser = [[MBTwitterAccesser alloc] init];
         [accesser setConsumerKey:CONSUMER_KEY];

@@ -27,11 +27,13 @@
 }
 
 #pragma mark -
+#pragma mark  Public
 - (NSString *)encodedNameValuePair
 {
     return [NSString stringWithFormat:@"%@=%@", [self encodedName], [self encodedValue]];
 }
 
+#pragma mark Private
 - (NSString *)encodedName
 {
     return [self encodedString:self.name];
@@ -44,7 +46,10 @@
 
 - (NSString *)encodedString:(NSString *)string
 {
-    return [string encodedString];
+    //return [string encodedString];
+    
+    NSString *result = (__bridge NSString *)CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault, (__bridge CFStringRef)string, NULL, CFSTR("!*'\"();:@&=+$,/?#[]%<>{} "), kCFStringEncodingUTF8);
+    return result;
 }
 
 @end

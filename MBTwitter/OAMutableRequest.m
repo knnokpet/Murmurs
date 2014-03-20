@@ -30,7 +30,11 @@
             _token = [[OAToken alloc] init];
         }
         
-        _realm = realm;
+        if (realm != nil) {
+            _realm = realm;
+        } else {
+            _realm = @"";
+        }
         
         if (signatureProvider != nil) {
             self.signatureProvider = signatureProvider;
@@ -58,15 +62,13 @@
     // configure signature
     NSString *signatureBasedString = [self signatureBasedString];
     _signature = [self.signatureProvider signatureText:signatureBasedString secret:secretForSignature];
-    NSLog(@"signatureSecret = %@", secretForSignature);
-    NSLog(@"signatureBased = %@", signatureBasedString);
-    NSLog(@"signature = %@", _signature);
+
     // if exist token
     NSString *oauthTokenString;
-    if (NSOrderedSame == [self.token.key compare:@""]) {
+    if (YES == [self.token.key isEqualToString:@""]) {
         oauthTokenString = @"";
     } else {
-        oauthTokenString = [NSString stringWithFormat:@"oauth_token=\"%@\"", self.token.key];
+        oauthTokenString = [NSString stringWithFormat:@"oauth_token=\"%@\", ", [self encodedString:self.token.key]];
     }
     
     // configure oauthHeader
@@ -77,9 +79,18 @@
     NSString *oauthSignatureMethod = [[self.signatureProvider name] encodedString];
     NSString *oauthTimeStamp = [self.timeStamp encodedString];
     NSString *oauthVersion = [OAUTH_VERSION encodedString];
-    
-    NSString *oauthHeader = [NSString stringWithFormat:@"OAuth oauth_realm=\"%@\", oauth_consumer_key=\"%@\", oauth_nonce=\"%@\", oauth_signature=\"%@\", oauth_signature_method=\"%@\", oauth_timestamp=\"%@\", %@oauth_version=\"%@\"",
+    /*
+    NSString *oauthHeader = [NSString stringWithFormat:@"OAuth realm=\"%@\", oauth_consumer_key=\"%@\", oauth_nonce=\"%@\", oauth_signature=\"%@\", oauth_signature_method=\"%@\", oauth_timestamp=\"%@\", %@oauth_version=\"%@\"",
                              oauthRealm,
+                             oauthConsumerKey,
+                             oauthNonce,
+                             oauthSignature,
+                             oauthSignatureMethod,
+                             oauthTimeStamp,
+                             oauthTokenString,
+                             oauthVersion];*/
+    //NSLog(@"consumerKey = %@", oauthConsumerKey);
+    NSString *oauthHeader = [NSString stringWithFormat:@"OAuth oauth_consumer_key=\"%@\", oauth_nonce=\"%@\", oauth_signature=\"%@\", oauth_signature_method=\"%@\", oauth_timestamp=\"%@\", %@oauth_version=\"%@\"",
                              oauthConsumerKey,
                              oauthNonce,
                              oauthSignature,
@@ -93,7 +104,6 @@
         oauthHeader = [oauthHeader stringByAppendingString:oauthPinAuth];
     }
     [self setValue:oauthHeader forHTTPHeaderField:@"Authorization"];
-    NSLog(@"oauthHeader = %@", oauthHeader);
 }
 
 #pragma mark - 
@@ -119,7 +129,7 @@
     // require Parameters
     [parameters addObject:[[OARequestparameter requestParameterWithName:@"oauth_consumer_key" value:self.consumer.key] encodedNameValuePair]];
     [parameters addObject:[[OARequestparameter requestParameterWithName:@"oauth_nonce" value:self.nonce] encodedNameValuePair]];
-    [parameters addObject:[[OARequestparameter requestParameterWithName:@"oatuh_signature_method" value:[self.signatureProvider name]] encodedNameValuePair]];
+    [parameters addObject:[[OARequestparameter requestParameterWithName:@"oauth_signature_method" value:[self.signatureProvider name]] encodedNameValuePair]];
     [parameters addObject:[[OARequestparameter requestParameterWithName:@"oauth_timestamp" value:self.timeStamp] encodedNameValuePair]];
     [parameters addObject:[[OARequestparameter requestParameterWithName:@"oauth_version" value:OAUTH_VERSION] encodedNameValuePair]];
     
@@ -142,7 +152,7 @@
     NSString *httpMethod = [self HTTPMethod];
     NSString *signatureBasedURL = [self encodedString:[[self URL] URLStringWithoutQuery]];
     NSString *signatureBasedParameter = [self encodedString:normalizedParametersString];
-    NSString *signatureBasedString = [NSString stringWithFormat:@"%@%@%@", httpMethod, signatureBasedURL, signatureBasedParameter];
+    NSString *signatureBasedString = [NSString stringWithFormat:@"%@&%@&%@", httpMethod, signatureBasedURL, signatureBasedParameter];
     
     return signatureBasedString;
     
@@ -152,14 +162,15 @@
 {
     NSString *encodedParameters;
     
-    if ([[self HTTPMethod] isEqualToString:@"GET"] || [[self HTTPMethod] isEqualToString:@"DELETE"]) {
+    if (YES == [[self HTTPMethod] isEqualToString:@"GET"] || YES == [[self HTTPMethod] isEqualToString:@"DELETE"]) {
         encodedParameters = [[self URL] query];
         
     } else { // POST, PUT
         encodedParameters = [[NSString alloc] initWithData:[self HTTPBody] encoding:NSASCIIStringEncoding];
-        if (encodedParameters == nil) {
-            
-        }
+    }
+    
+    if (encodedParameters == nil || YES == [encodedParameters isEqualToString:@""]) {
+        return nil;
     }
     
     NSArray *encodedParameterPair = [encodedParameters componentsSeparatedByString:@"&"];
@@ -174,7 +185,7 @@
     return requestParameters;
 }
 
-- (void)setParameter:(NSArray *)parameters
+- (void)setParameters:(NSArray *)parameters
 {
     NSMutableString *parameterString = [NSMutableString stringWithCapacity:256];
     
@@ -188,10 +199,10 @@
         }
         appendPosition++;
     }
-    
-    // add Parameter. Swparate for each HTTPMEthod
-    if ([[self HTTPMethod] isEqualToString:@"GET"] || [[self HTTPMethod] isEqualToString:@"DELETE"]) {
-        NSString *quaryURL = [NSString stringWithFormat:@"%@&%@", [[self URL] URLStringWithoutQuery], parameterString];
+
+    // add Parameter. Separate for each HTTPMEthod
+    if (YES == [[self HTTPMethod] isEqualToString:@"GET"] || YES == [[self HTTPMethod] isEqualToString:@"DELETE"]) {
+        NSString *quaryURL = [NSString stringWithFormat:@"%@?%@", [[self URL] URLStringWithoutQuery], parameterString];
         [self setURL:[NSURL URLWithString:quaryURL]];
         
     } else { // POST, PUT
@@ -200,9 +211,10 @@
             
         }
         [self setHTTPBody:parameterData];
-        [self setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
-        [self setValue:@"client_credentials" forHTTPHeaderField:@"grant_type"];
         [self setValue:[NSString stringWithFormat:@"%lu", (unsigned long)[parameterData length]] forHTTPHeaderField:@"Content-Length"];
+        [self setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
+        //[self setValue:@"client_credentials" forHTTPHeaderField:@"grant_type"];
+        
     }
     
 }

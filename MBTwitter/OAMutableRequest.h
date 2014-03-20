@@ -32,6 +32,6 @@
 - (void)prepareRequest;
 
 - (NSArray *)parameters;
-- (void)setParameter:(NSArray *)parameters;
+- (void)setParameters:(NSArray *)parameters;
 
 @end

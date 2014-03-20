@@ -10,6 +10,17 @@
 
 @implementation OAToken
 
+- (id)init
+{
+    self = [super init];
+    if (self) {
+        _key = @"";
+        _secret = @"";
+    }
+    
+    return self;
+}
+
 - (id)initWithKey:(NSString *)key secret:(NSString *)secret
 {
     self = [super init];
@@ -31,11 +42,11 @@
             NSArray *parameters = [pair componentsSeparatedByString:@"="];
             NSString *httpKey = [parameters firstObject];
             NSString *httpValue = [parameters lastObject];
-            if ([httpKey isEqualToString:@"oauth_token"]) {
+            if (YES == [httpKey isEqualToString:@"oauth_token"]) {
                 _key = httpValue;
-            } else if ([httpKey isEqualToString:@"oauth_token_secret"]) {
+            } else if (YES == [httpKey isEqualToString:@"oauth_token_secret"]) {
                 _secret = httpValue;
-            } else if ([httpKey isEqualToString:@"oauth_verifier"]) {
+            } else if (YES == [httpKey isEqualToString:@"oauth_verifier"]) {
                 _pin = httpValue;
             }
         }
