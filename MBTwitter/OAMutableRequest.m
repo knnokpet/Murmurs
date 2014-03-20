@@ -177,7 +177,7 @@
     NSMutableArray *requestParameters = [NSMutableArray arrayWithCapacity:16];
     for (NSString *pair in encodedParameterPair) {
         NSArray *separatedPair = [pair componentsSeparatedByString:@"="];
-        OARequestparameter *requestParameter = [OARequestparameter requestParameterWithName:[[separatedPair firstObject] encodedString] value:[[separatedPair lastObject] encodedString]];
+        OARequestparameter *requestParameter = [OARequestparameter requestParameterWithName:[[separatedPair objectAtIndex:0] encodedString] value:[[separatedPair objectAtIndex:1] encodedString]];
         
         [requestParameters addObject:requestParameter];
     }

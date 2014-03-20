@@ -169,8 +169,8 @@ typedef void (^FailedHandler)(NSHTTPURLResponse *);
     NSArray *nameValuePairs = [httpBody componentsSeparatedByString:@"&"];
     for (NSString *nameValuePair in nameValuePairs) {
         NSArray *keyAndValue = [nameValuePair componentsSeparatedByString:@"="];
-        NSString *key = [keyAndValue firstObject];
-        NSString *value = [ keyAndValue lastObject];
+        NSString *key = [keyAndValue objectAtIndex:0];
+        NSString *value = [ keyAndValue objectAtIndex:1];
         
     }
 }

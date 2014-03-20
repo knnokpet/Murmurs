@@ -40,8 +40,8 @@
         
         for (NSString *pair in parameterPairs) {
             NSArray *parameters = [pair componentsSeparatedByString:@"="];
-            NSString *httpKey = [parameters firstObject];
-            NSString *httpValue = [parameters lastObject];
+            NSString *httpKey = [parameters objectAtIndex:0];
+            NSString *httpValue = [parameters objectAtIndex:1];
             if (YES == [httpKey isEqualToString:@"oauth_token"]) {
                 _key = httpValue;
             } else if (YES == [httpKey isEqualToString:@"oauth_token_secret"]) {
