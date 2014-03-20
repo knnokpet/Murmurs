@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "MBTwitterAccesser.h"
 
-@interface MBAuthorizationViewController : UIViewController
+@interface MBAuthorizationViewController : UIViewController <MBTwitterAccesserDelegate>
 
 @property (nonatomic) MBTwitterAccesser *twitterAccesser;
 

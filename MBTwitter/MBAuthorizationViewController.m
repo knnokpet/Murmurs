@@ -7,13 +7,18 @@
 //
 
 #import "MBAuthorizationViewController.h"
+#import "OAAccessibility.h"
 
 @interface MBAuthorizationViewController ()
+@property (weak, nonatomic) IBOutlet UIWebView *webView;
+@property (weak, nonatomic) IBOutlet UIButton *cancelButton;
 
 @end
 
 @implementation MBAuthorizationViewController
 
+#pragma mark -
+#pragma mark Initialize
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -23,10 +28,13 @@
     return self;
 }
 
+#pragma mark -
+#pragma mark View
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    self.twitterAccesser.delegate = self;
     
     BOOL isAuthorized = [self.twitterAccesser isAuthorized];
     if (!isAuthorized) {
@@ -41,6 +49,11 @@
     // Dispose of any resources that can be recreated.
 }
 
+#pragma mark -
+#pragma mark Action
+- (IBAction)didPushCancelButton:(id)sender {
+}
+
 /*
 #pragma mark - Navigation
 
@@ -51,5 +64,13 @@
     // Pass the selected object to the new view controller.
 }
 */
+
+#pragma mark -
+#pragma mark MBTwitterAccesser Delegate
+- (void)getRequestTokenTwitterAccesser:(MBTwitterAccesser *)twitterAccesser
+{
+    NSURLRequest *authorizeURLRequest = [self.twitterAccesser authorizeURLRequest];
+    [self.webView loadRequest:authorizeURLRequest];
+}
 
 @end

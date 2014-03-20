@@ -11,7 +11,7 @@
 
 #define REQUEST_TOKEN_URL @"https://api.twitter.com/oauth/request_token"
 #define ACCESS_TOKEN_URL @"https://api.twitter.com/oauth/access_token"
-#define AUTHORIZE_URL @"https://api.twitter.com/oauth/authorize"
+#define AUTHORIZE_URL @"https://api.twitter.com/oauth/authenticate"
 
 typedef void (^CompletionHandler)(NSMutableData *, NSHTTPURLResponse *);
 typedef void (^FailedHandler)(NSHTTPURLResponse *);
@@ -27,17 +27,7 @@ typedef void (^FailedHandler)(NSHTTPURLResponse *);
 @implementation MBTwitterAccesser
 
 #pragma mark -
-
-- (BOOL)isAuthorized
-{
-    if (_accessToken.key && _accessToken.secret) {
-        return YES;
-    }
-    
-    _accessToken = [[OAToken alloc] initWithKey:nil secret:nil];
-    return NO;
-}
-
+#pragma mark Setter Getter
 - (OAConsumer *)consumer
 {
     if (_consumer) {
@@ -62,7 +52,34 @@ typedef void (^FailedHandler)(NSHTTPURLResponse *);
     _consumerSecret = consumerSecret;
 }
 
-#pragma mark
+#pragma mark -
+
+- (BOOL)isAuthorized
+{
+    if (_accessToken.key && _accessToken.secret) {
+        return YES;
+    }
+    
+    _accessToken = [[OAToken alloc] initWithKey:nil secret:nil];
+    return NO;
+}
+
+- (NSURLRequest *)authorizeURLRequest
+{
+    if (self.requestToken.key == nil || self.requestToken.secret == nil) {
+        return nil;
+    }
+    
+    NSURL *authorizeURL = [NSURL URLWithString:AUTHORIZE_URL];
+    OAMutableRequest *authorizeURLRequest = [[OAMutableRequest alloc] initWithURL:authorizeURL consumer:nil token:self.requestToken realm:nil signatureProvider:nil];
+    
+    OARequestparameter *authorizeParameter = [OARequestparameter requestParameterWithName:@"oauth_token" value:self.requestToken.key];
+    [authorizeURLRequest setParameters:[NSArray arrayWithObject:authorizeParameter]];
+    return authorizeURLRequest;
+}
+
+#pragma mark -
+#pragma mark SendRequest
 - (void)requestRequestToken
 {
     NSURL *url = [NSURL URLWithString:REQUEST_TOKEN_URL];
@@ -76,7 +93,6 @@ typedef void (^FailedHandler)(NSHTTPURLResponse *);
             [responseDic enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
                 NSLog(@"%@ = %@", key, obj);
             }];
-            
             return;
         }
         
@@ -89,7 +105,9 @@ typedef void (^FailedHandler)(NSHTTPURLResponse *);
         
         OAToken *requestToken = [[OAToken alloc] initWithHTTPResponse:dataString];
         self.requestToken = requestToken;
-        
+        if ([_delegate respondsToSelector:@selector(getRequestTokenTwitterAccesser:)]) {
+            [_delegate getRequestTokenTwitterAccesser:self];
+        }
         
     } failedHandler:^(NSHTTPURLResponse *response){
         
@@ -160,6 +178,8 @@ typedef void (^FailedHandler)(NSHTTPURLResponse *);
     [fetcher start];
 }
 
+#pragma mark -
+#pragma mark
 - (void)storeMyAccountFromHTTPBody:(NSString *)httpBody
 {
     if (!httpBody) {

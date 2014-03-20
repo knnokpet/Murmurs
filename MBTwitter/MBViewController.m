@@ -13,8 +13,6 @@
 
 #define CONSUMER_KEY    @"AosTsb1nT61TS292imejQ"
 #define CONSUMER_SECRET @"L2h0eN7dIKon8OhkcwVJ7KFDUuMoFFkSFKd33auJA"
-//#define CONSUMER_KEY    @"MCD8BKwGdgPHvAuvgvz4EQpqDAtx89grbuNMRd7Eh98"
-//#define CONSUMER_SECRET @"MCD8BKwGdgPHvAuvgvz4EQpqDAtx89grbuNMRd7Eh98"
 
 
 @interface MBViewController ()
@@ -42,7 +40,8 @@
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
     if (YES == [[segue identifier] isEqualToString:@"AuthorizationIdentifier"]) {
-        MBAuthorizationViewController *authorizationController = [segue destinationViewController];
+        UINavigationController *navigationController = [segue destinationViewController];
+        MBAuthorizationViewController *authorizationController = (MBAuthorizationViewController *)navigationController.topViewController;
         MBTwitterAccesser *accesser = [[MBTwitterAccesser alloc] init];
         [accesser setConsumerKey:CONSUMER_KEY];
         [accesser setConsumerSecret:CONSUMER_SECRET];
