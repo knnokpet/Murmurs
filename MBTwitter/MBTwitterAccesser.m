@@ -52,6 +52,14 @@ typedef void (^FailedHandler)(NSHTTPURLResponse *);
     _consumerSecret = consumerSecret;
 }
 
+- (void)setPin:(NSString *)pin
+{
+    _pin = pin;
+    
+    _requestToken.pin = pin;
+    _accessToken.pin = pin;
+}
+
 #pragma mark -
 
 - (BOOL)isAuthorized
@@ -114,6 +122,7 @@ typedef void (^FailedHandler)(NSHTTPURLResponse *);
         NSLog(@"Getting Request Token Error");
         
         NSUInteger status = [response statusCode];
+        NSLog(@"status = %lu", (unsigned long)status);
         if (status >= 400 && status < 500) {
             NSLog(@"Client Error");
         } else if (status >= 500 && status < 600) {
@@ -125,9 +134,14 @@ typedef void (^FailedHandler)(NSHTTPURLResponse *);
 - (void)requestAccessToken
 {
     NSURL *url = [NSURL URLWithString:ACCESS_TOKEN_URL];
-    [self sendRequestURL:url token:nil completionHandler:^(NSMutableData *data, NSHTTPURLResponse *response){
+    [self sendRequestURL:url token:_requestToken completionHandler:^(NSMutableData *data, NSHTTPURLResponse *response){
         NSUInteger status = [response statusCode];
-        if (!(status < 200 && status > 300) || !data) {
+        if ((status < 200 && status > 300) || !data) {
+            NSLog(@"response ");
+            NSDictionary *responseDic = [response allHeaderFields];
+            [responseDic enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
+                NSLog(@"%@ = %@", key, obj);
+            }];
             return;
         }
         
@@ -145,9 +159,10 @@ typedef void (^FailedHandler)(NSHTTPURLResponse *);
         
     } failedHandler:^(NSHTTPURLResponse *response){
         
-        NSLog(@"Getting Request Token Error");
+        NSLog(@"Getting Access Token Error");
         
         NSUInteger status = [response statusCode];
+        NSLog(@"status = %lu", (unsigned long)status);
         if (status >= 400 && status < 500) {
             NSLog(@"Client Error");
         } else if (status >= 500 && status < 600) {
@@ -159,7 +174,7 @@ typedef void (^FailedHandler)(NSHTTPURLResponse *);
 - (void)sendRequestURL:(NSURL *)url token:(OAToken *)token completionHandler:(CompletionHandler)completion failedHandler:(FailedHandler)failed
 {
     if (self.pin.length > 0) {
-        token.pin = self.pin;
+        token.pin = self.pin;// setPin でセットしてるからいらないけど。
     }
     
     OAMutableRequest *request = [[OAMutableRequest alloc] initWithURL:url consumer:self.consumer token:token realm:nil signatureProvider:nil];
@@ -169,9 +184,9 @@ typedef void (^FailedHandler)(NSHTTPURLResponse *);
     [request setHTTPMethod:@"POST"];
     
     // for returning PIN
-    OARequestparameter *callbackParameter = [OARequestparameter requestParameterWithName:@"oauth_callback" value:@"http://192.168.11.0/callback"];
+    OARequestparameter *callbackParameter = [OARequestparameter requestParameterWithName:@"oauth_callback" value:@"oob"];
     NSMutableArray *addingParameters = [NSMutableArray arrayWithArray:[request parameters]];
-    //[addingParameters addObject:callbackParameter];
+    [addingParameters addObject:callbackParameter];
     [request setParameters:addingParameters];
     
     OAAuthFetcher *fetcher = [[OAAuthFetcher alloc] initWithRequest:request completionHandler:completion failedHandler:failed];
@@ -186,13 +201,30 @@ typedef void (^FailedHandler)(NSHTTPURLResponse *);
         return;
     }
     
+    NSString *userToken;
+    NSString *userSecret;
+    NSString *userID;
+    NSString *userScreenName;
+    
     NSArray *nameValuePairs = [httpBody componentsSeparatedByString:@"&"];
     for (NSString *nameValuePair in nameValuePairs) {
         NSArray *keyAndValue = [nameValuePair componentsSeparatedByString:@"="];
         NSString *key = [keyAndValue objectAtIndex:0];
-        NSString *value = [ keyAndValue objectAtIndex:1];
+        NSString *value = [keyAndValue objectAtIndex:1];
+        
+        if (YES == [key isEqualToString:@"oauth_token"]) {
+            userToken = value;
+        } else if (YES == [key isEqualToString:@"oauth_token_secret"]) {
+            userSecret = value;
+        } else if (YES == [key isEqualToString:@"user_id"]) {
+            userID = value;
+        } else if (YES == [key isEqualToString:@"screen_name"]) {
+            userScreenName = value;
+        }
         
     }
+    
+    NSLog(@"token = %@, secret = %@, ID = %@, name = %@", userToken, userSecret, userID, userScreenName);
 }
 
 @end

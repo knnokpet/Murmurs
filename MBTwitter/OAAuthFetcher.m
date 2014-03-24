@@ -56,9 +56,6 @@
 #pragma mark NSURLConnection Delegate Method
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response
 {
-    if (self.connectionData) {
-        self.connectionData = nil;
-    }
     
     if (self.response) {
         self.response = nil;

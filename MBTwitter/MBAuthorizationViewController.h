@@ -9,8 +9,18 @@
 #import <UIKit/UIKit.h>
 #import "MBTwitterAccesser.h"
 
+@protocol MBAuthorizationViewControllerDelegate;
+
 @interface MBAuthorizationViewController : UIViewController <MBTwitterAccesserDelegate>
 
 @property (nonatomic) MBTwitterAccesser *twitterAccesser;
+@property (nonatomic, weak) id <MBAuthorizationViewControllerDelegate> delegate;
+
+@end
+
+
+@protocol MBAuthorizationViewControllerDelegate <NSObject>
+
+- (void)popAuthorizationViewController:(MBAuthorizationViewController *)controller animated:(BOOL)animated;
 
 @end

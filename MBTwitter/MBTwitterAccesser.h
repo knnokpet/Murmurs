@@ -23,6 +23,7 @@
 
 - (void)setConsumerKey:(NSString *)consumerKey;
 - (void)setConsumerSecret:(NSString *)consumerSecret;
+- (void)setPin:(NSString *)pin;
 
 - (BOOL)isAuthorized;
 - (NSURLRequest *)authorizeURLRequest;

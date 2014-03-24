@@ -7,7 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "MBAuthorizationViewController.h"
 
-@interface MBViewController : UIViewController
+@interface MBViewController : UIViewController <MBAuthorizationViewControllerDelegate>
 
 @end

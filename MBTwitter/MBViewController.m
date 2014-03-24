@@ -7,7 +7,6 @@
 //
 
 #import "MBViewController.h"
-#import "MBAuthorizationViewController.h"
 
 #import "MBTwitterAccesser.h"
 
@@ -16,12 +15,17 @@
 
 
 @interface MBViewController ()
+
+@property (nonatomic) MBTwitterAccesser *twitterAccesser;
+
 @property (weak, nonatomic) IBOutlet UIButton *authorizationButton;
 
 @end
 
 @implementation MBViewController
 
+#pragma mark -
+#pragma mark View
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -33,21 +37,33 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+
+#pragma mark Button Action
 - (IBAction)didPushAuthorizationButton:(id)sender {
     [self performSegueWithIdentifier:@"AuthorizationIdentifier" sender:self];
 }
 
+#pragma mark -
+#pragma mark StoryBoard
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
     if (YES == [[segue identifier] isEqualToString:@"AuthorizationIdentifier"]) {
         UINavigationController *navigationController = [segue destinationViewController];
         MBAuthorizationViewController *authorizationController = (MBAuthorizationViewController *)navigationController.topViewController;
-        MBTwitterAccesser *accesser = [[MBTwitterAccesser alloc] init];
-        [accesser setConsumerKey:CONSUMER_KEY];
-        [accesser setConsumerSecret:CONSUMER_SECRET];
-        authorizationController.twitterAccesser = accesser;
+        authorizationController.delegate = self;
+        self.twitterAccesser = [[MBTwitterAccesser alloc] init];
+        [self.twitterAccesser setConsumerKey:CONSUMER_KEY];
+        [self.twitterAccesser setConsumerSecret:CONSUMER_SECRET];
+        authorizationController.twitterAccesser = self.twitterAccesser;
         
     }
+}
+
+#pragma mark -
+#pragma mark MBAuthorizationViewController Delegate
+- (void)popAuthorizationViewController:(MBAuthorizationViewController *)controller animated:(BOOL)animated
+{
+    [controller dismissViewControllerAnimated:animated completion:nil];
 }
 
 @end

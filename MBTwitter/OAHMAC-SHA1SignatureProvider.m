@@ -22,6 +22,7 @@
 
 - (NSString *)signatureText:(NSString *)text secret:(NSString *)secret
 {
+    
     NSData *secretData = [secret dataUsingEncoding:NSUTF8StringEncoding];
     NSData *textData = [text dataUsingEncoding:NSUTF8StringEncoding];
     
@@ -33,14 +34,14 @@
     
     // Base64Encode
     char base64Result[base64Length];
-    size_t baseResultLength = base64Length;
-    Base64EncodeData(result, hmacLength, base64Result, &baseResultLength);
-    NSData *base64ResultData = [NSData dataWithBytes:base64Result length:base64Length];
+    size_t baseResultSize = base64Length;
+    Base64EncodeData(result, hmacLength, base64Result, &baseResultSize);
+    NSData *base64ResultData = [NSData dataWithBytes:base64Result length:baseResultSize];
     if (base64ResultData == nil) {
         
     }
     
-    NSString *signature = [[NSString alloc] initWithData:base64ResultData encoding:NSASCIIStringEncoding];
+    NSString *signature = [[NSString alloc] initWithData:base64ResultData encoding:NSUTF8StringEncoding];
     if (signature == nil) {
         
     }

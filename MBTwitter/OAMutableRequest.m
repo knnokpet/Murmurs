@@ -62,7 +62,8 @@
     // configure signature
     NSString *signatureBasedString = [self signatureBasedString];
     _signature = [self.signatureProvider signatureText:signatureBasedString secret:secretForSignature];
-
+    NSLog(@"basedSignature = %@", signatureBasedString);
+    NSLog(@"signature = %@", signatureBasedString);
     // if exist token
     NSString *oauthTokenString;
     if (YES == [self.token.key isEqualToString:@""]) {
@@ -79,18 +80,9 @@
     NSString *oauthSignatureMethod = [[self.signatureProvider name] encodedString];
     NSString *oauthTimeStamp = [self.timeStamp encodedString];
     NSString *oauthVersion = [OAUTH_VERSION encodedString];
-    /*
+    
     NSString *oauthHeader = [NSString stringWithFormat:@"OAuth realm=\"%@\", oauth_consumer_key=\"%@\", oauth_nonce=\"%@\", oauth_signature=\"%@\", oauth_signature_method=\"%@\", oauth_timestamp=\"%@\", %@oauth_version=\"%@\"",
                              oauthRealm,
-                             oauthConsumerKey,
-                             oauthNonce,
-                             oauthSignature,
-                             oauthSignatureMethod,
-                             oauthTimeStamp,
-                             oauthTokenString,
-                             oauthVersion];*/
-    //NSLog(@"consumerKey = %@", oauthConsumerKey);
-    NSString *oauthHeader = [NSString stringWithFormat:@"OAuth oauth_consumer_key=\"%@\", oauth_nonce=\"%@\", oauth_signature=\"%@\", oauth_signature_method=\"%@\", oauth_timestamp=\"%@\", %@oauth_version=\"%@\"",
                              oauthConsumerKey,
                              oauthNonce,
                              oauthSignature,
@@ -104,6 +96,7 @@
         oauthHeader = [oauthHeader stringByAppendingString:oauthPinAuth];
     }
     [self setValue:oauthHeader forHTTPHeaderField:@"Authorization"];
+    NSLog(@"header = %@", oauthHeader);
 }
 
 #pragma mark - 

@@ -9,7 +9,7 @@
 #import "MBAuthorizationViewController.h"
 #import "OAAccessibility.h"
 
-@interface MBAuthorizationViewController ()
+@interface MBAuthorizationViewController () <UIWebViewDelegate>
 @property (weak, nonatomic) IBOutlet UIWebView *webView;
 @property (weak, nonatomic) IBOutlet UIButton *cancelButton;
 
@@ -28,6 +28,7 @@
     return self;
 }
 
+
 #pragma mark -
 #pragma mark View
 - (void)viewDidLoad
@@ -35,6 +36,7 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     self.twitterAccesser.delegate = self;
+    self.webView.delegate = self;
     
     BOOL isAuthorized = [self.twitterAccesser isAuthorized];
     if (!isAuthorized) {
@@ -52,6 +54,37 @@
 #pragma mark -
 #pragma mark Action
 - (IBAction)didPushCancelButton:(id)sender {
+    if ([_delegate respondsToSelector:@selector(popAuthorizationViewController:animated:)]) {
+        [_delegate popAuthorizationViewController:self animated:YES];
+    }
+}
+
+#pragma mark Private Methods
+- (NSString *)authPinInWebView: (UIWebView *)webView;
+{
+    NSString *javaScript = @"var elem = document.getElementById('oauth-pin'); if (elem == null) elem = document.getElementById('oauth_pin'); if(elem) var elem2 = elem.getElementsByTagName('code'); if (elem2.length > 0) elem2[0].innerHTML;";
+    NSString *pin = [[webView stringByEvaluatingJavaScriptFromString:javaScript] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+
+    if (pin.length == 7) {
+        return pin;
+    } else { // nil or new Version HTML
+
+        if (pin.length == 7) {
+            return pin;
+        }
+    }
+    
+    return nil;
+}
+
+- (void)gotPin:(NSString *)pin
+{
+    [self.twitterAccesser setPin:pin];
+    [self.twitterAccesser requestAccessToken];
+    
+    if ([_delegate respondsToSelector:@selector(popAuthorizationViewController:animated:)]) {
+        [_delegate popAuthorizationViewController:self animated:YES];
+    }
 }
 
 /*
@@ -66,6 +99,15 @@
 */
 
 #pragma mark -
+#pragma mark WebView Delegate
+- (void)webViewDidFinishLoad:(UIWebView *)webView
+{
+    NSString *pin = [self authPinInWebView:webView];
+    if (pin) {
+        [self gotPin:pin];
+    }
+}
+
 #pragma mark MBTwitterAccesser Delegate
 - (void)getRequestTokenTwitterAccesser:(MBTwitterAccesser *)twitterAccesser
 {
