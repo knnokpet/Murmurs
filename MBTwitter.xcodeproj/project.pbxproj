@@ -7,6 +7,21 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		861A6F5C18E0044E001D9412 /* MBMyAccountsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 861A6F5B18E0044E001D9412 /* MBMyAccountsViewController.m */; };
+		861A6F5E18E01F09001D9412 /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 861A6F5D18E01F09001D9412 /* Social.framework */; };
+		861A6F6118E033C1001D9412 /* OARequestParameter.m in Sources */ = {isa = PBXBuildFile; fileRef = 861A6F6018E033C1001D9412 /* OARequestParameter.m */; };
+		862B25E618D08A69004FC786 /* OAMutableRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 862B25E518D08A69004FC786 /* OAMutableRequest.m */; };
+		862B25E918D08A7C004FC786 /* OAToken.m in Sources */ = {isa = PBXBuildFile; fileRef = 862B25E818D08A7C004FC786 /* OAToken.m */; };
+		862B25EF18D0A03F004FC786 /* OAConsumer.m in Sources */ = {isa = PBXBuildFile; fileRef = 862B25EE18D0A03F004FC786 /* OAConsumer.m */; };
+		862B25FB18D1738F004FC786 /* OAHMAC-SHA1SignatureProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 862B25FA18D1738F004FC786 /* OAHMAC-SHA1SignatureProvider.m */; };
+		862B260218D179C4004FC786 /* Base64Transcoder.c in Sources */ = {isa = PBXBuildFile; fileRef = 862B25FF18D179C4004FC786 /* Base64Transcoder.c */; };
+		862B260318D179C4004FC786 /* hmac.c in Sources */ = {isa = PBXBuildFile; fileRef = 862B260018D179C4004FC786 /* hmac.c */; };
+		862B260418D179C4004FC786 /* sha1.c in Sources */ = {isa = PBXBuildFile; fileRef = 862B260118D179C4004FC786 /* sha1.c */; };
+		862B260818D19702004FC786 /* NSString+OAURLEncodingAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 862B260718D19702004FC786 /* NSString+OAURLEncodingAdditions.m */; };
+		862B260E18D1EF4C004FC786 /* NSURL+SignatureBased.m in Sources */ = {isa = PBXBuildFile; fileRef = 862B260D18D1EF4C004FC786 /* NSURL+SignatureBased.m */; };
+		862B261118D31C22004FC786 /* MBTwitterAccesser.m in Sources */ = {isa = PBXBuildFile; fileRef = 862B261018D31C22004FC786 /* MBTwitterAccesser.m */; };
+		862B261C18D5C506004FC786 /* OAAuthFetcher.m in Sources */ = {isa = PBXBuildFile; fileRef = 862B261B18D5C506004FC786 /* OAAuthFetcher.m */; };
+		862B261F18D6CAF6004FC786 /* MBAuthorizationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 862B261E18D6CAF6004FC786 /* MBAuthorizationViewController.m */; };
 		8684FE8D18CB43BA00ECDD91 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8684FE8C18CB43BA00ECDD91 /* Foundation.framework */; };
 		8684FE8F18CB43BA00ECDD91 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8684FE8E18CB43BA00ECDD91 /* CoreGraphics.framework */; };
 		8684FE9118CB43BA00ECDD91 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8684FE9018CB43BA00ECDD91 /* UIKit.framework */; };
@@ -22,6 +37,8 @@
 		8684FEB118CB43BA00ECDD91 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8684FE9018CB43BA00ECDD91 /* UIKit.framework */; };
 		8684FEB918CB43BA00ECDD91 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 8684FEB718CB43BA00ECDD91 /* InfoPlist.strings */; };
 		8684FEBB18CB43BA00ECDD91 /* MBTwitterTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8684FEBA18CB43BA00ECDD91 /* MBTwitterTests.m */; };
+		8684FEC818CB446F00ECDD91 /* MBAccountManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 8684FEC718CB446F00ECDD91 /* MBAccountManager.m */; };
+		8684FECB18CB485600ECDD91 /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8684FECA18CB485600ECDD91 /* Accounts.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -35,6 +52,37 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		861A6F5A18E0044E001D9412 /* MBMyAccountsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBMyAccountsViewController.h; sourceTree = "<group>"; };
+		861A6F5B18E0044E001D9412 /* MBMyAccountsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBMyAccountsViewController.m; sourceTree = "<group>"; };
+		861A6F5D18E01F09001D9412 /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
+		861A6F5F18E033C1001D9412 /* OARequestParameter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OARequestParameter.h; sourceTree = "<group>"; };
+		861A6F6018E033C1001D9412 /* OARequestParameter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OARequestParameter.m; sourceTree = "<group>"; };
+		862B25E418D08A69004FC786 /* OAMutableRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OAMutableRequest.h; sourceTree = "<group>"; };
+		862B25E518D08A69004FC786 /* OAMutableRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OAMutableRequest.m; sourceTree = "<group>"; };
+		862B25E718D08A7C004FC786 /* OAToken.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OAToken.h; sourceTree = "<group>"; };
+		862B25E818D08A7C004FC786 /* OAToken.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OAToken.m; sourceTree = "<group>"; };
+		862B25ED18D0A03F004FC786 /* OAConsumer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OAConsumer.h; sourceTree = "<group>"; };
+		862B25EE18D0A03F004FC786 /* OAConsumer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OAConsumer.m; sourceTree = "<group>"; };
+		862B25F818D17373004FC786 /* OASignatureProvider.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OASignatureProvider.h; sourceTree = "<group>"; };
+		862B25F918D1738F004FC786 /* OAHMAC-SHA1SignatureProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "OAHMAC-SHA1SignatureProvider.h"; sourceTree = "<group>"; };
+		862B25FA18D1738F004FC786 /* OAHMAC-SHA1SignatureProvider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "OAHMAC-SHA1SignatureProvider.m"; sourceTree = "<group>"; };
+		862B25FC18D179C4004FC786 /* Base64Transcoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Base64Transcoder.h; path = Crypto/Base64Transcoder.h; sourceTree = "<group>"; };
+		862B25FD18D179C4004FC786 /* hmac.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = hmac.h; path = Crypto/hmac.h; sourceTree = "<group>"; };
+		862B25FE18D179C4004FC786 /* sha1.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = sha1.h; path = Crypto/sha1.h; sourceTree = "<group>"; };
+		862B25FF18D179C4004FC786 /* Base64Transcoder.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = Base64Transcoder.c; path = Crypto/Base64Transcoder.c; sourceTree = "<group>"; };
+		862B260018D179C4004FC786 /* hmac.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = hmac.c; path = Crypto/hmac.c; sourceTree = "<group>"; };
+		862B260118D179C4004FC786 /* sha1.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = sha1.c; path = Crypto/sha1.c; sourceTree = "<group>"; };
+		862B260618D19702004FC786 /* NSString+OAURLEncodingAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+OAURLEncodingAdditions.h"; sourceTree = "<group>"; };
+		862B260718D19702004FC786 /* NSString+OAURLEncodingAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+OAURLEncodingAdditions.m"; sourceTree = "<group>"; };
+		862B260C18D1EF4C004FC786 /* NSURL+SignatureBased.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSURL+SignatureBased.h"; sourceTree = "<group>"; };
+		862B260D18D1EF4C004FC786 /* NSURL+SignatureBased.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSURL+SignatureBased.m"; sourceTree = "<group>"; };
+		862B260F18D31C22004FC786 /* MBTwitterAccesser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBTwitterAccesser.h; sourceTree = "<group>"; };
+		862B261018D31C22004FC786 /* MBTwitterAccesser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBTwitterAccesser.m; sourceTree = "<group>"; };
+		862B261918D3FE26004FC786 /* OAAccessibility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OAAccessibility.h; sourceTree = "<group>"; };
+		862B261A18D5C506004FC786 /* OAAuthFetcher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OAAuthFetcher.h; sourceTree = "<group>"; };
+		862B261B18D5C506004FC786 /* OAAuthFetcher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OAAuthFetcher.m; sourceTree = "<group>"; };
+		862B261D18D6CAF6004FC786 /* MBAuthorizationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBAuthorizationViewController.h; sourceTree = "<group>"; };
+		862B261E18D6CAF6004FC786 /* MBAuthorizationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBAuthorizationViewController.m; sourceTree = "<group>"; };
 		8684FE8918CB43BA00ECDD91 /* MBTwitter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MBTwitter.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8684FE8C18CB43BA00ECDD91 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		8684FE8E18CB43BA00ECDD91 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -55,6 +103,9 @@
 		8684FEB618CB43BA00ECDD91 /* MBTwitterTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "MBTwitterTests-Info.plist"; sourceTree = "<group>"; };
 		8684FEB818CB43BA00ECDD91 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		8684FEBA18CB43BA00ECDD91 /* MBTwitterTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MBTwitterTests.m; sourceTree = "<group>"; };
+		8684FEC618CB446F00ECDD91 /* MBAccountManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBAccountManager.h; sourceTree = "<group>"; };
+		8684FEC718CB446F00ECDD91 /* MBAccountManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBAccountManager.m; sourceTree = "<group>"; };
+		8684FECA18CB485600ECDD91 /* Accounts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accounts.framework; path = System/Library/Frameworks/Accounts.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -62,6 +113,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				861A6F5E18E01F09001D9412 /* Social.framework in Frameworks */,
+				8684FECB18CB485600ECDD91 /* Accounts.framework in Frameworks */,
 				8684FE8F18CB43BA00ECDD91 /* CoreGraphics.framework in Frameworks */,
 				8684FE9118CB43BA00ECDD91 /* UIKit.framework in Frameworks */,
 				8684FE8D18CB43BA00ECDD91 /* Foundation.framework in Frameworks */,
@@ -81,6 +134,53 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		862B25DC18D074C2004FC786 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				862B25DD18D074CB004FC786 /* OAuth */,
+			);
+			name = Model;
+			sourceTree = "<group>";
+		};
+		862B25DD18D074CB004FC786 /* OAuth */ = {
+			isa = PBXGroup;
+			children = (
+				862B261918D3FE26004FC786 /* OAAccessibility.h */,
+				862B25E418D08A69004FC786 /* OAMutableRequest.h */,
+				862B25E518D08A69004FC786 /* OAMutableRequest.m */,
+				862B25E718D08A7C004FC786 /* OAToken.h */,
+				862B25E818D08A7C004FC786 /* OAToken.m */,
+				862B25ED18D0A03F004FC786 /* OAConsumer.h */,
+				862B25EE18D0A03F004FC786 /* OAConsumer.m */,
+				861A6F5F18E033C1001D9412 /* OARequestParameter.h */,
+				861A6F6018E033C1001D9412 /* OARequestParameter.m */,
+				862B25F818D17373004FC786 /* OASignatureProvider.h */,
+				862B25F918D1738F004FC786 /* OAHMAC-SHA1SignatureProvider.h */,
+				862B25FA18D1738F004FC786 /* OAHMAC-SHA1SignatureProvider.m */,
+				862B261A18D5C506004FC786 /* OAAuthFetcher.h */,
+				862B261B18D5C506004FC786 /* OAAuthFetcher.m */,
+				862B260618D19702004FC786 /* NSString+OAURLEncodingAdditions.h */,
+				862B260718D19702004FC786 /* NSString+OAURLEncodingAdditions.m */,
+				862B260C18D1EF4C004FC786 /* NSURL+SignatureBased.h */,
+				862B260D18D1EF4C004FC786 /* NSURL+SignatureBased.m */,
+				862B260518D179D5004FC786 /* Cyptro */,
+			);
+			name = OAuth;
+			sourceTree = "<group>";
+		};
+		862B260518D179D5004FC786 /* Cyptro */ = {
+			isa = PBXGroup;
+			children = (
+				862B25FC18D179C4004FC786 /* Base64Transcoder.h */,
+				862B25FF18D179C4004FC786 /* Base64Transcoder.c */,
+				862B25FD18D179C4004FC786 /* hmac.h */,
+				862B260018D179C4004FC786 /* hmac.c */,
+				862B25FE18D179C4004FC786 /* sha1.h */,
+				862B260118D179C4004FC786 /* sha1.c */,
+			);
+			name = Cyptro;
+			sourceTree = "<group>";
+		};
 		8684FE8018CB43BA00ECDD91 = {
 			isa = PBXGroup;
 			children = (
@@ -103,6 +203,8 @@
 		8684FE8B18CB43BA00ECDD91 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				861A6F5D18E01F09001D9412 /* Social.framework */,
+				8684FECA18CB485600ECDD91 /* Accounts.framework */,
 				8684FE8C18CB43BA00ECDD91 /* Foundation.framework */,
 				8684FE8E18CB43BA00ECDD91 /* CoreGraphics.framework */,
 				8684FE9018CB43BA00ECDD91 /* UIKit.framework */,
@@ -114,12 +216,10 @@
 		8684FE9218CB43BA00ECDD91 /* MBTwitter */ = {
 			isa = PBXGroup;
 			children = (
-				8684FE9B18CB43BA00ECDD91 /* MBAppDelegate.h */,
-				8684FE9C18CB43BA00ECDD91 /* MBAppDelegate.m */,
-				8684FE9E18CB43BA00ECDD91 /* Main_iPhone.storyboard */,
-				8684FEA118CB43BA00ECDD91 /* Main_iPad.storyboard */,
-				8684FEA418CB43BA00ECDD91 /* MBViewController.h */,
-				8684FEA518CB43BA00ECDD91 /* MBViewController.m */,
+				8684FEC418CB43D700ECDD91 /* Application */,
+				8684FEC518CB43E700ECDD91 /* Controller */,
+				8684FEC918CB448500ECDD91 /* Logic */,
+				862B25DC18D074C2004FC786 /* Model */,
 				8684FEA718CB43BA00ECDD91 /* Images.xcassets */,
 				8684FE9318CB43BA00ECDD91 /* Supporting Files */,
 			);
@@ -153,6 +253,41 @@
 				8684FEB718CB43BA00ECDD91 /* InfoPlist.strings */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		8684FEC418CB43D700ECDD91 /* Application */ = {
+			isa = PBXGroup;
+			children = (
+				8684FE9B18CB43BA00ECDD91 /* MBAppDelegate.h */,
+				8684FE9C18CB43BA00ECDD91 /* MBAppDelegate.m */,
+				8684FE9E18CB43BA00ECDD91 /* Main_iPhone.storyboard */,
+				8684FEA118CB43BA00ECDD91 /* Main_iPad.storyboard */,
+			);
+			name = Application;
+			sourceTree = "<group>";
+		};
+		8684FEC518CB43E700ECDD91 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				8684FEA418CB43BA00ECDD91 /* MBViewController.h */,
+				8684FEA518CB43BA00ECDD91 /* MBViewController.m */,
+				861A6F5A18E0044E001D9412 /* MBMyAccountsViewController.h */,
+				861A6F5B18E0044E001D9412 /* MBMyAccountsViewController.m */,
+				862B261D18D6CAF6004FC786 /* MBAuthorizationViewController.h */,
+				862B261E18D6CAF6004FC786 /* MBAuthorizationViewController.m */,
+			);
+			name = Controller;
+			sourceTree = "<group>";
+		};
+		8684FEC918CB448500ECDD91 /* Logic */ = {
+			isa = PBXGroup;
+			children = (
+				8684FEC618CB446F00ECDD91 /* MBAccountManager.h */,
+				8684FEC718CB446F00ECDD91 /* MBAccountManager.m */,
+				862B260F18D31C22004FC786 /* MBTwitterAccesser.h */,
+				862B261018D31C22004FC786 /* MBTwitterAccesser.m */,
+			);
+			name = Logic;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -200,9 +335,12 @@
 			isa = PBXProject;
 			attributes = {
 				CLASSPREFIX = MB;
-				LastUpgradeCheck = 0500;
+				LastUpgradeCheck = 0510;
 				ORGANIZATIONNAME = "Masayuki Ikeda";
 				TargetAttributes = {
+					8684FE8818CB43BA00ECDD91 = {
+						DevelopmentTeam = MNJTVZMMVS;
+					};
 					8684FEAC18CB43BA00ECDD91 = {
 						TestTargetID = 8684FE8818CB43BA00ECDD91;
 					};
@@ -254,9 +392,24 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				862B260318D179C4004FC786 /* hmac.c in Sources */,
+				862B25E618D08A69004FC786 /* OAMutableRequest.m in Sources */,
+				862B25FB18D1738F004FC786 /* OAHMAC-SHA1SignatureProvider.m in Sources */,
+				8684FEC818CB446F00ECDD91 /* MBAccountManager.m in Sources */,
+				862B260818D19702004FC786 /* NSString+OAURLEncodingAdditions.m in Sources */,
+				862B25EF18D0A03F004FC786 /* OAConsumer.m in Sources */,
 				8684FE9918CB43BA00ECDD91 /* main.m in Sources */,
+				861A6F6118E033C1001D9412 /* OARequestParameter.m in Sources */,
+				862B260E18D1EF4C004FC786 /* NSURL+SignatureBased.m in Sources */,
+				862B260418D179C4004FC786 /* sha1.c in Sources */,
+				862B261118D31C22004FC786 /* MBTwitterAccesser.m in Sources */,
+				862B25E918D08A7C004FC786 /* OAToken.m in Sources */,
 				8684FEA618CB43BA00ECDD91 /* MBViewController.m in Sources */,
+				862B261F18D6CAF6004FC786 /* MBAuthorizationViewController.m in Sources */,
+				862B261C18D5C506004FC786 /* OAAuthFetcher.m in Sources */,
+				862B260218D179C4004FC786 /* Base64Transcoder.c in Sources */,
 				8684FE9D18CB43BA00ECDD91 /* MBAppDelegate.m in Sources */,
+				861A6F5C18E0044E001D9412 /* MBMyAccountsViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -318,7 +471,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
@@ -358,7 +510,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
@@ -393,10 +544,13 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "MBTwitter/MBTwitter-Prefix.pch";
 				INFOPLIST_FILE = "MBTwitter/MBTwitter-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -406,10 +560,13 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "MBTwitter/MBTwitter-Prefix.pch";
 				INFOPLIST_FILE = "MBTwitter/MBTwitter-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
@@ -417,7 +574,6 @@
 		8684FEC218CB43BA00ECDD91 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/MBTwitter.app/MBTwitter";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
@@ -440,7 +596,6 @@
 		8684FEC318CB43BA00ECDD91 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/MBTwitter.app/MBTwitter";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
@@ -475,6 +630,7 @@
 				8684FEC018CB43BA00ECDD91 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		8684FEC118CB43BA00ECDD91 /* Build configuration list for PBXNativeTarget "MBTwitterTests" */ = {
 			isa = XCConfigurationList;
@@ -483,6 +639,7 @@
 				8684FEC318CB43BA00ECDD91 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
