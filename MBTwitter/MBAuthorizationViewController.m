@@ -109,7 +109,7 @@
 }
 
 #pragma mark MBTwitterAccesser Delegate
-- (void)getRequestTokenTwitterAccesser:(MBTwitterAccesser *)twitterAccesser
+- (void)gotRequestTokenTwitterAccesser:(MBTwitterAccesser *)twitterAccesser
 {
     NSURLRequest *authorizeURLRequest = [self.twitterAccesser authorizeURLRequest];
     [self.webView loadRequest:authorizeURLRequest];

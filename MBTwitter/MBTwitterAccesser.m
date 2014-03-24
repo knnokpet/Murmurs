@@ -81,7 +81,7 @@ typedef void (^FailedHandler)(NSHTTPURLResponse *);
     NSURL *authorizeURL = [NSURL URLWithString:AUTHORIZE_URL];
     OAMutableRequest *authorizeURLRequest = [[OAMutableRequest alloc] initWithURL:authorizeURL consumer:nil token:self.requestToken realm:nil signatureProvider:nil];
     
-    OARequestparameter *authorizeParameter = [OARequestparameter requestParameterWithName:@"oauth_token" value:self.requestToken.key];
+    OARequestParameter *authorizeParameter = [OARequestParameter requestParameterWithName:@"oauth_token" value:self.requestToken.key];
     [authorizeURLRequest setParameters:[NSArray arrayWithObject:authorizeParameter]];
     return authorizeURLRequest;
 }
@@ -113,8 +113,8 @@ typedef void (^FailedHandler)(NSHTTPURLResponse *);
         
         OAToken *requestToken = [[OAToken alloc] initWithHTTPResponse:dataString];
         self.requestToken = requestToken;
-        if ([_delegate respondsToSelector:@selector(getRequestTokenTwitterAccesser:)]) {
-            [_delegate getRequestTokenTwitterAccesser:self];
+        if ([_delegate respondsToSelector:@selector(gotRequestTokenTwitterAccesser:)]) {
+            [_delegate gotRequestTokenTwitterAccesser:self];
         }
         
     } failedHandler:^(NSHTTPURLResponse *response){
@@ -184,7 +184,7 @@ typedef void (^FailedHandler)(NSHTTPURLResponse *);
     [request setHTTPMethod:@"POST"];
     
     // for returning PIN
-    OARequestparameter *callbackParameter = [OARequestparameter requestParameterWithName:@"oauth_callback" value:@"oob"];
+    OARequestParameter *callbackParameter = [OARequestParameter requestParameterWithName:@"oauth_callback" value:@"oob"];
     NSMutableArray *addingParameters = [NSMutableArray arrayWithArray:[request parameters]];
     [addingParameters addObject:callbackParameter];
     [request setParameters:addingParameters];

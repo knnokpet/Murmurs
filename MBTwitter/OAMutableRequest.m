@@ -120,20 +120,20 @@
     NSMutableArray *parameters = [NSMutableArray arrayWithCapacity:( defaultParameteCount + [self.parameters count])];
     
     // require Parameters
-    [parameters addObject:[[OARequestparameter requestParameterWithName:@"oauth_consumer_key" value:self.consumer.key] encodedNameValuePair]];
-    [parameters addObject:[[OARequestparameter requestParameterWithName:@"oauth_nonce" value:self.nonce] encodedNameValuePair]];
-    [parameters addObject:[[OARequestparameter requestParameterWithName:@"oauth_signature_method" value:[self.signatureProvider name]] encodedNameValuePair]];
-    [parameters addObject:[[OARequestparameter requestParameterWithName:@"oauth_timestamp" value:self.timeStamp] encodedNameValuePair]];
-    [parameters addObject:[[OARequestparameter requestParameterWithName:@"oauth_version" value:OAUTH_VERSION] encodedNameValuePair]];
+    [parameters addObject:[[OARequestParameter requestParameterWithName:@"oauth_consumer_key" value:self.consumer.key] encodedNameValuePair]];
+    [parameters addObject:[[OARequestParameter requestParameterWithName:@"oauth_nonce" value:self.nonce] encodedNameValuePair]];
+    [parameters addObject:[[OARequestParameter requestParameterWithName:@"oauth_signature_method" value:[self.signatureProvider name]] encodedNameValuePair]];
+    [parameters addObject:[[OARequestParameter requestParameterWithName:@"oauth_timestamp" value:self.timeStamp] encodedNameValuePair]];
+    [parameters addObject:[[OARequestParameter requestParameterWithName:@"oauth_version" value:OAUTH_VERSION] encodedNameValuePair]];
     
     // use pin_based authenication
     if (self.token.key.length > 0) {
-        [parameters addObject:[[OARequestparameter requestParameterWithName:@"oauth_token" value:self.token.key] encodedNameValuePair]];
-        [parameters addObject:[[OARequestparameter requestParameterWithName:@"oauth_verifier" value:self.token.pin] encodedNameValuePair]];
+        [parameters addObject:[[OARequestParameter requestParameterWithName:@"oauth_token" value:self.token.key] encodedNameValuePair]];
+        [parameters addObject:[[OARequestParameter requestParameterWithName:@"oauth_verifier" value:self.token.pin] encodedNameValuePair]];
     }
     
     // join require & option parameter
-    for (OARequestparameter *parameter in self.parameters) {
+    for (OARequestParameter *parameter in self.parameters) {
         [parameters addObject:[parameter encodedNameValuePair]];
     }
     
@@ -170,7 +170,7 @@
     NSMutableArray *requestParameters = [NSMutableArray arrayWithCapacity:16];
     for (NSString *pair in encodedParameterPair) {
         NSArray *separatedPair = [pair componentsSeparatedByString:@"="];
-        OARequestparameter *requestParameter = [OARequestparameter requestParameterWithName:[[separatedPair objectAtIndex:0] encodedString] value:[[separatedPair objectAtIndex:1] encodedString]];
+        OARequestParameter *requestParameter = [OARequestParameter requestParameterWithName:[[separatedPair objectAtIndex:0] encodedString] value:[[separatedPair objectAtIndex:1] encodedString]];
         
         [requestParameters addObject:requestParameter];
     }
@@ -184,7 +184,7 @@
     
     // configure parameter String
     int appendPosition = 1;
-    for (OARequestparameter *param in parameters) {
+    for (OARequestParameter *param in parameters) {
         NSString *nameValuePair = [param encodedNameValuePair];
         [parameterString appendString:nameValuePair];
         if (appendPosition < [parameters count]) {
