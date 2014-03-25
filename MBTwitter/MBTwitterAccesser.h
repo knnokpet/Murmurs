@@ -8,10 +8,12 @@
 
 #import <Foundation/Foundation.h>
 
+
 @protocol MBTwitterAccesserDelegate;
 
 @class OAToken;
 @class OAConsumer;
+@class ACAccount;
 @interface MBTwitterAccesser : NSObject
 
 @property (nonatomic, readonly) NSString *consumerKey;
@@ -30,6 +32,7 @@
 
 - (void)requestRequestToken;
 - (void)requestAccessToken;
+- (void)requestReverseRequestTokenWithAccount:(ACAccount *)account;
 
 @end
 

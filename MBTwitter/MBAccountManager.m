@@ -7,6 +7,7 @@
 //
 
 #import "MBAccountManager.h"
+#import "MBTwitterAccesser.h"
 
 @implementation MBAccountManager
 
@@ -29,7 +30,7 @@
         
     }
     
-    return nil;
+    return self;
 }
 
 - (id)init
@@ -41,7 +42,7 @@
 #pragma mark -
 - (void)requestAccessToAccountWithCompletionHandler:(MBAccountManagerRequestCompletionHandler)completionHandler
 {
-    _accounts = [NSMutableArray array];
+    
     
     ACAccountStore *accountStore = [[ACAccountStore alloc] init];
     ACAccountType *accountType = [accountStore accountTypeWithAccountTypeIdentifier:ACAccountTypeIdentifierTwitter];
@@ -50,16 +51,14 @@
             NSArray *accounts = [accountStore accountsWithAccountType:accountType];
             
             if ([accounts count] == 0) {
-                completionHandler(NO, error);
+                completionHandler(NO, nil, error);
                 
             } else {
-                for (ACAccount *account in accounts) {
-                    [self.accounts addObject:account];
-                }
-                completionHandler(YES, error);
+                completionHandler(YES, accounts, error);
+                
             }
         } else {
-            completionHandler(NO, error);
+            completionHandler(NO, nil, error);
         }
     }];
 }

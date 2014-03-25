@@ -8,10 +8,22 @@
 
 #import "MBTwitterAccesser.h"
 #import "OAAccessibility.h"
+#import <Social/Social.h>
 
+// URL
 #define REQUEST_TOKEN_URL @"https://api.twitter.com/oauth/request_token"
 #define ACCESS_TOKEN_URL @"https://api.twitter.com/oauth/access_token"
 #define AUTHORIZE_URL @"https://api.twitter.com/oauth/authenticate"
+
+//
+#define PARAMETER_KEY_OAUTH_TOKEN @"oauth_token"
+#define PARAMETER_KEY_OAUTH_CALLBACK @"oauth_callback"
+#define PARAMETER_KEY_X_AUTH_MODE @"x_auth_mode"
+#define PARAMETER_KEY_X_REVERSE_AUTH_TARGET @"x_reverse_auth_target"
+
+#define PARAMETER_VALUE_OOB @"oob"
+#define PARAMETER_VALUE_REVERSE_AUTH @"reverse_auth"
+#define PARAMETER_VALUE_X_REVERSE_AUTH_PARAMETERS @"x_reverse_auth_parameters"
 
 typedef void (^CompletionHandler)(NSMutableData *, NSHTTPURLResponse *);
 typedef void (^FailedHandler)(NSHTTPURLResponse *);
@@ -81,7 +93,7 @@ typedef void (^FailedHandler)(NSHTTPURLResponse *);
     NSURL *authorizeURL = [NSURL URLWithString:AUTHORIZE_URL];
     OAMutableRequest *authorizeURLRequest = [[OAMutableRequest alloc] initWithURL:authorizeURL consumer:nil token:self.requestToken realm:nil signatureProvider:nil];
     
-    OARequestParameter *authorizeParameter = [OARequestParameter requestParameterWithName:@"oauth_token" value:self.requestToken.key];
+    OARequestParameter *authorizeParameter = [OARequestParameter requestParameterWithName:PARAMETER_KEY_OAUTH_TOKEN value:self.requestToken.key];
     [authorizeURLRequest setParameters:[NSArray arrayWithObject:authorizeParameter]];
     return authorizeURLRequest;
 }
@@ -134,9 +146,10 @@ typedef void (^FailedHandler)(NSHTTPURLResponse *);
 - (void)requestAccessToken
 {
     NSURL *url = [NSURL URLWithString:ACCESS_TOKEN_URL];
+    
     [self sendRequestURL:url token:_requestToken completionHandler:^(NSMutableData *data, NSHTTPURLResponse *response){
         NSUInteger status = [response statusCode];
-        if ((status < 200 && status > 300) || !data) {
+        if (!(status >= 200 && status < 300) || !data) {
             NSLog(@"response ");
             NSDictionary *responseDic = [response allHeaderFields];
             [responseDic enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
@@ -171,7 +184,80 @@ typedef void (^FailedHandler)(NSHTTPURLResponse *);
     }];
 }
 
+- (void)requestReverseRequestTokenWithAccount:(ACAccount *)account
+{
+    if (!account) {
+        return;
+    }
+    
+    NSURL *url = [NSURL URLWithString:REQUEST_TOKEN_URL];
+    
+    OARequestParameter *param = [OARequestParameter requestParameterWithName:PARAMETER_KEY_X_AUTH_MODE value:PARAMETER_VALUE_REVERSE_AUTH];
+    NSArray *parameters = [NSArray arrayWithObject:param];
+    
+    [self sendRequestURL:url token:nil completionHandler:^ (NSMutableData *data, NSHTTPURLResponse *response) {
+        NSInteger status = [response statusCode];
+        
+        if (!(status >= 200 && status < 300) || !data) {
+            NSLog(@"response Error");
+            return;
+        }
+        
+        NSLog(@"Get Reverse Token!");
+        
+        NSString *dataString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+        if (!dataString) {
+            return;
+        }
+        
+        [self requestReverseAccessTokenWithAccount:account data:dataString];
+        
+    }failedHandler:^(NSHTTPURLResponse *response) {
+        NSLog(@"Getting Reverse Token Error");
+        
+    }parameter:parameters];
+}
+
+- (void)requestReverseAccessTokenWithAccount:(ACAccount *)account data:(NSString *)data
+{
+    NSDictionary *parameters = @{PARAMETER_KEY_X_REVERSE_AUTH_TARGET: self.consumerKey, PARAMETER_VALUE_X_REVERSE_AUTH_PARAMETERS: data};
+    
+    NSURL *url = [NSURL URLWithString:ACCESS_TOKEN_URL];
+    
+    SLRequest *request = [SLRequest requestForServiceType:SLServiceTypeTwitter requestMethod:SLRequestMethodPOST URL:url parameters:parameters];
+    [request setAccount:account];
+    [request performRequestWithHandler:^(NSData *responseData, NSHTTPURLResponse *urlResponse, NSError *error) {
+        NSInteger status = [urlResponse statusCode];
+        
+        if (!(status >= 200 && status < 300) || !data) {
+            NSLog(@"response Error");
+            return;
+        }
+        
+        NSLog(@"Get Reverse Access Token");
+        
+        NSString *dataString = [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding];
+        if (!dataString) {
+            return;
+        }
+        
+        [self storeMyAccountFromHTTPBody:dataString];
+        
+    }];
+    
+    
+}
+
 - (void)sendRequestURL:(NSURL *)url token:(OAToken *)token completionHandler:(CompletionHandler)completion failedHandler:(FailedHandler)failed
+{
+    // for returning PIN
+    OARequestParameter *callbackParameter = [OARequestParameter requestParameterWithName:@"oauth_callback" value:@"oob"];
+    NSArray *parameters = [NSArray arrayWithObject:callbackParameter];
+    
+    [self sendRequestURL:url token:token completionHandler:completion failedHandler:failed parameter:parameters];
+}
+
+- (void)sendRequestURL:(NSURL *)url token:(OAToken *)token completionHandler:(CompletionHandler)completion failedHandler:(FailedHandler)failed parameter:(NSArray *)parameter
 {
     if (self.pin.length > 0) {
         token.pin = self.pin;// setPin でセットしてるからいらないけど。
@@ -183,10 +269,10 @@ typedef void (^FailedHandler)(NSHTTPURLResponse *);
     }
     [request setHTTPMethod:@"POST"];
     
-    // for returning PIN
-    OARequestParameter *callbackParameter = [OARequestParameter requestParameterWithName:@"oauth_callback" value:@"oob"];
     NSMutableArray *addingParameters = [NSMutableArray arrayWithArray:[request parameters]];
-    [addingParameters addObject:callbackParameter];
+    for (OARequestParameter *param in parameter) {
+        [addingParameters addObject:param];
+    }
     [request setParameters:addingParameters];
     
     OAAuthFetcher *fetcher = [[OAAuthFetcher alloc] initWithRequest:request completionHandler:completion failedHandler:failed];

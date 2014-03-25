@@ -7,6 +7,7 @@
 //
 
 #import "MBViewController.h"
+#import "MBMyAccountsViewController.h"
 
 #import "MBTwitterAccesser.h"
 
@@ -19,6 +20,7 @@
 @property (nonatomic) MBTwitterAccesser *twitterAccesser;
 
 @property (weak, nonatomic) IBOutlet UIButton *authorizationButton;
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *accountButton;
 
 @end
 
@@ -43,6 +45,10 @@
     [self performSegueWithIdentifier:@"AuthorizationIdentifier" sender:self];
 }
 
+- (IBAction)didPushAccountButton:(id)sender {
+    [self performSegueWithIdentifier:@"AccountIdentifier" sender:self];
+}
+
 #pragma mark -
 #pragma mark StoryBoard
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
@@ -56,6 +62,13 @@
         [self.twitterAccesser setConsumerSecret:CONSUMER_SECRET];
         authorizationController.twitterAccesser = self.twitterAccesser;
         
+    } else if (YES == [[segue identifier] isEqualToString:@"AccountIdentifier"]) {
+        UINavigationController *navigationController = [segue destinationViewController];
+        MBMyAccountsViewController *accountViewController = (MBMyAccountsViewController *)navigationController.topViewController;
+        self.twitterAccesser = [[MBTwitterAccesser alloc] init];
+        [self.twitterAccesser setConsumerKey:CONSUMER_KEY];
+        [self.twitterAccesser setConsumerSecret:CONSUMER_SECRET];
+        accountViewController.twitterAccessor = self.twitterAccesser;
     }
 }
 

@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <Accounts/Accounts.h>
 
-typedef void(^MBAccountManagerRequestCompletionHandler)(BOOL granted, NSError *error);
+typedef void(^MBAccountManagerRequestCompletionHandler)(BOOL granted, NSArray *accounts, NSError *error);
 
 @interface MBAccountManager : NSObject
 
