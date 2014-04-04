@@ -7,8 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "MBAuthorizationViewController.h"
+#import "MBMyAccountsViewController.h"
 
-@interface MBViewController : UIViewController <MBAuthorizationViewControllerDelegate>
+@class MBAOuth_TwitterAPICenter;
+@interface MBViewController : UIViewController <MBMyAccountsViewControlerDelegate>
+
+@property (nonatomic, readonly) MBAOuth_TwitterAPICenter *aoAPICenter;
 
 @end

@@ -7,13 +7,16 @@
 //
 
 #import "MBTwitterAccesser.h"
+#import "MBAccountManager.h"
+
+#import "MBTwitterConsumer.h"
 #import "OAAccessibility.h"
 #import <Social/Social.h>
 
 // URL
 #define REQUEST_TOKEN_URL @"https://api.twitter.com/oauth/request_token"
 #define ACCESS_TOKEN_URL @"https://api.twitter.com/oauth/access_token"
-#define AUTHORIZE_URL @"https://api.twitter.com/oauth/authenticate"
+#define AUTHORIZE_URL @"https://api.twitter.com/oauth/authorize"
 
 //
 #define PARAMETER_KEY_OAUTH_TOKEN @"oauth_token"
@@ -37,6 +40,32 @@ typedef void (^FailedHandler)(NSHTTPURLResponse *);
 @end
 
 @implementation MBTwitterAccesser
+#pragma mark -
+#pragma mark Initialize
+- (id)init
+{
+    self = [super init];
+    if (self) {
+        [self setConsumerKey:CONSUMER_KEY];
+        [self setConsumerSecret:CONSUMER_SECRET];
+    }
+    
+    return self;
+}
+
+- (id)initWithAccessToken:(OAToken *)accessToken
+{
+    self = [super init];
+    if (self) {
+        
+        if (!accessToken) {
+            _accessToken = [[OAToken alloc] initWithKey:nil secret:nil];
+        }
+        _accessToken = accessToken;
+    }
+    
+    return self;
+}
 
 #pragma mark -
 #pragma mark Setter Getter
@@ -287,6 +316,8 @@ typedef void (^FailedHandler)(NSHTTPURLResponse *);
         return;
     }
     
+    NSMutableDictionary *myAccountData = [NSMutableDictionary dictionary];
+    
     NSString *userToken;
     NSString *userSecret;
     NSString *userID;
@@ -308,9 +339,13 @@ typedef void (^FailedHandler)(NSHTTPURLResponse *);
             userScreenName = value;
         }
         
+        [myAccountData setObject:value forKey:key];
     }
     
     NSLog(@"token = %@, secret = %@, ID = %@, name = %@", userToken, userSecret, userID, userScreenName);
+    
+    MBAccountManager *accountManager = [MBAccountManager sharedInstance];
+    [accountManager storeMyAccountWith:myAccountData];
 }
 
 @end

@@ -7,10 +7,15 @@
 //
 
 #import "MBAccountManager.h"
+#import "MBAccount.h"
 #import "MBTwitterAccesser.h"
+
+#define USER_DEFAULTS_KEY_AOUTH_ACCOUNT @"oauth_data"
 
 @implementation MBAccountManager
 
+#pragma mark -
+#pragma mark Initialize
 + (MBAccountManager *)sharedInstance
 {
     static MBAccountManager *sharedInstance;
@@ -27,7 +32,7 @@
 {
     self = [super init];
     if (self) {
-        
+        [self updateAccounts];
     }
     
     return self;
@@ -37,6 +42,15 @@
 {
     [self doesNotRecognizeSelector:_cmd];
     return nil;
+}
+
+#pragma mark -
+#pragma mark Setter & Getter
+- (void)setCurrentAccount:(MBAccount *)currentAccount
+{
+    _currentAccount = currentAccount;
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"ChangeMyAccount" object:nil];
 }
 
 #pragma mark -
@@ -61,6 +75,66 @@
             completionHandler(NO, nil, error);
         }
     }];
+}
+
+#pragma mark -
+#pragma mark account
+- (BOOL)isSelectedAccount
+{
+    BOOL isSelected = NO;
+    if (nil != _currentAccount) {
+        isSelected = YES;
+    }
+    
+    return isSelected;
+}
+
+- (void)storeMyAccountWith:(NSDictionary *)myAccount
+{
+    if (!myAccount) {
+        return;
+    }
+    
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+    
+    NSMutableArray *savingAccounts = [NSMutableArray arrayWithArray:[userDefaults arrayForKey:USER_DEFAULTS_KEY_AOUTH_ACCOUNT]];
+    [savingAccounts addObject:myAccount];
+    
+    [userDefaults setObject:savingAccounts forKey:USER_DEFAULTS_KEY_AOUTH_ACCOUNT];
+    
+    [self updateAccounts];
+}
+
+- (void)updateAccounts
+{
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+    NSArray *storedMyAccounts = [userDefaults arrayForKey:USER_DEFAULTS_KEY_AOUTH_ACCOUNT];
+    
+    NSMutableArray *accounts = [NSMutableArray array];
+    for (NSDictionary *accountData in storedMyAccounts) {
+        MBAccount *account = [[MBAccount alloc] initWithDictionary:accountData];
+        [accounts addObject:account];
+    }
+    
+    
+    _accounts = accounts;
+}
+
+- (void)selectAccountAtIndexPath:(NSIndexPath *)indexPath
+{
+    NSInteger selectedRow = indexPath.row;
+    if (selectedRow > [self.accounts count]) {
+        return;
+    }
+    
+    [self setCurrentAccount:[self.accounts objectAtIndex:selectedRow]];
+    
+}
+
+- (void)deleteAllAccount{
+    NSUserDefaults *userDefault = [NSUserDefaults standardUserDefaults];
+    [userDefault removeObjectForKey:USER_DEFAULTS_KEY_AOUTH_ACCOUNT];
+    [self updateAccounts];
 }
 
 @end

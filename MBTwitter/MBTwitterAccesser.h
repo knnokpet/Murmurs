@@ -22,6 +22,8 @@
 
 @property (nonatomic, weak) id <MBTwitterAccesserDelegate> delegate;
 
+- (id)initWithAccessToken:(OAToken *)accessToken;
+
 
 - (void)setConsumerKey:(NSString *)consumerKey;
 - (void)setConsumerSecret:(NSString *)consumerSecret;

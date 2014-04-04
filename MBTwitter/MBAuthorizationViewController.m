@@ -10,8 +10,10 @@
 #import "OAAccessibility.h"
 
 @interface MBAuthorizationViewController () <UIWebViewDelegate>
+
+
 @property (weak, nonatomic) IBOutlet UIWebView *webView;
-@property (weak, nonatomic) IBOutlet UIButton *cancelButton;
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *cancelButton;
 
 @end
 
@@ -102,6 +104,7 @@
 #pragma mark WebView Delegate
 - (void)webViewDidFinishLoad:(UIWebView *)webView
 {
+    
     NSString *pin = [self authPinInWebView:webView];
     if (pin) {
         [self gotPin:pin];

@@ -11,12 +11,19 @@
 
 typedef void(^MBAccountManagerRequestCompletionHandler)(BOOL granted, NSArray *accounts, NSError *error);
 
+@class MBAccount;
 @interface MBAccountManager : NSObject
 
-@property (nonatomic, readonly) NSMutableArray *accounts;
+@property (nonatomic, readonly) NSArray *accounts;
+@property (nonatomic, readonly) MBAccount *currentAccount;
 
 + (MBAccountManager *)sharedInstance;
 
+- (BOOL)isSelectedAccount;
+
 - (void)requestAccessToAccountWithCompletionHandler:(MBAccountManagerRequestCompletionHandler)completionHandler;
+- (void)storeMyAccountWith:(NSDictionary *)myAccount;
+- (void)selectAccountAtIndexPath:(NSIndexPath *)indexPath;
+- (void)deleteAllAccount;
 
 @end

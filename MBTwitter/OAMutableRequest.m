@@ -129,7 +129,9 @@
     // use pin_based authenication
     if (self.token.key.length > 0) {
         [parameters addObject:[[OARequestParameter requestParameterWithName:@"oauth_token" value:self.token.key] encodedNameValuePair]];
-        [parameters addObject:[[OARequestParameter requestParameterWithName:@"oauth_verifier" value:self.token.pin] encodedNameValuePair]];
+        if (self.token.pin.length > 0) {
+            [parameters addObject:[[OARequestParameter requestParameterWithName:@"oauth_verifier" value:self.token.pin] encodedNameValuePair]];
+        }
     }
     
     // join require & option parameter

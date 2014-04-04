@@ -7,19 +7,22 @@
 //
 
 #import "MBViewController.h"
-#import "MBMyAccountsViewController.h"
 
+#import "MBTweetViewCell.h"
+#import "MBTweetTextView.h"
+
+#import "MBAOuth_TwitterAPICenter.h"
 #import "MBTwitterAccesser.h"
+#import "MBAccountManager.h"
+#import "MBAccount.h"
 
-#define CONSUMER_KEY    @"AosTsb1nT61TS292imejQ"
-#define CONSUMER_SECRET @"L2h0eN7dIKon8OhkcwVJ7KFDUuMoFFkSFKd33auJA"
 
-
-@interface MBViewController ()
+@interface MBViewController () <UITableViewDataSource, UITableViewDelegate>
 
 @property (nonatomic) MBTwitterAccesser *twitterAccesser;
 
-@property (weak, nonatomic) IBOutlet UIButton *authorizationButton;
+
+@property (weak, nonatomic) IBOutlet UITableView *tableView;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *accountButton;
 
 @end
@@ -28,10 +31,29 @@
 
 #pragma mark -
 #pragma mark View
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receiveChangeMyAccountNotification:) name:@"ChangeMyAccount" object:nil];
+    
+    self.tableView.dataSource = self;
+    self.tableView.delegate = self;
+    
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    
+    if (YES == [[MBAccountManager sharedInstance] isSelectedAccount] ) {
+        self.title = [[MBAccountManager sharedInstance] currentAccount].screenName;
+        _aoAPICenter = [[MBAOuth_TwitterAPICenter alloc] init];
+        [_aoAPICenter getHomeTimeLineSinceID:10 maxID:10];
+    }
+    
+    
 }
 
 - (void)didReceiveMemoryWarning
@@ -41,42 +63,57 @@
 }
 
 #pragma mark Button Action
-- (IBAction)didPushAuthorizationButton:(id)sender {
-    [self performSegueWithIdentifier:@"AuthorizationIdentifier" sender:self];
-}
 
 - (IBAction)didPushAccountButton:(id)sender {
-    [self performSegueWithIdentifier:@"AccountIdentifier" sender:self];
+    [self performSegueWithIdentifier:@"AccountsIdentifier" sender:self];
 }
 
 #pragma mark -
 #pragma mark StoryBoard
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-    if (YES == [[segue identifier] isEqualToString:@"AuthorizationIdentifier"]) {
-        UINavigationController *navigationController = [segue destinationViewController];
-        MBAuthorizationViewController *authorizationController = (MBAuthorizationViewController *)navigationController.topViewController;
-        authorizationController.delegate = self;
-        self.twitterAccesser = [[MBTwitterAccesser alloc] init];
-        [self.twitterAccesser setConsumerKey:CONSUMER_KEY];
-        [self.twitterAccesser setConsumerSecret:CONSUMER_SECRET];
-        authorizationController.twitterAccesser = self.twitterAccesser;
-        
-    } else if (YES == [[segue identifier] isEqualToString:@"AccountIdentifier"]) {
+    if (YES == [[segue identifier] isEqualToString:@"AccountsIdentifier"]) {
         UINavigationController *navigationController = [segue destinationViewController];
         MBMyAccountsViewController *accountViewController = (MBMyAccountsViewController *)navigationController.topViewController;
-        self.twitterAccesser = [[MBTwitterAccesser alloc] init];
-        [self.twitterAccesser setConsumerKey:CONSUMER_KEY];
-        [self.twitterAccesser setConsumerSecret:CONSUMER_SECRET];
-        accountViewController.twitterAccessor = self.twitterAccesser;
+        accountViewController.delegate = self;
     }
 }
 
 #pragma mark -
-#pragma mark MBAuthorizationViewController Delegate
-- (void)popAuthorizationViewController:(MBAuthorizationViewController *)controller animated:(BOOL)animated
+#pragma mark TableView Delegate & DataSource
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    return 0;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    static NSString *cellIdenrifier = @"Cell";
+    UITableViewCell *cell = [self.tableView dequeueReusableCellWithIdentifier:cellIdenrifier];
+    if (!cell) {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdenrifier];
+    }
+    
+    return cell;
+}
+
+- (void)updateCell:(MBTweetViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
+{
+
+}
+
+#pragma mark AccountsViewController Delegate
+- (void)popAccountsViewController:(MBMyAccountsViewController *)controller animated:(BOOL)animated
 {
     [controller dismissViewControllerAnimated:animated completion:nil];
+}
+
+#pragma mark -
+#pragma mark Notifiation
+- (void)receiveChangeMyAccountNotification:(NSNotification *)notification
+{
+    OAToken *accessToken = [[MBAccountManager sharedInstance] currentAccount].accessToken;
+    self.twitterAccesser = [[MBTwitterAccesser alloc] initWithAccessToken:accessToken];
 }
 
 @end
