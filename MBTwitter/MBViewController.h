@@ -8,9 +8,10 @@
 
 #import <UIKit/UIKit.h>
 #import "MBMyAccountsViewController.h"
+#import "MBPostTweetViewController.h"
 
 @class MBAOuth_TwitterAPICenter;
-@interface MBViewController : UIViewController <MBMyAccountsViewControlerDelegate>
+@interface MBViewController : UIViewController <MBMyAccountsViewControlerDelegate, MBPostTweetViewControllerDelegate>
 
 @property (nonatomic, readonly) MBAOuth_TwitterAPICenter *aoAPICenter;
 

@@ -24,6 +24,7 @@
 
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *accountButton;
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *tweetButton;
 
 @end
 
@@ -50,7 +51,7 @@
     if (YES == [[MBAccountManager sharedInstance] isSelectedAccount] ) {
         self.title = [[MBAccountManager sharedInstance] currentAccount].screenName;
         _aoAPICenter = [[MBAOuth_TwitterAPICenter alloc] init];
-        [_aoAPICenter getHomeTimeLineSinceID:10 maxID:10];
+        [_aoAPICenter getHomeTimeLineSinceID:0 maxID:0];
     }
     
     
@@ -67,6 +68,9 @@
 - (IBAction)didPushAccountButton:(id)sender {
     [self performSegueWithIdentifier:@"AccountsIdentifier" sender:self];
 }
+- (IBAction)didPushTweetButton:(id)sender {
+    [self performSegueWithIdentifier:@"PostTweetIdentifier" sender:self];
+}
 
 #pragma mark -
 #pragma mark StoryBoard
@@ -76,6 +80,10 @@
         UINavigationController *navigationController = [segue destinationViewController];
         MBMyAccountsViewController *accountViewController = (MBMyAccountsViewController *)navigationController.topViewController;
         accountViewController.delegate = self;
+    } else if (YES == [[segue identifier] isEqualToString:@"PostTweetIdentifier"]) {
+        UINavigationController *navigationController = [segue destinationViewController];
+        MBPostTweetViewController *postTweetViewController = (MBPostTweetViewController *)navigationController.topViewController;
+        postTweetViewController.delegate = self;
     }
 }
 
@@ -103,7 +111,7 @@
 }
 
 #pragma mark AccountsViewController Delegate
-- (void)popAccountsViewController:(MBMyAccountsViewController *)controller animated:(BOOL)animated
+- (void)dismissAccountsViewController:(MBMyAccountsViewController *)controller animated:(BOOL)animated
 {
     [controller dismissViewControllerAnimated:animated completion:nil];
 }

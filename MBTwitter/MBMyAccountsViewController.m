@@ -90,8 +90,8 @@
 #pragma mark Button Action
 
 - (IBAction)didPushCloseButton:(id)sender {
-    if ([_delegate respondsToSelector:@selector(popAccountsViewController:animated:)]) {
-        [_delegate popAccountsViewController:self animated:YES];
+    if ([_delegate respondsToSelector:@selector(dismissAccountsViewController:animated:)]) {
+        [_delegate dismissAccountsViewController:self animated:YES];
     }
 }
 
@@ -156,7 +156,7 @@
 
 #pragma mark - 
 #pragma mark AuthorizationViewController Delegate
-- (void)popAuthorizationViewController:(MBAuthorizationViewController *)controller animated:(BOOL)animated
+- (void)dismissAuthorizationViewController:(MBAuthorizationViewController *)controller animated:(BOOL)animated
 {
     [controller dismissViewControllerAnimated:animated completion:nil];
 }

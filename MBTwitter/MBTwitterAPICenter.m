@@ -99,7 +99,7 @@
 }
 
 #pragma mark -
-#pragma mark Twitter API Methods
+#pragma mark Get Twitter API Methods
 - (NSString *)getBackHomeTimeLineMaxID:(unsigned long)max
 {
     return [self getHomeTimeLineSinceID:0 maxID:max];
@@ -117,7 +117,7 @@
 
 - (NSString *)getHomeTimeLineSinceID:(unsigned long)since maxID:(unsigned long)max count:(int)count
 {
-    NSString *resource = [NSString stringWithFormat:@"statuses/home_timeline.json"];
+    NSString *resource = [NSString stringWithFormat:@"statuses/home_timeline"];
     NSMutableDictionary *parameters = [NSMutableDictionary dictionaryWithCapacity:0];
     
     if (since > 0) {
@@ -129,8 +129,21 @@
     if (count > 0) {
         [parameters setObject:[NSString stringWithFormat:@"%d", count] forKey:@"count"];
     }
-    
+
     return [self sendRequestMethod:HTTP_GET_METHOD resource:resource parameters:parameters requestType:MBTwitterHomeTimelineRequest responseType:MBTwitterStatuses];
+}
+
+#pragma mark Post Twitter API Methods
+- (NSString *)postTweet:(NSString *)tweetText
+{
+    NSString *resource = [NSString stringWithFormat:@"statuses/update"];
+    NSMutableDictionary *parameters = [NSMutableDictionary dictionaryWithCapacity:0];
+    NSInteger tweetLength = [tweetText length];
+    if (nil != tweetText && tweetLength >=1 && tweetLength <= 140 ) {
+        [parameters setObject:tweetText forKey:@"status"];
+    }
+#warning 日本語未対応
+    return [self sendRequestMethod:HTTP_POST_METHOD resource:resource parameters:parameters requestType:MBTwitterStatusesUpdateRequest responseType:MBTwitterStatuses];
 }
 
 @end

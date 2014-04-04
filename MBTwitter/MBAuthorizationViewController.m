@@ -56,8 +56,8 @@
 #pragma mark -
 #pragma mark Action
 - (IBAction)didPushCancelButton:(id)sender {
-    if ([_delegate respondsToSelector:@selector(popAuthorizationViewController:animated:)]) {
-        [_delegate popAuthorizationViewController:self animated:YES];
+    if ([_delegate respondsToSelector:@selector(dismissAuthorizationViewController:animated:)]) {
+        [_delegate dismissAuthorizationViewController:self animated:YES];
     }
 }
 
@@ -84,8 +84,8 @@
     [self.twitterAccesser setPin:pin];
     [self.twitterAccesser requestAccessToken];
     
-    if ([_delegate respondsToSelector:@selector(popAuthorizationViewController:animated:)]) {
-        [_delegate popAuthorizationViewController:self animated:YES];
+    if ([_delegate respondsToSelector:@selector(dismissAuthorizationViewController:animated:)]) {
+        [_delegate dismissAuthorizationViewController:self animated:YES];
     }
 }
 

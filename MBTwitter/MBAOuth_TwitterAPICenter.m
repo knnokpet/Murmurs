@@ -10,6 +10,7 @@
 #import "MBAccountManager.h"
 #import "MBAccount.h"
 #import "OAMutableRequest.h"
+#import "OAParameter.h"
 #import "MBTweet.h"
 
 #import "OAAccessibility.h"
@@ -41,7 +42,7 @@
 #pragma mark APICenter Method : Connect
 - (NSString *)sendRequestMethod:(NSString *)method resource:(NSString *)resource parameters:(NSDictionary *)parameters requestType:(MBRequestType)requestType responseType:(MBResponseType)responseType
 {
-    NSString *fullResource = [NSString stringWithFormat:@"%@%@%@%@", DEFAULT_CONNECTION_TYPE, DEFAULT_API_DOMAIN, DEFAULT_API_VERSION, resource];
+    NSString *fullResource = [NSString stringWithFormat:@"%@://%@/%@/%@.%@", DEFAULT_CONNECTION_TYPE, DEFAULT_API_DOMAIN, DEFAULT_API_VERSION, resource, DEFAULT_API_EXTEND];
     NSURL *resourceURL = [NSURL URLWithString:fullResource];
     
     OAMutableRequest *request = [[OAMutableRequest alloc] initWithURL:resourceURL consumer:self.consumer token:_accessToken realm:nil signatureProvider:nil];
@@ -50,6 +51,18 @@
     }
     
     [request setHTTPMethod:method];
+    
+    // parameter
+    if (nil != parameters) {
+        NSMutableArray *addingParameters = [NSMutableArray arrayWithArray:[request parameters]];
+        [parameters enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop){
+            OAParameter *addingParam = [[OAParameter alloc] initWithName:(NSString *)key value:(NSString *)obj];
+            [addingParameters addObject:addingParam];
+        }];
+        [request setParameters:addingParameters];
+    }
+    
+    
     
     [request prepareRequest];
     
@@ -87,7 +100,7 @@
     dispatch_async(globalQueue, ^{
         NSError *parsingError = nil;
         id parsedData = [NSJSONSerialization JSONObjectWithData:jsonData options:0 error:&parsingError];
-        //
+
         if (parsingError) {
             [self occurParsingError:parsingError];
             return ;
@@ -105,9 +118,10 @@
         }
         
         if ([parsedData isKindOfClass:[NSArray class]]) {
+            NSLog(@"count = %lu", (unsigned long)[parsedData count]);
             for (NSDictionary *parsedTweet in parsedData) {
                 MBTweet *tweet = [[MBTweet alloc] initWithDictionary:parsedTweet];
-                NSLog(@"tweet = %@", tweet.tweetText);
+                NSLog(@"tweet id : text = %@ : %@", tweet.tweetIDStr, tweet.tweetText);
             }
         }
         

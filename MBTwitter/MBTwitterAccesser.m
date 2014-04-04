@@ -122,7 +122,7 @@ typedef void (^FailedHandler)(NSHTTPURLResponse *);
     NSURL *authorizeURL = [NSURL URLWithString:AUTHORIZE_URL];
     OAMutableRequest *authorizeURLRequest = [[OAMutableRequest alloc] initWithURL:authorizeURL consumer:nil token:self.requestToken realm:nil signatureProvider:nil];
     
-    OARequestParameter *authorizeParameter = [OARequestParameter requestParameterWithName:PARAMETER_KEY_OAUTH_TOKEN value:self.requestToken.key];
+    OAParameter* authorizeParameter = [OAParameter requestParameterWithName:PARAMETER_KEY_OAUTH_TOKEN value:self.requestToken.key];
     [authorizeURLRequest setParameters:[NSArray arrayWithObject:authorizeParameter]];
     return authorizeURLRequest;
 }
@@ -221,7 +221,7 @@ typedef void (^FailedHandler)(NSHTTPURLResponse *);
     
     NSURL *url = [NSURL URLWithString:REQUEST_TOKEN_URL];
     
-    OARequestParameter *param = [OARequestParameter requestParameterWithName:PARAMETER_KEY_X_AUTH_MODE value:PARAMETER_VALUE_REVERSE_AUTH];
+    OAParameter *param = [OAParameter requestParameterWithName:PARAMETER_KEY_X_AUTH_MODE value:PARAMETER_VALUE_REVERSE_AUTH];
     NSArray *parameters = [NSArray arrayWithObject:param];
     
     [self sendRequestURL:url token:nil completionHandler:^ (NSMutableData *data, NSHTTPURLResponse *response) {
@@ -280,7 +280,7 @@ typedef void (^FailedHandler)(NSHTTPURLResponse *);
 - (void)sendRequestURL:(NSURL *)url token:(OAToken *)token completionHandler:(CompletionHandler)completion failedHandler:(FailedHandler)failed
 {
     // for returning PIN
-    OARequestParameter *callbackParameter = [OARequestParameter requestParameterWithName:@"oauth_callback" value:@"oob"];
+    OAParameter *callbackParameter = [OAParameter requestParameterWithName:@"oauth_callback" value:@"oob"];
     NSArray *parameters = [NSArray arrayWithObject:callbackParameter];
     
     [self sendRequestURL:url token:token completionHandler:completion failedHandler:failed parameter:parameters];
@@ -299,7 +299,7 @@ typedef void (^FailedHandler)(NSHTTPURLResponse *);
     [request setHTTPMethod:@"POST"];
     
     NSMutableArray *addingParameters = [NSMutableArray arrayWithArray:[request parameters]];
-    for (OARequestParameter *param in parameter) {
+    for (OAParameter *param in parameter) {
         [addingParameters addObject:param];
     }
     [request setParameters:addingParameters];

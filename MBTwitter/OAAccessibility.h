@@ -11,7 +11,7 @@
 #import "OAMutableRequest.h"
 #import "OAToken.h"
 #import "OAConsumer.h"
-#import "OARequestParameter.h"
+#import "OAParameter.h"
 #import "OASignatureProvider.h"
 #import "OAHMAC-SHA1SignatureProvider.h"
 #import "OAAuthFetcher.h"

@@ -21,6 +21,6 @@
 
 @protocol MBAuthorizationViewControllerDelegate <NSObject>
 
-- (void)popAuthorizationViewController:(MBAuthorizationViewController *)controller animated:(BOOL)animated;
+- (void)dismissAuthorizationViewController:(MBAuthorizationViewController *)controller animated:(BOOL)animated;
 
 @end

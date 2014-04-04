@@ -22,6 +22,6 @@
 
 @protocol MBMyAccountsViewControlerDelegate <NSObject>
 
-- (void)popAccountsViewController:(MBMyAccountsViewController *)controller animated:(BOOL)animated;
+- (void)dismissAccountsViewController:(MBMyAccountsViewController *)controller animated:(BOOL)animated;
 
 @end
