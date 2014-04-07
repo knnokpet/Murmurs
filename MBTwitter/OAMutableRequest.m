@@ -161,7 +161,7 @@
         encodedParameters = [[self URL] query];
         
     } else { // POST, PUT
-        encodedParameters = [[NSString alloc] initWithData:[self HTTPBody] encoding:NSASCIIStringEncoding];
+        encodedParameters = [[NSString alloc] initWithData:[self HTTPBody] encoding:NSUTF8StringEncoding];
     }
     
     if (encodedParameters == nil || YES == [encodedParameters isEqualToString:@""]) {
@@ -172,8 +172,8 @@
     NSMutableArray *requestParameters = [NSMutableArray arrayWithCapacity:16];
     for (NSString *pair in encodedParameterPair) {
         NSArray *separatedPair = [pair componentsSeparatedByString:@"="];
-        OAParameter *requestParameter = [OAParameter requestParameterWithName:[[separatedPair objectAtIndex:0] encodedString] value:[[separatedPair objectAtIndex:1] encodedString]];
-        
+        OAParameter *requestParameter = [OAParameter requestParameterWithName:[separatedPair objectAtIndex:0] value:[separatedPair objectAtIndex:1]];
+        NSLog(@"requestParameter = %@, %@", requestParameter.name, requestParameter.value);
         [requestParameters addObject:requestParameter];
     }
     
@@ -201,7 +201,7 @@
         [self setURL:[NSURL URLWithString:quaryURL]];
         
     } else { // POST, PUT
-        NSData *parameterData = [parameterString dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES];
+        NSData *parameterData = [parameterString dataUsingEncoding:NSUTF8StringEncoding allowLossyConversion:YES];
         if (parameterData == nil) {
             
         }
