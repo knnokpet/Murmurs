@@ -17,10 +17,10 @@
     NSString *displayText = [dictionary objectForKey:@"display_url"];
     self.displayText = displayText;
     
-    _mediaID = [[dictionary objectForKey:@"id"] integerValue];
+    _mediaID = [NSNumber numberWithUnsignedLongLong:[[dictionary objectForKey:@"id"] unsignedLongLongValue]];
     _mediaIDStr = [dictionary objectForKey:@"id_str"];
     _sizes = [dictionary objectForKey:@"sizes"];
-    _sourceTweetID = [[dictionary objectForKey:@"source_status_id"] integerValue];
+    _sourceTweetID = [NSNumber numberWithUnsignedLongLong:[[dictionary objectForKey:@"source_status_id"] unsignedLongLongValue]];
     _sourceTweetIDStr = [dictionary objectForKey:@"source_status_id_str"];
     _type = [dictionary objectForKey:@"type"];
     

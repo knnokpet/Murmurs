@@ -100,31 +100,31 @@
 
 #pragma mark -
 #pragma mark Get Twitter API Methods
-- (NSString *)getBackHomeTimeLineMaxID:(unsigned long)max
+- (NSString *)getBackHomeTimeLineMaxID:(unsigned long long)max
 {
     return [self getHomeTimeLineSinceID:0 maxID:max];
 }
 
-- (NSString *)getForwardHomeTimeLineSinceID:(unsigned long)since maxID:(unsigned long)max
+- (NSString *)getForwardHomeTimeLineSinceID:(unsigned long long)since maxID:(unsigned long long)max
 {
     return [self getHomeTimeLineSinceID:since maxID:max];
 }
 
-- (NSString *)getHomeTimeLineSinceID:(unsigned long)since maxID:(unsigned long)max
+- (NSString *)getHomeTimeLineSinceID:(unsigned long long)since maxID:(unsigned long long)max
 {
     return [self getHomeTimeLineSinceID:since maxID:max count:COUNT_OF_STATUSES_TIMELINE];
 }
 
-- (NSString *)getHomeTimeLineSinceID:(unsigned long)since maxID:(unsigned long)max count:(int)count
+- (NSString *)getHomeTimeLineSinceID:(unsigned long long)since maxID:(unsigned long long)max count:(int)count
 {
     NSString *resource = [NSString stringWithFormat:@"statuses/home_timeline"];
     NSMutableDictionary *parameters = [NSMutableDictionary dictionaryWithCapacity:0];
     
     if (since > 0) {
-        [parameters setObject:[NSString stringWithFormat:@"%lu", since] forKey:@"since_id"];
+        [parameters setObject:[NSString stringWithFormat:@"%llu", since] forKey:@"since_id"];
     }
     if (max > 0) {
-        [parameters setObject:[NSString stringWithFormat:@"%lu", max] forKey:@"max_id"];
+        [parameters setObject:[NSString stringWithFormat:@"%llu", max] forKey:@"max_id"];
     }
     if (count > 0) {
         [parameters setObject:[NSString stringWithFormat:@"%d", count] forKey:@"count"];
@@ -142,7 +142,7 @@
     if (nil != tweetText && tweetLength >=1 && tweetLength <= 140 ) {
         [parameters setObject:tweetText forKey:@"status"];
     }
-#warning 日本語未対応
+
     return [self sendRequestMethod:HTTP_POST_METHOD resource:resource parameters:parameters requestType:MBTwitterStatusesUpdateRequest responseType:MBTwitterStatuses];
 }
 

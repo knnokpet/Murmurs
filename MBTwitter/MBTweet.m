@@ -26,7 +26,7 @@
 - (void)initializeWithDictionary:(NSDictionary *)tweet
 {
     _tweetText = [tweet objectForKey:@"text"];
-    _tweetID = [[tweet objectForKey:@"id"] integerValue];
+    _tweetID = [NSNumber numberWithUnsignedLongLong:[[tweet objectForKey:@"id"] unsignedLongLongValue]];
     _tweetIDStr = [tweet objectForKey:@"id_str"];
     _tweetUser = [[MBUser alloc] initWithDictionary:[tweet objectForKey:@"user"]];
     NSString *dateStr = [tweet objectForKey:@"created_at"];

@@ -10,10 +10,10 @@
 
 @interface MBMediaLink : MBLink
 
-@property (nonatomic, readonly) NSInteger mediaID;
+@property (nonatomic, readonly) NSNumber *mediaID;
 @property (nonatomic, readonly) NSString *mediaIDStr;
 @property (nonatomic, readonly) NSDictionary *sizes;
-@property (nonatomic, readonly) NSInteger sourceTweetID;
+@property (nonatomic, readonly) NSNumber *sourceTweetID;
 @property (nonatomic, readonly) NSString *sourceTweetIDStr;
 @property (nonatomic, readonly) NSString *type;
 

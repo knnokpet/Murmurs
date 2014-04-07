@@ -13,7 +13,7 @@
 @interface MBUser : NSObject
 
 @property (nonatomic, readonly) NSString *screenName;
-@property (nonatomic, readonly) NSInteger userID;
+@property (nonatomic, readonly) NSNumber *userID;
 @property (nonatomic, readonly) NSString *userIDStr;
 @property (nonatomic, readonly) NSString *desctiprion;// NULLable
 @property (nonatomic, readonly) NSInteger tweetCount;

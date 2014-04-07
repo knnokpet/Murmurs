@@ -16,7 +16,7 @@
     self.textIndex = [[MBTextIndex alloc] initWithArray:indices];
     self.displayText = [dictionary objectForKey:@"name"];
     
-    _userID = [[dictionary objectForKey:@"id"] integerValue];
+    _userID = [NSNumber numberWithUnsignedLongLong:[[dictionary objectForKey:@"id"] unsignedLongLongValue]];
     _userIDStr = [dictionary objectForKey:@"id_str"];
     _screenName = [dictionary objectForKey:@"screen_name"];
 }

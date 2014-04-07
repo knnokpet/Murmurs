@@ -24,7 +24,7 @@
 - (void)initializeWithDictionary:(NSDictionary *)user
 {
     _screenName = [user objectForKey:@"user_name"];
-    _userID = [[user objectForKey:@"id"] integerValue];
+    _userID = [NSNumber numberWithUnsignedLongLong:[[user objectForKey:@"id"] unsignedLongLongValue]];
     _userIDStr = [user objectForKey:@"id_str"];
     NSString *description = [user objectForKey:@"description"];
     _desctiprion = (description == (id)[NSNull null]) ? nil : description;

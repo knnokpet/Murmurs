@@ -19,5 +19,6 @@
 
 @protocol MBAOuth_TwitterAPICenterDelegate <NSObject>
 
+- (void)twitterAPICenter:(MBAOuth_TwitterAPICenter *)center parsedTweets:(NSArray *)tweets;
 
 @end

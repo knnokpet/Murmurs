@@ -30,9 +30,9 @@
 
 #pragma mark -
 #pragma mark API Methods
-- (NSString *)getBackHomeTimeLineMaxID:(unsigned long)max;
-- (NSString *)getForwardHomeTimeLineSinceID:(unsigned long)since maxID:(unsigned long)max;
-- (NSString *)getHomeTimeLineSinceID:(unsigned long)since maxID:(unsigned long)max;
+- (NSString *)getBackHomeTimeLineMaxID:(unsigned long long)max;
+- (NSString *)getForwardHomeTimeLineSinceID:(unsigned long long)since maxID:(unsigned long long)max;
+- (NSString *)getHomeTimeLineSinceID:(unsigned long long)since maxID:(unsigned long long)max;
 
 - (NSString *)postTweet:(NSString *)tweetText;
 

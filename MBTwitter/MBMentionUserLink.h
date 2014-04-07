@@ -10,7 +10,7 @@
 
 @interface MBMentionUserLink : MBLink
 
-@property (nonatomic, readonly) NSInteger userID;
+@property (nonatomic, readonly) NSNumber *userID;
 @property (nonatomic, readonly) NSString *userIDStr;
 @property (nonatomic, readonly) NSString *screenName;
 

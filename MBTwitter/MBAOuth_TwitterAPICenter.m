@@ -11,6 +11,7 @@
 #import "MBAccount.h"
 #import "OAMutableRequest.h"
 #import "OAParameter.h"
+#import "MBTweetManager.h"
 #import "MBTweet.h"
 
 #import "OAAccessibility.h"
@@ -66,16 +67,22 @@
     
     [request prepareRequest];
     
+    /*キャンセル処理の実装がまだ
     MBTwitterAPIHTTPConnecter *connecter = [[MBTwitterAPIHTTPConnecter alloc] initWithRequest:request requestType:requestType responseType:responseType];
     connecter.delegate = self;
     NSString *connecterIdentifier = [connecter identifier];
-    [self.connections setObject:[NSNumber numberWithBool:YES] forKey:connecterIdentifier];
-    [connecter start];
+    [self.connections setObject:[NSNumber numberWithBool:YES] forKey:connecterIdentifier];*/
+    //[connecter start];
+    
+    
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-    //    [connecter start];
+        [NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
+            [self parseJSONData:data responseType:MBTwitterStatuse];
+        }];
+        //[connecter start];
     });
     
-    return connecterIdentifier;
+    return nil;
 }
 
 - (void)failedConnecter:(MBTwitterAPIHTTPConnecter *)connecter error:(NSError *)error responseType:(MBResponseType)responseType
@@ -119,10 +126,18 @@
         
         if ([parsedData isKindOfClass:[NSArray class]]) {
             NSLog(@"count = %lu", (unsigned long)[parsedData count]);
+            NSMutableArray *tweets = [NSMutableArray array];
             for (NSDictionary *parsedTweet in parsedData) {
                 MBTweet *tweet = [[MBTweet alloc] initWithDictionary:parsedTweet];
-                NSLog(@"tweet id : text = %@ : %@", tweet.tweetIDStr, tweet.tweetText);
+                [[MBTweetManager sharedInstance] storeTweet:tweet];
+                [tweets addObject:tweet.tweetIDStr];
             }
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if ([_delegate respondsToSelector:@selector(twitterAPICenter:parsedTweets:)]) {
+                    [_delegate twitterAPICenter:self parsedTweets:tweets];
+                }
+            });
+           
         }
         
     });

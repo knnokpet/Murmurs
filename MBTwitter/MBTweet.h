@@ -14,7 +14,7 @@
 @interface MBTweet : NSObject
 
 @property (nonatomic, readonly) NSString *tweetText;
-@property (nonatomic, readonly) NSInteger tweetID;
+@property (nonatomic, readonly) NSNumber *tweetID; // 64bit integer = s unsigned long long
 @property (nonatomic, readonly) NSString *tweetIDStr;
 @property (nonatomic, readonly) MBUser *tweetUser;
 @property (nonatomic, readonly) NSDate *createdDate;
@@ -32,9 +32,9 @@
 @property (nonatomic, readonly) MBTweet *tweetOfOriginInRetweet;
 
 @property (nonatomic, readonly) NSString *screenNameOfOriginInReply;// NULLable
-@property (nonatomic, readonly) NSInteger tweetIDOfOriginInReply;// NULLable
+@property (nonatomic, readonly) NSNumber *tweetIDOfOriginInReply;// NULLable
 @property (nonatomic, readonly) NSString *tweetIDStrOfOriginInReply;// NULLable
-@property (nonatomic, readonly) NSInteger userIDOfOriginInReply;// NULLable
+@property (nonatomic, readonly) NSNumber *userIDOfOriginInReply;// NULLable
 @property (nonatomic, readonly) NSString *userIDStrOfOriginInReply;// NULLable
 
 @property (nonatomic, readonly) NSString *language;// NULLable
