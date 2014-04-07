@@ -13,4 +13,7 @@
 
 + (MBTweetManager *)sharedInstance;
 
+- (MBTweet *)storedTweetForKey:(NSString *)key;
+- (void)storeTweet:(MBTweet *)tweet;
+
 @end
