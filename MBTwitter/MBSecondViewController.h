@@ -7,7 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "MBAOuth_TwitterAPICenter.h"
 
-@interface MBSecondViewController : UIViewController
+@interface MBSecondViewController : UIViewController <MBAOuth_TwitterAPICenterDelegate>
 
 @end

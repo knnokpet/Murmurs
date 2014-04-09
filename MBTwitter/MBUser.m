@@ -46,6 +46,10 @@
     _timeZone = (timeZone == (id)[NSNull null]) ? nil : timeZone;
     NSString *language = [user objectForKey:@"lang"];
     _language = (language == (id)[NSNull null]) ? nil : language;
+    
+    _isDefaultProfileImage = [[user objectForKey:@"default_profile_image"] boolValue];
+    
+    _urlHTTPSAtProfileImage = [user objectForKey:@"profile_image_url_https"];
 }
 
 @end

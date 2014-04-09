@@ -38,7 +38,7 @@
 @property (nonatomic, assign, readonly) BOOL isTranslator;
 @property (nonatomic, assign, readonly) BOOL isDefaultProfile;
 @property (nonatomic, assign, readonly) BOOL isDefaultProfileImage;
-@property (nonatomic, assign, readonly) BOOL isUsedUploadedImage;
+@property (nonatomic, assign, readonly) BOOL isUsedUploadedBackgroundImage;
 @property (nonatomic, assign, readonly) BOOL isShownMediaInline;
 @property (nonatomic, assign, readonly) BOOL isTileAtProfileBackgound;
 
