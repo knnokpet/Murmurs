@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "MBTextIndex.h"
+#import "NSDictionary+Objects.h"
 
 //@class MBTextIndex;
 @interface MBLink : NSObject

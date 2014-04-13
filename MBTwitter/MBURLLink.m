@@ -14,10 +14,10 @@
 {
     NSArray *indices = [dictionary objectForKey:@"indices"];
     self.textIndex = [[MBTextIndex alloc] initWithArray:indices];
-    self.displayText = [dictionary objectForKey:@"display_url"];
+    self.displayText = [dictionary stringForKey:@"display_url"];
     
-    _expandedURLText = [dictionary objectForKey:@"expanded_url"];
-    _wrappedURLText = [dictionary objectForKey:@"url"];
+    _expandedURLText = [dictionary stringForKey:@"expanded_url"];
+    _wrappedURLText = [dictionary   stringForKey:@"url"];
 }
 
 @end

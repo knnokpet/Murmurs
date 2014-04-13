@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "NSDictionary+Objects.h"
 
 @class MBUser;
 @class MBEntity;

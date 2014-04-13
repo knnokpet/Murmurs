@@ -12,10 +12,10 @@
 
 - (void)initializeWithDictionary:(NSDictionary *)dictionary
 {
-    NSArray *indices = [dictionary objectForKey:@"indices"];
+    NSArray *indices = [dictionary arrayForKey:@"indices"];
     self.textIndex = [[MBTextIndex alloc] initWithArray:indices];
-    NSString *hashTagName = [dictionary objectForKey:@"text"];
-    self.displayText = hashTagName;
+
+    self.displayText = [dictionary stringForKey:@"text"];
 }
 
 @end

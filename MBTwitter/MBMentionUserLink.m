@@ -14,11 +14,11 @@
 {
     NSArray *indices = [dictionary objectForKey:@"indices"];
     self.textIndex = [[MBTextIndex alloc] initWithArray:indices];
-    self.displayText = [dictionary objectForKey:@"name"];
+    self.displayText = [dictionary stringForKey:@"name"];
     
-    _userID = [NSNumber numberWithUnsignedLongLong:[[dictionary objectForKey:@"id"] unsignedLongLongValue]];
-    _userIDStr = [dictionary objectForKey:@"id_str"];
-    _screenName = [dictionary objectForKey:@"screen_name"];
+    _userID = [dictionary numberForKey:@"id"];
+    _userIDStr = [dictionary stringForKey:@"id_str"];
+    _screenName = [dictionary stringForKey:@"screen_name"];
 }
 
 @end

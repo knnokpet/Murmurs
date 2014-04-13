@@ -25,16 +25,16 @@
 
 - (void)initializeWithDictionary:(NSDictionary *)tweet
 {
-    _tweetText = [tweet objectForKey:@"text"];
-    _tweetID = [NSNumber numberWithUnsignedLongLong:[[tweet objectForKey:@"id"] unsignedLongLongValue]];
-    _tweetIDStr = [tweet objectForKey:@"id_str"];
-    _tweetUser = [[MBUser alloc] initWithDictionary:[tweet objectForKey:@"user"]];
-    NSString *dateStr = [tweet objectForKey:@"created_at"];
+    _tweetText = [tweet stringForKey:@"text"];
+    _tweetID = [tweet numberForKey:@"id"];
+    _tweetIDStr = [tweet stringForKey:@"id_str"];
+    _tweetUser = [[MBUser alloc] initWithDictionary:[tweet dictionaryForKey:@"user"]];
+    NSString *dateStr = [tweet stringForKey:@"created_at"];
     _createdDate = [[[NSDateFormatter alloc] init] dateFromString:dateStr];
-    _entity = [[MBEntity alloc] initWithDictionary:[tweet objectForKey:@"entities"]];
+    _entity = [[MBEntity alloc] initWithDictionary:[tweet dictionaryForKey:@"entities"]];
     
-    NSDictionary *placeDict = [tweet objectForKey:@"place"];
-    _place =  (placeDict == (id)[NSNull null]) ? nil : [[MBPlace alloc] initWithDictionary:placeDict];
+    NSDictionary *placeDict = [tweet dictionaryForKey:@"place"];
+    _place = [[MBPlace alloc] initWithDictionary:placeDict];
 }
 
 @end

@@ -23,33 +23,29 @@
 
 - (void)initializeWithDictionary:(NSDictionary *)user
 {
-    _screenName = [user objectForKey:@"user_name"];
-    _userID = [NSNumber numberWithUnsignedLongLong:[[user objectForKey:@"id"] unsignedLongLongValue]];
-    _userIDStr = [user objectForKey:@"id_str"];
-    NSString *description = [user objectForKey:@"description"];
-    _desctiprion = (description == (id)[NSNull null]) ? nil : description;
-    _tweetCount = [[user objectForKey:@"status_count"] integerValue];
-    _listedCount = [[user objectForKey:@"listed_count"] integerValue];
-    _favoritesCount = [[user objectForKey:@"favorites_count"] integerValue];
-    _followersCount = [[user objectForKey:@"followers_count"] integerValue];
-    _followsCount = [[user objectForKey:@"following"] integerValue];
-    NSString *location = [user objectForKey:@"location"];
-    _location = (location == (id)[NSNull null]) ? nil : location;
-    _characterName = [user objectForKey:@"name"];
-    NSString *createdDateStr = [user objectForKey:@"created_at"];
+    _screenName = [user stringForKey:@"user_name"];
+    _userID = [user numberForKey:@"id"];
+    _userIDStr = [user stringForKey:@"id_str"];
+    _desctiprion = [user stringForKey:@"description"];
+    _tweetCount = [user integerForKey:@"status_count"];
+    _listedCount = [user integerForKey:@"listed_count"];
+    _favoritesCount = [user integerForKey:@"favorites_count"];
+    _followersCount = [user integerForKey:@"followers_count"];
+    _followsCount = [user integerForKey:@"following"];
+    _location = [user stringForKey:@"location"];
+    _characterName = [user stringForKey:@"name"];
+    NSString *createdDateStr = [user stringForKey:@"created_at"];
     _createdDate = [[[NSDateFormatter alloc] init] dateFromString:createdDateStr];
-    _entity = [[MBEntity alloc] initWithDictionary:[[user objectForKey:@"entities"] objectForKey:@"url"]];
+    _entity = [[MBEntity alloc] initWithDictionary:[[user dictionaryForKey:@"entities"] dictionaryForKey:@"url"]];
     // バグる。多分、延々と潜り続けて初期化するから。
-    NSDictionary *currentTweetDict = [user objectForKey:@"status"];
+    NSDictionary *currentTweetDict = [user dictionaryForKey:@"status"];
     //_currentTweet = (currentTweetDict == (id)[NSNull null]) ? nil : [[MBTweet alloc] initWithDictionary:currentTweetDict];
-    NSString *timeZone = [user objectForKey:@"time_zone"];
-    _timeZone = (timeZone == (id)[NSNull null]) ? nil : timeZone;
-    NSString *language = [user objectForKey:@"lang"];
-    _language = (language == (id)[NSNull null]) ? nil : language;
+    _timeZone = [user stringForKey:@"time_zone"];
+    _language = [user stringForKey:@"lang"];
     
-    _isDefaultProfileImage = [[user objectForKey:@"default_profile_image"] boolValue];
+    _isDefaultProfileImage = [user boolForKey:@"default_profile_image"];
     
-    _urlHTTPSAtProfileImage = [user objectForKey:@"profile_image_url_https"];
+    _urlHTTPSAtProfileImage = [user stringForKey:@"profile_image_url_https"];
 }
 
 @end

@@ -32,10 +32,10 @@
 - (void)initializeWithDictionary:(NSDictionary *)entity
 {
     
-    NSArray *parsedHashTags = [entity objectForKey:ENTITY_KEY_HASHTAG];
-    NSArray *parsedMedia = [entity objectForKey:ENTITY_KEY_MEDIA];
-    NSArray *parsedURLs = [entity objectForKey:ENTITY_KEY_URLS];
-    NSArray *parsedMentions = [entity objectForKey:ENTITY_KEY_USER_MENTHIONS];
+    NSArray *parsedHashTags = [entity arrayForKey:ENTITY_KEY_HASHTAG];
+    NSArray *parsedMedia = [entity arrayForKey:ENTITY_KEY_MEDIA];
+    NSArray *parsedURLs = [entity arrayForKey:ENTITY_KEY_URLS];
+    NSArray *parsedMentions = [entity arrayForKey:ENTITY_KEY_USER_MENTHIONS];
     
     [self configureEntityFromParsedArrat:parsedHashTags forKey:ENTITY_KEY_HASHTAG];
     [self configureEntityFromParsedArrat:parsedMedia forKey:ENTITY_KEY_MEDIA];

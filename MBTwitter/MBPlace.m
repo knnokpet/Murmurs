@@ -21,15 +21,15 @@
 
 - (void)initializeWithDictionary:(NSDictionary *)place
 {
-    _attributes = [place objectForKey:@"attributes"];
-    _boundingBox = [[[place objectForKey:@"bounding_box"] objectForKey:@"coordinates"] firstObject];
-    _countryName = [place objectForKey:@"country"];
-    _countryCode = [place objectForKey:@"country_code"];
-    _countryFullName = [place objectForKey:@"full_name"];
-    _placeID = [place objectForKey:@"id"];
-    _counttyShortName = [place objectForKey:@"name"];
-    _type = [place objectForKey:@"place_type"];
-    _urlForLocation = [place objectForKey:@"url"];
+    _attributes = [place dictionaryForKey:@"attributes"];
+    _boundingBox = [[[place dictionaryForKey:@"bounding_box"] arrayForKey:@"coordinates"] firstObject];
+    _countryName = [place stringForKey:@"country"];
+    _countryCode = [place stringForKey:@"country_code"];
+    _countryFullName = [place stringForKey:@"full_name"];
+    _placeID = [place stringForKey:@"id"];
+    _counttyShortName = [place stringForKey:@"name"];
+    _type = [place stringForKey:@"place_type"];
+    _urlForLocation = [place stringForKey:@"url"];
 }
 
 @end
