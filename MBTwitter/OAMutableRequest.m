@@ -14,6 +14,8 @@
 #import "NSString+OAURLEncodingAdditions.h"
 #import "NSURL+SignatureBased.h"
 
+#import "NSString+UUID.h"
+
 #define OAUTH_VERSION @"1.0"
 
 @implementation OAMutableRequest
@@ -52,7 +54,7 @@
 
 #pragma mark -
 #pragma mark global
-- (void)prepareRequest
+- (void)prepareOAuthRequest
 {
     // configure secret
     NSString *consumerSecret = [self.consumer.secret encodedString];
@@ -60,7 +62,7 @@
     NSString *secretForSignature = [NSString stringWithFormat:@"%@&%@", consumerSecret, tokenSecret];
     
     // configure signature
-    NSString *signatureBasedString = [self signatureBasedString];
+    NSString *signatureBasedString = [self signatureBasedStringWithParameters:self.parameters];
     _signature = [self.signatureProvider signatureText:signatureBasedString secret:secretForSignature];
     NSLog(@"basedSignature = %@", signatureBasedString);
     NSLog(@"signature = %@", signatureBasedString);
@@ -99,6 +101,55 @@
     NSLog(@"header = %@", oauthHeader);
 }
 
+
+- (void)prepareRequest
+{
+    // configure secret
+    NSString *consumerSecret = [self.consumer.secret encodedString];
+    NSString *tokenSecret = [self.token.secret encodedString];
+    NSString *secretForSignature = [NSString stringWithFormat:@"%@&%@", consumerSecret, tokenSecret];
+    
+    // configure signature
+    NSString *signatureBasedString = ([[self HTTPMethod] isEqualToString:@"GET"]) ? [self signatureBasedStringWithParameters:self.parameters] : [self signatureBasedStringForOAuthOnly];
+    _signature = [self.signatureProvider signatureText:signatureBasedString secret:secretForSignature];
+    NSLog(@"basedSignature = %@", signatureBasedString);
+    NSLog(@"signature = %@", signatureBasedString);
+    // if exist token
+    NSString *oauthTokenString;
+    if (YES == [self.token.key isEqualToString:@""]) {
+        oauthTokenString = @"";
+    } else {
+        oauthTokenString = [NSString stringWithFormat:@"oauth_token=\"%@\", ", [self encodedString:self.token.key]];
+    }
+    
+    // configure oauthHeader
+    NSString *oauthRealm = [self.realm encodedString];
+    NSString *oauthConsumerKey = [self.consumer.key encodedString];
+    NSString *oauthNonce = [self.nonce encodedString];
+    NSString *oauthSignature = [self.signature encodedString];
+    NSString *oauthSignatureMethod = [[self.signatureProvider name] encodedString];
+    NSString *oauthTimeStamp = [self.timeStamp encodedString];
+    NSString *oauthVersion = [OAUTH_VERSION encodedString];
+    
+    NSString *oauthHeader = [NSString stringWithFormat:@"OAuth realm=\"%@\", oauth_consumer_key=\"%@\", oauth_nonce=\"%@\", oauth_signature=\"%@\", oauth_signature_method=\"%@\", oauth_timestamp=\"%@\", %@oauth_version=\"%@\"",
+                             oauthRealm,
+                             oauthConsumerKey,
+                             oauthNonce,
+                             oauthSignature,
+                             oauthSignatureMethod,
+                             oauthTimeStamp,
+                             oauthTokenString,
+                             oauthVersion];
+    
+    if (self.token.pin.length > 0) {
+        NSString *oauthPinAuth = [NSString stringWithFormat:@", oauth_verifier=\"%@\"", self.token.pin];
+        oauthHeader = [oauthHeader stringByAppendingString:oauthPinAuth];
+    }
+    [self setValue:oauthHeader forHTTPHeaderField:@"Authorization"];
+    NSLog(@"header = %@", oauthHeader);
+}
+
+
 #pragma mark - 
 #pragma mark private
 - (void)generateTimeStamp
@@ -114,33 +165,38 @@
     _nonce = (__bridge NSString *)uuidStringRef;
 }
 
-- (NSString *)signatureBasedString
+- (NSString *)signatureBasedStringForOAuthOnly
+{
+    return [self signatureBasedStringWithParameters:nil];
+}
+
+- (NSString *)signatureBasedStringWithParameters:(NSArray *)parameters
 {
     int defaultParameteCount = 7;
-    NSMutableArray *parameters = [NSMutableArray arrayWithCapacity:( defaultParameteCount + [self.parameters count])];
+    NSMutableArray *params = [NSMutableArray arrayWithCapacity:( defaultParameteCount + [parameters count])];
     
     // require Parameters
-    [parameters addObject:[[OAParameter requestParameterWithName:@"oauth_consumer_key" value:self.consumer.key] encodedNameValuePair]];
-    [parameters addObject:[[OAParameter requestParameterWithName:@"oauth_nonce" value:self.nonce] encodedNameValuePair]];
-    [parameters addObject:[[OAParameter requestParameterWithName:@"oauth_signature_method" value:[self.signatureProvider name]] encodedNameValuePair]];
-    [parameters addObject:[[OAParameter requestParameterWithName:@"oauth_timestamp" value:self.timeStamp] encodedNameValuePair]];
-    [parameters addObject:[[OAParameter requestParameterWithName:@"oauth_version" value:OAUTH_VERSION] encodedNameValuePair]];
+    [params addObject:[[OAParameter requestParameterWithName:@"oauth_consumer_key" value:self.consumer.key] encodedNameValuePair]];
+    [params addObject:[[OAParameter requestParameterWithName:@"oauth_nonce" value:self.nonce] encodedNameValuePair]];
+    [params addObject:[[OAParameter requestParameterWithName:@"oauth_signature_method" value:[self.signatureProvider name]] encodedNameValuePair]];
+    [params addObject:[[OAParameter requestParameterWithName:@"oauth_timestamp" value:self.timeStamp] encodedNameValuePair]];
+    [params addObject:[[OAParameter requestParameterWithName:@"oauth_version" value:OAUTH_VERSION] encodedNameValuePair]];
     
     // use pin_based authenication
     if (self.token.key.length > 0) {
-        [parameters addObject:[[OAParameter requestParameterWithName:@"oauth_token" value:self.token.key] encodedNameValuePair]];
+        [params addObject:[[OAParameter requestParameterWithName:@"oauth_token" value:self.token.key] encodedNameValuePair]];
         if (self.token.pin.length > 0) {
-            [parameters addObject:[[OAParameter requestParameterWithName:@"oauth_verifier" value:self.token.pin] encodedNameValuePair]];
+            [params addObject:[[OAParameter requestParameterWithName:@"oauth_verifier" value:self.token.pin] encodedNameValuePair]];
         }
     }
     
     // join require & option parameter
-    for (OAParameter *parameter in self.parameters) {
-        [parameters addObject:[parameter encodedNameValuePair]];
+    for (OAParameter *parameter in parameters) {
+        [params addObject:[parameter encodedNameValuePair]];
     }
     
     // configure normalized Parameter String
-    NSArray *sortedParameters = [parameters sortedArrayUsingSelector:@selector(compare:)];
+    NSArray *sortedParameters = [params sortedArrayUsingSelector:@selector(compare:)];
     NSString *normalizedParametersString = [sortedParameters componentsJoinedByString:@"&"];
     
     // configure signature based string
@@ -150,7 +206,6 @@
     NSString *signatureBasedString = [NSString stringWithFormat:@"%@&%@&%@", httpMethod, signatureBasedURL, signatureBasedParameter];
     
     return signatureBasedString;
-    
 }
 
 - (NSArray *)parameters
@@ -195,7 +250,7 @@
         appendPosition++;
     }
 
-    // add Parameter. Separate for each HTTPMEthod
+    // add Parameter. Separate for each HTTPMethod
     if (YES == [[self HTTPMethod] isEqualToString:@"GET"] || YES == [[self HTTPMethod] isEqualToString:@"DELETE"]) {
         NSString *quaryURL = [NSString stringWithFormat:@"%@?%@", [[self URL] URLStringWithoutQuery], parameterString];
         [self setURL:[NSURL URLWithString:quaryURL]];
@@ -212,6 +267,48 @@
         
     }
     
+}
+
+- (void)setMultiPartPostParameters:(NSDictionary *)parameters
+{
+    NSString *boundary = [NSString stringWithNewUUID];
+    NSData *paramData = [self postBodyWithParameter:parameters boundary:boundary];
+    
+    [self setValue:@(paramData.length).stringValue forHTTPHeaderField:@"Content-Length"];
+    [self setHTTPBody:paramData];
+    
+    NSString *contentType = [NSString stringWithFormat:@"multipart/form-data; boundary=%@", boundary];
+    [self setValue:contentType forHTTPHeaderField:@"Content-Type"];
+    //NSLog(@"contents = %@", [[NSString alloc] initWithData:[self HTTPBody] encoding:NSUTF8StringEncoding]);
+}
+
+- (NSData *)postBodyWithParameter:(NSDictionary *)param boundary:(NSString *)boundary
+{
+    NSMutableData *body = [NSMutableData dataWithLength:0];
+    for (NSString *key in param.allKeys) {
+        
+        id obj = param[key];
+        NSLog(@"key = %@", key);
+        [body appendData:[[NSString stringWithFormat:@"--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+        
+        NSData *paramData = nil;
+        if ([obj isKindOfClass:[NSData class]]) {
+            [body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"%@\"; filename=\"hoge.png\"\r\n", key] dataUsingEncoding:NSUTF8StringEncoding]];
+            [body appendData:[[NSString stringWithFormat:@"Content-Transfer-Encoding: base64\r\n"] dataUsingEncoding:NSUTF8StringEncoding]];
+            [body appendData:[[NSString stringWithFormat:@"Content-Type: application/octet-stream\r\n"] dataUsingEncoding:NSUTF8StringEncoding]];
+            paramData = (NSData *)obj;
+        } else if ([obj isKindOfClass:[NSString class]]) {
+            [body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"%@\"\r\n", key] dataUsingEncoding:NSUTF8StringEncoding]];
+            paramData = [[NSString stringWithFormat:@"%@", (NSString *)obj] dataUsingEncoding:NSUTF8StringEncoding];
+        }
+        
+        [body appendData:[@"\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
+        [body appendData:paramData];
+        [body appendData:[@"\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
+    }
+    
+    [body appendData:[[NSString stringWithFormat:@"--%@--\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+    return body;
 }
 
 - (NSString *)encodedString:(NSString *)string

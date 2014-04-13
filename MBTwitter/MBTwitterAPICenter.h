@@ -26,6 +26,7 @@
 @property (nonatomic) NSMutableDictionary *connections;
 
 - (NSString *)sendRequestMethod:(NSString *)method resource:(NSString *)resource parameters:(NSDictionary *)parameters requestType:(MBRequestType)requestType responseType:(MBResponseType)responseType;
+
 - (void)parseJSONData:(NSData *)jsonData responseType:(MBResponseType)responseType;
 
 #pragma mark -
@@ -35,5 +36,6 @@
 - (NSString *)getHomeTimeLineSinceID:(unsigned long long)since maxID:(unsigned long long)max;
 
 - (NSString *)postTweet:(NSString *)tweetText;
+- (NSString *)postTweet:(NSString *)tweetText withMedia:(NSArray *)mediaImages;
 
 @end

@@ -146,4 +146,21 @@
     return [self sendRequestMethod:HTTP_POST_METHOD resource:resource parameters:parameters requestType:MBTwitterStatusesUpdateRequest responseType:MBTwitterStatuses];
 }
 
+- (NSString *)postTweet:(NSString *)tweetText withMedia:(NSArray *)mediaImages
+{
+    NSString *resource = [NSString stringWithFormat:@"statuses/update_with_media"];
+    NSMutableDictionary *parameters = [NSMutableDictionary dictionaryWithCapacity:0];
+    NSInteger tweetLength = [tweetText length];
+    if (nil != tweetText && tweetLength >=1 && tweetLength <= 140 ) {
+        [parameters setObject:tweetText forKey:@"status"];
+        for (UIImage *image in mediaImages) {
+            NSData *imageData = UIImagePNGRepresentation(image);
+            NSData *data64 = [imageData base64EncodedDataWithOptions:0];
+            [parameters setObject:data64 forKey:@"media[]"];
+        }
+    }
+    
+    return [self sendRequestMethod:HTTP_POST_METHOD resource:resource parameters:parameters requestType:MBTwitterStatusesUpdateRequest responseType:MBTwitterStatuses];
+}
+
 @end

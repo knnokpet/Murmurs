@@ -29,9 +29,11 @@
             realm:(NSString *)realm
         signatureProvider:(id <OASignatureProvider>)signatureProvider;
 
+- (void)prepareOAuthRequest;
 - (void)prepareRequest;
 
 - (NSArray *)parameters;
 - (void)setParameters:(NSArray *)parameters;
+- (void)setMultiPartPostParameters:(NSDictionary *)parameters;
 
 @end

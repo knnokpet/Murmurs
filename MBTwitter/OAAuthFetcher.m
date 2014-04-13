@@ -33,7 +33,7 @@
 #pragma mark -
 - (void)start
 {
-    [self.request prepareRequest];
+    [self.request prepareOAuthRequest];
     
     if (self.connection) {
         self.connection = nil;

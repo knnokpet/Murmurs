@@ -41,6 +41,7 @@
 
 #pragma mark -
 #pragma mark APICenter Method : Connect
+
 - (NSString *)sendRequestMethod:(NSString *)method resource:(NSString *)resource parameters:(NSDictionary *)parameters requestType:(MBRequestType)requestType responseType:(MBResponseType)responseType
 {
     NSString *fullResource = [NSString stringWithFormat:@"%@://%@/%@/%@.%@", DEFAULT_CONNECTION_TYPE, DEFAULT_API_DOMAIN, DEFAULT_API_VERSION, resource, DEFAULT_API_EXTEND];
@@ -53,33 +54,30 @@
     
     [request setHTTPMethod:method];
     
-    // parameter
     if (nil != parameters) {
-        NSMutableArray *addingParameters = [NSMutableArray arrayWithArray:[request parameters]];
-        [parameters enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop){
-            OAParameter *addingParam = [[OAParameter alloc] initWithName:(NSString *)key value:(NSString *)obj];
-            [addingParameters addObject:addingParam];
-        }];
-        [request setParameters:addingParameters];
+        if ([method isEqualToString:@"GET"]) {
+            NSMutableArray *addingParameters = [NSMutableArray arrayWithArray:[request parameters]];
+            [parameters enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop){
+                OAParameter *addingParam = [[OAParameter alloc] initWithName:(NSString *)key value:(NSString *)obj];
+                [addingParameters addObject:addingParam];
+            }];
+            [request setParameters:addingParameters];
+        } else { // POST
+            [request setMultiPartPostParameters:parameters];
+        }
     }
     
-    
-    
     [request prepareRequest];
-    
-    /*キャンセル処理の実装がまだ
-    MBTwitterAPIHTTPConnecter *connecter = [[MBTwitterAPIHTTPConnecter alloc] initWithRequest:request requestType:requestType responseType:responseType];
-    connecter.delegate = self;
-    NSString *connecterIdentifier = [connecter identifier];
-    [self.connections setObject:[NSNumber numberWithBool:YES] forKey:connecterIdentifier];*/
-    //[connecter start];
     
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         [NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
+            if (nil == data) {
+                return;
+            }
             [self parseJSONData:data responseType:MBTwitterStatuse];
         }];
-        //[connecter start];
+        
     });
     
     return nil;
