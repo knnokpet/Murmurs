@@ -9,9 +9,11 @@
 #import "MBPostTweetViewController.h"
 #import "MBAOuth_TwitterAPICenter.h"
 
-@interface MBPostTweetViewController () <UITextViewDelegate>
+@interface MBPostTweetViewController () <UITextViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate>
 @property (weak, nonatomic) IBOutlet UITextView *tweetTextView;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *postButton;
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *cancelButton;
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *cameraButton;
 
 @end
 
@@ -44,6 +46,13 @@
     _aoAPICenter = [[MBAOuth_TwitterAPICenter alloc] init];
 }
 
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    
+    //[self.tweetTextView becomeFirstResponder];
+}
+
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
@@ -61,12 +70,40 @@
 - (IBAction)didPushPostButton:(id)sender {
     [self.aoAPICenter postTweet:self.tweetTextView.text];
 }
+- (IBAction)didPushCancelButton:(id)sender {
+    [self dismissMe];
+}
 
+- (IBAction)didPushCameraButton:(id)sender {
+    UIImagePickerControllerSourceType sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+    if ([UIImagePickerController isSourceTypeAvailable:sourceType]) {
+        UIImagePickerController *imagePickerController = [[UIImagePickerController alloc] init];
+        imagePickerController.delegate = self;
+        imagePickerController.sourceType = sourceType;
+        [self presentViewController:imagePickerController animated:YES completion:nil];
+    }
+    
+}
 #pragma mark -
 #pragma mark TextView Delegate
 - (void)textViewDidChange:(UITextView *)textView
 {
     
+}
+
+#pragma mark -
+#pragma mark ImagePickerViewController Delegate
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
+{
+    [picker dismissViewControllerAnimated:YES completion:nil];
+    UIImage *selectedImage = [info objectForKey:UIImagePickerControllerOriginalImage];
+    if (nil == selectedImage) {
+        return;
+    }
+    
+    NSArray *selectedImages = [NSArray arrayWithObject:selectedImage];
+    
+    [self.aoAPICenter postTweet:self.tweetTextView.text withMedia:selectedImages];
 }
 
 /*
