@@ -9,8 +9,10 @@
 #import "MBAccountManager.h"
 #import "MBAccount.h"
 #import "MBTwitterAccesser.h"
+#import "OAAccessibility.h"
 
 #define USER_DEFAULTS_KEY_AOUTH_ACCOUNT @"oauth_data"
+#define USER_CURRENT_SELECTED @"current_user"
 
 @implementation MBAccountManager
 
@@ -33,6 +35,7 @@
     self = [super init];
     if (self) {
         [self updateAccounts];
+        _currentAccount = [self storedCurrentAccount];
     }
     
     return self;
@@ -46,9 +49,13 @@
 
 #pragma mark -
 #pragma mark Setter & Getter
+
 - (void)setCurrentAccount:(MBAccount *)currentAccount
 {
+    
     _currentAccount = currentAccount;
+    
+    [self storeCurrentAccount];
     
     [[NSNotificationCenter defaultCenter] postNotificationName:@"ChangeMyAccount" object:nil];
 }
@@ -129,6 +136,28 @@
     
     [self setCurrentAccount:[self.accounts objectAtIndex:selectedRow]];
     
+}
+
+- (void)storeCurrentAccount
+{
+    [[NSUserDefaults standardUserDefaults] setObject:self.currentAccount.accessToken.key forKey:USER_CURRENT_SELECTED];
+}
+
+- (MBAccount *)storedCurrentAccount
+{
+    id obj = [[NSUserDefaults standardUserDefaults] objectForKey:USER_CURRENT_SELECTED];
+    if ([obj isKindOfClass:[NSString class]]) {
+        for (MBAccount *account in self.accounts) {
+            if ([account.accessToken.key isEqualToString:(NSString *)obj]) {
+                return account;
+            }
+        }
+        
+    } else {
+        return nil;
+    }
+    
+    return nil;
 }
 
 - (void)deleteAllAccount{
