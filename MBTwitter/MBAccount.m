@@ -15,9 +15,9 @@
 {
     self = [super init];
     if (self) {
-        _screenName = [accountData objectForKey:@"screen_name"];
-        _userID = [accountData objectForKey:@"user_id"];
-        _accessToken = [[OAToken alloc] initWithKey:[accountData objectForKey:@"oauth_token"] secret:[accountData objectForKey:@"oauth_token_secret"]];
+        _screenName = [accountData stringForKey:@"screen_name"];
+        _userID = [accountData stringForKey:@"user_id"];
+        _accessToken = [[OAToken alloc] initWithKey:[accountData stringForKey:@"oauth_token"] secret:[accountData stringForKey:@"oauth_token_secret"]];
     }
     
     return self;
