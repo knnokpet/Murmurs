@@ -11,8 +11,8 @@
 #import "MBAccount.h"
 #import "OAMutableRequest.h"
 #import "OAParameter.h"
-#import "MBTweetManager.h"
-#import "MBTweet.h"
+#import "MBJSONParser.h"
+#import "MBTweets_JSONParser.h"
 
 #import "OAAccessibility.h"
 #import "MBTwitterConsumer.h"
@@ -75,7 +75,7 @@
             if (nil == data) {
                 return;
             }
-            [self parseJSONData:data responseType:MBTwitterStatuse];
+            [self parseJSONData:data responseType:responseType];
         }];
         
     });
@@ -100,53 +100,30 @@
 #pragma mark APICenter Methods : Parsed
 - (void)parseJSONData:(NSData *)jsonData responseType:(MBResponseType)responseType
 {
+    MBJSONParser *jsonParser;
+    
+    switch (responseType) {
+        case MBTwitterStatuses:
+        {
+            jsonParser = [[MBTweets_JSONParser alloc] initWithJSONData:jsonData completionHandler:^(NSArray *parsedObj) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    if ([_delegate respondsToSelector:@selector(twitterAPICenter:parsedTweets:)]) {
+                        [_delegate twitterAPICenter:self parsedTweets:parsedObj];
+                    }
+                });
+            }];
+        }
+            break;
+            
+        default:
+            break;
+    }
     
     dispatch_queue_t globalQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
     dispatch_async(globalQueue, ^{
-        NSError *parsingError = nil;
-        id parsedData = [NSJSONSerialization JSONObjectWithData:jsonData options:0 error:&parsingError];
-
-        if (parsingError) {
-            [self occurParsingError:parsingError];
-            return ;
-        }
         
-        if ([parsedData isKindOfClass:[NSDictionary class]]) {
-            NSArray *errors = [parsedData objectForKey:@"errors"];
-            if (errors) {
-                NSInteger errorCode = [[(NSDictionary *)[errors lastObject] objectForKey:@"code"] integerValue];
-                NSString *errorMessage = [(NSDictionary *)[errors lastObject] objectForKey:@"message"];
-                NSError *error = [NSError errorWithDomain:NSURLErrorDomain code:errorCode userInfo:@{NSLocalizedDescriptionKey: errorMessage}];
-                [self occurParsingError:error];
-                return;
-            }
-        }
-        
-        if ([parsedData isKindOfClass:[NSArray class]]) {
-            NSLog(@"count = %lu", (unsigned long)[parsedData count]);
-            NSMutableArray *tweets = [NSMutableArray array];
-            for (NSDictionary *parsedTweet in parsedData) {
-                MBTweet *tweet = [[MBTweet alloc] initWithDictionary:parsedTweet];
-                [[MBTweetManager sharedInstance] storeTweet:tweet];
-                [tweets addObject:tweet.tweetIDStr];
-            }
-            dispatch_async(dispatch_get_main_queue(), ^{
-                if ([_delegate respondsToSelector:@selector(twitterAPICenter:parsedTweets:)]) {
-                    [_delegate twitterAPICenter:self parsedTweets:tweets];
-                }
-            });
-           
-        }
-        
+        [jsonParser startParsing];
     });
 }
-
-- (void)occurParsingError:(NSError *)error
-{
-    dispatch_async(dispatch_get_main_queue(), ^{
-        NSLog(@"error = %@ code = %lu", error.localizedDescription, (unsigned long)error.code);
-    });
-}
-
 
 @end
