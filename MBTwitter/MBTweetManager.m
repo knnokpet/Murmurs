@@ -54,6 +54,10 @@
     }
     
     MBTweet *storedTweet = [self.tweets objectForKey:key];
+    if (nil == storedTweet) {
+        return nil;
+    }
+    
     return storedTweet;
 }
 
