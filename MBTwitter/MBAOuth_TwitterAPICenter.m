@@ -13,6 +13,7 @@
 #import "OAParameter.h"
 #import "MBJSONParser.h"
 #import "MBTweets_JSONParser.h"
+#import "MBHelp_JSONParser.h"
 
 #import "OAAccessibility.h"
 #import "MBTwitterConsumer.h"
@@ -73,8 +74,9 @@
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         [NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
             if (nil == data) {
-                return;
+                return ;
             }
+            
             [self parseJSONData:data responseType:responseType];
         }];
         
@@ -115,15 +117,17 @@
         }
             break;
             
+        case MBTwitterHelp:
+        {
+            jsonParser = [[MBHelp_JSONParser alloc] initWithJSONData:jsonData completionHandler:nil];
+        }
+            break;
+            
         default:
             break;
     }
     
-    dispatch_queue_t globalQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-    dispatch_async(globalQueue, ^{
-        
-        [jsonParser startParsing];
-    });
+    [jsonParser startParsing];
 }
 
 @end
