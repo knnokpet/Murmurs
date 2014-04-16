@@ -36,6 +36,12 @@
         [self failedParsing:error];
     }
     
+    [self configure:parsedObj];
+
+}
+
+- (void)configure:(id)parsedObj
+{
     if ([parsedObj isKindOfClass:[NSDictionary class]]) {
         NSDictionary *errorDict = (NSDictionary *)parsedObj;
         NSArray *errors = [errorDict arrayForKey:@"errors"];
@@ -45,23 +51,16 @@
             NSError *error = [NSError errorWithDomain:message code:code userInfo:nil];
             [self failedParsing:error];
         }
+    } else if ([parsedObj isKindOfClass:[NSArray class]]) {
+        NSMutableArray *gotTweets = [NSMutableArray arrayWithCapacity:200];
+        for (NSDictionary *parsedTweet in (NSArray *)parsedObj) {
+            MBTweet *tweet = [[MBTweet alloc] initWithDictionary:parsedTweet];
+            [[MBTweetManager sharedInstance] storeTweet:tweet];
+            [gotTweets addObject:tweet.tweetIDStr];
+        }
+        
+        _completion(gotTweets);
     }
-    
-    if ([parsedObj isKindOfClass:[NSArray class]]) {
-        [self configure:parsedObj];
-    }
-}
-
-- (void)configure:(id)parsedObj
-{
-    NSMutableArray *gotTweets = [NSMutableArray arrayWithCapacity:200];
-    for (NSDictionary *parsedTweet in (NSArray *)parsedObj) {
-        MBTweet *tweet = [[MBTweet alloc] initWithDictionary:parsedTweet];
-        [[MBTweetManager sharedInstance] storeTweet:tweet];
-        [gotTweets addObject:tweet.tweetIDStr];
-    }
-    
-    _completion(gotTweets);
 }
 
 - (void)failedParsing:(NSError *)error
