@@ -163,4 +163,147 @@
     return [self sendRequestMethod:HTTP_POST_METHOD resource:resource parameters:parameters requestType:MBTwitterStatusesUpdateRequest responseType:MBTwitterStatuses];
 }
 
+- (NSString *)postTweet:(NSString *)tweetText inReplyTo:(NSArray *)acountIDs place:(NSDictionary *)place media:(NSArray *)media
+{
+    NSMutableDictionary *parameters = [NSMutableDictionary dictionaryWithCapacity:0];
+    if (nil == tweetText && 1 > tweetText.length && 140 < tweetText.length) {
+        return nil;
+    }
+    [parameters setObject:tweetText forKey:@"status"];
+    
+    // Reply
+    for (NSNumber *idNumber in acountIDs) {
+        unsigned long long iduul = [idNumber unsignedLongLongValue];
+        [parameters setObject:[NSString stringWithFormat:@"%llu", iduul] forKey:@"in_reply_to_status_id"];
+    }
+    
+    // Place
+    NSDictionary *placeDict = [place dictionaryForKey:@"place"];
+    if (nil != placeDict) {
+        NSNumber *latitudeNumber = [placeDict numberForKey:@"lat"];
+        if (nil != latitudeNumber) {
+            long lati = [latitudeNumber longValue];
+            [parameters setObject:[NSString stringWithFormat:@"%ld", lati] forKey:@"lat"];
+        }
+        
+        NSNumber *longitudeNumber = [placeDict numberForKey:@"longi"];
+        if (nil != longitudeNumber) {
+            long longi = [longitudeNumber longValue];
+            [parameters setObject:[NSString stringWithFormat:@"%ld", longi] forKey:@"long"];
+        }
+        
+        NSString *placeID = [placeDict stringForKey:@"placeID"];
+        if (nil != placeID) {
+            [parameters setObject:placeID forKey:@"place_id"];
+        }
+    }
+    
+    NSString *resource;
+    
+    // Photo Media
+    if (0 < [media count]) {
+        resource = [NSString stringWithFormat:@"statuses/update_with_media"];
+        UIImage *mediaImage = [media firstObject];
+        NSData *imageData = UIImagePNGRepresentation(mediaImage);
+        NSData *data64 = [imageData base64EncodedDataWithOptions:0];
+        [parameters setObject:data64 forKey:@"media[]"];
+        
+    } else {
+        resource = [NSString stringWithFormat:@"statuses/update"];
+    }
+    
+    return [self sendRequestMethod:HTTP_POST_METHOD resource:resource parameters:parameters requestType:MBTwitterStatusesUpdateRequest responseType:MBTwitterStatuses];
+}
+
+- (NSString *)postDestroyTweetForTweetID:(unsigned long long)tweetID
+{
+    NSString *resource = [NSString stringWithFormat:@"statuses/destroy/%llu", tweetID];
+    NSMutableDictionary *parameters = [NSMutableDictionary dictionaryWithCapacity:0];
+    if (0 < tweetID) {
+        [parameters setObject:[NSString stringWithFormat:@"%llu", tweetID] forKey:@"id"];
+    }
+    
+    return [self sendRequestMethod:HTTP_POST_METHOD resource:resource parameters:parameters requestType:MBTwitterStatusesDestroyTweetRequest responseType:MBTwitterStatuses];
+}
+
+- (NSString *)postRetweetForTweetID:(unsigned long long)retweetID
+{
+    
+    NSString *resource = [NSString stringWithFormat:@"statuses/retweet/%llu", retweetID];
+    NSMutableDictionary *parameters = [NSMutableDictionary dictionaryWithCapacity:0];
+    if (0 < retweetID) {
+        [parameters setObject:[NSString stringWithFormat:@"%llu", retweetID] forKey:@"id"];
+    }
+    
+    return [self sendRequestMethod:HTTP_POST_METHOD resource:resource parameters:parameters requestType:MBTwitterStatusesRetweetsOfTweetRequest responseType:MBTwitterStatuses];
+}
+
+- (NSString *)postFollowForUserID:(unsigned long long)userID screenName:(NSString *)screenName
+{
+    NSString *resource = [NSString stringWithFormat:@"friendships/create"];
+    NSMutableDictionary *parameters = [NSMutableDictionary dictionaryWithCapacity:0];
+    
+    if (0 == userID && nil == screenName) {
+        return nil;
+    }
+    
+    if (0 < userID) {
+        [parameters setObject:[NSString stringWithFormat:@"%llu", userID] forKey:@"user_id"];
+    }
+    if (nil != screenName) {
+        [parameters setObject:screenName forKey:@"screen_name"];
+    }
+    
+    return [self sendRequestMethod:HTTP_POST_METHOD resource:resource parameters:parameters requestType:MBTwitterFriendShipsCreateRequest responseType:MBTwitterStatuses];
+}
+
+- (NSString *)postUnfollowForUserID:(unsigned long long)userID screenName:(NSString *)screenName
+{
+    NSString *resource = [NSString stringWithFormat:@"friendships/destroy"];
+    NSMutableDictionary *parameters = [NSMutableDictionary dictionaryWithCapacity:0];
+    
+    if (0 == userID && nil == screenName) {
+        return nil;
+    }
+    
+    if (0 < userID) {
+        [parameters setObject:[NSString stringWithFormat:@"%llu", userID] forKey:@"user_id"];
+    }
+    if (nil != screenName) {
+        [parameters setObject:screenName forKey:@"screen_name"];
+    }
+    
+    return [self sendRequestMethod:HTTP_POST_METHOD resource:resource parameters:parameters requestType:MBTwitterFriendShipsDestroyRequest responseType:MBTwitterStatuses];
+}
+
+- (NSString *)postFavoriteForTweetID:(unsigned long long)favoriteTweetID
+{
+    NSString *resource = [NSString stringWithFormat:@"favorites/create"];
+    NSMutableDictionary *parameters = [NSMutableDictionary dictionaryWithCapacity:0];
+    if (0 < favoriteTweetID) {
+        [parameters setObject:[NSString stringWithFormat:@"%lld", favoriteTweetID] forKey:@"id"];
+    }
+    
+    return [self sendRequestMethod:HTTP_POST_METHOD resource:resource parameters:parameters requestType:MBTwitterFavoritesCreateRequest responseType:MBTwitterStatuses];
+}
+
+- (NSString *)postDestroyFavoriteForTweetID:(unsigned long long)destroyTweetID
+{
+    NSString *resource = [NSString stringWithFormat:@"favorites/destroy"];
+    NSMutableDictionary *parameters = [NSMutableDictionary dictionaryWithCapacity:0];
+    if (0 < destroyTweetID) {
+        [parameters setObject:[NSString stringWithFormat:@"%llu", destroyTweetID] forKey:@"id"];
+    }
+    
+    return [self sendRequestMethod:HTTP_POST_METHOD resource:resource parameters:parameters requestType:MBTwitterFavoritesDestroyRequest responseType:MBTwitterStatuses];
+}
+
+- (NSString *)getHelpConfiguration
+{
+    NSString *resource = [NSString stringWithFormat:@"help/configuration"];
+    NSDictionary *parameters = [NSDictionary dictionary];
+    
+    return [self sendRequestMethod:HTTP_GET_METHOD resource:resource parameters:parameters requestType:MBTwitterHelpConfigurationRequest responseType:MBTwitterHelp];
+}
+
 @end

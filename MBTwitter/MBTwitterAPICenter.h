@@ -37,5 +37,16 @@
 
 - (NSString *)postTweet:(NSString *)tweetText;
 - (NSString *)postTweet:(NSString *)tweetText withMedia:(NSArray *)mediaImages;
+- (NSString *)postTweet:(NSString *)tweetText inReplyTo:(NSArray *)acountIDs place:(NSDictionary *)place media:(NSArray *)media;
+- (NSString *)postDestroyTweetForTweetID:(unsigned long long)tweetID;
+- (NSString *)postRetweetForTweetID:(unsigned long long)retweetID;
+
+- (NSString *)postFollowForUserID:(unsigned long long)userID screenName:(NSString *)screenName;
+- (NSString *)postUnfollowForUserID:(unsigned long long)userID screenName:(NSString *)screenName;
+
+- (NSString *)postFavoriteForTweetID:(unsigned long long)favoriteTweetID;
+- (NSString *)postDestroyFavoriteForTweetID:(unsigned long long)destroyTweetID;
+
+- (NSString *)getHelpConfiguration;
 
 @end
