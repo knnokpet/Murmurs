@@ -35,20 +35,22 @@
 - (NSInteger)integerForKey:(NSString *)key
 {
     id obj = [self objectForKey:key];
-    if ([obj isKindOfClass:(id)[NSNull null]]) {
-        return 0;
-    } else {
+    
+    if (obj != [NSNull null]) {
         return [obj integerValue];
+    } else {
+        return 0;
     }
 }
 
 - (NSNumber *)numberForKey:(NSString *)key
 {
     id obj = [self objectForKey:key];
-    if ([obj isKindOfClass:(id)[NSNull null]]) {
-        return nil;
+    
+    if (obj != [NSNull null]) {
+        return [NSNumber numberWithUnsignedLongLong:[obj unsignedLongLongValue]];;
     } else {
-        return [NSNumber numberWithUnsignedLongLong:[obj unsignedLongLongValue]];
+        return nil;
     }
 }
 
