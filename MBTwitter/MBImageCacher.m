@@ -143,6 +143,10 @@
 
 - (UIImage *)cachedImageForID:(NSString *)sourceID defaultImage:(UIImage *)defaultImage from:(NSCache *)cache directory:(NSString *)directoryPath
 {
+    if (sourceID == nil) {
+        return defaultImage;
+    }
+    
     NSString *keyForID = sourceID;
     UIImage *cachedImage = [cache objectForKey:keyForID];
     if (cachedImage) {
