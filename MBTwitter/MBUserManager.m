@@ -7,9 +7,17 @@
 //
 
 #import "MBUserManager.h"
+#import "MBUser.h"
+
+@interface MBUserManager()
+
+@property (nonatomic, readonly) NSMutableDictionary *users;
+
+@end
 
 @implementation MBUserManager
-
+#pragma mark -
+#pragma mark Initialize
 + (MBUserManager *)sharedInstance
 {
     static MBUserManager *sharedInstance;
@@ -25,7 +33,7 @@
 {
     self = [super init];
     if (self) {
-        ;
+        _users = [NSMutableDictionary dictionary];
     }
     
     return self;
@@ -35,6 +43,31 @@
 {
     [self doesNotRecognizeSelector:_cmd];
     return nil;
+}
+
+#pragma mark -
+#pragma mark
+- (MBUser *)storedUserForKey:(NSString *)key
+{
+    if (nil == key) {
+        return nil;
+    }
+    MBUser *user = [self.users objectForKey:key];
+    if (nil == user) {
+        return nil;
+    }
+    
+    return user;
+}
+
+- (void)storeUser:(MBUser *)user
+{
+    if (nil == user) {
+        return ;
+    }
+    
+    NSString *key = user.userIDStr;
+    [self.users setObject:user forKey:key];
 }
 
 @end

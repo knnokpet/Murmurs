@@ -13,4 +13,7 @@
 
 + (MBUserManager *)sharedInstance;
 
+- (MBUser *)storedUserForKey:(NSString *)key;
+- (void)storeUser:(MBUser *)user;
+
 @end
