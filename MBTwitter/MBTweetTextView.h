@@ -11,6 +11,13 @@
 @interface MBTweetTextView : UIView
 
 @property (nonatomic, readonly) NSAttributedString *attributedString;
+@property (nonatomic) UIFont *font;
+@property (nonatomic) UIColor *textColor;
+@property (nonatomic) CGFloat lineSpace;
+@property (nonatomic) CGFloat paragraphSpace;
+@property (nonatomic) CGFloat lineHeight;
+@property (nonatomic) NSTextAlignment *alignment;
+@property (nonatomic) NSLineBreakMode *lineBreakMode;
 
 + (CGRect)frameRectWithAttributedString:(NSAttributedString *)attributedString
                          constraintSize:(CGSize)constraintSize;

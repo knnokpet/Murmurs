@@ -19,13 +19,9 @@
 
 #pragma mark -
 #pragma mark Initialize
-- (id)initWithFrame:(CGRect)frame
+- (void)awakeFromNib
 {
-    self = [super initWithFrame:frame];
-    if (self) {
-        // Initialization code
-    }
-    return self;
+    [self initialize];
 }
 
 - (void)initialize
@@ -35,22 +31,54 @@
 
 #pragma mark -
 #pragma mark DrawingFrame
++ (CGRect)frameRectWithAttributedString:(NSAttributedString *)attributedString constraintSize:(CGSize)constraintSize
+{
+    return [self frameRectWithAttributedString:attributedString constraintSize:constraintSize lineSpace:0.0f];
+}
+
++ (CGRect)frameRectWithAttributedString:(NSAttributedString *)attributedString constraintSize:(CGSize)constraintSize lineSpace:(CGFloat)lineSpace
+{
+    return [self frameRectWithAttributedString:attributedString constraintSize:constraintSize lineSpace:lineSpace font:nil];
+}
+
++ (CGRect)frameRectWithAttributedString:(NSAttributedString *)attributedString constraintSize:(CGSize)constraintSize lineSpace:(CGFloat)lineSpace font:(UIFont *)font
+{
+    return [self frameRectWithAttributedString:attributedString constraintSize:constraintSize lineSpace:lineSpace paragraghSpace:0.0f font:font];
+}
+
 + (CGRect)frameRectWithAttributedString:(NSAttributedString *)attributedString constraintSize:(CGSize)constraintSize lineSpace:(CGFloat)lineSpace paragraghSpace:(CGFloat)paragraghSpace font:(UIFont *)font
 {
     NSInteger length = attributedString.length;
     NSRange textRange = NSMakeRange(0, length);
     NSMutableAttributedString *mutableAttributedString = attributedString.mutableCopy;
     
-    NSMutableParagraphStyle *paragraghStyle = [[NSMutableParagraphStyle alloc] init];
-    paragraghStyle.alignment = NSTextAlignmentNatural;
-    paragraghStyle.lineSpacing = lineSpace;
-    paragraghStyle.paragraphSpacing = paragraghSpace;
-    [mutableAttributedString addAttribute:NSParagraphStyleAttributeName value:paragraghStyle range:textRange];
+    CTTextAlignment textAlignment = kCTTextAlignmentNatural;
+    CGFloat lineSpacing = roundf(lineSpace);
+    CGFloat lineHeight = 0.0f;
+    CGFloat paragraphSpacing = roundf(paragraghSpace);
+    
+    CTParagraphStyleSetting setting[] = {
+        {kCTParagraphStyleSpecifierAlignment, sizeof(textAlignment), &textAlignment},
+        {kCTParagraphStyleSpecifierMinimumLineHeight, sizeof(lineHeight), &lineHeight},
+        {kCTParagraphStyleSpecifierMaximumLineHeight, sizeof(lineHeight), &lineHeight},
+        {kCTParagraphStyleSpecifierLineSpacing, sizeof(lineSpacing), &lineSpacing},
+        {kCTParagraphStyleSpecifierMinimumLineSpacing, sizeof(lineSpacing), &lineSpacing},
+        {kCTParagraphStyleSpecifierMaximumLineSpacing, sizeof(lineSpacing), &lineSpacing},
+        {kCTParagraphStyleSpecifierParagraphSpacing, sizeof(paragraphSpacing), &paragraphSpacing},
+    };
+    
+    CTParagraphStyleRef paragraphStyleRef = CTParagraphStyleCreate(setting, sizeof(setting) / sizeof(CTParagraphStyleSetting));
+    [mutableAttributedString setAttributes:@{(id)kCTParagraphStyleAttributeName: (__bridge id) paragraphStyleRef} range:textRange];
+    CFRelease(paragraphStyleRef);
     
     if (font) {
-        [mutableAttributedString addAttribute:NSFontAttributeName value:font range:textRange];
+        CFStringRef fontName = (__bridge CFStringRef)font.fontName;
+        CGFloat fontSize = font.pointSize;
+        CTFontRef fontRef = CTFontCreateWithName(fontName, fontSize, NULL);
+        [mutableAttributedString addAttributes:@{(id)kCTFontAttributeName: (__bridge id)fontRef} range:textRange];
+        CFRelease(fontRef);
+        attributedString = mutableAttributedString;
     }
-    attributedString = mutableAttributedString;
     
     return [MBTextLayout frameRectWithAttributedString:attributedString constraintSize:constraintSize];
 }
@@ -59,12 +87,88 @@
 #pragma mark Setter & Getter
 - (void)setAttributedString:(NSAttributedString *)attributedString
 {
-    _attributedString = attributedString;
+    _attributedString = attributedString.copy;
     
     [self setNeedsDisplayInRect:self.bounds];
 }
 
 #pragma mark -
+- (void)setLayoutAttributes
+{
+    [self setFontAttribute];
+    [self setTextColorAttribute];
+    [self setParagraphSpaceAttribute];
+}
+
+- (void)setFontAttribute
+{
+    if (!self.font) {
+        return;
+    }
+    
+    CFStringRef fontName = (__bridge CFStringRef)self.font.fontName;
+    CGFloat fontSize = self.font.pointSize;
+    CTFontRef fontRef = CTFontCreateWithName(fontName, fontSize, NULL);
+    [self setAttributes:@{(id)kCTFontAttributeName: (__bridge id)fontRef}];
+    CFRelease(fontRef);
+}
+
+- (void)setTextColorAttribute
+{
+    if (!self.textColor) {
+        return;
+    }
+    
+    CGColorRef colorRef = self.textColor.CGColor;
+    [self setAttributes:@{(id)kCTForegroundColorAttributeName: (__bridge id)colorRef}];
+    CFRelease(colorRef);
+}
+
+- (void)setParagraphSpaceAttribute
+{
+    CTTextAlignment alignment = (CTTextAlignment)self.alignment;
+    CTLineBreakMode lineBreakMode = (CTLineBreakMode)self.lineBreakMode;
+    CGFloat lineSpacing = roundf(self.lineSpace);
+    CGFloat paragraphSpacing = roundf(self.paragraphSpace);
+    CGFloat lineHeight = roundf(self.lineHeight);
+    
+    CTParagraphStyleSetting setting[] = {
+        {kCTParagraphStyleSpecifierAlignment, sizeof(alignment), &alignment},
+        {kCTParagraphStyleSpecifierLineSpacing, sizeof(lineSpacing), &lineSpacing},
+        {kCTParagraphStyleSpecifierMinimumLineSpacing, sizeof(lineSpacing), &lineSpacing},
+        {kCTParagraphStyleSpecifierMaximumLineSpacing, sizeof(lineSpacing), &lineSpacing},
+        {kCTParagraphStyleSpecifierParagraphSpacing, sizeof(paragraphSpacing), &paragraphSpacing},
+        {kCTParagraphStyleSpecifierMinimumLineHeight, sizeof(lineHeight), &lineHeight},
+        {kCTParagraphStyleSpecifierMaximumLineHeight, sizeof(lineHeight), &lineHeight},
+        {kCTParagraphStyleSpecifierLineBreakMode, sizeof(lineBreakMode), &lineBreakMode},
+    };
+    CTParagraphStyleRef paragraphStyleRef = CTParagraphStyleCreate(setting, sizeof(setting) / sizeof(CTParagraphStyleSetting));
+    [self setAttributes:@{(id)kCTParagraphStyleAttributeName: (__bridge id)paragraphStyleRef}];
+    CFRelease(paragraphStyleRef);
+}
+
+
+- (void)setAttributes:(NSDictionary *)attributes
+{
+    NSInteger length = self.attributedString.length;
+    NSMutableAttributedString *mutableAttributedString = self.attributedString.mutableCopy;
+    if (attributes) {
+        [mutableAttributedString addAttributes:attributes range:NSMakeRange(0, length)];
+    }
+    
+    self.attributedString = mutableAttributedString;
+}
+
+#pragma mark -
+- (void)updateLayout
+{
+    [self setLayoutAttributes];
+    
+    self.textLayout.attributedString = self.attributedString;
+    self.textLayout.bound = self.bounds;
+    
+    [self.textLayout update];
+}
 
 #pragma mark -
 #pragma mark Draw
@@ -73,7 +177,16 @@
 // An empty implementation adversely affects performance during animation.
 - (void)drawRect:(CGRect)rect
 {
-    // Drawing code
+    [super drawRect:rect];
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    CGContextSetFillColorWithColor(context, [UIColor grayColor].CGColor);
+    CGContextFillRect(context, rect);
+    
+    // setting
+    [self updateLayout];
+    
+    // draw
+    [self.textLayout drawInContext:context];
 }
 
 
