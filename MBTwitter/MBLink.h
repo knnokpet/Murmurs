@@ -10,7 +10,6 @@
 #import "MBTextIndex.h"
 #import "NSDictionary+Objects.h"
 
-//@class MBTextIndex;
 @interface MBLink : NSObject
 
 @property (nonatomic, readonly) MBTextIndex *textIndex;

@@ -8,7 +8,7 @@
 
 #import "MBLink.h"
 
-@interface MBMentionUserLink : MBLink
+@interface MBMentionUserLink : MBLink <NSCoding>
 
 @property (nonatomic, readonly) NSNumber *userID;
 @property (nonatomic, readonly) NSString *userIDStr;

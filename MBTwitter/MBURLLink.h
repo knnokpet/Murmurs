@@ -8,7 +8,7 @@
 
 #import "MBLink.h"
 
-@interface MBURLLink : MBLink
+@interface MBURLLink : MBLink <NSCoding>
 
 @property (nonatomic, readonly) NSString *expandedURLText;
 @property (nonatomic, readonly) NSString *wrappedURLText;

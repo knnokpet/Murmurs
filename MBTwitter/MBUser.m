@@ -10,6 +10,36 @@
 #import "MBTweet.h"
 #import "MBEntity.h"
 
+#define KEY_SCREEN_NAME @"screen_name"
+#define KEY_USER_ID @"id"
+#define KEY_USER_ID_STR @"id_str"
+#define KEY_DESCRIPTION @"description"
+#define KEY_TWEET_COUNT @"status_count"
+#define KEY_LIST_COUNT @"listed_count"
+#define KEY_FAVORITE_COUNT @"favorites_count"
+#define KEY_FOLLOWER_COUNT @"followers_count"
+#define KEY_FOLLOWING_COUNT @"friends_count"
+#define KEY_LOCATION @"location"
+#define KEY_CHARACTER_NAME @"name"
+#define KEY_CREATED_AT_TIME @"created_at"
+#define KEY_ENTITY @"entities"
+#define KEY_ENTITY_URL @"url"
+#define KEY_TIME_ZONE @"time_zone"
+#define KEY_LANGUAGE @"lang"
+#define KEY_VERIFIED @"verified"
+#define KEY_PROTECTED @"protected"
+#define KEY_FOLLOW_REQUEST_SENT @"follow_request_sent"
+#define KEY_IS_FOLLOWING @"following"
+#define KEY_CONTRIBUTORS_ENBLED @"contributors_enabled"
+#define KEY_GEO_ENABLED @"geo_enabled"
+#define KEY_IS_TRANSLATOR @"is_translator"
+#define KEY_DEFAULT_PROFILE @"default_profile"
+#define KEY_DEFAULT_PROFILE_IMAGE @"default_profile_image"
+#define KEY_PROFILE_USE_BACKGROUND_IMAGE @"profile_use_background_image"
+#define KEY_SHOW_INLINE_MEDIA @"show_all_inline_media"
+#define KEY_PROFILE_BACKGROUND_TILE @"profile_background_tile"
+#define KEY_PROFILE_IMAGE_URL_HTTPS @"profile_image_url_https"
+
 @implementation MBUser
 - (id)initWithDictionary:(NSDictionary *)user
 {
@@ -23,29 +53,62 @@
 
 - (void)initializeWithDictionary:(NSDictionary *)user
 {
-    _screenName = [user stringForKey:@"user_name"];
-    _userID = [user numberForKey:@"id"];
-    _userIDStr = [user stringForKey:@"id_str"];
-    _desctiprion = [user stringForKey:@"description"];
-    _tweetCount = [user integerForKey:@"status_count"];
-    _listedCount = [user integerForKey:@"listed_count"];
-    _favoritesCount = [user integerForKey:@"favorites_count"];
-    _followersCount = [user integerForKey:@"followers_count"];
-    _followsCount = [user integerForKey:@"following"];
-    _location = [user stringForKey:@"location"];
-    _characterName = [user stringForKey:@"name"];
-    NSString *createdDateStr = [user stringForKey:@"created_at"];
+    _screenName = [user stringForKey:KEY_SCREEN_NAME];
+    _userID = [user numberForKey:KEY_USER_ID];
+    _userIDStr = [user stringForKey:KEY_USER_ID_STR];
+    _desctiprion = [user stringForKey:KEY_DESCRIPTION];
+    _tweetCount = [user integerForKey:KEY_TWEET_COUNT];
+    _listedCount = [user integerForKey:KEY_LIST_COUNT];
+    _favoritesCount = [user integerForKey:KEY_FAVORITE_COUNT];
+    _followersCount = [user integerForKey:KEY_FOLLOWER_COUNT];
+    _followsCount = [user integerForKey:KEY_FOLLOWING_COUNT];
+    _location = [user stringForKey:KEY_LOCATION];
+    _characterName = [user stringForKey:KEY_CHARACTER_NAME];
+    NSString *createdDateStr = [user stringForKey:KEY_CREATED_AT_TIME];
     _createdDate = [[[NSDateFormatter alloc] init] dateFromString:createdDateStr];
-    _entity = [[MBEntity alloc] initWithDictionary:[[user dictionaryForKey:@"entities"] dictionaryForKey:@"url"]];
-    // バグる。多分、延々と潜り続けて初期化するから。
-    NSDictionary *currentTweetDict = [user dictionaryForKey:@"status"];
+    _entity = [[MBEntity alloc] initWithDictionary:[[user dictionaryForKey:KEY_ENTITY] dictionaryForKey:KEY_ENTITY_URL]];
+    // バグる。多分、延々と潜り続けた初期化をするから。
+    //NSDictionary *currentTweetDict = [user dictionaryForKey:@"status"];
     //_currentTweet = (currentTweetDict == (id)[NSNull null]) ? nil : [[MBTweet alloc] initWithDictionary:currentTweetDict];
-    _timeZone = [user stringForKey:@"time_zone"];
-    _language = [user stringForKey:@"lang"];
+    _timeZone = [user stringForKey:KEY_TIME_ZONE];
+    _language = [user stringForKey:KEY_LANGUAGE];
     
-    _isDefaultProfileImage = [user boolForKey:@"default_profile_image"];
+    _isVerified = [user boolForKey:KEY_VERIFIED];
+    _isProtected = [user boolForKey:KEY_PROTECTED];
+    _isSentRequestToProtectedUser = [user boolForKey:KEY_FOLLOW_REQUEST_SENT];
+    _isFollowing = [user boolForKey:KEY_IS_FOLLOWING];
+    _isEnabledContributors = [user boolForKey:KEY_CONTRIBUTORS_ENBLED];
+    _isEnabledGeo = [user boolForKey:KEY_GEO_ENABLED];
+    _isTranslator = [user boolForKey:KEY_IS_TRANSLATOR];
+    _isDefaultProfile = [user boolForKey:KEY_DEFAULT_PROFILE];
+    _isDefaultProfileImage = [user boolForKey:KEY_DEFAULT_PROFILE_IMAGE];
+    _isUsedUploadedBackgroundImage = [user boolForKey:KEY_PROFILE_USE_BACKGROUND_IMAGE];
+    _isShownMediaInline = [user boolForKey:KEY_SHOW_INLINE_MEDIA];
+    _isTileAtProfileBackgound = [user boolForKey:KEY_PROFILE_BACKGROUND_TILE];
     
-    _urlHTTPSAtProfileImage = [user stringForKey:@"profile_image_url_https"];
+        
+    _urlHTTPSAtProfileImage = [user stringForKey:KEY_PROFILE_IMAGE_URL_HTTPS];
+}
+
+- (id)initWithCoder:(NSCoder *)aDecoder
+{
+    self = [super init];
+    if (self) {
+        _screenName = [aDecoder decodeObjectForKey:KEY_SCREEN_NAME];
+        _userID = [aDecoder decodeObjectForKey:KEY_USER_ID];
+        _userIDStr = [aDecoder decodeObjectForKey:KEY_USER_ID_STR];
+        _characterName = [aDecoder decodeObjectForKey:KEY_CHARACTER_NAME];
+    }
+    
+    return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)aCoder
+{
+    [aCoder encodeObject:_screenName forKey:KEY_SCREEN_NAME];
+    [aCoder encodeObject:_userID forKey:KEY_USER_ID];
+    [aCoder encodeObject:_userIDStr forKey:KEY_USER_ID_STR];
+    [aCoder encodeObject:_characterName forKey:KEY_CHARACTER_NAME];
 }
 
 @end

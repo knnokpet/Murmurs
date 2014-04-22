@@ -12,7 +12,7 @@
 @class MBUser;
 @class MBEntity;
 @class MBPlace;
-@interface MBTweet : NSObject
+@interface MBTweet : NSObject <NSCoding>
 
 @property (nonatomic, readonly) NSString *tweetText;
 @property (nonatomic, readonly) NSNumber *tweetID; // 64bit integer = s unsigned long long

@@ -11,7 +11,7 @@
 
 @class MBTweet;
 @class MBEntity;
-@interface MBUser : NSObject
+@interface MBUser : NSObject <NSCoding>
 
 @property (nonatomic, readonly) NSString *screenName;
 @property (nonatomic, readonly) NSNumber *userID;
@@ -34,6 +34,7 @@
 @property (nonatomic, assign, readonly) BOOL isVerified;
 @property (nonatomic, assign, readonly) BOOL isProtected;
 @property (nonatomic, assign, readonly) BOOL isSentRequestToProtectedUser;// NULLable
+@property (nonatomic, assign, readonly) BOOL isFollowing;
 @property (nonatomic, assign, readonly) BOOL isEnabledContributors;
 @property (nonatomic, assign, readonly) BOOL isEnabledGeo;
 @property (nonatomic, assign, readonly) BOOL isTranslator;

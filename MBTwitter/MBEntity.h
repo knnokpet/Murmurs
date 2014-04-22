@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "NSDictionary+Objects.h"
 
-@interface MBEntity : NSObject
+@interface MBEntity : NSObject <NSCoding>
 
 @property (nonatomic, readonly) NSArray *hashtags;
 @property (nonatomic, readonly) NSArray *media;

@@ -8,6 +8,6 @@
 
 #import "MBLink.h"
 
-@interface MBHashTagLink : MBLink
+@interface MBHashTagLink : MBLink <NSCoding>
 
 @end

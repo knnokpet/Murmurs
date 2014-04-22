@@ -18,4 +18,25 @@
     self.displayText = [dictionary stringForKey:@"text"];
 }
 
+- (id)initWithCoder:(NSCoder *)aDecoder
+{
+    self = [super init];
+    if (self) {
+        NSArray *index = [aDecoder decodeObjectForKey:@"index"];
+        self.textIndex = [[MBTextIndex alloc] initWithArray:index];
+        self.displayText = [aDecoder decodeObjectForKey:@"displayText"];
+    }
+    
+    return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)aCoder
+{
+    NSNumber *begin = [NSNumber numberWithInteger:self.textIndex.begin];
+    NSNumber *end = [NSNumber numberWithInteger:self.textIndex.end];
+    NSArray *index = [NSArray arrayWithObjects:begin, end, nil];
+    [aCoder encodeObject:index forKey:@"index"];
+    [aCoder encodeObject:self.displayText forKey:@"displayText"];
+}
+
 @end

@@ -8,7 +8,7 @@
 
 #import "MBLink.h"
 
-@interface MBMediaLink : MBLink
+@interface MBMediaLink : MBLink <NSCoding>
 
 @property (nonatomic, readonly) NSNumber *mediaID;
 @property (nonatomic, readonly) NSString *mediaIDStr;

@@ -16,7 +16,6 @@
 #define ENTITY_KEY_MEDIA @"media"
 #define ENTITY_KEY_URLS @"urls"
 #define ENTITY_KEY_USER_MENTHIONS @"user_mentions"
-#define ENTITY_KEY_URL @"url"
 
 @implementation MBEntity
 - (id)initWithDictionary:(NSDictionary *)entity
@@ -37,14 +36,14 @@
     NSArray *parsedURLs = [entity arrayForKey:ENTITY_KEY_URLS];
     NSArray *parsedMentions = [entity arrayForKey:ENTITY_KEY_USER_MENTHIONS];
     
-    [self configureEntityFromParsedArrat:parsedHashTags forKey:ENTITY_KEY_HASHTAG];
-    [self configureEntityFromParsedArrat:parsedMedia forKey:ENTITY_KEY_MEDIA];
-    [self configureEntityFromParsedArrat:parsedURLs forKey:ENTITY_KEY_MEDIA];
-    [self configureEntityFromParsedArrat:parsedMentions forKey:ENTITY_KEY_USER_MENTHIONS];
+    [self configureEntityFromParsedArray:parsedHashTags forKey:ENTITY_KEY_HASHTAG];
+    [self configureEntityFromParsedArray:parsedMedia forKey:ENTITY_KEY_MEDIA];
+    [self configureEntityFromParsedArray:parsedURLs forKey:ENTITY_KEY_MEDIA];
+    [self configureEntityFromParsedArray:parsedMentions forKey:ENTITY_KEY_USER_MENTHIONS];
     
 }
 
-- (void)configureEntityFromParsedArrat:(NSArray *)fromArray forKey:(NSString *)key
+- (void)configureEntityFromParsedArray:(NSArray *)fromArray forKey:(NSString *)key
 {
     if (nil == fromArray) {
         return;
@@ -77,6 +76,27 @@
     } else if (NSOrderedSame == [key isEqualToString:ENTITY_KEY_USER_MENTHIONS]) {
         _userMentions = entities;
     }
+}
+
+- (id)initWithCoder:(NSCoder *)aDecoder
+{
+    self = [super init];
+    if (self) {
+        _hashtags = [aDecoder decodeObjectForKey:ENTITY_KEY_HASHTAG];
+        _media = [aDecoder decodeObjectForKey:ENTITY_KEY_MEDIA];
+        _urls = [aDecoder decodeObjectForKey:ENTITY_KEY_URLS];
+        _userMentions = [aDecoder decodeObjectForKey:ENTITY_KEY_USER_MENTHIONS];
+    }
+    
+    return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)aCoder
+{
+    [aCoder encodeObject:_hashtags forKey:ENTITY_KEY_HASHTAG];
+    [aCoder encodeObject:_media forKey:ENTITY_KEY_MEDIA];
+    [aCoder encodeObject:_urls forKey:ENTITY_KEY_URLS];
+    [aCoder encodeObject:_userMentions forKey:ENTITY_KEY_USER_MENTHIONS];
 }
 
 @end
