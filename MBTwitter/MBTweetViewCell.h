@@ -8,10 +8,11 @@
 
 #import <UIKit/UIKit.h>
 
+@class MBTweetTextView;
 @interface MBTweetViewCell : UITableViewCell
 @property (weak, nonatomic) IBOutlet UIImageView *iconImageView;
 @property (weak, nonatomic) IBOutlet UILabel *screenNameLabel;
 @property (weak, nonatomic) IBOutlet UILabel *idLabel;
-@property (weak, nonatomic) IBOutlet UITextView *textView;
+@property (weak, nonatomic) IBOutlet MBTweetTextView *tweetTextView;
 
 @end
