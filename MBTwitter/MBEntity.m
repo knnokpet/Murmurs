@@ -38,7 +38,7 @@
     
     [self configureEntityFromParsedArray:parsedHashTags forKey:ENTITY_KEY_HASHTAG];
     [self configureEntityFromParsedArray:parsedMedia forKey:ENTITY_KEY_MEDIA];
-    [self configureEntityFromParsedArray:parsedURLs forKey:ENTITY_KEY_MEDIA];
+    [self configureEntityFromParsedArray:parsedURLs forKey:ENTITY_KEY_URLS];
     [self configureEntityFromParsedArray:parsedMentions forKey:ENTITY_KEY_USER_MENTHIONS];
     
 }
@@ -54,26 +54,26 @@
     
     for (NSDictionary *entity in fromArray) {
         MBLink *linkObj;
-        if (NSOrderedSame == [key isEqualToString:ENTITY_KEY_HASHTAG]) {
+        if (YES == [key isEqualToString:ENTITY_KEY_HASHTAG]) {
             linkObj = [[MBHashTagLink alloc] initWithDictionary:entity];
-        } else if (NSOrderedSame == [key isEqualToString:ENTITY_KEY_MEDIA]) {
+        } else if (YES == [key isEqualToString:ENTITY_KEY_MEDIA]) {
             linkObj = [[MBMediaLink alloc] initWithDictionary:entity];
-        } else if (NSOrderedSame == [key isEqualToString:ENTITY_KEY_URLS]) {
+        } else if (YES == [key isEqualToString:ENTITY_KEY_URLS]) {
             linkObj = [[MBURLLink alloc] initWithDictionary:entity];
-        } else if (NSOrderedSame == [key isEqualToString:ENTITY_KEY_USER_MENTHIONS]) {
+        } else if (YES == [key isEqualToString:ENTITY_KEY_USER_MENTHIONS]) {
             linkObj = [[MBMentionUserLink alloc] initWithDictionary:entity];
         }
         
         [entities addObject:linkObj];
     }
     
-    if (NSOrderedSame == [key isEqualToString:ENTITY_KEY_HASHTAG]) {
+    if (YES == [key isEqualToString:ENTITY_KEY_HASHTAG]) {
         _hashtags = entities;
-    } else if (NSOrderedSame == [key isEqualToString:ENTITY_KEY_MEDIA]) {
+    } else if (YES == [key isEqualToString:ENTITY_KEY_MEDIA]) {
         _media = entities;
-    } else if (NSOrderedSame == [key isEqualToString:ENTITY_KEY_URLS]) {
+    } else if (YES == [key isEqualToString:ENTITY_KEY_URLS]) {
         _urls = entities;
-    } else if (NSOrderedSame == [key isEqualToString:ENTITY_KEY_USER_MENTHIONS]) {
+    } else if (YES == [key isEqualToString:ENTITY_KEY_USER_MENTHIONS]) {
         _userMentions = entities;
     }
 }
