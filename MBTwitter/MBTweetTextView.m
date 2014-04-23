@@ -68,8 +68,10 @@
     };
     
     CTParagraphStyleRef paragraphStyleRef = CTParagraphStyleCreate(setting, sizeof(setting) / sizeof(CTParagraphStyleSetting));
-    [mutableAttributedString setAttributes:@{(id)kCTParagraphStyleAttributeName: (__bridge id) paragraphStyleRef} range:textRange];
+    [mutableAttributedString addAttributes:@{(id)kCTParagraphStyleAttributeName: (__bridge id) paragraphStyleRef} range:textRange];
     CFRelease(paragraphStyleRef);
+    
+    attributedString = mutableAttributedString;
     
     if (font) {
         CFStringRef fontName = (__bridge CFStringRef)font.fontName;
