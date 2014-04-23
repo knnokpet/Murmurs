@@ -8,6 +8,8 @@
 
 #import "MBTweetTextView.h"
 #import "MBTextLayout.h"
+#import "MBLineLayout.h"
+#import "MBLinkText.h"
 
 @interface MBTweetTextView()
 
@@ -161,6 +163,19 @@
     self.attributedString = mutableAttributedString;
 }
 
+- (MBLinkText *)linkAtPoint:(CGPoint)point
+{
+    for (MBLineLayout *lineLayout in self.textLayout.lineLayouts) {
+        NSLog(@"links = %d", [lineLayout.links count]);
+        MBLinkText *linkText = [lineLayout linkAtPoint:point];
+        if (nil != linkText) {
+            return linkText;
+        }
+    }
+    
+    return nil;
+}
+
 #pragma mark -
 - (void)updateLayout
 {
@@ -191,5 +206,16 @@
     [self.textLayout drawInContext:context];
 }
 
+#pragma mark -
+#pragma mark touch
+- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event
+{
+    MBLinkText *linkText = [self linkAtPoint:point];
+    if (nil != linkText) {
+        NSLog(@"linktext = %@", linkText.linkText);
+    }
+    
+    return nil;
+}
 
 @end

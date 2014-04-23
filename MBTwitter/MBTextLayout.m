@@ -156,6 +156,7 @@
                 MBTextGeo *textGeo = [[MBTextGeo alloc] initWithRect:linkRect lineIndex:[NSNumber numberWithInteger:index]];
                 [linkText addTextGeometory:textGeo];
                 
+                [lineLayout addLink:linkText];
             }
         }
         

@@ -7,6 +7,8 @@
 //
 
 #import "MBLineLayout.h"
+#import "MBLinkText.h"
+#import "MBTextGeo.h"
 
 @implementation MBLineLayout
 #pragma mark -
@@ -19,6 +21,8 @@
         _index = index;
         _rect = rect;
         _metrics = metrics;
+        
+        _links = [NSArray array];
     }
     
     return self;
@@ -60,6 +64,19 @@
 - (void)addLink:(MBLinkText *)link
 {
     _links = [self.links arrayByAddingObject:link];
+}
+
+- (MBLinkText *)linkAtPoint:(CGPoint)point
+{
+    for (MBLinkText *linkText in self.links) {
+        for (MBTextGeo *textGeo in linkText.geometries) {
+            if (CGRectContainsPoint(textGeo.rect, point)) {
+                return linkText;
+            }
+        }
+    }
+    
+    return nil;
 }
 
 @end

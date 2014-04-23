@@ -34,5 +34,6 @@ typedef struct {
 
 - (CGRect)rectOfStringWithRange:(NSRange)range;
 - (void)addLink:(MBLinkText *)link;
+- (MBLinkText *)linkAtPoint:(CGPoint)point;
 
 @end
