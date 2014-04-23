@@ -13,6 +13,7 @@
 
 @property (nonatomic) NSAttributedString *attributedString;
 @property (nonatomic, readonly) NSArray *lineLayouts;
+@property (nonatomic, readonly) NSArray *links;
 
 @property (nonatomic) CGRect bound;
 @property (nonatomic, readonly) CGRect frameRect;

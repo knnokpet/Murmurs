@@ -8,6 +8,8 @@
 
 #import "MBTextLayout.h"
 #import "MBLineLayout.h"
+#import "MBLinkText.h"
+#import "MBTextGeo.h"
 
 @interface MBTextLayout()
 {
@@ -25,7 +27,7 @@
 {
     self = [super init];
     if (self) {
-        _attributedString = attributedString;
+        self.attributedString = attributedString.copy;
     }
     
     return self;
@@ -40,18 +42,20 @@
     bound.size = constraintSize;
     textLayout.bound = bound;
     
+    
     [textLayout createFramesetter];
     [textLayout createFrame];
     [textLayout createLine];
     CGFloat height = 0;
     for (MBLineLayout *lineLayout in textLayout.lineLayouts) {
         height += (lineLayout.metrics.ascent + lineLayout.metrics.descent + lineLayout.metrics.leading);
+        NSLog(@"ascent = %f, descent = %f, leading = %f, height = %f", lineLayout.metrics.ascent, lineLayout.metrics.descent, lineLayout.metrics.leading, height);
     }
     
     CGRect textLayoutFrame = textLayout.frameRect;
     textLayoutFrame.size.height = height;
     
-    return textLayout.frameRect;
+    return textLayoutFrame;
 }
 
 #pragma mark -
@@ -78,8 +82,9 @@
     }
     
     CGRect frameRect = self.bound;
-    CGSize textSize = CTFramesetterSuggestFrameSizeWithConstraints(framesetterRef, CFRangeMake(0, [self.attributedString length]), NULL, CGSizeMake(frameRect.size.width, CGFLOAT_MAX), NULL);
+    CGSize textSize = CTFramesetterSuggestFrameSizeWithConstraints(framesetterRef, CFRangeMake(0, [_attributedString length]), NULL, CGSizeMake(frameRect.size.width, CGFLOAT_MAX), NULL);
     
+    frameRect.origin.y = CGRectGetMaxY(frameRect) - textSize.height;
     frameRect.size.height = textSize.height;
     
     CGMutablePathRef path = CGPathCreateMutable();
@@ -87,9 +92,25 @@
     frameRef = CTFramesetterCreateFrame(framesetterRef, CFRangeMake(0, 0), path, NULL);
     CFRelease(path);
     
+    
     _frameRect = frameRect;
     _frameRect.origin.y = 0.0f;
+}
+
+- (void)createLink
+{
+    NSMutableArray *links = [NSMutableArray array];
     
+    NSUInteger length = [self.attributedString length];
+    [self.attributedString enumerateAttribute:NSLinkAttributeName inRange:NSMakeRange(0, length) options:0 usingBlock:^(id value, NSRange range, BOOL *stop) {
+        if (value) {
+            NSString *text = [self.attributedString.string substringWithRange:range];
+            MBLinkText *linkText = [[MBLinkText alloc] initWithText:text object:value range:range];
+            [links addObject:linkText];
+        }
+    }];
+    
+    _links = links;
 }
 
 - (void)createLine
@@ -128,6 +149,16 @@
         
         MBLineLayout *lineLayout = [[MBLineLayout alloc] initWithLineRef:lineRef index:index rect:lineRect metrix:metrics];
         lineLayout.drawingRect = drawingRect;
+        
+        for (MBLinkText *linkText in self.links) {
+            CGRect linkRect = [lineLayout rectOfStringWithRange:linkText.textRange];
+            if (!CGRectIsEmpty(linkRect)) {
+                MBTextGeo *textGeo = [[MBTextGeo alloc] initWithRect:linkRect lineIndex:[NSNumber numberWithInteger:index]];
+                [linkText addTextGeometory:textGeo];
+                
+            }
+        }
+        
         [lineLayouts addObject:lineLayout];
         _lineLayouts = lineLayouts;
     }
@@ -137,6 +168,9 @@
 {
     [self createFramesetter];
     [self createFrame];
+    
+    [self createLink];
+    
     [self createLine];
 }
 
@@ -156,7 +190,7 @@
     NSArray *lineLayouts = self.lineLayouts;
     for (MBLineLayout *lineLayout in lineLayouts) {
         CGRect drawingRect = lineLayout.drawingRect;
-        CGContextSetTextPosition(context, drawingRect.origin.x, drawingRect.origin.y - lineLayout.metrics.descent);
+        CGContextSetTextPosition(context, drawingRect.origin.x, drawingRect.origin.y + lineLayout.metrics.descent);
         
         CTLineRef lineRef = lineLayout.lineRef;
         CTLineDraw(lineRef, context);

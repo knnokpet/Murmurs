@@ -10,7 +10,7 @@
 
 @implementation MBLineLayout
 #pragma mark -
-#pragma mark
+#pragma mark Initialize
 - (id)initWithLineRef:(CTLineRef)lineRef index:(NSInteger)index rect:(CGRect)rect metrix:(MBLineMetrics)metrics
 {
     self = [super init];
@@ -27,6 +27,39 @@
 - (void)dealloc
 {
     CFRelease(_lineRef);
+}
+
+#pragma mark -
+#pragma mark Setter & Getter
+- (NSRange)stringRange
+{
+    CFRange cfLineRange = CTLineGetStringRange(self.lineRef);
+    NSRange lineRange = NSMakeRange(cfLineRange.location, cfLineRange.length);
+    return lineRange;
+}
+
+#pragma mark -
+- (CGRect)rectOfStringWithRange:(NSRange)range
+{
+    CGRect rect = CGRectZero;
+    NSRange intersect = NSIntersectionRange(self.stringRange, range);
+    
+    if (intersect.length > 0) {
+        CTLineRef lineRef = self.lineRef;
+        CGFloat beginOffSet = CTLineGetOffsetForStringIndex(lineRef, intersect.location, NULL);
+        CGFloat endOffSet = CTLineGetOffsetForStringIndex(lineRef, NSMaxRange(intersect), NULL);
+        
+        rect = self.rect;
+        rect.origin.x += beginOffSet;
+        rect.size.width = (rect.size.width - (beginOffSet + endOffSet));
+    }
+    
+    return rect;
+}
+
+- (void)addLink:(MBLinkText *)link
+{
+    _links = [self.links arrayByAddingObject:link];
 }
 
 @end

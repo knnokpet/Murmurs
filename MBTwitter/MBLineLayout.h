@@ -17,6 +17,7 @@ typedef struct {
     double trailingWhiteSpaceWidth;
 }MBLineMetrics;
 
+@class MBLinkText;
 @interface MBLineLayout : NSObject
 
 @property (nonatomic, readonly) CTLineRef lineRef;
@@ -24,7 +25,14 @@ typedef struct {
 @property (nonatomic, readonly) CGRect rect;
 @property (nonatomic, readonly) MBLineMetrics metrics;
 @property (nonatomic) CGRect drawingRect;
+@property (nonatomic, readonly) NSRange stringRange;
+
+@property (nonatomic, readonly) NSArray *links;
+
 
 - (id)initWithLineRef:(CTLineRef)lineRef index:(NSInteger)index rect:(CGRect)rect metrix:(MBLineMetrics)metrics;
+
+- (CGRect)rectOfStringWithRange:(NSRange)range;
+- (void)addLink:(MBLinkText *)link;
 
 @end
