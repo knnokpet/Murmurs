@@ -65,7 +65,7 @@
         NSString *replaceString = mediaLink.displayText;
         
         [attributedString replaceCharactersInRange:NSMakeRange(begin, end - begin) withString:replaceString];
-        [attributedString addAttributes:@{NSLinkAttributeName: mediaLink, (id)kCTForegroundColorAttributeName: (id)linkTextColor} range:NSMakeRange(index.begin, index.end - index.begin)];
+        [attributedString addAttributes:@{NSLinkAttributeName: mediaLink, (id)kCTForegroundColorAttributeName: (id)linkTextColor} range:NSMakeRange(index.begin, replaceString.length)];
     }
     
     // URL
@@ -95,7 +95,7 @@
         
         NSString *replaceString = urlLink.displayText;
         [attributedString replaceCharactersInRange:NSMakeRange(begin, end - begin) withString:replaceString];
-        [attributedString addAttributes:@{NSLinkAttributeName: urlLink, (id)kCTForegroundColorAttributeName: (id)linkTextColor} range:NSMakeRange(index.begin, index.end - index.begin)];
+        [attributedString addAttributes:@{NSLinkAttributeName: urlLink, (id)kCTForegroundColorAttributeName: (id)linkTextColor} range:NSMakeRange(index.begin, replaceString.length)];
     }
     
     // Mention
