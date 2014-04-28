@@ -18,3 +18,4 @@
 #import "MBURLLink.h"
 #import "MBMentionUserLink.h"
 #import "MBTextIndex.h"
+#import "MBGapedTweet.h"
