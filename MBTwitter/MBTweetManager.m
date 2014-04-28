@@ -12,6 +12,10 @@
 #import "MBAccount.h"
 #import "MBPlace.h"
 
+#define SAVE_TWEET_MAX 1000
+#define SAVE_TWEET_PER 100
+#define SAVE_PATH @"tweet.dat"
+
 @interface MBTweetManager()
 
 @property (nonatomic, readonly) NSMutableDictionary *tweets;
@@ -121,40 +125,38 @@
     }
 }
 
-- (void)save
+- (void)saveWithTweets:(NSArray *)tweets
 {
     NSString *accountDirectoryPath = [self pathForCurrentAccount];
-    NSSortDescriptor *sortDesc = [[NSSortDescriptor alloc] initWithKey:nil ascending:NO];
-    NSArray *sortedArray = [[self.tweets allKeys] sortedArrayUsingDescriptors:@[sortDesc]];
+    NSMutableArray *tweetsForSave = [NSMutableArray arrayWithCapacity:SAVE_TWEET_PER];
     
-    NSMutableArray *saveArray = [NSMutableArray array];
-    
-    NSInteger index = 0;
-    NSInteger savingMax = 1000;
-    NSInteger tweets = 1;
-    for (NSString *key in sortedArray) {
-        MBTweet *tweet = [self storedTweetForKey:key];
-        [saveArray addObject:tweet];
+    NSInteger directoryIndex = 0;
+    NSInteger savingMax = SAVE_TWEET_MAX;
+    NSInteger tweetIndex = 1;
+    for (NSString *tweetID in tweets) {
+        MBTweet *tweet = [self storedTweetForKey:tweetID];
+        [tweetsForSave addObject:tweet];
         
-        if (0 == (tweets % 100)) {
-            NSString *saveDirPath = [self pathForIndex:index directory:accountDirectoryPath];
-            NSString *savePath = [saveDirPath stringByAppendingPathComponent:@"tweet.dat"];
+        if (0 == (tweetIndex % 100)) {
+            NSString *saveDirPath = [self pathForIndex:directoryIndex directory:accountDirectoryPath];
+            NSString *savePath = [saveDirPath stringByAppendingPathComponent:SAVE_PATH];
             
-            BOOL success = [NSKeyedArchiver archiveRootObject:saveArray toFile:savePath];
+            BOOL success = [NSKeyedArchiver archiveRootObject:tweetsForSave toFile:savePath];
+            
             if (YES == success) {
-                NSLog(@"successed  Saving Tweets");
+                NSLog(@"succeed save twets");
+                [tweetsForSave removeAllObjects];
             } else {
-                NSLog(@"failed Saving Tweets");
+                NSLog(@"failed save tweets");
                 break;
             }
-            [saveArray removeAllObjects];
         }
         
-        if (tweets == savingMax) {
+        if (tweetIndex == savingMax) {
             break;
         }
-        tweets++;
-    } // 100 より少ない時に保存できないやん！
+        tweetIndex ++;
+    }
 }
 
 - (NSArray *)savedTweetsAtIndex:(NSInteger)index
