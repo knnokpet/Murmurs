@@ -9,6 +9,12 @@
 #import <Foundation/Foundation.h>
 #import "NSDictionary+Objects.h"
 
+#define KEY_TWEET_TEXT @"text"
+#define KEY_TWEET_ID @"id"
+#define KEY_TWEET_ID_STR @"id_str"
+#define KEY_CREATED_AT_TIME @"created_at"
+#define KEY_ENTITY @"entities"
+
 @class MBUser;
 @class MBEntity;
 @class MBPlace;

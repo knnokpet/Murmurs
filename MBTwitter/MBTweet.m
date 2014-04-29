@@ -11,12 +11,8 @@
 #import "MBEntity.h"
 #import "MBPlace.h"
 
-#define KEY_TWEET_TEXT @"text"
-#define KEY_TWEET_ID @"id"
-#define KEY_TWEET_ID_STR @"id_str"
+
 #define KEY_TWEET_USER @"user"
-#define KEY_CREATED_AT_TIME @"created_at"
-#define KEY_ENTITY @"entities"
 #define KEY_PLACE @"place"
 #define KEY_FAVORITE_COUNT @"favorite_count"
 #define KEY_RETWEET_COUNT @"retweet_count"
