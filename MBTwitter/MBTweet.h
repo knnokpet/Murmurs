@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "NSDictionary+Objects.h"
 
+
 #define KEY_TWEET_TEXT @"text"
 #define KEY_TWEET_ID @"id"
 #define KEY_TWEET_ID_STR @"id_str"
@@ -20,12 +21,12 @@
 @class MBPlace;
 @interface MBTweet : NSObject <NSCoding>
 
-@property (nonatomic, readonly) NSString *tweetText;
-@property (nonatomic, readonly) NSNumber *tweetID; // 64bit integer = s unsigned long long
-@property (nonatomic, readonly) NSString *tweetIDStr;
+@property (nonatomic) NSString *tweetText;
+@property (nonatomic) NSNumber *tweetID; // 64bit integer = s unsigned long long
+@property (nonatomic) NSString *tweetIDStr;
 @property (nonatomic, readonly) MBUser *tweetUser;
-@property (nonatomic, readonly) NSDate *createdDate;
-@property (nonatomic, readonly) MBEntity *entity;
+@property (nonatomic) NSDate *createdDate;
+@property (nonatomic) MBEntity *entity;
 @property (nonatomic, readonly) MBPlace *place;// NULLable
 
 @property (nonatomic, readonly) NSInteger favoritedCount; // NULLable
