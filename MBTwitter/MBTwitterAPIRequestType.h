@@ -103,9 +103,11 @@ typedef enum MBTwitterAPIRequestType {
 } MBRequestType;
 
 typedef enum MBResponseType {
-    MBTwitterStatuses = 0,
-    MBTwitterStatuse = 1,
-    MBTwitterUsers = 2,
-    MBTwitterUser = 3,
-    MBTwitterHelp = 4,
+    MBTwitterStatusesResponse = 0,
+    MBTwitterStatuseResponse = 1,
+    MBTwitterUsersResponse = 2,
+    MBTwitterUserResponse = 3,
+    MBTwitterDirectMessagesResponse = 4,
+    MBTwitterDirectMessageResponse = 5,
+    MBTwitterHelpResponse = 6,
 } MBResponseType;
