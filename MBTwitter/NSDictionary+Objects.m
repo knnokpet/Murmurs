@@ -74,4 +74,14 @@
     }
 }
 
+- (NSMutableArray *)mutableArrayForKey:(NSString *)key
+{
+    id obj = [self objectForKey:key];
+    if ([obj isKindOfClass:[NSMutableArray class]]) {
+        return (NSMutableArray *)obj;
+    } else {
+        return nil;
+    }
+}
+
 @end
