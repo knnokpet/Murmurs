@@ -81,8 +81,6 @@
                         NSMutableIndexSet *indexSet = [NSMutableIndexSet indexSetWithIndexesInRange:NSMakeRange(gapedTweet.index, addingIndex)];
                         [self.sourceTweets insertObjects:tweets atIndexes:indexSet];
                         [updates setObject:indexSet forKey:UPDATE_KEY];
-                        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:[indexSet lastIndex] + 1 inSection:0];
-                        [updates setObject:indexPath forKey:REMOVE_KEY];
 
                         // 足された分、残りの Gap.index をずらす
                         for (NSInteger i = index ; i < gapsCount; i ++) {
