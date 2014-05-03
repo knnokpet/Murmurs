@@ -38,6 +38,13 @@
         [attributedString addAttributes:@{NSLinkAttributeName: hashtagLink, (id)kCTForegroundColorAttributeName: (id)linkTextColor} range:NSMakeRange(index.begin, index.end - index.begin)];
     }
     
+    // Mention
+    NSArray *mentionUsers = entity.userMentions;
+    for (MBMentionUserLink *mentionLink in mentionUsers) {
+        MBTextIndex *index = mentionLink.textIndex;
+        [attributedString addAttributes:@{NSLinkAttributeName: mentionLink, (id)kCTForegroundColorAttributeName: (id)linkTextColor} range:NSMakeRange(index.begin, index.end - index.begin)];
+    }
+    
     // media
     NSArray *media = entity.media;
     for (MBMediaLink *mediaLink in media.reverseObjectEnumerator) {
@@ -96,13 +103,6 @@
         NSString *replaceString = urlLink.displayText;
         [attributedString replaceCharactersInRange:NSMakeRange(begin, end - begin) withString:replaceString];
         [attributedString addAttributes:@{NSLinkAttributeName: urlLink, (id)kCTForegroundColorAttributeName: (id)linkTextColor} range:NSMakeRange(index.begin, replaceString.length)];
-    }
-    
-    // Mention
-    NSArray *mentionUsers = entity.userMentions;
-    for (MBMentionUserLink *mentionLink in mentionUsers) {
-        MBTextIndex *index = mentionLink.textIndex;
-        [attributedString addAttributes:@{NSLinkAttributeName: mentionLink, (id)kCTForegroundColorAttributeName: (id)linkTextColor} range:NSMakeRange(index.begin, index.end - index.begin)];
     }
     
     // 特殊文字
