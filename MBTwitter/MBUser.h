@@ -13,6 +13,8 @@
 @class MBEntity;
 @interface MBUser : NSObject <NSCoding>
 
+@property (nonatomic, assign, readonly) BOOL isDecoded;
+
 @property (nonatomic, readonly) NSString *screenName;
 @property (nonatomic, readonly) NSNumber *userID;
 @property (nonatomic, readonly) NSString *userIDStr;

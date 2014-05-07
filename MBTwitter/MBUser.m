@@ -14,9 +14,9 @@
 #define KEY_USER_ID @"id"
 #define KEY_USER_ID_STR @"id_str"
 #define KEY_DESCRIPTION @"description"
-#define KEY_TWEET_COUNT @"status_count"
+#define KEY_TWEET_COUNT @"statuses_count"
 #define KEY_LIST_COUNT @"listed_count"
-#define KEY_FAVORITE_COUNT @"favorites_count"
+#define KEY_FAVORITE_COUNT @"favourites_count"
 #define KEY_FOLLOWER_COUNT @"followers_count"
 #define KEY_FOLLOWING_COUNT @"friends_count"
 #define KEY_LOCATION @"location"
@@ -65,7 +65,7 @@
     _location = [user stringForKey:KEY_LOCATION];
     _characterName = [user stringForKey:KEY_CHARACTER_NAME];
     NSString *createdDateStr = [user stringForKey:KEY_CREATED_AT_TIME];
-    _createdDate = [[[NSDateFormatter alloc] init] dateFromString:createdDateStr];
+    _createdDate = [NSDate parseDateUsingStrptime:createdDateStr];
     _entity = [[MBEntity alloc] initWithDictionary:[[user dictionaryForKey:KEY_ENTITY] dictionaryForKey:KEY_ENTITY_URL]];
     // バグる。多分、延々と潜り続けた初期化をするから。
     //NSDictionary *currentTweetDict = [user dictionaryForKey:@"status"];
@@ -98,6 +98,8 @@
         _userID = [aDecoder decodeObjectForKey:KEY_USER_ID];
         _userIDStr = [aDecoder decodeObjectForKey:KEY_USER_ID_STR];
         _characterName = [aDecoder decodeObjectForKey:KEY_CHARACTER_NAME];
+        _urlHTTPSAtProfileImage = [aDecoder decodeObjectForKey:KEY_PROFILE_IMAGE_URL_HTTPS];
+        _isDecoded = YES;
     }
     
     return self;
@@ -109,6 +111,7 @@
     [aCoder encodeObject:_userID forKey:KEY_USER_ID];
     [aCoder encodeObject:_userIDStr forKey:KEY_USER_ID_STR];
     [aCoder encodeObject:_characterName forKey:KEY_CHARACTER_NAME];
+    [aCoder encodeObject:_urlHTTPSAtProfileImage forKey:KEY_PROFILE_IMAGE_URL_HTTPS];
 }
 
 @end

@@ -49,7 +49,7 @@
     _tweetIDStr = [tweet stringForKey:KEY_TWEET_ID_STR];
     _tweetUser = [[MBUser alloc] initWithDictionary:[tweet dictionaryForKey:KEY_TWEET_USER]];
     NSString *dateStr = [tweet stringForKey:KEY_CREATED_AT_TIME];
-    _createdDate = [[[NSDateFormatter alloc] init] dateFromString:dateStr];
+    _createdDate = [NSDate parseDateUsingStrptime:dateStr];
     
     _entity = [[MBEntity alloc] initWithDictionary:[tweet dictionaryForKey:KEY_ENTITY]];
     _place = [[MBPlace alloc] initWithDictionary:[tweet dictionaryForKey:KEY_PLACE]];
@@ -112,6 +112,7 @@
         _language = [aDecoder decodeObjectForKey:KEY_LANGUAGE];
         _filterLebel = [aDecoder decodeObjectForKey:KEY_FILTER_LEVEL];
         
+        _isDecoded = YES;
     }
     
     return self;

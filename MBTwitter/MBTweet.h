@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "NSDictionary+Objects.h"
+#import "NSDate+strptime.h"
 
 
 #define KEY_TWEET_TEXT @"text"
@@ -20,6 +21,8 @@
 @class MBEntity;
 @class MBPlace;
 @interface MBTweet : NSObject <NSCoding>
+
+@property (nonatomic, assign, readonly) BOOL isDecoded;
 
 @property (nonatomic) NSString *tweetText;
 @property (nonatomic) NSNumber *tweetID; // 64bit integer = s unsigned long long
