@@ -16,8 +16,11 @@
 - (MBTweet *)storedTweetForKey:(NSString *)key;
 - (void)storeTweet:(MBTweet *)tweet;
 
-- (void)saveWithTweets:(NSArray *)tweets;
-- (NSArray *)savedTweetsAtIndex:(NSInteger)index;
+- (void)saveTimeline:(NSArray *)tweets;
+- (void)saveReply:(NSArray *)tweets;
+- (NSArray *)savedTimelineAtIndex:(NSInteger)index;
+- (NSArray *)savedReplyAtIndex:(NSInteger)index;
+
 - (void)deleteAllSavedTweets;
 
 @end

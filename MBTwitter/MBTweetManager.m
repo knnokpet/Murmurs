@@ -14,6 +14,9 @@
 
 #define SAVE_TWEET_MAX 1000
 #define SAVE_TWEET_PER 100
+
+#define SAVE_TIMELINE_PATH @"Timeline"
+#define SAVE_REPLY_PATH @"Reply"
 #define SAVE_PATH @"tweet.dat"
 
 @interface MBTweetManager()
@@ -44,7 +47,7 @@
         _tweets = [NSMutableDictionary dictionary];
         
         NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-        _tweetDirectory = [[paths lastObject] stringByAppendingPathComponent:@"tweet"];
+        _tweetDirectory = [[paths lastObject] stringByAppendingPathComponent:@"Tweet"];
         [self createDirectories];
     }
     
@@ -107,12 +110,23 @@
         NSString *accountDirectoryPath = [self.tweetDirectory stringByAppendingPathComponent:accountID];
         [self createDirectoryAtPath:accountDirectoryPath];
         
-        for (NSInteger i = 0; i < 10; i ++) {
-            NSString *subPath = [NSString stringWithFormat:@"%@/%X", accountDirectoryPath, i];
-            [self createDirectoryAtPath:subPath];
-        }
+        NSString *timelinePath = [accountDirectoryPath stringByAppendingPathComponent:SAVE_TIMELINE_PATH];
+        [self createDirectoryAtPath:timelinePath];
+        [self createSubPathAtPath:timelinePath];
+        
+        NSString *replyPath = [accountDirectoryPath stringByAppendingPathComponent:SAVE_REPLY_PATH];
+        [self createDirectoryAtPath:replyPath];
+        [self createSubPathAtPath:replyPath];
+        
     }
-    
+}
+
+- (void)createSubPathAtPath:(NSString *)path
+{
+    for (NSInteger i = 0; i < 10; i ++) {
+        NSString *subPath = [NSString stringWithFormat:@"%@/%X", path, i];
+        [self createDirectoryAtPath:subPath];
+    }
 }
 
 - (void)createDirectoryAtPath:(NSString *)path
@@ -125,9 +139,24 @@
     }
 }
 
-- (void)saveWithTweets:(NSArray *)tweets
+#pragma mark -
+- (void)saveTimeline:(NSArray *)tweets
 {
     NSString *accountDirectoryPath = [self pathForCurrentAccount];
+    NSString *timelinePath = [accountDirectoryPath stringByAppendingPathComponent:SAVE_TIMELINE_PATH];
+    [self saveTweets:tweets atPath:timelinePath];
+}
+
+- (void)saveReply:(NSArray *)tweets
+{
+    NSString *accountDirectoryPath = [self pathForCurrentAccount];
+    NSString *timelinePath = [accountDirectoryPath stringByAppendingPathComponent:SAVE_REPLY_PATH];
+    [self saveTweets:tweets atPath:timelinePath];
+}
+
+- (void)saveTweets:(NSArray *)tweets atPath:(NSString *)path
+{
+    
     NSMutableArray *tweetsForSave = [NSMutableArray arrayWithCapacity:SAVE_TWEET_PER];
     
     NSInteger directoryIndex = 0;
@@ -138,7 +167,7 @@
         [tweetsForSave addObject:tweet];
         
         if (0 == (tweetIndex % 100)) {
-            NSString *saveDirPath = [self pathForIndex:directoryIndex directory:accountDirectoryPath];
+            NSString *saveDirPath = [self pathForIndex:directoryIndex directory:path];
             NSString *savePath = [saveDirPath stringByAppendingPathComponent:SAVE_PATH];
             
             BOOL success = [NSKeyedArchiver archiveRootObject:tweetsForSave toFile:savePath];
@@ -159,10 +188,27 @@
     }
 }
 
-- (NSArray *)savedTweetsAtIndex:(NSInteger)index
+- (NSArray *)savedTimelineAtIndex:(NSInteger)index
 {
     NSString *accountDirectoryPath = [self pathForCurrentAccount];
-    NSString *saveDirpath = [self pathForIndex:index directory:accountDirectoryPath];
+    NSString *timelinePath = [accountDirectoryPath stringByAppendingPathComponent:SAVE_TIMELINE_PATH];
+    return [self savedTweetsAtPath:timelinePath atIndex:index];
+}
+
+- (NSArray *)savedReplyAtIndex:(NSInteger)index
+{
+    NSString *accountDirectoryPath = [self pathForCurrentAccount];
+    NSString *replyPath = [accountDirectoryPath stringByAppendingPathComponent:SAVE_REPLY_PATH];
+    return [self savedTweetsAtPath:replyPath atIndex:index];
+}
+
+- (NSArray *)savedTweetsAtPath:(NSString *)path atIndex:(NSInteger)index
+{
+    if (0 > index || nil == path || 0 == path.length) {
+        return nil;
+    }
+    
+    NSString *saveDirpath = [self pathForIndex:index directory:path];
     NSString *savePath = [saveDirpath stringByAppendingPathComponent:@"tweet.dat"];
     NSArray *savedTweets = [NSKeyedUnarchiver unarchiveObjectWithFile:savePath];
     NSMutableArray *tweetIDs = [NSMutableArray arrayWithCapacity:200];
@@ -173,6 +219,8 @@
     
     return tweetIDs;
 }
+
+#pragma mark -
 
 - (void)deleteAllSavedTweets
 {
