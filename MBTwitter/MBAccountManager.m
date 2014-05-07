@@ -35,6 +35,7 @@
     self = [super init];
     if (self) {
         [self updateAccounts];
+        
         _currentAccount = [self storedCurrentAccount];
     }
     
@@ -104,9 +105,8 @@
     
     NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
     
-    NSMutableArray *savingAccounts = [NSMutableArray arrayWithArray:[userDefaults arrayForKey:USER_DEFAULTS_KEY_AOUTH_ACCOUNT]];
-    [savingAccounts addObject:myAccount];
-    
+    NSMutableDictionary *savingAccounts = [NSMutableDictionary dictionaryWithDictionary:[userDefaults dictionaryForKey:USER_DEFAULTS_KEY_AOUTH_ACCOUNT]];
+    [savingAccounts setObject:myAccount forKey:[myAccount stringForKey:@"user_id"]];
     [userDefaults setObject:savingAccounts forKey:USER_DEFAULTS_KEY_AOUTH_ACCOUNT];
     
     [self updateAccounts];
@@ -115,10 +115,14 @@
 - (void)updateAccounts
 {
     NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
-    NSArray *storedMyAccounts = [userDefaults arrayForKey:USER_DEFAULTS_KEY_AOUTH_ACCOUNT];
+
+    NSDictionary *storedMyAccounts = [userDefaults dictionaryForKey:USER_DEFAULTS_KEY_AOUTH_ACCOUNT];
+    NSSortDescriptor *sortDescripter = [[NSSortDescriptor alloc] initWithKey:nil ascending:YES];
+    NSArray *sortedKeys = [[storedMyAccounts allKeys] sortedArrayUsingDescriptors:@[sortDescripter]];
     
     NSMutableArray *accounts = [NSMutableArray array];
-    for (NSDictionary *accountData in storedMyAccounts) {
+    for (NSString *key in sortedKeys) {
+        NSDictionary *accountData = [storedMyAccounts dictionaryForKey:key];
         MBAccount *account = [[MBAccount alloc] initWithDictionary:accountData];
         [accounts addObject:account];
     }
@@ -163,6 +167,8 @@
 - (void)deleteAllAccount{
     NSUserDefaults *userDefault = [NSUserDefaults standardUserDefaults];
     [userDefault removeObjectForKey:USER_DEFAULTS_KEY_AOUTH_ACCOUNT];
+    [userDefault removeObjectForKey:USER_CURRENT_SELECTED];
+    
     [self updateAccounts];
 }
 
