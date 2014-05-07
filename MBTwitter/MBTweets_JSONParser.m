@@ -26,6 +26,7 @@
         for (NSDictionary *parsedTweet in (NSArray *)parsedObj) {
             MBTweet *tweet = [[MBTweet alloc] initWithDictionary:parsedTweet];
             [[MBTweetManager sharedInstance] storeTweet:tweet];
+            [[MBUserManager sharedInstance] storeUser:tweet.tweetUser];
             [gotTweets addObject:tweet.tweetIDStr];
         }
         
