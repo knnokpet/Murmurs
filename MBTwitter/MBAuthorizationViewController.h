@@ -15,6 +15,7 @@
 
 @property (nonatomic) MBTwitterAccesser *twitterAccesser;
 @property (nonatomic, weak) id <MBAuthorizationViewControllerDelegate> delegate;
+@property (weak, nonatomic) IBOutlet UIWebView *webView;
 
 @end
 

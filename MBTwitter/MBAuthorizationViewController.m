@@ -11,10 +11,6 @@
 
 @interface MBAuthorizationViewController () <UIWebViewDelegate>
 
-
-@property (weak, nonatomic) IBOutlet UIWebView *webView;
-@property (weak, nonatomic) IBOutlet UIBarButtonItem *cancelButton;
-
 @end
 
 @implementation MBAuthorizationViewController
@@ -33,12 +29,27 @@
 
 #pragma mark -
 #pragma mark View
+
+- (void)commonConfigureView
+{
+    [self commonConfigureNavigationItem];
+    
+    self.webView.delegate = self;
+}
+
+- (void)commonConfigureNavigationItem
+{
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Cancel", nil) style:UIBarButtonItemStylePlain target:self action:@selector(didPushCancelButton)];
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Log In", nil) style:UIBarButtonItemStyleDone target:self action:@selector(didPushLoginButton)];
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    [self commonConfigureView];
+    
     self.twitterAccesser.delegate = self;
-    self.webView.delegate = self;
     
     BOOL isAuthorized = [self.twitterAccesser isAuthorized];
     if (!isAuthorized) {
@@ -55,11 +66,18 @@
 
 #pragma mark -
 #pragma mark Action
-- (IBAction)didPushCancelButton:(id)sender {
+- (void)didPushCancelButton
+{
     if ([_delegate respondsToSelector:@selector(dismissAuthorizationViewController:animated:)]) {
         [_delegate dismissAuthorizationViewController:self animated:YES];
     }
 }
+
+- (void)didPushLoginButton
+{
+    
+}
+
 
 #pragma mark Private Methods
 - (NSString *)authPinInWebView: (UIWebView *)webView;
