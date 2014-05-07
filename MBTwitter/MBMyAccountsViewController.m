@@ -15,12 +15,6 @@
 
 @property (nonatomic) NSArray *accounts;
 
-// View
-@property (weak, nonatomic) IBOutlet UIBarButtonItem *closeButton;
-@property (weak, nonatomic) IBOutlet UIBarButtonItem *accountButton;
-@property (weak, nonatomic) IBOutlet UITableView *tableView;
-@property (weak, nonatomic) IBOutlet UIButton *deleteAccount;
-
 @end
 
 @implementation MBMyAccountsViewController
@@ -34,12 +28,26 @@
     return self;
 }
 
+- (void)commonConfigureView
+{
+    [self commonConfigureNavigationItem];
+    
+    self.tableView.delegate = self;
+    self.tableView.dataSource = self;
+    
+}
+
+- (void)commonConfigureNavigationItem
+{
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Close", nil) style:UIBarButtonItemStyleDone target:self action:@selector(didPushCloseButton)];
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"New Account", nil) style:UIBarButtonItemStylePlain target:self action:@selector(didPushAccountButton)];
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    self.tableView.delegate = self;
-    self.tableView.dataSource = self;
+    [self commonConfigureView];
     
     [self.twitterAccessor isAuthorized];
     
@@ -89,20 +97,33 @@
 #pragma mark -
 #pragma mark Button Action
 
-- (IBAction)didPushCloseButton:(id)sender {
+- (void)didPushCloseButton
+{
     if ([_delegate respondsToSelector:@selector(dismissAccountsViewController:animated:)]) {
         [_delegate dismissAccountsViewController:self animated:YES];
     }
 }
 
-- (IBAction)didPushAccountButton:(id)sender {
-    [self performSegueWithIdentifier:@"AuthorizationIdentifier" sender:self];
+- (void)didPushAccountButton
+{
+    MBAuthorizationViewController *authorizationViewController = [[MBAuthorizationViewController alloc] initWithNibName:@"AuthorizationView" bundle:nil];
+    authorizationViewController.delegate = self;
+    MBTwitterAccesser *newAccesser = [[MBTwitterAccesser alloc] init];
+    authorizationViewController.twitterAccesser = newAccesser;
+    UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:authorizationViewController];
+    [self.navigationController presentViewController:navigationController animated:YES completion:nil];
 }
-- (IBAction)didPushDeleteButton:(id)sender {
+
+- (void)didPushDeleteButton
+{
     MBAccountManager *accountManager = [MBAccountManager sharedInstance];
     [accountManager deleteAllAccount];
     self.accounts = [MBAccountManager sharedInstance].accounts;
     [self.tableView reloadData];
+}
+
+- (IBAction)didPushAccountButton:(id)sender {
+    [self performSegueWithIdentifier:@"AuthorizationIdentifier" sender:self];
 }
 
 #pragma mark -
@@ -158,6 +179,7 @@
 #pragma mark AuthorizationViewController Delegate
 - (void)dismissAuthorizationViewController:(MBAuthorizationViewController *)controller animated:(BOOL)animated
 {
+    [self.tableView reloadData];
     [controller dismissViewControllerAnimated:animated completion:nil];
 }
 

@@ -10,14 +10,16 @@
 #import "MBAuthorizationViewController.h"
 
 @protocol MBMyAccountsViewControlerDelegate;
-
 @class MBTwitterAccesser;
 @interface MBMyAccountsViewController : UIViewController <MBAuthorizationViewControllerDelegate>
 
 @property (nonatomic) MBTwitterAccesser *twitterAccessor;
 @property (nonatomic, weak) id <MBMyAccountsViewControlerDelegate> delegate;
 
+@property (weak, nonatomic) IBOutlet UITableView *tableView;
+
 @end
+
 
 
 @protocol MBMyAccountsViewControlerDelegate <NSObject>
