@@ -9,6 +9,9 @@
 #import <Foundation/Foundation.h>
 #import "MBTweetManager.h"
 #import "MBTweet.h"
+#import "MBUserManager.h"
+#import "MBUser.h"
+
 #import "NSDictionary+Objects.h"
 
 typedef void (^ParsingCompletion)(NSArray *parsedObjects);
