@@ -22,6 +22,19 @@
     return self;
 }
 
+- (id)initWithJSONData:(NSData *)jsonData completionHandlerWithCursor:(ParsingCompletionWithCursor)completion
+{
+    self = [super init];
+    if (self) {
+        _jsonData = jsonData;
+        _completionWithCursor = completion;
+    }
+    
+    return self;
+}
+
+#pragma mark -
+#pragma mark Parse
 - (void)startParsing
 {
     NSError *parsingError = nil;

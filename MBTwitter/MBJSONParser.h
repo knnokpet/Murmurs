@@ -15,13 +15,17 @@
 #import "NSDictionary+Objects.h"
 
 typedef void (^ParsingCompletion)(NSArray *parsedObjects);
+typedef void (^ParsingCompletionWithCursor)(NSArray *parsedObjects, NSNumber *nextCursor, NSNumber *previousCursor);
 
 @interface MBJSONParser : NSObject
 
 @property (nonatomic, readonly) NSData *jsonData;
 @property (nonatomic, readonly) ParsingCompletion completion;
+@property (nonatomic, readonly) ParsingCompletionWithCursor completionWithCursor;
 
 - (id)initWithJSONData:(NSData *)jsonData completionHandler:(ParsingCompletion)completion;
+- (id)initWithJSONData:(NSData *)jsonData completionHandlerWithCursor:(ParsingCompletionWithCursor)completion;
+
 - (void)startParsing;
 - (void)configure:(id)parsedObj;
 - (void)failedParsing:(NSError *)error;
