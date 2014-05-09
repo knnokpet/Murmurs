@@ -187,7 +187,7 @@
 
 #pragma mark -
 #pragma mark crear Cache
-- (void)crearMemoryCache
+- (void)clearMemoryCache
 {
     [self.profileImageCache removeAllObjects];
     [self.mediaImageCache removeAllObjects];
@@ -195,7 +195,7 @@
 
 - (void)deleteAllCacheFiles
 {
-    [self crearMemoryCache];
+    [self clearMemoryCache];
     
     if ([self.fileManager fileExistsAtPath:self.cacheDirectory]) {
         if ([self.fileManager removeItemAtPath:self.cacheDirectory error:nil]) {

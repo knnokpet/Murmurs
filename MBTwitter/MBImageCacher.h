@@ -19,7 +19,7 @@
 - (void)storeProfileImage:(UIImage *)image data:(NSData *)data forUserID:(NSString *)userID;
 - (void)storeMediaImage:(UIImage *)image data:(NSData *)data  forMediaID:(NSString *)mediaID;
 
-- (void)crearMemoryCache;
+- (void)clearMemoryCache;
 - (void)deleteAllCacheFiles;
 
 @end
