@@ -112,7 +112,7 @@
         _language = [aDecoder decodeObjectForKey:KEY_LANGUAGE];
         _filterLebel = [aDecoder decodeObjectForKey:KEY_FILTER_LEVEL];
         
-        _isDecoded = YES;
+        _requireLoading = YES;
     }
     
     return self;

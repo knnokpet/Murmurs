@@ -22,7 +22,7 @@
 @class MBPlace;
 @interface MBTweet : NSObject <NSCoding>
 
-@property (nonatomic, assign, readonly) BOOL isDecoded;
+@property (nonatomic, assign, readonly) BOOL requireLoading;
 
 @property (nonatomic) NSString *tweetText;
 @property (nonatomic) NSNumber *tweetID; // 64bit integer = s unsigned long long

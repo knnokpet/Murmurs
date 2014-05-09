@@ -99,7 +99,7 @@
         _userIDStr = [aDecoder decodeObjectForKey:KEY_USER_ID_STR];
         _characterName = [aDecoder decodeObjectForKey:KEY_CHARACTER_NAME];
         _urlHTTPSAtProfileImage = [aDecoder decodeObjectForKey:KEY_PROFILE_IMAGE_URL_HTTPS];
-        _isDecoded = YES;
+        _requireLoading = YES;
     }
     
     return self;
