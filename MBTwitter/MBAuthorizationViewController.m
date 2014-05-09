@@ -101,10 +101,6 @@
 {
     [self.twitterAccesser setPin:pin];
     [self.twitterAccesser requestAccessToken];
-    
-    if ([_delegate respondsToSelector:@selector(dismissAuthorizationViewController:animated:)]) {
-        [_delegate dismissAuthorizationViewController:self animated:YES];
-    }
 }
 
 /*
@@ -134,6 +130,13 @@
 {
     NSURLRequest *authorizeURLRequest = [self.twitterAccesser authorizeURLRequest];
     [self.webView loadRequest:authorizeURLRequest];
+}
+
+- (void)gotAccessTokenTwitterAccesser:(MBTwitterAccesser *)twitterAccesser
+{
+    if ([_delegate respondsToSelector:@selector(succeedAuthorizationViewController:animated:)]) {
+        [_delegate succeedAuthorizationViewController:self animated:YES];
+    }
 }
 
 @end
