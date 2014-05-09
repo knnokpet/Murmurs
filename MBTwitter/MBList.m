@@ -46,7 +46,7 @@
     _createdDate = [NSDate parseDateUsingStrptime:[list stringForKey:KEY_CREATED_AT]];
     _url = [list stringForKey:KEY_URL];
     _subscriber = [list integerForKey:KEY_SUBSCRIBER_COUNT];
-    _listID = [list integerForKey:KEY_ID];
+    _listID = [list numberForKey:KEY_ID];
     _listIDStr = [list stringForKey:KEY_ID_STR];
     _description = [list stringForKey:KEY_DESCRIPTION];
     _user = [[MBUser alloc] initWithDictionary:[list objectForKey:KEY_USER]];
