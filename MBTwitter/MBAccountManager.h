@@ -23,7 +23,7 @@ typedef void(^MBAccountManagerRequestCompletionHandler)(BOOL granted, NSArray *a
 
 - (void)requestAccessToAccountWithCompletionHandler:(MBAccountManagerRequestCompletionHandler)completionHandler;
 - (void)storeMyAccountWith:(NSDictionary *)myAccount;
-- (void)selectAccountAtIndexPath:(NSIndexPath *)indexPath;
+- (void)selectAccountAtIndex:(NSInteger )index;
 - (void)deleteAllAccount;
 
 @end

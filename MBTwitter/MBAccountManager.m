@@ -131,14 +131,14 @@
     _accounts = accounts;
 }
 
-- (void)selectAccountAtIndexPath:(NSIndexPath *)indexPath
+- (void)selectAccountAtIndex:(NSInteger)index
 {
-    NSInteger selectedRow = indexPath.row;
-    if (selectedRow > [self.accounts count]) {
+    NSInteger selectedIndex = index;
+    if (selectedIndex > [self.accounts count]) {
         return;
     }
     
-    [self setCurrentAccount:[self.accounts objectAtIndex:selectedRow]];
+    [self setCurrentAccount:[self.accounts objectAtIndex:selectedIndex]];
     
 }
 
