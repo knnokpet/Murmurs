@@ -10,15 +10,18 @@
 #import "MBAccountManager.h"
 #import "MBAccount.h"
 #import "MBTwitterAccesser.h"
+#import "MBUser.h"
 
 @interface MBMyAccountsViewController () <UITableViewDataSource, UITableViewDelegate>
 
+@property (nonatomic, readonly) MBAOuth_TwitterAPICenter *aoAPICenter;
 @property (nonatomic) NSArray *accounts;
 
 @end
 
 @implementation MBMyAccountsViewController
-
+#pragma mark -
+#pragma mark Initialize
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -28,13 +31,27 @@
     return self;
 }
 
+#pragma mark -
+#pragma mark View
+- (void)commonConfigureModel
+{
+    _aoAPICenter = [[MBAOuth_TwitterAPICenter alloc] init];
+    _aoAPICenter.delegate = self;
+    
+    [[NSNotificationCenter defaultCenter] addObserverForName:@"ChangeMyAccount" object:nil queue:nil usingBlock:^ (NSNotification *notification) {
+        _aoAPICenter = [[MBAOuth_TwitterAPICenter alloc] init];
+        _aoAPICenter.delegate = self;
+        [_aoAPICenter getUser:0 screenName:[MBAccountManager sharedInstance].currentAccount.screenName];
+    }];
+    
+}
+
 - (void)commonConfigureView
 {
     [self commonConfigureNavigationItem];
     
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
-    
 }
 
 - (void)commonConfigureNavigationItem
@@ -47,6 +64,7 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    [self commonConfigureModel];
     [self commonConfigureView];
     
     [self.twitterAccessor isAuthorized];
@@ -58,13 +76,17 @@
 {
     [super viewWillAppear:animated];
     
-    if ([self.accounts count] != [[MBAccountManager sharedInstance].accounts count]) {
-        self.accounts = [MBAccountManager sharedInstance].accounts;
-        [self.tableView reloadData];
-    }
+    [self.tableView reloadData];
 }
 
-// 
+- (void)didReceiveMemoryWarning
+{
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+}
+
+#pragma mark -
+#pragma mark Instance Methods
 - (void)requestAccessForDeviceAccount
 {
     MBAccountManager *accountManager = [MBAccountManager sharedInstance];
@@ -88,11 +110,7 @@
     }];
 }
 
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
+
 
 #pragma mark -
 #pragma mark Button Action
@@ -120,10 +138,6 @@
     [accountManager deleteAllAccount];
     self.accounts = [MBAccountManager sharedInstance].accounts;
     [self.tableView reloadData];
-}
-
-- (IBAction)didPushAccountButton:(id)sender {
-    [self performSegueWithIdentifier:@"AuthorizationIdentifier" sender:self];
 }
 
 #pragma mark -
@@ -154,33 +168,33 @@
 
 #pragma mark - Navigation
 
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-    
-    if (YES == [[segue identifier] isEqualToString:@"AuthorizationIdentifier"]) {
-        UINavigationController *navigationController = [segue destinationViewController];
-        MBAuthorizationViewController *authorizationController = (MBAuthorizationViewController *)navigationController.topViewController;
-        authorizationController.delegate = self;
-        MBTwitterAccesser *newAccesser = [[MBTwitterAccesser alloc] init];
-        authorizationController.twitterAccesser = newAccesser;
-        
-    }
-}
-
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    [[MBAccountManager sharedInstance] selectAccountAtIndexPath:indexPath];
+    [[MBAccountManager sharedInstance] selectAccountAtIndex:indexPath.row];
 }
 
 #pragma mark - 
 #pragma mark AuthorizationViewController Delegate
 - (void)dismissAuthorizationViewController:(MBAuthorizationViewController *)controller animated:(BOOL)animated
 {
-    [self.tableView reloadData];
     [controller dismissViewControllerAnimated:animated completion:nil];
+}
+
+- (void)succeedAuthorizationViewController:(MBAuthorizationViewController *)controller animated:(BOOL)animated
+{
+    NSInteger lastIndex = [[MBAccountManager sharedInstance].accounts count] - 1;
+    [[MBAccountManager sharedInstance] selectAccountAtIndex:lastIndex];
+    
+    [self.tableView reloadData];
+    
+    [controller dismissViewControllerAnimated:YES completion:nil];
+}
+
+#pragma mark TwitterAPICenter Delegate
+- (void)twitterAPICenter:(MBAOuth_TwitterAPICenter *)center parsedUsers:(NSArray *)users
+{
+    MBUser *user = [users firstObject];
+    NSLog(@"%@ count = %d", user.userIDStr, user.tweetCount);
 }
 
 @end

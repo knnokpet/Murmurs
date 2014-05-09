@@ -8,10 +8,11 @@
 
 #import <UIKit/UIKit.h>
 #import "MBAuthorizationViewController.h"
+#import "MBAOuth_TwitterAPICenter.h"
 
 @protocol MBMyAccountsViewControlerDelegate;
 @class MBTwitterAccesser;
-@interface MBMyAccountsViewController : UIViewController <MBAuthorizationViewControllerDelegate>
+@interface MBMyAccountsViewController : UIViewController <MBAuthorizationViewControllerDelegate, MBAOuth_TwitterAPICenterDelegate>
 
 @property (nonatomic) MBTwitterAccesser *twitterAccessor;
 @property (nonatomic, weak) id <MBMyAccountsViewControlerDelegate> delegate;
