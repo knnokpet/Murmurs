@@ -346,6 +346,10 @@ typedef void (^FailedHandler)(NSHTTPURLResponse *);
     
     MBAccountManager *accountManager = [MBAccountManager sharedInstance];
     [accountManager storeMyAccountWith:myAccountData];
+    
+    if ([_delegate respondsToSelector:@selector(gotAccessTokenTwitterAccesser:)]) {
+        [_delegate gotAccessTokenTwitterAccesser:self];
+    }
 }
 
 @end
