@@ -159,7 +159,7 @@
                     }break;
                     case NSOrderedDescending: {
                         [self.sourceTweets addObjectsFromArray:tweets];
-                        NSInteger addingIndex = [self.sourceTweets count];
+                        NSInteger addingIndex = [tweets count];
                         NSIndexSet *indexSet = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, addingIndex)];
                         [updates setObject:indexSet forKey:UPDATE_KEY];
                     }break;
@@ -201,7 +201,8 @@
             }break;
             case NSOrderedDescending: {
                 [self.sourceTweets addObjectsFromArray:tweets];
-                NSInteger addingIndex = [self.sourceTweets count];
+                NSInteger addingIndex = [tweets count];
+                NSLog(@"addingindex = %d", addingIndex);
                 NSIndexSet *indexSet = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, addingIndex)];
                 [updates setObject:indexSet forKey:UPDATE_KEY];
             }break;
