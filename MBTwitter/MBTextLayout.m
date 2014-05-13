@@ -45,15 +45,8 @@
     
     [textLayout createFramesetter];
     [textLayout createFrame];
-    [textLayout createLine];
-    CGFloat height = 0;
-    for (MBLineLayout *lineLayout in textLayout.lineLayouts) {
-        height += (lineLayout.metrics.ascent + lineLayout.metrics.descent + lineLayout.metrics.leading);
-        NSLog(@"ascent = %f, descent = %f, leading = %f, height = %f", lineLayout.metrics.ascent, lineLayout.metrics.descent, lineLayout.metrics.leading, height);
-    }
     
     CGRect textLayoutFrame = textLayout.frameRect;
-    textLayoutFrame.size.height = height;
     
     return textLayoutFrame;
 }
