@@ -14,15 +14,24 @@
 
 + (NSAttributedString *)attributedStringForTweet:(MBTweet *)tweet
 {
+    return [self attributedStringForTweet:tweet tintColor:nil];
+}
+
++ (NSAttributedString *)attributedStringForTweet:(MBTweet *)tweet tintColor:(UIColor *)tintColor
+{
     if (nil == tweet) {
         return [[NSAttributedString alloc] init];
+    }
+    UIColor *linkTextColor = tintColor;
+    if (nil == tintColor) {
+        linkTextColor = [UIColor blueColor];
     }
     
     UIFont *font = [UIFont systemFontOfSize:14.0f];
     CTFontRef fontRef = CTFontCreateWithName((__bridge CFStringRef)font.fontName, font.pointSize, NULL);
     
     UIColor *defaultTextColor = [UIColor blackColor];
-    UIColor *linkTextColor = [UIColor blueColor];
+    
     
     NSString *tweetText = tweet.tweetText;
     NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:tweetText attributes:@{(id)kCTForegroundColorAttributeName: (id)defaultTextColor, (id)kCTFontAttributeName: (__bridge id)fontRef}];

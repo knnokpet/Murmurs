@@ -12,5 +12,6 @@
 @interface MBTweetTextComposer : NSObject
 
 + (NSAttributedString *)attributedStringForTweet:(MBTweet *)tweet;
++ (NSAttributedString *)attributedStringForTweet:(MBTweet *)tweet tintColor:(UIColor *)tintColor;
 
 @end
