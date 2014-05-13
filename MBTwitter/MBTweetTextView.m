@@ -29,6 +29,7 @@
 - (void)initialize
 {
     _textLayout = [[MBTextLayout alloc] init];
+    _textLayout.bound = self.bounds;
 }
 
 #pragma mark -
@@ -101,7 +102,7 @@
 {
     [self setFontAttribute];
     [self setTextColorAttribute];
-    [self setParagraphSpaceAttribute];
+    [self setParagraphStyleAttribute];
 }
 
 - (void)setFontAttribute
@@ -128,7 +129,7 @@
     CFRelease(colorRef);
 }
 
-- (void)setParagraphSpaceAttribute
+- (void)setParagraphStyleAttribute
 {
     CTTextAlignment alignment = (CTTextAlignment)self.alignment;
     CTLineBreakMode lineBreakMode = (CTLineBreakMode)self.lineBreakMode;
@@ -166,7 +167,6 @@
 - (MBLinkText *)linkAtPoint:(CGPoint)point
 {
     for (MBLineLayout *lineLayout in self.textLayout.lineLayouts) {
-        NSLog(@"links = %d", [lineLayout.links count]);
         MBLinkText *linkText = [lineLayout linkAtPoint:point];
         if (nil != linkText) {
             return linkText;
@@ -196,8 +196,6 @@
 {
     [super drawRect:rect];
     CGContextRef context = UIGraphicsGetCurrentContext();
-    CGContextSetFillColorWithColor(context, [UIColor grayColor].CGColor);
-    CGContextFillRect(context, rect);
     
     // setting
     [self updateLayout];
@@ -212,10 +210,20 @@
 {
     MBLinkText *linkText = [self linkAtPoint:point];
     if (nil != linkText) {
-        NSLog(@"linktext = %@", linkText.linkText);
+        return [super hitTest:point withEvent:event];
     }
     
     return nil;
+}
+
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
+{
+    
+}
+
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
+{
+    
 }
 
 @end
