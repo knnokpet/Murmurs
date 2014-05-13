@@ -84,4 +84,14 @@
     }
 }
 
+- (NSValue *)valueObjForKey:(NSString *)key
+{
+    id obj = [self objectForKey:key];
+    if ([obj isKindOfClass:[NSValue class]]) {
+        return (NSValue *)obj;
+    } else {
+        return nil;
+    }
+}
+
 @end
