@@ -15,6 +15,9 @@
 
 + (NSDate *)parseDateUsingStrptime:(NSString *)dateString
 {
+    if (nil == dateString) {
+        return nil;
+    }
     struct tm sometime;
     const char *formatString = [@"%a %b %d %H:%M:%S %z %Y" UTF8String];
     memset(&sometime, 0, sizeof(sometime));
