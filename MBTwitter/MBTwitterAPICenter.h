@@ -32,20 +32,49 @@
 #pragma mark -
 #pragma mark API Methods
 - (NSString *)getBackHomeTimeLineMaxID:(unsigned long long)max;
-- (NSString *)getForwardHomeTimeLineSinceID:(unsigned long long)since maxID:(unsigned long long)max;
+- (NSString *)getForwardHomeTimeLineSinceID:(unsigned long long)since;
 - (NSString *)getHomeTimeLineSinceID:(unsigned long long)since maxID:(unsigned long long)max;
 
+- (NSString *)getBackReplyTimelineMaxID:(unsigned long long)max;
+- (NSString *)getForwardReplyTimelineSinceID:(unsigned long long)since;
+- (NSString *)getReplyTimelineSinceID:(unsigned long long)since maxID:(unsigned long long)max;
+
+- (NSString *)getBackUserTimelineUserID:(unsigned long long)userID screenName:(NSString *)screenName maxID:(unsigned long long)max;
+- (NSString *)getForwardUserTimelineUserID:(unsigned long long)userID screenName:(NSString *)screenName sinceID:(unsigned long long)since;
+- (NSString *)getUserTimelineUserID:(unsigned long long)userID screenName:(NSString *)screenName sinceID:(unsigned long long)since maxID:(unsigned long long)max;
+
+- (NSString *)getTweet:(unsigned long long)requireID;
 - (NSString *)postTweet:(NSString *)tweetText;
 - (NSString *)postTweet:(NSString *)tweetText withMedia:(NSArray *)mediaImages;
 - (NSString *)postTweet:(NSString *)tweetText inReplyTo:(NSArray *)acountIDs place:(NSDictionary *)place media:(NSArray *)media;
 - (NSString *)postDestroyTweetForTweetID:(unsigned long long)tweetID;
 - (NSString *)postRetweetForTweetID:(unsigned long long)retweetID;
 
-- (NSString *)postFollowForUserID:(unsigned long long)userID screenName:(NSString *)screenName;
-- (NSString *)postUnfollowForUserID:(unsigned long long)userID screenName:(NSString *)screenName;
-
+- (NSString *)getBackFavoritesForUserID:(unsigned long long)userID screenName:(NSString *)screenName maxID:(unsigned long long)max;
+- (NSString *)getForwardFavoritesForUserID:(unsigned long long)userID screenName:(NSString *)screenName sinceID:(unsigned long long)since;
+- (NSString *)getFavoritesForUserID:(unsigned long long)userID screenName:(NSString *)screenName sinceID:(unsigned long long)since maxID:(unsigned long long)max;
 - (NSString *)postFavoriteForTweetID:(unsigned long long)favoriteTweetID;
 - (NSString *)postDestroyFavoriteForTweetID:(unsigned long long)destroyTweetID;
+
+- (NSString *)postFollowForUserID:(unsigned long long)userID screenName:(NSString *)screenName;
+- (NSString *)postUnfollowForUserID:(unsigned long long)userID screenName:(NSString *)screenName;
+- (NSString *)getUser:(unsigned long long)userID screenName:(NSString *)screenName;
+- (NSString *)getUsersFollowing:(unsigned long long)userID screenName:(NSString *)screenName cursor:(unsigned long long)cursor;
+- (NSString *)getUsersFollowingMe:(unsigned long long)userID screenName:(NSString *)screenName cursor:(unsigned long long)cursor;
+
+
+- (NSString *)getListsOfUser:(unsigned long long)userID screenName:(NSString *)screenName;
+- (NSString *)getBackListTimeline:(unsigned long long)listID slug:(NSString *)slug ownerScreenName:(NSString *)screenName ownerID:(unsigned long long)ownerID max:(unsigned long long)maxID;
+- (NSString *)getForwardListTimeline:(unsigned long long)listID slug:(NSString *)slug ownerScreenName:(NSString *)screenName ownerID:(unsigned long long)ownerID since:(unsigned long long)sinceID;
+- (NSString *)getListTimeline:(unsigned long long)listID slug:(NSString *)slug ownerScreenName:(NSString *)screenName ownerID:(unsigned long long)ownerID since:(unsigned long long)sinceID max:(unsigned long long)maxID;
+- (NSString *)getMembersOfList:(unsigned long long )listID slug:(NSString *)slug ownerScreenName:(NSString *)screenName ownerID:(unsigned long long)ownerID cursor:(unsigned long long)cursor;
+
+- (NSString *)getDeliveredDirectMessagesSinceID:(unsigned long long)since maxID:(unsigned long long)max;
+- (NSString *)getSentDirectMessagesSinceID:(unsigned long long)since maxID:(unsigned long long)max;
+- (NSString *)postDestroyDirectMessagesRequireID:(unsigned long long)require;
+- (NSString *)postDirectMessage:(NSString *)text screenName:(NSString *)screenName userID:(unsigned long long)userID;
+
+- (NSString *)getReverseGeocode:(float)latitude longi:(float)longitude;
 
 - (NSString *)getHelpConfiguration;
 
