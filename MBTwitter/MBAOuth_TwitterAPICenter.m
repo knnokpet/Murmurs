@@ -12,7 +12,13 @@
 #import "OAMutableRequest.h"
 #import "OAParameter.h"
 #import "MBJSONParser.h"
+#import "MBTweet_JSONParser.h"
 #import "MBTweets_JSONParser.h"
+#import "MBUser_JSONParser.h"
+#import "MBUsers_JSONParser.h"
+#import "MBLists_JSONParser.h"
+#import "MBDirectMessages_JSONParser.h"
+#import "MBGeocode_JSONPatser.h"
 #import "MBHelp_JSONParser.h"
 
 #import "OAAccessibility.h"
@@ -84,7 +90,7 @@
     
     return nil;
 }
-
+/*
 - (void)failedConnecter:(MBTwitterAPIHTTPConnecter *)connecter error:(NSError *)error responseType:(MBResponseType)responseType
 {
     
@@ -97,7 +103,7 @@
     }
     
     [self parseJSONData:data responseType:responseType];
-}
+}*/
 
 #pragma mark APICenter Methods : Parsed
 - (void)parseJSONData:(NSData *)jsonData responseType:(MBResponseType)responseType
@@ -105,8 +111,18 @@
     MBJSONParser *jsonParser;
     
     switch (responseType) {
-        case MBTwitterStatuses:
-        {
+        case MBTwitterStatuseResponse: {
+            jsonParser = [[MBTweet_JSONParser alloc] initWithJSONData:jsonData completionHandler:^(NSArray *parsedObj) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    if ([_delegate respondsToSelector:@selector(twitterAPICenter:parsedTweets:)]) {
+                        [_delegate twitterAPICenter:self parsedTweets:parsedObj];
+                    }
+                });
+            }];
+        }
+            break;
+            
+        case MBTwitterStatusesResponse:{
             jsonParser = [[MBTweets_JSONParser alloc] initWithJSONData:jsonData completionHandler:^(NSArray *parsedObj) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     if ([_delegate respondsToSelector:@selector(twitterAPICenter:parsedTweets:)]) {
@@ -117,7 +133,60 @@
         }
             break;
             
-        case MBTwitterHelp:
+        case MBTwitterUserResponse: {
+            jsonParser = [[MBUser_JSONParser alloc] initWithJSONData:jsonData completionHandler:^ (NSArray *parsedObj) {
+                if ([_delegate respondsToSelector:@selector(twitterAPICenter:parsedUsers:)]) {
+                    [_delegate twitterAPICenter:self parsedUsers:parsedObj];
+                }
+            }];
+        }
+            break;
+        case MBTwitterUsersResponse: {
+            jsonParser = [[MBUsers_JSONParser alloc] initWithJSONData:jsonData completionHandlerWithCursor:^ (NSArray *parsedObjects, NSNumber *next, NSNumber *previous) {
+                if ([_delegate respondsToSelector:@selector(twitterAPICenter:parsedUsers:next:previous:)]) {
+                    [_delegate twitterAPICenter:self parsedUsers:parsedObjects next:next previous:previous];
+                }
+            }];
+        }
+            break;
+        case MBTwitterListsResponse: {
+            jsonParser = [[MBLists_JSONParser alloc] initWithJSONData:jsonData completionHandler:^ (NSArray *parsedObj) {
+                if ([_delegate respondsToSelector:@selector(twitterAPICenter:parsedLists:)]) {
+                    [_delegate twitterAPICenter:self parsedLists:parsedObj];
+                }
+            }];
+        }
+            break;
+        case MBTwitterDirectMessagesResponse: {
+            jsonParser = [[MBDirectMessages_JSONParser alloc] initWithJSONData:jsonData completionHandler:^(NSArray *parsedObj) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    if ([_delegate respondsToSelector:@selector(twitterAPICenter:parsedDirectMessages:)]) {
+                        [_delegate twitterAPICenter:self parsedDirectMessages:parsedObj];
+                    }
+                });
+            }];
+        }
+            break;
+        case MBTwitterDirectMessageResponse: {
+            jsonParser = [[MBDirectMessages_JSONParser alloc] initWithJSONData:jsonData completionHandler:^(NSArray *parsedObj) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    if ([_delegate respondsToSelector:@selector(twitterAPICenter:parsedDirectMessages:)]) {
+                        [_delegate twitterAPICenter:self parsedDirectMessages:parsedObj];
+                    }
+                });
+            }];
+        }
+            break;
+        case MBTwitterGeocodeResponse: {
+            jsonParser = [[MBGeocode_JSONPatser alloc] initWithJSONData:jsonData completionHandler:^ (NSArray *parsedObj) {
+                if ([_delegate respondsToSelector:@selector(twitterAPICenter:parsedPlaces:)]) {
+                    [_delegate twitterAPICenter:self parsedPlaces:parsedObj];
+                }
+            }];
+        }
+            break;
+            
+        case MBTwitterHelpResponse:
         {
             jsonParser = [[MBHelp_JSONParser alloc] initWithJSONData:jsonData completionHandler:nil];
         }

@@ -9,7 +9,6 @@
 #import "MBTwitterAPICenter.h"
 
 @protocol MBAOuth_TwitterAPICenterDelegate;
-
 @interface MBAOuth_TwitterAPICenter : MBTwitterAPICenter
 
 @property (nonatomic, weak) id <MBAOuth_TwitterAPICenterDelegate> delegate;
@@ -17,8 +16,15 @@
 @end
 
 
+
 @protocol MBAOuth_TwitterAPICenterDelegate <NSObject>
 
+@optional
 - (void)twitterAPICenter:(MBAOuth_TwitterAPICenter *)center parsedTweets:(NSArray *)tweets;
+- (void)twitterAPICenter:(MBAOuth_TwitterAPICenter *)center parsedUsers:(NSArray *)users;
+- (void)twitterAPICenter:(MBAOuth_TwitterAPICenter *)center parsedUsers:(NSArray *)users next:(NSNumber *)next previous:(NSNumber *)previous;
+- (void)twitterAPICenter:(MBAOuth_TwitterAPICenter *)center parsedLists:(NSArray *)lists;
+- (void)twitterAPICenter:(MBAOuth_TwitterAPICenter *)center parsedDirectMessages:(NSArray *)messages;
+- (void)twitterAPICenter:(MBAOuth_TwitterAPICenter *)center parsedPlaces:(NSArray *)places;
 
 @end
