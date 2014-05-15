@@ -16,6 +16,13 @@
     [downloader downloadImageWithURL:imageURL completionHandler:completionHandler failedHandler:failedHandler];
 }
 
++ (void)downloadOriginImageWithURL:(NSString *)imageURL completionHandler:(ImageDownloadCompletionHandler)completionHandler failedHandler:(ImageDownloadFailedHandler)failedHandler
+{
+    NSString *originURL = [imageURL stringByReplacingOccurrencesOfString:@"_normal" withString:@""];
+    MBImageDownloader *imageDownloader = [[MBImageDownloader alloc] init];
+    [imageDownloader downloadImageWithURL:originURL completionHandler:completionHandler failedHandler:failedHandler];
+}
+
 - (void)downloadImageWithURL:(NSString *)imageURL completionHandler:(ImageDownloadCompletionHandler)completionHandler failedHandler:(ImageDownloadFailedHandler)failedHandler
 {
     if (nil == imageURL || nil == completionHandler || nil == failedHandler) {
@@ -30,7 +37,7 @@
     if (!error) {
         UIImage *receivedImage = [[UIImage alloc] initWithData:connectedData];
         if (receivedImage) {
-            NSLog(@"received image");
+
             dispatch_async(dispatch_get_main_queue(), ^{
                 completionHandler(receivedImage, connectedData);
             });

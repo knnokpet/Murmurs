@@ -14,6 +14,8 @@ typedef void(^ImageDownloadFailedHandler) (NSURLResponse *response, NSError *err
 @interface MBImageDownloader : NSObject
 
 + (void)downloadImageWithURL:(NSString *)imageURL completionHandler:(ImageDownloadCompletionHandler)completionHandler failedHandler:(ImageDownloadFailedHandler)failedHandler;
++ (void)downloadOriginImageWithURL:(NSString *)imageURL completionHandler:(ImageDownloadCompletionHandler)completionHandler failedHandler:(ImageDownloadFailedHandler)failedHandler;
+
 - (void)downloadImageWithURL:(NSString *)imageURL completionHandler:(ImageDownloadCompletionHandler)completionHandler failedHandler:(ImageDownloadFailedHandler)failedHandler;
 
 @end
