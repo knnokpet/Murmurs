@@ -32,7 +32,10 @@ typedef struct {
 
 - (id)initWithLineRef:(CTLineRef)lineRef index:(NSInteger)index rect:(CGRect)rect metrix:(MBLineMetrics)metrics;
 
+- (BOOL)containsPoint:(CGPoint)point;
+- (CFIndex)stringIndexForPosition:(CGPoint)point;
 - (CGRect)rectOfStringWithRange:(NSRange)range;
+
 - (void)addLink:(MBLinkText *)link;
 - (MBLinkText *)linkAtPoint:(CGPoint)point;
 

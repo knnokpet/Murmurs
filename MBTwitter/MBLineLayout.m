@@ -43,6 +43,18 @@
 }
 
 #pragma mark -
+- (BOOL)containsPoint:(CGPoint)point
+{
+    return CGRectContainsPoint(self.rect, point);
+}
+
+- (CFIndex)stringIndexForPosition:(CGPoint)point
+{
+    point.x -= self.rect.origin.x;
+    CFIndex index = CTLineGetStringIndexForPosition(self.lineRef, point);
+    return index;
+}
+
 - (CGRect)rectOfStringWithRange:(NSRange)range
 {
     CGRect rect = CGRectZero;
@@ -54,6 +66,7 @@
         CGFloat endOffSet = CTLineGetOffsetForStringIndex(lineRef, NSMaxRange(intersect), NULL);
         
         rect = self.rect;
+        endOffSet = rect.size.width - endOffSet;
         rect.origin.x += beginOffSet;
         rect.size.width = (rect.size.width - (beginOffSet + endOffSet));
     }

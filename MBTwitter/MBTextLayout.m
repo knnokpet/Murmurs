@@ -10,6 +10,7 @@
 #import "MBLineLayout.h"
 #import "MBLinkText.h"
 #import "MBTextGeo.h"
+#import "MBTextSelection.h"
 
 @interface MBTextLayout()
 {
@@ -189,8 +190,135 @@
         CTLineRef lineRef = lineLayout.lineRef;
         CTLineDraw(lineRef, context);
     }
+}
+
+#pragma mark -
+- (CFIndex)stringIndexForPosition:(CGPoint)point
+{
+    for (MBLineLayout *layout in self.lineLayouts) {
+        if ([layout containsPoint:point]) {
+            CFIndex index = [layout stringIndexForPosition:point];
+            
+            if (index != kCFNotFound) {
+                return index;
+            }
+            
+        }
+    }
     
-    //CTFrameDraw(frameRef, context);
+    return kCFNotFound;
+}
+
+- (CFIndex)stringIndexForClosePosition:(CGPoint)point
+{
+    NSString *text = self.attributedString.string;
+    
+    CFIndex lineNumber = 0;
+    for (MBLineLayout *lineLayout in self.lineLayouts) {
+        if ([lineLayout containsPoint:point]) {
+            CFIndex index = [lineLayout stringIndexForPosition:point];
+            
+            if (index < text.length) {
+                unichar cha = [text characterAtIndex:index];
+                if (CFStringIsSurrogateLowCharacter(cha)) {
+                    index++;
+                    if ((0xDDE6 <= cha && cha <= 0xDDFF) || cha == 0x20E3) {
+                        index += 2;
+                    }
+                }
+            }
+            
+            if (index != kCFNotFound) {
+                return index;
+            }
+        }
+        
+        if (lineNumber == 0 && point.y < CGRectGetMinY(lineLayout.rect)) {
+            return 0;
+        }
+        
+        if (lineNumber == self.lineLayouts.count - 1 && point.y > CGRectGetMaxY(lineLayout.rect) - lineLayout.metrics.leading) {
+            return [lineLayout stringIndexForPosition:CGPointMake(CGRectGetMaxX(lineLayout.rect), CGRectGetMinY(lineLayout.rect))];
+        }
+        
+        if (point.y > CGRectGetMinY(lineLayout.rect) && point.y < CGRectGetMaxY(lineLayout.rect) - lineLayout.metrics.leading) {
+            return [lineLayout stringIndexForPosition:CGPointMake(CGRectGetMaxX(lineLayout.rect), CGRectGetMinY(lineLayout.rect))];
+        }
+        
+        
+        lineNumber ++;
+    }
+    
+    return kCFNotFound;
+}
+
+- (CGRect)rectOfStringForIndex:(CFIndex)index
+{
+    return CGRectZero;
+}
+
+- (void)setSelectionStartWithPoint:(CGPoint)point
+{
+    CFIndex index = [self stringIndexForPosition:point];
+    if (index != kCFNotFound) {
+        self.textSelection = [[MBTextSelection alloc] initWithIndex:index];
+    } else {
+        self.textSelection = nil;
+    }
+}
+
+- (void)setSelectionEndWithPoint:(CGPoint)point
+{
+    CFIndex index = [self stringIndexForClosePosition:point];
+    if (index != kCFNotFound) {
+        [self.textSelection setSelectionAtEndIndex:index];
+    }
+}
+
+- (void)setSelectionEndWithClosePoint:(CGPoint)point
+{
+    CFIndex index = [self stringIndexForClosePosition:point];
+    [self.textSelection setSelectionAtEndIndex:index];
+}
+
+- (void)setSelectionStartWithFirstPoint:(CGPoint)point
+{
+    CFIndex start = [self stringIndexForClosePosition:point];
+    CFIndex end = NSMaxRange(self.textSelection.selectedRange);
+    
+    if (start != kCFNotFound) {
+        self.textSelection = [[MBTextSelection alloc] initWithIndex:start];
+    } else {
+        end = start;
+    }
+    
+    [self.textSelection setSelectionAtEndIndex:end];
+}
+
+- (void)setSelectionWithPoint:(CGPoint)point
+{
+    CFIndex index = [self stringIndexForPosition:point];
+    if (index == kCFNotFound) {
+        return;
+    }
+    
+    CFStringRef stringRef = (__bridge CFStringRef)self.attributedString.string;
+    CFRange stringRange = CFRangeMake(0, CFStringGetLength(stringRef));
+    CFStringTokenizerRef tokenizer = CFStringTokenizerCreate(NULL, stringRef, stringRange, kCFStringTokenizerUnitWordBoundary, NULL);
+    CFStringTokenizerTokenType tokenType = CFStringTokenizerGoToTokenAtIndex(tokenizer, 0);
+    while (tokenType != kCFStringTokenizerTokenNone) {
+        stringRange = CFStringTokenizerGetCurrentTokenRange(tokenizer);
+        CFIndex first = stringRange.location;
+        CFIndex second = stringRange.location + stringRange.length;
+        if (first != kCFNotFound && first <= index && index <= second) {
+            self.textSelection = [[MBTextSelection alloc] initWithIndex:first];
+            [self.textSelection setSelectionAtEndIndex:second];
+            break;
+        }
+        
+        tokenType = CFStringTokenizerAdvanceToNextToken(tokenizer);
+    }
+    CFRelease(tokenizer);
 }
 
 @end

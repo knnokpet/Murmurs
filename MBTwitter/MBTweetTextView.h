@@ -7,17 +7,28 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "MBLinkText.h"
 
+@protocol MBTweetTextViewDelegate;
 @interface MBTweetTextView : UIView
+
+@property (weak, nonatomic) id <MBTweetTextViewDelegate> delegate;
 
 @property (nonatomic, readonly) NSAttributedString *attributedString;
 @property (nonatomic) UIFont *font;
 @property (nonatomic) UIColor *textColor;
+@property (nonatomic) UIColor *highlightedTextColor;
 @property (nonatomic) CGFloat lineSpace;
 @property (nonatomic) CGFloat paragraphSpace;
 @property (nonatomic) CGFloat lineHeight;
 @property (nonatomic) NSTextAlignment *alignment;
 @property (nonatomic) NSLineBreakMode *lineBreakMode;
+
+@property (nonatomic) UIColor *selectedTextBackgroundColor;
+@property (nonatomic) UIColor *linkHighlightColor;
+
+@property (nonatomic, assign, readonly) BOOL isSelectable;
+
 
 + (CGRect)frameRectWithAttributedString:(NSAttributedString *)attributedString
                          constraintSize:(CGSize)constraintSize;
@@ -35,4 +46,12 @@
                                    font:(UIFont *)font;
 
 - (void)setAttributedString:(NSAttributedString *)attributedString;
+- (void)setIsSelectable:(BOOL)isSelectable;
+@end
+
+
+@protocol MBTweetTextViewDelegate <NSObject>
+
+- (void)tweetTextView:(MBTweetTextView *)textView clickOnLink:(MBLinkText *)linktext;
+
 @end
