@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 #import "MBDetailTweetViewController.h"
+#import "MBDetailUserViewController.h"
+#import "MBWebBrowsViewController.h"
 
 #import "MBTweetViewCell.h"
 #import "MBGapedTweetViewCell.h"
@@ -18,6 +20,8 @@
 #import "MBAccount.h"
 #import "MBTimeLineManager.h"
 #import "MBTweetManager.h"
+#import "MBUserManager.h"
+#import "MBUser.h"
 #import "MBImageCacher.h"
 #import "MBImageDownloader.h"
 #import "MBTweetTextComposer.h"
@@ -27,10 +31,10 @@
 #define LINE_SPACING 4.0f
 #define LINE_HEIGHT 0.0f
 #define PARAGRAPF_SPACING 0.0f
-#define FONT_SIZE 17.0f
+#define FONT_SIZE 15.0f
 
 @class MBTimeLineManager;
-@interface MBTimelineViewController : UIViewController <UIScrollViewDelegate, UITableViewDataSource, UITableViewDelegate,MBAOuth_TwitterAPICenterDelegate>
+@interface MBTimelineViewController : UIViewController <UIScrollViewDelegate, UITableViewDataSource, UITableViewDelegate,MBAOuth_TwitterAPICenterDelegate, MBWebBrowsViewControllerDelegate, MBAvatorImageViewDelegate, MBTweetTextViewDelegate>
 
 @property (nonatomic) MBAOuth_TwitterAPICenter *aoAPICenter;
 @property (nonatomic) MBTimeLineManager *timelineManager;
