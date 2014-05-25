@@ -254,7 +254,7 @@
         return gapedCell;
     }
     
-    MBTweetViewCell *cell= [self.tableView dequeueReusableCellWithIdentifier:tweetCellIdentifier];
+    MBTweetViewCell *cell= [self.tableView dequeueReusableCellWithIdentifier:tweetCellIdentifier forIndexPath:indexPath];
     
     [self updateCell:cell AtIndexPath:indexPath];
     
@@ -336,12 +336,12 @@
                         [indexPaths addObject:indexPath];
                     }];
                     
-                    [self.tableView insertRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationNone];
+                    [self.tableView insertRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationFade];
                 }
                 NSIndexPath *indexPath = [update objectForKey:@"remove"];
                 if (nil != indexPath) {
                     NSArray *indexPaths = [NSArray arrayWithObject:indexPath];
-                    [self.tableView deleteRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationNone];
+                    [self.tableView deleteRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationFade];
                 }
                 
                 [self.tableView endUpdates];
