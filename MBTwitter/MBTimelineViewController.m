@@ -319,43 +319,56 @@
 
 - (void)updateTableViewDataSource:(NSArray *)addingData
 {
-    if (0 == [addingData count]) {
-    } else {
+    if (0 < [addingData count]) {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
             NSDictionary *update = [self.timelineManager addTweets:addingData];
+            NSIndexSet *indexSet = [update objectForKey:@"update"];
+            NSMutableArray *indexPaths = [NSMutableArray arrayWithCapacity:200];
+            [indexSet enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
+                NSIndexPath *indexPath = [NSIndexPath indexPathForRow:idx inSection:0];
+                [indexPaths addObject:indexPath];
+            }];
+            
+            
             
             dispatch_async(dispatch_get_main_queue(), ^{
                 self.dataSource = self.timelineManager.tweets;
                 
-                [self.tableView beginUpdates];
-                NSIndexSet *indexSet = [update objectForKey:@"update"];
-                if (nil != indexSet) {
-                    NSMutableArray *indexPaths = [NSMutableArray arrayWithCapacity:200];
-                    [indexSet enumerateIndexesUsingBlock:^ (NSUInteger idx, BOOL *stop) {
-                        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:idx inSection:0];
-                        [indexPaths addObject:indexPath];
-                    }];
-                    
-                    [self.tableView insertRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationFade];
-                }
-                NSIndexPath *indexPath = [update objectForKey:@"remove"];
-                if (nil != indexPath) {
-                    NSArray *indexPaths = [NSArray arrayWithObject:indexPath];
-                    [self.tableView deleteRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationFade];
+                CGFloat rowsHeight = 0;
+                NSIndexPath *firstIndexPath = [indexPaths firstObject];
+                if (0 == firstIndexPath.row) {
+                    rowsHeight = [self rowHeightForAddingData:indexPaths];
                 }
                 
-                [self.tableView endUpdates];
+                CGPoint currentOffset = self.tableView.contentOffset;
+                [self.tableView reloadData];
+                currentOffset.y += rowsHeight;
+                if (currentOffset.y > self.tableView.contentSize.height) {
+                    currentOffset.y = 0;
+                }
+                self.tableView.contentOffset = currentOffset;
                 [self.refreshControl endRefreshing];
                 self.enableAdding = YES;
-                return;
             });
+            
         });
+        
+    } else {
+        [self.refreshControl endRefreshing];
+        self.enableAdding = YES;
     }
-    
-    [self.refreshControl endRefreshing];
-    [self.tableView reloadData];
-    self.enableAdding = YES;
 }
+
+- (CGFloat)rowHeightForAddingData:(NSArray *)addingData
+{
+    CGFloat height  = 0;
+    for (NSIndexPath *indexPath in addingData) {
+        height += [self tableView:self.tableView heightForRowAtIndexPath:indexPath];
+    }
+    return height;
+}
+
+
 /*
 #pragma mark - Navigation
 
