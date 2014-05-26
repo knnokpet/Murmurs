@@ -8,6 +8,7 @@
 
 #import "MBImageCacher.h"
 #import <CommonCrypto/CommonHMAC.h>
+#import "UIImage+Resize.h"
 
 @interface MBImageCacher()
 
@@ -50,6 +51,7 @@
         self.profileImageCache.countLimit = 500;
         _mediaImageCache = [[NSCache alloc] init];
         self.mediaImageCache.countLimit = 100;
+        
     }
     
     return self;
@@ -153,11 +155,13 @@
         return cachedImage;
     }
     
-    NSString *pathForImage = [self pathForID:keyForID directory:directoryPath];
-    cachedImage = [UIImage imageWithContentsOfFile:pathForImage];
-    if (cachedImage) {
-        return cachedImage;
-    }
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+        NSString *pathForImage = [self pathForID:keyForID directory:directoryPath];
+        NSData *imageData = [[NSData alloc] initWithContentsOfFile:pathForImage];
+        UIImage *savedImage = [[UIImage alloc] initWithData:imageData];
+        UIImage *resizedImage = [savedImage imageByScallingToFillSize:CGSizeMake(44.0f, 44.0f)];
+        [self storeImage:resizedImage data:imageData forID:sourceID to:cache directory:directoryPath];
+    });
     
     return defaultImage;
 }
