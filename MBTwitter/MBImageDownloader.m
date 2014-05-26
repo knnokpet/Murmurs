@@ -23,6 +23,13 @@
     [imageDownloader downloadImageWithURL:originURL completionHandler:completionHandler failedHandler:failedHandler];
 }
 
++ (void)downloadBigImageWithURL:(NSString *)imageURL completionHandler:(ImageDownloadCompletionHandler)completionHandler failedHandler:(ImageDownloadFailedHandler)failedHandler
+{
+    NSString *originURL = [imageURL stringByReplacingOccurrencesOfString:@"_normal" withString:@"_bigger"];
+    MBImageDownloader *imageDownloader = [[MBImageDownloader alloc] init];
+    [imageDownloader downloadImageWithURL:originURL completionHandler:completionHandler failedHandler:failedHandler];
+}
+
 - (void)downloadImageWithURL:(NSString *)imageURL completionHandler:(ImageDownloadCompletionHandler)completionHandler failedHandler:(ImageDownloadFailedHandler)failedHandler
 {
     if (nil == imageURL || nil == completionHandler || nil == failedHandler) {
