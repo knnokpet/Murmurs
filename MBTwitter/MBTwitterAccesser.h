@@ -40,7 +40,7 @@
 
 
 @protocol MBTwitterAccesserDelegate <NSObject>
-
+@optional
 - (void)gotRequestTokenTwitterAccesser:(MBTwitterAccesser *)twitterAccesser;
 - (void)gotAccessTokenTwitterAccesser:(MBTwitterAccesser *)twitterAccesser;
 
