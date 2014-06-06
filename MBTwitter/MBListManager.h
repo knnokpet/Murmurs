@@ -9,11 +9,20 @@
 #import <Foundation/Foundation.h>
 
 @class MBList;
+@class MBUser;
 @interface MBListManager : NSObject
 
-@property (nonatomic) NSMutableArray *lists;
+@property (nonatomic, readonly) MBUser *owner;
+
+@property (nonatomic, readonly) NSMutableArray *lists;
+@property (nonatomic, readonly) NSMutableArray *ownerShipLists;
+@property (nonatomic, readonly) NSMutableArray *subscriptionLists;
+
+- (instancetype)initWithUser:(MBUser *)user;
+- (void)setOwner:(MBUser *)owner;
 
 - (void)addLists:(NSArray *)lists;
-- (void)removeListAtIndex:(NSInteger )index;
+- (void)removeListOfOwner:(NSInteger)index;
+- (void)removeListOfSubscrive:(NSInteger)index;
 
 @end
