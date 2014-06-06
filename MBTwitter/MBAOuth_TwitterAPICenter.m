@@ -16,6 +16,7 @@
 #import "MBTweets_JSONParser.h"
 #import "MBUser_JSONParser.h"
 #import "MBUsers_JSONParser.h"
+#import "MBList_JSONParser.h"
 #import "MBLists_JSONParser.h"
 #import "MBDirectMessages_JSONParser.h"
 #import "MBGeocode_JSONPatser.h"
@@ -149,10 +150,19 @@
             }];
         }
             break;
-        case MBTwitterListsResponse: {
-            jsonParser = [[MBLists_JSONParser alloc] initWithJSONData:jsonData completionHandler:^ (NSArray *parsedObj) {
+        case MBTwitterListResponse: {
+            
+            jsonParser = [[MBList_JSONParser alloc] initWithJSONData:jsonData completionHandler:^ (NSArray *parsedObj){
                 if ([_delegate respondsToSelector:@selector(twitterAPICenter:parsedLists:)]) {
                     [_delegate twitterAPICenter:self parsedLists:parsedObj];
+                }
+            }];
+        }
+            break;
+        case MBTwitterListsResponse: {
+            jsonParser = [[MBLists_JSONParser alloc] initWithJSONData:jsonData completionHandlerWithCursor:^ (NSArray *parsedObjects, NSNumber *next, NSNumber *previous) {
+                if ([_delegate respondsToSelector:@selector(twitterAPICenter:parsedLists:next:previous:)]) {
+                    [_delegate twitterAPICenter:self parsedLists:parsedObjects next:next previous:previous];
                 }
             }];
         }
