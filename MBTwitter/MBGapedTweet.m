@@ -19,4 +19,22 @@
     return self;
 }
 
+- (id)initWithCoder:(NSCoder *)aDecoder
+{
+    self = [super init];
+    if(self) {
+        NSNumber *indexNumber =[aDecoder decodeObjectForKey:@"index"];
+        if (indexNumber) {
+            _index = [indexNumber integerValue];
+        }
+    }
+    
+    return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)aCoder
+{
+    [aCoder encodeObject:[NSNumber numberWithInteger:_index] forKey:@"index"];
+}
+
 @end
