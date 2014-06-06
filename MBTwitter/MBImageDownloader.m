@@ -30,6 +30,14 @@
     [imageDownloader downloadImageWithURL:originURL completionHandler:completionHandler failedHandler:failedHandler];
 }
 
++ (void)downloadBannerImageMobileRetina:(NSString *)imageURL completionHandler:(ImageDownloadCompletionHandler)completionHandler failedHandler:(ImageDownloadFailedHandler)failedHandler
+{
+    NSLog(@"imageURL %@", imageURL);
+    NSString *resourceURL = [NSString stringWithFormat:@"%@/mobile_retina", imageURL];
+    MBImageDownloader *imageDownloader = [[MBImageDownloader alloc] init];
+    [imageDownloader downloadImageWithURL:resourceURL completionHandler:completionHandler failedHandler:failedHandler];
+}
+
 - (void)downloadImageWithURL:(NSString *)imageURL completionHandler:(ImageDownloadCompletionHandler)completionHandler failedHandler:(ImageDownloadFailedHandler)failedHandler
 {
     if (nil == imageURL || nil == completionHandler || nil == failedHandler) {
