@@ -11,6 +11,9 @@
 
 
 @interface MBTimelineViewController ()
+
+@property (nonatomic) MBTwitterAccesser *twitterAccesser;
+
 @property (nonatomic) NSInteger saveIndex;
 @property (nonatomic, assign) BOOL enableAdding;
 
@@ -46,6 +49,9 @@
 {
     [self commonConfigureNavigationItem];
     
+    self.view.backgroundColor = [UIColor groupTableViewBackgroundColor];
+    self.tableView.backgroundColor = [UIColor whiteColor];
+    
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
     UINib *cellNib = [UINib nibWithNibName:@"TweetTavbleViewCell" bundle:nil];
@@ -73,9 +79,25 @@
     [self commonConfigureModel];
     [self commonConfigureView];
     
+    [[MBImageCacher sharedInstance] deleteAllCacheFiles];
     
     if (YES == [[MBAccountManager sharedInstance] isSelectedAccount] ) {
         [self goBacksAtIndex:0];
+    } else {
+        MBAccountManager *accountManager = [MBAccountManager sharedInstance];
+        [accountManager requestAccessToAccountWithCompletionHandler:^ (BOOL granted, NSArray *accounts, NSError *error) {
+            if (!granted) {
+                //
+            } else {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    self.twitterAccesser = [[MBTwitterAccesser alloc] init];
+                    self.twitterAccesser.delegate = self;
+                    for (ACAccount *account in accounts) {
+                        [self.twitterAccesser requestReverseRequestTokenWithAccount:account];
+                    }
+                });
+            }
+        }];
     }
      
 }
@@ -190,6 +212,11 @@
 
 - (void)refreshAction
 {
+    if (0 == [self.dataSource count]) {
+        [self goBacksAtIndex:0];
+        return;
+    }
+    
     NSInteger since = 0 + 1;
     
     MBTweet *sinceTweet = [[MBTweetManager sharedInstance] storedTweetForKey:self.dataSource[since]];
@@ -203,6 +230,11 @@
 
 #pragma mark -
 #pragma mark UITableView DataSource & Delegate
+- (CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return 120;
+}
+
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if ([[self.dataSource objectAtIndex:indexPath.row] isKindOfClass:[MBGapedTweet class]]) {
@@ -213,19 +245,19 @@
     MBTweet *tweet = [[MBTweetManager sharedInstance] storedTweetForKey:key];
     NSAttributedString *attributedString = [[NSAttributedString alloc] initWithString:tweet.tweetText];
     
-    NSInteger textViewWidth = tableView.bounds.size.width - (64 + 8);
+    NSInteger textViewWidth = tableView.bounds.size.width - (64.0f + 10.0f);
     CGRect textRect = [MBTweetTextView frameRectWithAttributedString:attributedString constraintSize:CGSizeMake(textViewWidth, CGFLOAT_MAX) lineSpace:LINE_SPACING font:[UIFont systemFontOfSize:FONT_SIZE]];
     
-    CGFloat tweetViewSpace = 28.0f;
+    CGFloat tweetViewSpace = 34.0f;
     CGFloat bottomHeight = 0.0f;
     if (nil != tweet.tweetOfOriginInRetweet) {
-        bottomHeight = 18.0f + 8.0f + 8.0f;
+        bottomHeight = 18.0f + 8.0f + 10.0f;
     } else {
-        bottomHeight = 10.0f;
+        bottomHeight = 20.0f;
     }
     CGFloat customCellHeight = textRect.size.height + tweetViewSpace + bottomHeight;
     
-    CGFloat defaultHeight = 48 + 10 + 10;
+    CGFloat defaultHeight = 48 + 12 + 12;
     
     return MAX(defaultHeight, customCellHeight);
 }
@@ -266,10 +298,11 @@
     
     NSString *key = [self.dataSource objectAtIndex:indexPath.row];
     MBTweet *tweetAtIndexPath = [[MBTweetManager sharedInstance] storedTweetForKey:key];
-    [cell setNameRetweeted:@""];
+    cell.retweetView.attributedString = [[NSAttributedString alloc] initWithString:@""];
     if (nil != tweetAtIndexPath.tweetOfOriginInRetweet) {
         MBTweet *retweetedTweet = tweetAtIndexPath.tweetOfOriginInRetweet;
-        [cell setNameRetweeted:tweetAtIndexPath.tweetUser.characterName];
+        cell.retweetView.attributedString = [MBTweetTextComposer attributedStringForTimelineDate:@"24m" font:[UIFont systemFontOfSize:12.0f] screeName:retweetedTweet.tweetUser.screenName tweetID:[tweetAtIndexPath.tweetID unsignedLongLongValue]];
+
         tweetAtIndexPath = retweetedTweet;
     }
     [cell applyConstraints];
@@ -278,27 +311,38 @@
     
     cell.chacacterNameLabel.text = tweetAtIndexPath.tweetUser.characterName;
     [cell setScreenName:tweetAtIndexPath.tweetUser.screenName];
+    
+    cell.dateView.attributedString = [MBTweetTextComposer attributedStringForTimelineDate:@"24hhh" font:[UIFont systemFontOfSize:12.0f] screeName:userAtIndexPath.screenName tweetID:[tweetAtIndexPath.tweetID unsignedLongLongValue]];
+    
     cell.tweetTextView.font = [UIFont systemFontOfSize:FONT_SIZE];
     cell.tweetTextView.lineSpace = LINE_SPACING;
     cell.tweetTextView.lineHeight = LINE_HEIGHT;
     cell.tweetTextView.paragraphSpace = PARAGRAPF_SPACING;
     cell.tweetTextView.attributedString = [MBTweetTextComposer attributedStringForTweet:tweetAtIndexPath tintColor:[self.navigationController.navigationBar tintColor]];
     cell.tweetTextView.delegate = self;
+    
 
     cell.userIDStr = userAtIndexPath.userIDStr;
-    UIImage *avatorImage = [[MBImageCacher sharedInstance] cachedProfileImageForUserID:userAtIndexPath.userIDStr];
+    cell.avatorImageView.userID = userAtIndexPath.userID;
+    UIImage *avatorImage = [[MBImageCacher sharedInstance] cachedTimelineImageForUser:userAtIndexPath.userIDStr];
     if (!avatorImage) {
+        
+
         if (NO == tweetAtIndexPath.tweetUser.isDefaultProfileImage) {
             
-            dispatch_queue_t globalQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0);
+            dispatch_queue_t globalQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0);
             dispatch_async(globalQueue, ^{
                 [MBImageDownloader downloadBigImageWithURL:userAtIndexPath.urlHTTPSAtProfileImage completionHandler:^(UIImage *image, NSData *imageData){
                     if (image) {
                         [[MBImageCacher sharedInstance] storeProfileImage:image data:imageData forUserID:userAtIndexPath.userIDStr];
                         
+                        image = [image imageByScallingToFillSize:CGSizeMake(cell.avatorImageView.frame.size.width, cell.avatorImageView.frame.size.height)];
+                        UIImage *radiusImage = [image imageWithRadius:8.0f];
+                        [[MBImageCacher sharedInstance] storeTimelineImage:radiusImage forUserID:userAtIndexPath.userIDStr];
+                        
                         dispatch_async(dispatch_get_main_queue(), ^{
                             if ([cell.userIDStr isEqualToString:userAtIndexPath.userIDStr]) {
-                                cell.avatorImageView.image = image;
+                                cell.avatorImageView.image = radiusImage;
                             }
                         });
                     }
@@ -313,7 +357,6 @@
     }
     
     cell.avatorImageView.image = avatorImage;
-    cell.avatorImageView.userID = userAtIndexPath.userID;
     cell.avatorImageView.delegate = self;
 }
 
@@ -329,24 +372,24 @@
                 [indexPaths addObject:indexPath];
             }];
             
-            
-            
-            dispatch_async(dispatch_get_main_queue(), ^{
-                self.dataSource = self.timelineManager.tweets;
-                
-                CGFloat rowsHeight = 0;
-                NSIndexPath *firstIndexPath = [indexPaths firstObject];
+            CGFloat rowsHeight = 0;
+            CGFloat currentDataSourceCount = [self.dataSource count];
+            NSIndexPath *firstIndexPath = [indexPaths firstObject];
+            if (0 != currentDataSourceCount) {
                 if (0 == firstIndexPath.row) {
                     rowsHeight = [self rowHeightForAddingData:indexPaths];
                 }
+            }
+            self.dataSource = self.timelineManager.tweets;
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                //self.dataSource = self.timelineManager.tweets;
                 
                 CGPoint currentOffset = self.tableView.contentOffset;
                 [self.tableView reloadData];
                 currentOffset.y += rowsHeight;
-                if (currentOffset.y > self.tableView.contentSize.height) {
-                    currentOffset.y = 0;
-                }
                 self.tableView.contentOffset = currentOffset;
+                
                 [self.refreshControl endRefreshing];
                 self.enableAdding = YES;
             });
@@ -356,6 +399,7 @@
     } else {
         [self.refreshControl endRefreshing];
         self.enableAdding = YES;
+        
     }
 }
 
@@ -403,11 +447,13 @@
 
 #pragma mark -
 #pragma mark ScrollView Delegate
+
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
 {
+    
     float max = scrollView.contentInset.top + scrollView.contentInset.bottom + scrollView.contentSize.height - scrollView.bounds.size.height;
     float current = scrollView.contentOffset.y + self.topLayoutGuide.length;
-    int intMax = max * 0.9;
+    int intMax = max * 0.5;
     int intCurrent = current;
     if (intMax < intCurrent) {
         if (self.enableAdding) {
@@ -417,6 +463,16 @@
 }
 
 #pragma mark -
+#pragma mark MBTwitterAccesser Delegate
+- (void)gotAccessTokenTwitterAccesser:(MBTwitterAccesser *)twitterAccesser
+{
+    MBAccountManager *accountManager = [MBAccountManager sharedInstance];
+    if ([accountManager isSelectedAccount]) {
+        return;
+    }
+    [[MBAccountManager sharedInstance] selectAccountAtIndex:0];
+}
+
 #pragma mark AOuth_TwitterAPICenter Delegate
 - (void)twitterAPICenter:(MBAOuth_TwitterAPICenter *)center parsedTweets:(NSArray *)tweets
 {
@@ -456,6 +512,22 @@
             UINavigationController *webNavigation = [[UINavigationController alloc] initWithRootViewController:browsViewController];
             [self.navigationController presentViewController:webNavigation animated:YES completion:nil];
         }
+    } else if ([linktext.obj isKindOfClass:[MBMentionUserLink class]]) {
+        MBMentionUserLink *mentionLink = (MBMentionUserLink *)linktext.obj;
+        NSString *userIDStr = mentionLink.userIDStr;
+        
+        MBUser *selectedUser = [[MBUserManager sharedInstance] storedUserForKey:userIDStr];
+        MBDetailUserViewController *userViewController = [[MBDetailUserViewController alloc] initWithNibName:@"MBUserDetailView" bundle:nil];
+        [userViewController setUser:selectedUser];
+        if (nil == selectedUser) {
+            NSNumber *userID = mentionLink.userID;
+            [userViewController setUserID:userID];
+        }
+        [self.navigationController pushViewController:userViewController animated:YES];
+    } else if ([linktext.obj isKindOfClass:[MBHashTagLink class]]) {
+        
+    } else if ([linktext.obj isKindOfClass:[MBMediaLink class]]) {
+        
     }
     
 }

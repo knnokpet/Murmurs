@@ -15,6 +15,7 @@
 #import "MBGapedTweetViewCell.h"
 #import "MBTweetTextView.h"
 
+#import "MBTwitterAccesser.h"
 #import "MBAOuth_TwitterAPICenter.h"
 #import "MBAccountManager.h"
 #import "MBAccount.h"
@@ -24,7 +25,9 @@
 #import "MBUser.h"
 #import "MBImageCacher.h"
 #import "MBImageDownloader.h"
+#import "UIImage+Resize.h"
 #import "MBTweetTextComposer.h"
+#import "UIImage+Radius.h"
 
 #import "MBTwitterAccessibility.h"
 
@@ -34,7 +37,7 @@
 #define FONT_SIZE 15.0f
 
 @class MBTimeLineManager;
-@interface MBTimelineViewController : UIViewController <UIScrollViewDelegate, UITableViewDataSource, UITableViewDelegate,MBAOuth_TwitterAPICenterDelegate, MBWebBrowsViewControllerDelegate, MBAvatorImageViewDelegate, MBTweetTextViewDelegate>
+@interface MBTimelineViewController : UIViewController <UIScrollViewDelegate, UITableViewDataSource, UITableViewDelegate, MBTwitterAccesserDelegate,MBAOuth_TwitterAPICenterDelegate, MBWebBrowsViewControllerDelegate, MBAvatorImageViewDelegate, MBTweetTextViewDelegate>
 
 @property (nonatomic) MBAOuth_TwitterAPICenter *aoAPICenter;
 @property (nonatomic) MBTimeLineManager *timelineManager;
@@ -52,7 +55,7 @@
 - (void)didPushLeftBarButtonItem;
 - (void)didPushRightBarButtonItem;
 - (void)didPushGapButtonSinceID:(unsigned long long)since max:(unsigned long long)max;
-//- (void)refreshAction;
+- (void)refreshAction;
 
 - (void)goBacksAtIndex:(NSInteger )index;
 - (NSArray *)savedTweetsAtIndex:(NSInteger)index;
