@@ -51,12 +51,11 @@
         if ([obj isKindOfClass:[NSMutableArray class]] && [key isKindOfClass:[NSString class]]) {
             NSMutableArray *mutableArray = (NSMutableArray *)obj;
             MBDirectMessage *message = (MBDirectMessage *)[mutableArray firstObject];
-            NSLog(@"created = %@", message.createdDate);
             [separatedMessages addObject:@{@"user" : (NSString *)key, @"messages": mutableArray, @"firstMessageDate": message.createdDate}];
         }
     }];
     
-    NSSortDescriptor *sortDescripter = [[NSSortDescriptor alloc] initWithKey:@"firstMessageDate" ascending:YES];
+    NSSortDescriptor *sortDescripter = [[NSSortDescriptor alloc] initWithKey:@"firstMessageDate" ascending:NO];
     NSArray *sortedMessages = [separatedMessages sortedArrayUsingDescriptors:@[sortDescripter]];
     
     return sortedMessages;
@@ -87,7 +86,7 @@
     }
     [separatedForUser addObject:message];
     
-    NSSortDescriptor *descriptor = [[NSSortDescriptor alloc] initWithKey:@"createdDate" ascending:YES selector:@selector(compare:)];
+    NSSortDescriptor *descriptor = [[NSSortDescriptor alloc] initWithKey:@"createdDate" ascending:NO selector:@selector(compare:)];
     NSMutableArray *sortedMessages = [NSMutableArray arrayWithArray:[separatedForUser sortedArrayUsingDescriptors:@[descriptor]]];
     [self.dataSource setObject:sortedMessages forKey:partner.userIDStr];
 }
