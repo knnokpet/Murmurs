@@ -22,6 +22,7 @@
 @property (nonatomic, readonly) NSString *description;
 @property (nonatomic, readonly) MBUser *user;
 @property (nonatomic, assign, readonly) BOOL isFollowing;
+@property (nonatomic, assign, readonly) BOOL isPublic;
 
 - (id)initWithDictionary:(NSDictionary *)list;
 

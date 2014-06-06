@@ -25,6 +25,7 @@
 #define KEY_MODE @"mode"
 #define KEY_DESCRIPTION @"description"
 #define KEY_USER @"user"
+#define KEY_MODE @"mode"
 #define KEY_FOLLOWING @"following"
 
 @implementation MBList
@@ -51,6 +52,14 @@
     _description = [list stringForKey:KEY_DESCRIPTION];
     _user = [[MBUser alloc] initWithDictionary:[list objectForKey:KEY_USER]];
     _isFollowing = [list boolForKey:KEY_FOLLOWING];
+    
+    NSString *mode = [list stringForKey:KEY_MODE];
+    if ([mode isEqualToString:@"public"]) {
+        _isPublic = YES;
+    } else {
+        _isPublic = NO;
+    }
+    
 }
 
 @end
