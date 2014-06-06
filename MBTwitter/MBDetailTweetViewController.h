@@ -9,20 +9,13 @@
 #import <UIKit/UIKit.h>
 #import "MBPostTweetViewController.h"
 #import "MBAOuth_TwitterAPICenter.h"
+#import "MBTweetTextView.h"
 
 @class MBTweet;
-@class MBTweetTextView;
-@interface MBDetailTweetViewController : UIViewController <MBPostTweetViewControllerDelegate, MBAOuth_TwitterAPICenterDelegate>
+@interface MBDetailTweetViewController : UIViewController <MBPostTweetViewControllerDelegate, MBAOuth_TwitterAPICenterDelegate, MBTweetTextViewDelegate>
 
 @property (nonatomic, readonly) MBTweet *tweet;
-@property (weak, nonatomic) IBOutlet UIImageView *avatorImageView;
-@property (weak, nonatomic) IBOutlet UIButton *screenNameLabel;
-@property (weak, nonatomic) IBOutlet UILabel *characterNameLabel;
-@property (weak, nonatomic) IBOutlet MBTweetTextView *tweetTextView;
-@property (weak, nonatomic) IBOutlet UIButton *replyButton;
-@property (weak, nonatomic) IBOutlet UIButton *retweetButton;
-@property (weak, nonatomic) IBOutlet UIButton *favoriteButton;
-@property (weak, nonatomic) IBOutlet UIButton *unFavoriteButton;
+@property (weak, nonatomic) IBOutlet UITableView *tableView;
 
 - (void)setTweet:(MBTweet *)tweet;
 

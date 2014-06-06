@@ -11,21 +11,35 @@
 
 
 #import "MBImageCacher.h"
+#import "MBImageDownloader.h"
+#import "UIImage+Resize.h"
 
 #import "MBTweetTextComposer.h"
 #import "MBTweet.h"
 #import "MBUser.h"
 
-#import "MBTweetTextView.h"
+#import "MBMagnifierView.h"
+#import "MBMagnifierRangeView.h"
+
+#import "MBDetailTweetUserTableViewCell.h"
+#import "MBDetailTweetTextTableViewCell.h"
+#import "MBDetailTweetActionsTableViewCell.h"
 
 #define LINE_SPACING 4.0f
 #define LINE_HEIGHT 0.0f
 #define PARAGRAPF_SPACING 0.0f
 #define FONT_SIZE 20.0f
 
-@interface MBDetailTweetViewController () <UIActionSheetDelegate>
+static NSString *userCellIdentifier = @"UserCellIdentifier";
+static NSString *tweetCellIdentifier = @"TweetCellIdentifier";
+static NSString *actionsCellIdentifier = @"ActionsCellIdentifier";
+
+@interface MBDetailTweetViewController () <UIActionSheetDelegate, UITableViewDataSource, UITableViewDelegate>
 
 @property (nonatomic, readonly) MBAOuth_TwitterAPICenter *aoAPICenter;
+
+@property (nonatomic) MBMagnifierView *magnifierView;
+@property (nonatomic) MBMagnifierRangeView *magnifierRangeView;
 
 @end
 
@@ -60,24 +74,17 @@
 
 - (void)configureViews
 {
-    MBUser *user = self.tweet.tweetUser;
-    self.avatorImageView.image = [[MBImageCacher sharedInstance] cachedProfileImageForUserID:user.userIDStr];
-    self.characterNameLabel.text = user.characterName;
+    self.tableView.delegate = self;
+    self.tableView.dataSource = self;
+    UINib *userCell = [UINib nibWithNibName:@"MBDetailTweetUserTableViewCell" bundle:nil];
+    [self.tableView registerNib:userCell forCellReuseIdentifier:userCellIdentifier];
+    UINib *tweetCell = [UINib nibWithNibName:@"MBDetailTweetTextTableViewCell" bundle:nil];
+    [self.tableView registerNib:tweetCell forCellReuseIdentifier:tweetCellIdentifier];
+    UINib *actionsCell = [UINib nibWithNibName:@"MBDetailTweetActionsTableViewCell" bundle:nil];
+    [self.tableView registerNib:actionsCell forCellReuseIdentifier:actionsCellIdentifier];
     
-    // tweetTextView
-    NSAttributedString *attributedString = [[NSAttributedString alloc] initWithString:self.tweet.tweetText];
-    CGSize textSize = CGSizeMake(self.view.bounds.size.width - (20 + 20), CGFLOAT_MAX);
-    CGRect frame = [MBTweetTextView frameRectWithAttributedString:attributedString constraintSize:textSize lineSpace:LINE_SPACING font:[UIFont systemFontOfSize:LINE_HEIGHT]];
-    CGFloat height = frame.size.height;
-    NSLog(@"height = %f", height);
-    CGRect textFrame = self.tweetTextView.frame;
-    textFrame.size.height = height;
-    self.tweetTextView.frame = textFrame;
-    self.tweetTextView.font = [UIFont systemFontOfSize:FONT_SIZE];
-    self.tweetTextView.lineHeight = LINE_HEIGHT;
-    self.tweetTextView.lineSpace = LINE_SPACING;
-    self.tweetTextView.paragraphSpace = PARAGRAPF_SPACING;
-    self.tweetTextView.attributedString = [MBTweetTextComposer attributedStringForTweet:self.tweet tintColor:[self.navigationController.navigationBar tintColor]];
+    self.magnifierView = [[MBMagnifierView alloc] init];
+    self.magnifierRangeView = [[MBMagnifierRangeView alloc] init];
 }
 
 - (void)viewDidLoad
@@ -89,6 +96,16 @@
     
     if (self.tweet.requireLoading || self.tweet.isRetweeted) {
         [self.aoAPICenter getTweet:[self.tweet.tweetID unsignedLongLongValue]];
+    }
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    
+    NSIndexPath *selectedPath = [self.tableView indexPathForSelectedRow];
+    if (selectedPath) {
+        [self.tableView deselectRowAtIndexPath:selectedPath animated:animated];
     }
 }
 
@@ -109,6 +126,9 @@
 - (IBAction)didPushReplyButton:(id)sender {
     MBPostTweetViewController *postTweetViewController = [[MBPostTweetViewController alloc] initWithNibName:@"PostTweetView" bundle:nil];
     postTweetViewController.delegate = self;
+    [postTweetViewController addReply:self.tweet.tweetID];
+    [postTweetViewController setReferencedTweet:self.tweet];
+    [postTweetViewController setScreenName:self.tweet.tweetUser.screenName];
     UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:postTweetViewController];
     [self.navigationController presentViewController:navigationController animated:YES completion:nil];
 }
@@ -122,6 +142,16 @@
     
     [retweetActionSheet showFromTabBar:self.tabBarController.tabBar];
 }
+
+- (IBAction)didPushRetweetWithComentButton:(id)sender
+{
+    MBPostTweetViewController *postTweetViewController = [[MBPostTweetViewController alloc] initWithNibName:@"PostTweetView" bundle:nil];
+    postTweetViewController.delegate = self;
+    [postTweetViewController setRetweetWithComent:self.tweet.tweetText tweetedUser:self.tweet.tweetUser.screenName];
+    UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:postTweetViewController];
+    [self.navigationController presentViewController:navigationController animated:YES completion:nil];
+}
+
 - (IBAction)didPushFavoriteButton:(id)sender {
     [self.aoAPICenter postFavoriteForTweetID:[self.tweet.tweetID unsignedLongLongValue]];
 }
@@ -131,6 +161,128 @@
 
 #pragma mark -
 #pragma mark Delegate
+#pragma mark TableView Delegate Datasource
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    CGFloat height = 48.0f;
+    if (0 == indexPath.row) {
+        height = 48.0f + (10.0f + 10.f);
+    } else if (1 == indexPath.row) {
+        
+        NSAttributedString *attributedString = [MBTweetTextComposer attributedStringForTweet:self.tweet tintColor:[self.navigationController.navigationBar tintColor]];
+        
+        NSInteger viewWidth = self.tableView.bounds.size.width - (20.0f + 20.0f);
+        CGRect textRect = [MBTweetTextView frameRectWithAttributedString:attributedString constraintSize:CGSizeMake(viewWidth, CGFLOAT_MAX) lineSpace:LINE_SPACING font:[UIFont systemFontOfSize:FONT_SIZE]];
+
+        height = textRect.size.height + (20.0f ) + (8.0f + 18.f + 8.0f);
+    } else {
+        height = 48.0f;
+    }
+    
+    
+    
+    return  height;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    return 3; // default
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    UITableViewCell *cell;
+    if (0 == indexPath.row) {
+        MBDetailTweetUserTableViewCell *userCell = [self.tableView dequeueReusableCellWithIdentifier:userCellIdentifier];
+        [self updateUserCell:userCell];
+        cell = userCell;
+    } else if (1 == indexPath.row) {
+        MBDetailTweetTextTableViewCell *textCell = [self.tableView dequeueReusableCellWithIdentifier:tweetCellIdentifier];
+        [self updateTweetViewCell:textCell];
+        cell = textCell;
+    } else if (2 == indexPath.row) {
+        MBDetailTweetActionsTableViewCell *actionsCell = [self.tableView dequeueReusableCellWithIdentifier:actionsCellIdentifier];
+        [self updateActionsCell:actionsCell];
+        cell = actionsCell;
+    }
+    
+    return cell;
+}
+
+- (void)updateUserCell:(MBDetailTweetUserTableViewCell *)cell
+{
+    MBUser *user = self.tweet.tweetUser;
+    cell.characterNameLabel.text = user.characterName;
+    cell.screenNameLabel.text = user.characterName;
+    [cell setScreenName:user.screenName];
+    
+    UIImage *avatorImage = [[MBImageCacher sharedInstance] cachedTimelineImageForUser:user.userIDStr];
+    if (!avatorImage) {
+        
+        NSString *path = [[NSBundle mainBundle] pathForResource:@"DefaultImage@2x" ofType:@"png"];
+        UIImage *defaultImage = [[UIImage alloc] initWithContentsOfFile:path];
+        
+        avatorImage = defaultImage;
+        if (NO == user.isDefaultProfileImage) {
+            
+            dispatch_queue_t globalQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0);
+            dispatch_async(globalQueue, ^{
+                [MBImageDownloader downloadBigImageWithURL:user.urlHTTPSAtProfileImage completionHandler:^(UIImage *image, NSData *imageData){
+                    if (image) {
+                        [[MBImageCacher sharedInstance] storeProfileImage:image data:imageData forUserID:user.userIDStr];
+                        
+                        image = [image imageByScallingToFillSize:CGSizeMake(cell.avatorImageView.frame.size.width, cell.avatorImageView.frame.size.height)];
+                        [[MBImageCacher sharedInstance] storeTimelineImage:image forUserID:user.userIDStr];
+                        
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            cell.avatorImageView.image = image;
+                        });
+                    }
+                    
+                }failedHandler:^(NSURLResponse *response, NSError *error){
+                    
+                }];
+                
+            });
+            
+        }
+    }
+    cell.avatorImageView.image = avatorImage;
+}
+
+- (void)updateTweetViewCell:(MBDetailTweetTextTableViewCell *)cell
+{
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    
+    cell.tweetTextView.font = [UIFont systemFontOfSize:FONT_SIZE];
+    cell.tweetTextView.lineSpace = LINE_SPACING;
+    cell.tweetTextView.lineHeight = LINE_HEIGHT;
+    cell.tweetTextView.paragraphSpace = PARAGRAPF_SPACING;
+    cell.tweetTextView.attributedString = [MBTweetTextComposer attributedStringForTweet:self.tweet tintColor:[self.navigationController.navigationBar tintColor]];
+    //cell.tweetTextView.isSelectable = YES; ルーペを実装できないため。
+    cell.tweetTextView.delegate = self;
+    
+    cell.dateView.attributedString = [MBTweetTextComposer attributedStringForDetailTweetDate:[self.tweet.createdDate description] font:[UIFont systemFontOfSize:12.0f] screeName:self.tweet.tweetUser.screenName tweetID:[self.tweet.tweetID unsignedLongLongValue]];
+}
+
+- (void)updateActionsCell:(MBDetailTweetActionsTableViewCell *)cell
+{
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    
+    [cell.replyButton addTarget:self action:@selector(didPushReplyButton:) forControlEvents:UIControlEventTouchUpInside];
+    [cell.retweetWithComentButton addTarget:self action:@selector(didPushRetweetWithComentButton:) forControlEvents:UIControlEventTouchUpInside];
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (0 == indexPath.row) {
+        MBUser *selectedUser = self.tweet.tweetUser;
+        MBDetailUserViewController *userViewController = [[MBDetailUserViewController alloc] initWithNibName:@"MBUserDetailView" bundle:nil];
+        [userViewController setUser:selectedUser];
+        [self.navigationController pushViewController:userViewController animated:YES];
+    }
+}
+
 #pragma mark UIActionSheet Delegate
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
 {
@@ -161,8 +313,35 @@
 {
     MBTweet *parsedTweet = [tweets firstObject];
     [self setTweet:parsedTweet];
+    [self.tableView reloadData];
     NSLog(@"retweet or destroyRetweet  parsed Text = %@", parsedTweet.tweetText);
 }
 
+#pragma mark TweetTextViewDelegate
+- (void)tweetTextViewShowMagnifier:(MBTweetTextView *)textView point:(CGPoint)point
+{
+    if (!self.magnifierView.superview) {
+        [self.magnifierView showInView:self.view.window forView:self.view atPoint:[self.view convertPoint:point fromView:textView]];
+    }
+    [self.magnifierView moveToPoint:[self.view convertPoint:point fromView:textView]];
+}
+
+- (void)tweetTextViewHideMagnifier:(MBTweetTextView *)textView
+{
+    [self.magnifierView hide];
+}
+
+- (void)tweetTextViewShowMagnifierRange:(MBTweetTextView *)textView point:(CGPoint)point
+{
+    if (!self.magnifierRangeView.superview) {
+        [self.magnifierRangeView showInView:self.view.window forView:self.view atPoint:[self.view convertPoint:point fromView:textView]];
+    }
+    [self.magnifierRangeView moveToPoint:[self.view convertPoint:point fromView:textView]];
+}
+
+- (void)tweetTextViewHideMagnifierRange:(MBTweetTextView *)textView
+{
+    [self.magnifierRangeView hideView];
+}
 
 @end
