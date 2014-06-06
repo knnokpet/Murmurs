@@ -107,9 +107,10 @@ typedef enum MBResponseType {
     MBTwitterStatuseResponse = 1,
     MBTwitterUsersResponse = 2,
     MBTwitterUserResponse = 3,
-    MBTwitterListsResponse = 4,
-    MBTwitterMembersOfListResponse = 5,
+    MBTwitterListResponse = 4,
+    MBTwitterListsResponse = 5,
     MBTwitterDirectMessagesResponse = 6,
     MBTwitterDirectMessageResponse = 7,
-    MBTwitterHelpResponse = 8,
+    MBTwitterGeocodeResponse = 8,
+    MBTwitterHelpResponse = 9,
 } MBResponseType;
