@@ -7,15 +7,33 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <CoreLocation/CoreLocation.h>
+#import "MBAOuth_TwitterAPICenter.h"
 
 @protocol MBPostTweetViewControllerDelegate;
-@class MBAOuth_TwitterAPICenter;
-@interface MBPostTweetViewController : UIViewController
+@class MBTweet;
+@interface MBPostTweetViewController : UIViewController <CLLocationManagerDelegate, UIScrollViewDelegate, MBAOuth_TwitterAPICenterDelegate>
 
 @property (nonatomic, weak) id <MBPostTweetViewControllerDelegate> delegate;
 @property (nonatomic, readonly) MBAOuth_TwitterAPICenter *aoAPICenter;
+@property (nonatomic, readonly) MBTweet *referencedTweet;
+
+@property (weak, nonatomic) IBOutlet UIImageView *mediaImageView;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *topConstraint;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *LeftHorizontalConstraint;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *horizontalConstraint;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *widthConstraint;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *heightConstraint;
+@property (weak, nonatomic) IBOutlet UITextView *tweetTextView;
+- (void)setText:(NSString *)text;
+
+- (void)addReply:(NSNumber *)replyID;
+- (void)setScreenName:(NSString *)screenName;
+- (void)setRetweetWithComent:(NSString *)retweetedText tweetedUser:(NSString *)screenName;
+- (void)setReferencedTweet:(MBTweet *)referencedTweet;
 
 @end
+
 
 
 @protocol MBPostTweetViewControllerDelegate <NSObject>
