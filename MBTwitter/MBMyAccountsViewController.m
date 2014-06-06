@@ -41,7 +41,8 @@
     [[NSNotificationCenter defaultCenter] addObserverForName:@"ChangeMyAccount" object:nil queue:nil usingBlock:^ (NSNotification *notification) {
         _aoAPICenter = [[MBAOuth_TwitterAPICenter alloc] init];
         _aoAPICenter.delegate = self;
-        [_aoAPICenter getUser:0 screenName:[MBAccountManager sharedInstance].currentAccount.screenName];
+        NSLog(@"change Account in MyAccountViewController");
+        
     }];
     
 }
@@ -171,6 +172,7 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     [[MBAccountManager sharedInstance] selectAccountAtIndex:indexPath.row];
+    [_aoAPICenter getUser:0 screenName:[MBAccountManager sharedInstance].currentAccount.screenName];
 }
 
 #pragma mark - 
