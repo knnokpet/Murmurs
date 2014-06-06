@@ -8,11 +8,61 @@
 
 #import "MBAppDelegate.h"
 
+#import "MBHomeTimelineViewController.h"
+#import "MBReplyTimelineViewController.h"
+#import "MBSeparatedDirectMessageUserViewController.h"
+#import "MBMyListViewController.h"
+
+#import "MBAccountManager.h"
+
 @implementation MBAppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     // Override point for customization after application launch.
+    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+    self.tabBarController = [[UITabBarController alloc] init];
+    
+    MBAccountManager *accountManager = [MBAccountManager sharedInstance];
+    [accountManager requestAccessToAccountWithCompletionHandler:^(BOOL granted, NSArray *accounts, NSError *error){}];
+    
+    // viewControllers
+    NSMutableArray *viewControllers = [NSMutableArray arrayWithCapacity:5];
+    MBHomeTimelineViewController *homeViewController = [[MBHomeTimelineViewController alloc] initWithNibName:@"TimelineTableView" bundle:nil];
+    UINavigationController *timelineNavigationController = [[UINavigationController alloc] initWithRootViewController:homeViewController];
+    [viewControllers addObject:timelineNavigationController];
+    UIImage *homeImage = [[UIImage alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"home-2@2x" ofType:@"png"]];
+    UITabBarItem *homeBarItem = [[UITabBarItem alloc] initWithTitle:NSLocalizedString(@"Home", nil) image:homeImage tag:0];
+    homeViewController.tabBarItem = homeBarItem;
+    
+    MBReplyTimelineViewController *replyTimelineViewController = [[MBReplyTimelineViewController alloc] initWithNibName:@"TimelineTableView" bundle:nil];
+    UINavigationController *replyNavigation = [[UINavigationController alloc] initWithRootViewController:replyTimelineViewController];
+    [viewControllers addObject:replyNavigation];
+    UIImage *replyImage = [[UIImage alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"atmark@2x" ofType:@"png"]];
+    UITabBarItem *replyBarItem = [[UITabBarItem alloc] initWithTitle:NSLocalizedString(@"Reply", nil) image:replyImage tag:1];
+    replyTimelineViewController.tabBarItem = replyBarItem;
+    
+    MBSeparatedDirectMessageUserViewController *separatedDMUserViewController = [[MBSeparatedDirectMessageUserViewController alloc] initWithNibName:@"SeparatedDirectMessagesView" bundle:nil];
+    UINavigationController *dmUserNavigation = [[UINavigationController alloc] initWithRootViewController:separatedDMUserViewController];
+    [viewControllers addObject:dmUserNavigation];
+    UIImage *messageImage = [[UIImage alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"Message@2x" ofType:@"png"]];
+    UIImage *messageSelectedImage = [[UIImage alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"Message-Selected@2x" ofType:@"png"]];
+    UITabBarItem *messageBarItem = [[UITabBarItem alloc] initWithTitle:NSLocalizedString(@"Message", nil) image:messageImage selectedImage:messageSelectedImage];
+    separatedDMUserViewController.tabBarItem = messageBarItem;
+    
+    MBMyListViewController *myListViewController = [[MBMyListViewController alloc] initWithNibName:@"MBListViewController" bundle:nil];
+    UINavigationController *listNavigation = [[UINavigationController alloc] initWithRootViewController:myListViewController];
+    [viewControllers addObject:listNavigation];
+    UIImage *listImage = [[UIImage alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"List@2x" ofType:@"png"]];
+    UIImage *listSelectedImage = [[UIImage alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"List-Selected@2x" ofType:@"png"]];
+    UITabBarItem *listBarItem = [[UITabBarItem alloc] initWithTitle:NSLocalizedString(@"List", nil) image:listImage selectedImage:listSelectedImage];
+    myListViewController.tabBarItem = listBarItem;
+    
+    self.tabBarController.viewControllers = viewControllers;
+    self.window.rootViewController = self.tabBarController;
+    [self.window makeKeyAndVisible];
+    
+    
     return YES;
 }
 							
@@ -41,6 +91,17 @@
 - (void)applicationWillTerminate:(UIApplication *)application
 {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+    MBHomeTimelineViewController *homeViewController = nil;
+    id obj = [self.tabBarController.viewControllers firstObject];
+    if ([obj isKindOfClass:[UINavigationController class]]) {
+        UINavigationController *navigationController = obj;
+        id objInNavigation = [navigationController.viewControllers firstObject];
+        if ([objInNavigation isKindOfClass:[MBHomeTimelineViewController class]]) {
+            homeViewController = obj;
+        }
+    }
+    [homeViewController saveTimeline];
+    
 }
 
 @end
