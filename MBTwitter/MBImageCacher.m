@@ -19,6 +19,7 @@
 
 @property (nonatomic, readonly) NSCache *profileImageCache;
 @property (nonatomic, readonly) NSCache *mediaImageCache;
+@property (nonatomic, readonly) NSCache *timelineImageCache;
 
 @end
 
@@ -48,10 +49,11 @@
         [self createDirectories];
         
         _profileImageCache = [[NSCache alloc] init];
-        self.profileImageCache.countLimit = 500;
+        self.profileImageCache.countLimit = 100;
         _mediaImageCache = [[NSCache alloc] init];
-        self.mediaImageCache.countLimit = 100;
-        
+        self.mediaImageCache.countLimit = 50;
+        _timelineImageCache = [[NSCache alloc] init];
+        self.timelineImageCache.countLimit = 500;
     }
     
     return self;
@@ -160,10 +162,23 @@
         NSData *imageData = [[NSData alloc] initWithContentsOfFile:pathForImage];
         UIImage *savedImage = [[UIImage alloc] initWithData:imageData];
         UIImage *resizedImage = [savedImage imageByScallingToFillSize:CGSizeMake(44.0f, 44.0f)];
-        [self storeImage:resizedImage data:imageData forID:sourceID to:cache directory:directoryPath];
+        [self storeTimelineImage:resizedImage forUserID:sourceID];
     });
     
     return defaultImage;
+}
+
+- (UIImage *)cachedTimelineImageForUser:(NSString *)userID
+{
+    if (nil == userID) {
+        return nil;
+    }
+    
+    UIImage *cachedImage = [self.timelineImageCache objectForKey:userID];
+    if (cachedImage) {
+        return cachedImage;
+    }
+    return nil;
 }
 
 - (void)storeProfileImage:(UIImage *)image data:(NSData *)data forUserID:(NSString *)userID
@@ -187,6 +202,15 @@
     
     NSString *pathForID = [self pathForID:keyForID directory:directoryPath];
     [data writeToFile:pathForID atomically:YES];
+}
+
+- (void)storeTimelineImage:(UIImage *)image forUserID:(NSString *)userID
+{
+    if (nil == image || nil == userID) {
+        return;
+    }
+    
+    [self.timelineImageCache setObject:image forKey:userID];
 }
 
 #pragma mark -
