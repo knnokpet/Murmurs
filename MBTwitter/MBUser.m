@@ -39,6 +39,7 @@
 #define KEY_SHOW_INLINE_MEDIA @"show_all_inline_media"
 #define KEY_PROFILE_BACKGROUND_TILE @"profile_background_tile"
 #define KEY_PROFILE_IMAGE_URL_HTTPS @"profile_image_url_https"
+#define KEY_PROFILE_IMAGE_BANNER_URL_HTTPS @"profile_banner_url"
 
 @implementation MBUser
 - (id)initWithDictionary:(NSDictionary *)user
@@ -88,6 +89,7 @@
     
         
     _urlHTTPSAtProfileImage = [user stringForKey:KEY_PROFILE_IMAGE_URL_HTTPS];
+    _urlAtProfileBanner = [user stringForKey:KEY_PROFILE_IMAGE_BANNER_URL_HTTPS];
 }
 
 - (id)initWithCoder:(NSCoder *)aDecoder

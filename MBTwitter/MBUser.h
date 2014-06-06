@@ -15,7 +15,7 @@
 
 @property (nonatomic, assign, readonly) BOOL requireLoading;
 
-@property (nonatomic, readonly) NSString *screenName;
+@property (nonatomic, readonly) NSString *screenName; // 一般的に ID と呼ばれるもの
 @property (nonatomic, readonly) NSNumber *userID;
 @property (nonatomic, readonly) NSString *userIDStr;
 @property (nonatomic, readonly) NSString *desctiprion;// NULLable
@@ -25,7 +25,7 @@
 @property (nonatomic, readonly) NSInteger followersCount;
 @property (nonatomic, readonly) NSInteger followsCount;
 @property (nonatomic, readonly) NSString *location;// NULLable
-@property (nonatomic, readonly) NSString *characterName;
+@property (nonatomic, readonly) NSString *characterName; // 変更可能な名前
 @property (nonatomic, readonly) NSDate *createdDate;
 @property (nonatomic, readonly) MBEntity *entity;
 @property (nonatomic, readonly) MBTweet *currentTweet; // Nullable
