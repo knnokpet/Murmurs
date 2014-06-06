@@ -59,15 +59,24 @@
 - (NSString *)postFollowForUserID:(unsigned long long)userID screenName:(NSString *)screenName;
 - (NSString *)postUnfollowForUserID:(unsigned long long)userID screenName:(NSString *)screenName;
 - (NSString *)getUser:(unsigned long long)userID screenName:(NSString *)screenName;
-- (NSString *)getUsersFollowing:(unsigned long long)userID screenName:(NSString *)screenName cursor:(unsigned long long)cursor;
-- (NSString *)getUsersFollowingMe:(unsigned long long)userID screenName:(NSString *)screenName cursor:(unsigned long long)cursor;
+- (NSString *)getUsersFollowing:(unsigned long long)userID screenName:(NSString *)screenName cursor:(long long)cursor;
+- (NSString *)getUsersFollowingMe:(unsigned long long)userID screenName:(NSString *)screenName cursor:(long long)cursor;
 
 
 - (NSString *)getListsOfUser:(unsigned long long)userID screenName:(NSString *)screenName;
+- (NSString *)getListsOfOwnerShipWithUser:(unsigned long long)userID screenName:(NSString *)screenName cursor:(long long)cursor;
+- (NSString *)getListsOfSubscriptionWithUser:(unsigned long long)userID screenName:(NSString *)screenName cursor:(long long)cursor;
 - (NSString *)getBackListTimeline:(unsigned long long)listID slug:(NSString *)slug ownerScreenName:(NSString *)screenName ownerID:(unsigned long long)ownerID max:(unsigned long long)maxID;
 - (NSString *)getForwardListTimeline:(unsigned long long)listID slug:(NSString *)slug ownerScreenName:(NSString *)screenName ownerID:(unsigned long long)ownerID since:(unsigned long long)sinceID;
 - (NSString *)getListTimeline:(unsigned long long)listID slug:(NSString *)slug ownerScreenName:(NSString *)screenName ownerID:(unsigned long long)ownerID since:(unsigned long long)sinceID max:(unsigned long long)maxID;
-- (NSString *)getMembersOfList:(unsigned long long )listID slug:(NSString *)slug ownerScreenName:(NSString *)screenName ownerID:(unsigned long long)ownerID cursor:(unsigned long long)cursor;
+- (NSString *)getMembersOfList:(unsigned long long )listID slug:(NSString *)slug ownerScreenName:(NSString *)screenName ownerID:(unsigned long long)ownerID cursor:(long long)cursor;
+- (NSString  *)postCreateList:(NSString *)name isPublic:(BOOL)isPublic description:(NSString *)description;
+- (NSString *)postUpdateList:(unsigned long long)listID name:(NSString *)name slug:(NSString *)slug isPublic:(BOOL)isPublic description:(NSString *)description;
+- (NSString *)postDestroyOwnList:(unsigned long long)listID slug:(NSString *)slug ownerScreenName:(NSString *)screenName ownerID:(unsigned long long)ownerID;
+- (NSString *)postSubscriveList:(unsigned long long)listID slug:(NSString *)slug ownerScreenName:(NSString *)screenName ownerID:(unsigned long long)ownerID;
+- (NSString *)postDestroySubscrivedList:(unsigned long long)listID slug:(NSString *)slug ownerScreenName:(NSString *)screenName ownerID:(unsigned long long)ownerID;
+- (NSString *)postDestroyMemberOfList:(unsigned long long)listID slug:(NSString *)slug userID:(unsigned long long)userID screenName:(NSString *)screenName ownerScreenName:(NSString *)ownerName ownerID:(unsigned long long)ownerID;
+
 
 - (NSString *)getDeliveredDirectMessagesSinceID:(unsigned long long)since maxID:(unsigned long long)max;
 - (NSString *)getSentDirectMessagesSinceID:(unsigned long long)since maxID:(unsigned long long)max;
