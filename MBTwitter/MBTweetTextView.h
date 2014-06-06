@@ -52,6 +52,11 @@
 
 @protocol MBTweetTextViewDelegate <NSObject>
 
+@optional
 - (void)tweetTextView:(MBTweetTextView *)textView clickOnLink:(MBLinkText *)linktext;
+- (void)tweetTextViewShowMagnifier:(MBTweetTextView *)textView point:(CGPoint)point;
+- (void)tweetTextViewHideMagnifier:(MBTweetTextView *)textView;
+- (void)tweetTextViewShowMagnifierRange:(MBTweetTextView *)textView point:(CGPoint)point;
+- (void)tweetTextViewHideMagnifierRange:(MBTweetTextView *)textView;
 
 @end

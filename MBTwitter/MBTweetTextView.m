@@ -13,6 +13,8 @@
 #import "MBTextSelection.h"
 
 #import "MBSelectionView.h"
+#import "MBMagnifierView.h"
+#import "MBMagnifierRangeView.h"
 
 typedef NS_ENUM(NSUInteger, MBToucheState) {
     MBToucheStateNone       = 0,
@@ -32,6 +34,8 @@ typedef NS_ENUM(NSUInteger, MBToucheState) {
 @property (nonatomic) MBToucheState toucheState;
 
 @property (nonatomic) MBSelectionView *selectionView;
+@property (nonatomic) MBMagnifierView *magnifierView;
+@property (nonatomic) MBMagnifierRangeView *magnifierRangeView;
 
 @end
 
@@ -50,10 +54,12 @@ typedef NS_ENUM(NSUInteger, MBToucheState) {
     _textLayout.bound = self.bounds;
     
     self.linkHighlightColor = [UIColor blueColor];
-    
+        
     [self setIsSelectable:NO];
     
     [self configureTextSelections];
+    self.magnifierView = [[MBMagnifierView alloc] init];
+    self.magnifierRangeView = [[MBMagnifierRangeView alloc] init];
 }
 
 - (void)configureTextSelections
@@ -208,7 +214,6 @@ typedef NS_ENUM(NSUInteger, MBToucheState) {
 
 - (MBLinkText *)linkAtPoint:(CGPoint)point
 {
-    NSLog(@"hitPoint %f %f", point.x, point.y);
     for (MBLineLayout *lineLayout in self.textLayout.lineLayouts) {
         MBLinkText *linkText = [lineLayout linkAtPoint:point];
         if (nil != linkText) {
@@ -410,6 +415,87 @@ typedef NS_ENUM(NSUInteger, MBToucheState) {
     [self.selectionView hideViews];
 }
 
+- (void)moveMagnifierToPoint:(CGPoint)point
+{
+    if ([_delegate respondsToSelector:@selector(tweetTextViewShowMagnifier:point:)]) {
+        [_delegate tweetTextViewShowMagnifier:self point:point];
+    }
+}
+
+- (void)hideMagnifierView
+{
+    if ([_delegate respondsToSelector:@selector(tweetTextViewHideMagnifier:)]) {
+        [_delegate tweetTextViewHideMagnifier:self];
+    }
+}
+
+- (void)moveMagnifierRangeVIewToPoint:(CGPoint)point
+{
+    if ([_delegate respondsToSelector:@selector(tweetTextViewShowMagnifierRange:point:)]) {
+        [_delegate tweetTextViewShowMagnifierRange:self point:point];
+    }
+}
+
+- (void)hideMagnifierRangeView
+{
+    if ([_delegate respondsToSelector:@selector(tweetTextViewHideMagnifierRange:)]) {
+        [_delegate tweetTextViewHideMagnifierRange:self];
+    }
+}
+
+- (void)showEditMenu
+{
+    if (!self.isFirstResponder && !self.selectionView.isFirstResponder) {
+        [self.selectionView becomeFirstResponder];
+    }
+    
+    UIMenuController *menuController = [UIMenuController sharedMenuController];
+    menuController.arrowDirection = UIMenuControllerArrowDefault;
+    
+    CGRect targetRect = [self rectForEditMenu];
+    targetRect.origin.x = 100;
+    NSLog(@"origin x = %f %f", targetRect.origin.x, targetRect.origin.y);
+    UIView *responderView = (self.isFirstResponder) ? self : self.selectionView;
+    [menuController setTargetRect:targetRect inView:responderView];
+    [menuController setMenuVisible:YES animated:YES];
+    
+}
+
+- (CGRect)rectForEditMenu
+{
+    MBTextSelection *selection = self.textLayout.textSelection;
+    CGRect topRect = CGRectNull;
+    CGFloat minX = CGFLOAT_MAX;
+    CGFloat maxX = CGFLOAT_MIN;
+    
+    for (MBLineLayout *lineLayout in self.textLayout.lineLayouts) {
+        CGRect selectionRect = [lineLayout rectOfStringWithRange:selection.selectedRange];
+        if (!CGRectIsEmpty(selectionRect)) {
+            CGFloat lineSpace = self.lineSpace;
+            selectionRect.origin.y -= lineSpace;
+            selectionRect.size.height += lineSpace;
+            
+            if (CGRectIsNull(topRect)) {
+                topRect = selectionRect;
+            }
+            
+            minX = MIN(CGRectGetMinX(selectionRect), minX);
+            maxX = MAX(CGRectGetMaxX(selectionRect), maxX);
+            
+            topRect.origin.x = minX;
+            topRect.size.width = maxX - minX;
+        }
+    }
+    
+    return topRect;
+}
+
+- (void)hideEditMenu
+{
+    UIMenuController *menuController = [UIMenuController sharedMenuController];
+    [menuController setMenuVisible:NO animated:YES];
+}
+
 #pragma mark -
 - (void)selectionGestureStateChanged:(UILongPressGestureRecognizer *)gestureRecognizer
 {
@@ -419,9 +505,14 @@ typedef NS_ENUM(NSUInteger, MBToucheState) {
     if (currentState == UIGestureRecognizerStateBegan || currentState == UIGestureRecognizerStateChanged) {
         self.toucheState = MBToucheStateMoved;
         
+        [self moveMagnifierToPoint:self.touchedPoint];
+        
         [self.textLayout setSelectionWithPoint:self.touchedPoint];
     } else if (currentState == UIGestureRecognizerStateEnded || currentState == UIGestureRecognizerStateCancelled || currentState == UIGestureRecognizerStateFailed) {
         self.toucheState = MBToucheStateNone;
+        
+        [self hideMagnifierView];
+        
     }
     
     [self selectionChanged];
@@ -444,14 +535,19 @@ typedef NS_ENUM(NSUInteger, MBToucheState) {
     if (currentState == UIGestureRecognizerStateBegan || currentState == UIGestureRecognizerStateChanged) {
         if (gestureRecognizer == self.selectionView.startGrabberGestureRecognizer) {
             
+            [self hideEditMenu];
+            [self moveMagnifierRangeVIewToPoint:self.touchedPoint];
             [self.textLayout setSelectionStartWithFirstPoint:self.touchedPoint];
         } else { // endGrabberGesture
             
+            [self hideEditMenu];
+            [self moveMagnifierRangeVIewToPoint:self.touchedPoint];
             [self.textLayout setSelectionEndWithPoint:self.touchedPoint];
         }
     } else if (currentState == UIGestureRecognizerStateEnded || currentState == UIGestureRecognizerStateCancelled || currentState == UIGestureRecognizerStateFailed) {
         
-        
+        [self hideMagnifierRangeView];
+        [self showEditMenu];
     }
     
     [self selectionChanged];
