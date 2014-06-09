@@ -10,11 +10,17 @@
 #import "MBAOuth_TwitterAPICenter.h"
 
 @class MBUser;
-@interface MBIndividualDirectMessagesViewController : UIViewController <MBAOuth_TwitterAPICenterDelegate>
+@interface MBIndividualDirectMessagesViewController : UIViewController <MBAOuth_TwitterAPICenterDelegate, UITextViewDelegate>
 
 @property (nonatomic, readonly) MBUser *partner;
 @property (nonatomic, readonly) NSMutableArray *conversation;
+
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
+@property (weak, nonatomic) IBOutlet UIToolbar *toolbar;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *topConstraint;
+@property (weak, nonatomic) IBOutlet UIView *containedView;
+@property (weak, nonatomic) IBOutlet UITextView *textView;
+
 
 - (void)setPartner:(MBUser *)partner;
 - (void)setConversation:(NSMutableArray *)conversation;
