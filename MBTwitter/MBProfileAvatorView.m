@@ -61,7 +61,8 @@
 {
     _characterName = characterName;
     self.characterNameLabel.text = characterName;
-    [self layoutIfNeeded];
+    [self setNeedsDisplay];
+    [self setNeedsLayout];
 }
 
 - (void)setScreenName:(NSString *)screenName
@@ -70,7 +71,8 @@
     if (0 < screenName.length) {
         NSString *screenNameAt = [NSString stringWithFormat:@"@%@", screenName];
         self.screenNameLabel.text = screenNameAt;
-        [self layoutIfNeeded];
+        [self setNeedsDisplay];
+        [self setNeedsLayout];
     }
 }
 
