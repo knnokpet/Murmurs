@@ -7,7 +7,7 @@
 //
 
 #import "MBSeparatedDirectMessageUserViewController.h"
-#import "MBIndividualDirectMessagesViewController.h"
+
 
 #import "MBImageCacher.h"
 #import "MBImageDownloader.h"
@@ -17,17 +17,20 @@
 #import "MBAccountManager.h"
 #import "MBAccount.h"
 #import "MBUser.h"
+#import "MBImageApplyer.h"
 
-#import "UIImage+Resize.h"
-#import "UIImage+Radius.h"
+#import "MBUserIDManager.h"
 
+#import "MBLoadingView.h"
 #import "MBSeparatedDirectMessageUserTableViewCell.h"
 
 @interface MBSeparatedDirectMessageUserViewController () <UITableViewDataSource, UITableViewDelegate>
 
 @property (nonatomic, readonly) MBAOuth_TwitterAPICenter *aoAPICenter;
-@property (nonatomic, readonly) MBDirectMessageManager *directMessageManager;
+@property (nonatomic) MBUserIDManager *followerIDManager;
 @property (nonatomic) NSMutableArray *dataSource;
+
+@property (nonatomic, readonly) MBLoadingView *loadingView;
 
 @end
 
@@ -46,40 +49,57 @@
 
 #pragma mark -
 #pragma mark View
-- (void)viewDidLoad
+- (void)configureModel
 {
-    [super viewDidLoad];
-    // Do any additional setup after loading the view.
-    UINib *separatedDMUserCell = [UINib nibWithNibName:@"SeparatedDirectMessageTableViewCell" bundle:nil];
-    [self.tableView registerNib:separatedDMUserCell forCellReuseIdentifier:@"SeparatedDMUserCellIdentifier"];
+    _aoAPICenter = [[MBAOuth_TwitterAPICenter alloc] init];
+    self.aoAPICenter.delegate = self;
+    self.dataSource = [NSMutableArray array];
+    
+    self.followerIDManager = [[[MBAccountManager sharedInstance] currentAccount] followerIDManager];
+    [self fetchFollowerIDs];
+}
+
+- (void)configureView
+{
+    [self configureNavigationItem];
+    
     self.tableView.dataSource = self;
     self.tableView.delegate = self;
     
-    _aoAPICenter = [[MBAOuth_TwitterAPICenter alloc] init];
-    self.aoAPICenter.delegate = self;
+    // refreshControl
+    _refreshControl = [[UIRefreshControl alloc] init];
+    [self.refreshControl addTarget:self action:@selector(fetchCurrentMessage) forControlEvents:UIControlEventValueChanged];
+    [self.tableView addSubview:self.refreshControl];
+    
+    
+    _loadingView = [[MBLoadingView alloc] initWithFrame:self.view.bounds];
+    [self.view insertSubview:self.loadingView aboveSubview:self.tableView];
+}
+
+- (void)configureNavigationItem
+{
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Account", nil) style:UIBarButtonItemStylePlain target:self action:@selector(didPushLeftButton)];
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(didPushRightButton)];
+}
+
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+    
+    [self configureModel];
+    [self configureView];
+    // Do any additional setup after loading the view.
+    UINib *separatedDMUserCell = [UINib nibWithNibName:@"SeparatedDirectMessageTableViewCell" bundle:nil];
+    [self.tableView registerNib:separatedDMUserCell forCellReuseIdentifier:@"SeparatedDMUserCellIdentifier"];
+    
     
     [self loadMessages];
     [self receiveChangedAccountNotification];
 }
 
-- (void)loadMessages
-{
-    if ([[MBAccountManager sharedInstance] isSelectedAccount]) {
-        [self.aoAPICenter getDeliveredDirectMessagesSinceID:0 maxID:0];
-        [self.aoAPICenter getSentDirectMessagesSinceID:0 maxID:0];
-    }
-}
 
-- (void)receiveChangedAccountNotification
-{
-    [[NSNotificationCenter defaultCenter] addObserverForName:@"ChangeMyAccount" object:nil queue:nil usingBlock:^(NSNotification *notification) {
-        NSLog(@"user change account to = %@", [[MBAccountManager sharedInstance] currentAccount].screenName);
-        _aoAPICenter = [[MBAOuth_TwitterAPICenter alloc] init];
-        self.aoAPICenter.delegate = self;
-        [self.tableView reloadData];
-        [self loadMessages];
-    }];
-}
+
+
 
 - (void)viewWillAppear:(BOOL)animated
 {
@@ -95,6 +115,94 @@
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+#pragma mark -Instance Mthods
+#pragma mark Notificaftion
+- (void)receiveChangedAccountNotification
+{
+    [[NSNotificationCenter defaultCenter] addObserverForName:@"ChangeMyAccount" object:nil queue:nil usingBlock:^(NSNotification *notification) {
+        NSLog(@"user change account to = %@", [[MBAccountManager sharedInstance] currentAccount].screenName);
+        [self configureModel];
+        [self.tableView reloadData];
+        [self loadMessages];
+    }];
+}
+
+#pragma mark 
+- (void)removeLoadingView
+{
+    if (self.loadingView.superview) {
+        [UIView animateWithDuration:1.0f animations:^{
+            [self.loadingView setHidden:YES];
+        }completion:^(BOOL finished){
+            [self.loadingView removeFromSuperview];
+            _loadingView = nil;
+        }];
+    }
+}
+
+- (void)loadMessages
+{
+    if ([[MBAccountManager sharedInstance] isSelectedAccount]) {
+        [self.aoAPICenter getDeliveredDirectMessagesSinceID:0 maxID:0];
+        [self.aoAPICenter getSentDirectMessagesSinceID:0 maxID:0];
+    }
+}
+
+- (void)fetchCurrentMessage
+{
+    if ([[MBAccountManager sharedInstance] isSelectedAccount]) {
+        [self.aoAPICenter getDeliveredDirectMessagesSinceID:0 maxID:0];
+        [self.aoAPICenter getSentDirectMessagesSinceID:0 maxID:0];
+    }
+}
+
+- (void)fetchFollowerIDs
+{
+    if (self.followerIDManager.cursor != 0) {
+        [self.aoAPICenter getFollowingMeIDs:0 screenName:self.followerIDManager.screenName cursor:[self.followerIDManager.cursor longLongValue]];
+    }
+}
+
+- (void)fetchUsersForStoredIds
+{
+    NSMutableArray *fechingIDs = [NSMutableArray arrayWithCapacity:100];
+    
+    NSArray *requireIds = [self.followerIDManager.requireLoadingIDs allValues];
+    if (requireIds.count == 0 ) {
+        return;
+    }
+    
+    NSInteger i = 0;
+    for (NSNumber *userID in requireIds) {
+        if (i < 100) {
+            [fechingIDs addObject:userID];
+            i++;
+        } else {
+            break;
+        }
+    }
+    
+    [self.aoAPICenter getUsersLookupUserIDs:fechingIDs];
+}
+
+#pragma mark Action
+- (void)didPushLeftButton
+{
+    MBMyAccountsViewController *accountViewController = [[MBMyAccountsViewController alloc] initWithNibName:@"MyAccountView" bundle:nil];
+    accountViewController.delegate = self;
+    UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:accountViewController];
+    [self.navigationController presentViewController:navigationController animated:YES completion:nil];
+}
+
+- (void)didPushRightButton
+{
+    MBIndividualDirectMessagesViewController *messageViewController = [[MBIndividualDirectMessagesViewController alloc] init];
+    messageViewController.delegate = self;
+    [messageViewController setIsEditing:YES];
+    [messageViewController setUserIDManager:self.followerIDManager];
+    [self.navigationController pushViewController:messageViewController animated:YES];
 }
 
 #pragma mark -
@@ -125,25 +233,26 @@
     NSDictionary *selectedMessagesDict = [self.dataSource objectAtIndex:indexPath.row];
     NSString *userKey = [selectedMessagesDict stringForKey:@"user"];
     NSMutableArray *messages = [selectedMessagesDict mutableArrayForKey:@"messages"];
-    MBDirectMessage *firstMessage = [messages firstObject];
+    MBDirectMessage *lastMessage = [messages lastObject];
 
     MBUser *user = [[MBUserManager sharedInstance] storedUserForKey:userKey];
     
     cell.screenNameLabel.text = user.screenName;
     cell.characterNameLabel.text = user.characterName;
-    cell.dateLabel.text = [[[NSDateFormatter alloc] init] stringFromDate:firstMessage.createdDate];
-    cell.subtitleLabel.text = firstMessage.tweetText;
+    cell.dateLabel.text = [[[NSDateFormatter alloc] init] stringFromDate:lastMessage.createdDate];
+    cell.subtitleLabel.text = lastMessage.tweetText;
     
     UIImage *avatorImage = [[MBImageCacher sharedInstance] cachedProfileImageForUserID:user.userIDStr];
-    cell.iconImageView.image = avatorImage;
     if (!avatorImage) {
         if (NO == user.isDefaultProfileImage) {
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
                 [MBImageDownloader downloadBigImageWithURL:user.urlHTTPSAtProfileImage completionHandler:^(UIImage *image, NSData *imageData){
                     if (image) {
                         [[MBImageCacher sharedInstance] storeProfileImage:image data:imageData forUserID:user.userIDStr];
-                        image = [image imageByScallingToFillSize:CGSizeMake(cell.iconImageView.frame.size.width, cell.iconImageView.frame.size.height)];
-                        UIImage *radiusImage = [image imageWithRadius:4.0f];
+                        
+                        CGSize imageSize = CGSizeMake(cell.iconImageView.frame.size.width, cell.iconImageView.frame.size.height);
+                        UIImage *radiusImage = [MBImageApplyer imageForTwitter:image byScallingToFillSize:imageSize radius:cell.iconImageView.layer.cornerRadius];
+
                         dispatch_async(dispatch_get_main_queue(), ^{
                             cell.iconImageView.image = radiusImage;
                         });
@@ -153,23 +262,67 @@
                 }];
             });
         }
+    } else {
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+            CGSize imageSize = CGSizeMake(cell.iconImageView.frame.size.width, cell.iconImageView.frame.size.height);
+            UIImage *radiusImage = [MBImageApplyer imageForTwitter:avatorImage byScallingToFillSize:imageSize radius:cell.iconImageView.layer.cornerRadius];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                cell.iconImageView.image = radiusImage;
+            });
+        });
     }
 }
 
 - (void)updateTableViewDataSource:(NSArray *)messages
 {
     if (/*0 == [messages count] ||*/ nil == messages) {
-        
+        [self.refreshControl endRefreshing];
+        [self removeLoadingView];
     } else {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
-            self.dataSource = [[MBDirectMessageManager sharedInstance] separatedMessages];
+            self.dataSource = [[MBDirectMessageManager sharedInstance] separatedMessages].mutableCopy;
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self.tableView reloadData];
+                [self.refreshControl endRefreshing];
+                [self removeLoadingView];
             });
         });
     }
 }
 
+- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return YES;
+}
+
+- (void)tableView:(UITableView *)tableView willBeginEditingRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    
+}
+
+- (void)tableView:(UITableView *)tableView didEndEditingRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    
+}
+
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (UITableViewCellEditingStyleDelete == editingStyle) {
+        
+        [self.dataSource removeObjectAtIndex:indexPath.row];
+        
+        NSDictionary *selectedMessagesDict = [self.dataSource objectAtIndex:indexPath.row];
+        NSString *userKey = [selectedMessagesDict stringForKey:@"user"];
+        
+        NSArray *messages = [[MBDirectMessageManager sharedInstance] separatedMessagesForKey:userKey];
+        for (MBDirectMessage *message in messages) {
+            [self.aoAPICenter postDestroyDirectMessagesRequireID:[[message tweetID] unsignedLongLongValue]];
+        }
+        [[MBDirectMessageManager sharedInstance] removeSeparatedMessagesForKey:userKey];
+        
+        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+    }
+}
 
 #pragma mark - Navigation
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
@@ -180,6 +333,7 @@
     NSMutableArray *messages = [[MBDirectMessageManager sharedInstance] separatedMessagesForKey:userKey];
     
     MBIndividualDirectMessagesViewController *individualViewController = [[MBIndividualDirectMessagesViewController alloc] init];
+    
     [individualViewController setPartner:partner];
     [individualViewController setConversation:messages];
     [self.navigationController pushViewController:individualViewController animated:YES];
@@ -189,6 +343,58 @@
 - (void)twitterAPICenter:(MBAOuth_TwitterAPICenter *)center parsedDirectMessages:(NSArray *)messages
 {
     [self updateTableViewDataSource:messages];
+}
+
+- (void)twitterAPICenter:(MBAOuth_TwitterAPICenter *)center parsedUserIDs:(NSArray *)userIDs next:(NSNumber *)next previous:(NSNumber *)previous
+{
+    if (0 < userIDs.count && next && previous) {
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+            for (NSNumber *userID in userIDs) {
+                [self.followerIDManager addRequireLoadingIDs:userID];
+            }
+            self.followerIDManager.cursor = next;
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                long long cursor = self.followerIDManager.cursor.longLongValue;
+                if (0 != cursor) {
+                    [self fetchFollowerIDs];
+                } else if (0 == cursor) {
+                    [self fetchUsersForStoredIds];
+                }
+            });
+        });
+    }
+}
+
+- (void)twitterAPICenter:(MBAOuth_TwitterAPICenter *)center parsedUsers:(NSArray *)users
+{
+    if (0 < users.count) {
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+            for (MBUser *user in users) {
+                [self.followerIDManager.requireLoadingIDs removeObjectForKey:user.userID];
+                [self.followerIDManager.userIDs setObject:user.userIDStr forKey:user.userID];
+            }
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self fetchUsersForStoredIds];
+            });
+        });
+    }
+}
+
+#pragma mark IndividualViewController Delegate
+
+- (void)sendMessageIndividualDirectMessagesViewController:(MBIndividualDirectMessagesViewController *)controller
+{
+    self.dataSource = [[MBDirectMessageManager sharedInstance] separatedMessages].mutableCopy;
+    [self.tableView reloadData];
+}
+
+#pragma mark MyAccountViewController
+- (void)dismissAccountsViewController:(MBMyAccountsViewController *)controller animated:(BOOL)animated
+{
+    [controller dismissViewControllerAnimated:animated completion:nil];
+    controller = nil;
 }
 
 @end
