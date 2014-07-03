@@ -11,10 +11,12 @@
 
 
 
-#define COUNT_OF_STATUSES_TIMELINE 200
+#define COUNT_OF_STATUSES_TIMELINE 20
 #define COUNT_OF_DIRECT_MESSAGES 50
 #define COUNT_OF_USERS 50
 #define COUNT_OF_OWNER_LISTS 40
+#define COUNT_OF_IDS 5000
+#define COUNT_OF_SEARCH_USERS 20
 
 @interface MBTwitterAPICenter() 
 
@@ -526,6 +528,133 @@
     [parameters setObject:@"true" forKey:@"skip_status"];
     
     return [self sendRequestMethod:HTTP_GET_METHOD resource:resource parameters:parameters requestType:MBTwitterFriendsRequest responseType:MBTwitterUsersResponse];
+}
+
+- (NSString *)getFollowingIDs:(unsigned long long)userID screenName:(NSString *)screenName cursor:(long long)cursor
+{
+    NSString *resource = @"friends/ids";
+    NSMutableDictionary *parameters = [NSMutableDictionary dictionaryWithCapacity:0];
+    
+    if (0 == userID && 0 == screenName.length) {
+        return nil;
+    }
+    if (0 == cursor) {
+        return nil;
+    }
+    
+    if (0 < userID) {
+        [parameters setObject:[NSString stringWithFormat:@"%llu", userID] forKey:@"user_id"];
+    }
+    if (0 < screenName.length) {
+        [parameters setObject:screenName forKey:@"screen_name"];
+    }
+    if (0 != cursor) {
+        [parameters setObject:[NSString stringWithFormat:@"%lld", cursor] forKey:@"cursor"];
+    }
+    [parameters setObject:[NSString stringWithFormat:@"%d", COUNT_OF_IDS] forKey:@"count"];
+    
+    return [self sendRequestMethod:HTTP_GET_METHOD resource:resource parameters:parameters requestType:MBTwitterFriendsRequest responseType:MBTwitterUserIDsResponse];
+}
+
+- (NSString *)getFollowingMeIDs:(unsigned long long)userID screenName:(NSString *)screenName cursor:(long long)cursor
+{
+    NSString *resource = @"followers/ids";
+    NSMutableDictionary *parameters = [NSMutableDictionary dictionaryWithCapacity:0];
+    
+    if (0 == userID && 0 == screenName.length) {
+        return nil;
+    }
+    if (0 == cursor) {
+        return nil;
+    }
+    
+    if (0 < userID) {
+        [parameters setObject:[NSString stringWithFormat:@"%llu", userID] forKey:@"user_id"];
+    }
+    if (0 < screenName.length) {
+        [parameters setObject:screenName forKey:@"screen_name"];
+    }
+    if (0 != cursor) {
+        [parameters setObject:[NSString stringWithFormat:@"%lld", cursor] forKey:@"cursor"];
+    }
+    [parameters setObject:[NSString stringWithFormat:@"%d", COUNT_OF_IDS] forKey:@"count"];
+    
+    return [self sendRequestMethod:HTTP_GET_METHOD resource:resource parameters:parameters requestType:MBTwitterFollowersRequest responseType:MBTwitterUserIDsResponse];
+}
+
+- (NSString *)getRelationshipsOfMyAccountsWith:(NSArray *)userIDs
+{
+    NSString *resource = @"friendships/lookup";
+    NSMutableDictionary *parameters = [NSMutableDictionary dictionaryWithCapacity:0];
+    
+    NSUInteger count = [userIDs count];
+    if (0 == count || 100 < count || nil == userIDs) {
+        return nil;
+    }
+    
+    NSString *requestString = [[NSString alloc] init];
+    int i = 0;
+    for (NSNumber *userIDNumber in userIDs) {
+        if (0 < i) {
+            requestString = [requestString stringByAppendingString:@","];
+        }
+        
+        unsigned long long userID = [userIDNumber unsignedLongLongValue];
+        NSString *userIDStr = [NSString stringWithFormat:@"%llu", userID];
+        requestString = [requestString stringByAppendingString:userIDStr];
+        
+        i ++;
+    }
+    
+    [parameters setObject:requestString forKey:@"user_id"];
+    
+    return [self sendRequestMethod:HTTP_GET_METHOD resource:resource parameters:parameters requestType:MBTwitterUserLookUpRequest responseType:MBTwitterUserRelationshipsResponse];
+    
+}
+
+- (NSString *)getUsersLookupUserIDs:(NSArray *)userIDs
+{
+    NSString *resource = @"users/lookup";
+    NSMutableDictionary *parameters = [NSMutableDictionary dictionaryWithCapacity:0];
+    
+    NSUInteger count = [userIDs count];
+    if (0 == count || 100 < count || nil == userIDs) {
+        return nil;
+    }
+    
+    NSString *requestString = [[NSString alloc] init];
+    int i = 0;
+    for (NSNumber *userIDNumber in userIDs) {
+        if (0 < i) {
+            requestString = [requestString stringByAppendingString:@","];
+        }
+        
+        unsigned long long userID = [userIDNumber unsignedLongLongValue];
+        NSString *userIDStr = [NSString stringWithFormat:@"%llu", userID];
+        requestString = [requestString stringByAppendingString:userIDStr];
+        
+        i ++;
+    }
+    
+    [parameters setObject:requestString forKey:@"user_id"];
+    
+    return [self sendRequestMethod:HTTP_GET_METHOD resource:resource parameters:parameters requestType:MBTwitterUserLookUpRequest responseType:MBTwitterUsersLookUpResponse];
+}
+
+- (NSString *)getSearchedUsersWithQuery:(NSString *)query page:(unsigned long)page
+{
+    NSString *resource = @"users/search";
+    NSMutableDictionary *parameters = [NSMutableDictionary dictionaryWithCapacity:0];
+    if (!query || 0 == query.length) {
+        return nil;
+    }
+    
+    [parameters setObject:query forKey:@"q"];
+    [parameters setObject:[NSString stringWithFormat:@"%lu", page] forKey:@"page"];
+    [parameters setObject:[NSString stringWithFormat:@"%d", COUNT_OF_SEARCH_USERS] forKey:@"count"];
+    [parameters setObject:@"false" forKey:@"include_entities"];
+    
+    return [self sendRequestMethod:HTTP_GET_METHOD resource:resource parameters:parameters requestType:MBTwitterUsersSearchRequest responseType:MBTwitterUsersLookUpResponse];
 }
 
 #pragma mark List

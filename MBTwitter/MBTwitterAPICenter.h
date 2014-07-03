@@ -61,6 +61,11 @@
 - (NSString *)getUser:(unsigned long long)userID screenName:(NSString *)screenName;
 - (NSString *)getUsersFollowing:(unsigned long long)userID screenName:(NSString *)screenName cursor:(long long)cursor;
 - (NSString *)getUsersFollowingMe:(unsigned long long)userID screenName:(NSString *)screenName cursor:(long long)cursor;
+- (NSString *)getFollowingIDs:(unsigned long long)userID screenName:(NSString *)screenName cursor:(long long)cursor;
+- (NSString *)getFollowingMeIDs:(unsigned long long)userID screenName:(NSString *)screenName cursor:(long long)cursor;
+- (NSString *)getRelationshipsOfMyAccountsWith:(NSArray *)userIDs;
+- (NSString *)getUsersLookupUserIDs:(NSArray *)userIDs;
+- (NSString *)getSearchedUsersWithQuery:(NSString *)query page:(unsigned long)page;
 
 
 - (NSString *)getListsOfUser:(unsigned long long)userID screenName:(NSString *)screenName;
@@ -82,6 +87,7 @@
 - (NSString *)getSentDirectMessagesSinceID:(unsigned long long)since maxID:(unsigned long long)max;
 - (NSString *)postDestroyDirectMessagesRequireID:(unsigned long long)require;
 - (NSString *)postDirectMessage:(NSString *)text screenName:(NSString *)screenName userID:(unsigned long long)userID;
+
 
 - (NSString *)getReverseGeocode:(float)latitude longi:(float)longitude;
 
