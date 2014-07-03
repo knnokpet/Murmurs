@@ -131,7 +131,7 @@
 - (NSArray *)decorateAddingArray:(NSArray *)decoratedArray
 {
     //overridden
-    return nil;
+    return decoratedArray;
 }
 
 - (void)updateTableViewDataSource:(NSArray *)addingArray
