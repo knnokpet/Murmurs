@@ -22,5 +22,6 @@
 - (NSArray *)savedReplyAtIndex:(NSInteger)index;
 
 - (void)deleteAllSavedTweets;
+- (void)deleteAllSavedTweetsOfCurrentAccount;
 
 @end
