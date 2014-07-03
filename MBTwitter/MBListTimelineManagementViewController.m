@@ -73,7 +73,7 @@
     listTimelineViewController.tableView.scrollIndicatorInsets = indicatorInsets;
     [self.view addSubview:listTimelineViewController.view];
     self.listTimelineViewController = listTimelineViewController;
-    
+    self.listTimelineViewController.delegate = self;
     
     MBListMembersViewController *listMembersViewController = [[MBListMembersViewController alloc] initWithNibName:@"MBUsersViewController" bundle:nil];
     [listMembersViewController setList:self.list];
@@ -98,7 +98,10 @@
     
     [self.segmentedController setTitle:NSLocalizedString(@"Tweet", nil) forSegmentAtIndex:0];
     [self.segmentedController setTitle:NSLocalizedString(@"Users", nil) forSegmentAtIndex:1];
+    
+    //[self.containerView setBackgroundView:self.currentController.view];
     [self.view bringSubviewToFront:self.containerView];
+    //[self.containerView updateBlurView];
 }
 
 - (void)didReceiveMemoryWarning
@@ -122,13 +125,22 @@
         CGRect frame =self.view.frame;
         selectedViewController.view.frame = frame;
         [self.view addSubview:selectedViewController.view];
+        
     }completion: ^(BOOL finished){
         [selectedViewController didMoveToParentViewController:self];
         [self.currentController removeFromParentViewController];
         self.currentController = selectedViewController;
     }];
+    //[self.containerView setBackgroundView:self.currentController.view];
     [self.view bringSubviewToFront:self.containerView];
+    //[self.containerView updateBlurView];
     
+}
+
+#pragma mark -
+- (void)scrollTimelineViewController:(MBListTimelineViewController *)controller
+{
+    //[self.containerView updateBlurView];
 }
 
 
