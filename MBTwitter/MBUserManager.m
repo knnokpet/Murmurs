@@ -7,6 +7,9 @@
 //
 
 #import "MBUserManager.h"
+#import "MBAccountManager.h"
+#import "MBAccount.h"
+#import "MBRelationshipManager.h"
 #import "MBUser.h"
 
 @interface MBUserManager()
@@ -57,6 +60,8 @@
         return nil;
     }
     
+    [self setRelationshipForUser:user];
+    
     return user;
 }
 
@@ -67,7 +72,25 @@
     }
     
     NSString *key = user.userIDStr;
+    if (!key) {
+        return;
+    }
+    
+    [self setRelationshipForUser:user];
+    
     [self.users setObject:user forKey:key];
+}
+
+- (void)setRelationshipForUser:(MBUser *)user
+{
+    MBRelationshipManager *currentRelationshipManager = [[MBAccountManager sharedInstance].currentAccount relationshipManger];
+    user.relationship = [currentRelationshipManager storedRelationship:user.userID];
+    if (!user.relationship) {
+        [currentRelationshipManager addRequiredLoadingRelationshipUserID:user.userID];
+    } else {
+        // userObject が単体でくるような、フォローフォロー解除のときのみ更新する？
+        //[self.relationshipManager removeRelationship:user.userID];
+    }
 }
 
 @end
