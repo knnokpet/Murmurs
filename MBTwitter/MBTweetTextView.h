@@ -21,8 +21,8 @@
 @property (nonatomic) CGFloat lineSpace;
 @property (nonatomic) CGFloat paragraphSpace;
 @property (nonatomic) CGFloat lineHeight;
-@property (nonatomic) NSTextAlignment *alignment;
-@property (nonatomic) NSLineBreakMode *lineBreakMode;
+@property (nonatomic) NSTextAlignment alignment;
+@property (nonatomic) NSLineBreakMode lineBreakMode;
 
 @property (nonatomic) UIColor *selectedTextBackgroundColor;
 @property (nonatomic) UIColor *linkHighlightColor;
@@ -47,13 +47,17 @@
 
 - (void)setAttributedString:(NSAttributedString *)attributedString;
 - (void)setIsSelectable:(BOOL)isSelectable;
+- (MBLinkText *)linkAtPoint:(CGPoint)point; // longPress 時にリンクが押されているかどうかを確認するために public メソッドに変更。
 @end
 
 
 @protocol MBTweetTextViewDelegate <NSObject>
 
 @optional
+/* unused
 - (void)tweetTextView:(MBTweetTextView *)textView clickOnLink:(MBLinkText *)linktext;
+ */
+- (void)tweetTextView:(MBTweetTextView *)textView clickOnLink:(MBLinkText *)linktext point:(CGPoint)touchePoint;
 - (void)tweetTextViewShowMagnifier:(MBTweetTextView *)textView point:(CGPoint)point;
 - (void)tweetTextViewHideMagnifier:(MBTweetTextView *)textView;
 - (void)tweetTextViewShowMagnifierRange:(MBTweetTextView *)textView point:(CGPoint)point;

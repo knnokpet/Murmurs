@@ -48,12 +48,22 @@ typedef NS_ENUM(NSUInteger, MBToucheState) {
     [self initialize];
 }
 
+- (id)initWithFrame:(CGRect)frame
+{
+    self = [super initWithFrame:frame];
+    if (self) {
+        [self initialize];
+    }
+    
+    return self;
+}
+
 - (void)initialize
 {
     _textLayout = [[MBTextLayout alloc] init];
     _textLayout.bound = self.bounds;
     
-    self.linkHighlightColor = [UIColor blueColor];
+    self.linkHighlightColor = [UIColor colorWithRed:0.5 green:0.5 blue:0.5 alpha:0.5];
         
     [self setIsSelectable:NO];
     
@@ -174,12 +184,19 @@ typedef NS_ENUM(NSUInteger, MBToucheState) {
     
     CGColorRef colorRef = self.textColor.CGColor;
     [self setAttributes:@{(id)kCTForegroundColorAttributeName: (__bridge id)colorRef}];
-    CFRelease(colorRef);
 }
 
 - (void)setParagraphStyleAttribute
 {
-    CTTextAlignment alignment = (CTTextAlignment)self.alignment;
+    CTTextAlignment alignment;
+    if (NSTextAlignmentCenter == self.alignment) {
+        alignment = kCTTextAlignmentCenter;
+    } else if (NSTextAlignmentRight == self.alignment) {
+        alignment = kCTTextAlignmentRight;
+    } else {
+        alignment = (CTTextAlignment)self.alignment;
+    }
+    
     CTLineBreakMode lineBreakMode = (CTLineBreakMode)self.lineBreakMode;
     CGFloat lineSpacing = roundf(self.lineSpace);
     CGFloat paragraphSpacing = roundf(self.paragraphSpace);
@@ -198,6 +215,8 @@ typedef NS_ENUM(NSUInteger, MBToucheState) {
     CTParagraphStyleRef paragraphStyleRef = CTParagraphStyleCreate(setting, sizeof(setting) / sizeof(CTParagraphStyleSetting));
     [self setAttributes:@{(id)kCTParagraphStyleAttributeName: (__bridge id)paragraphStyleRef}];
     CFRelease(paragraphStyleRef);
+    
+    self.textLayout.textAlignment = alignment;
 }
 
 
@@ -209,7 +228,7 @@ typedef NS_ENUM(NSUInteger, MBToucheState) {
         [mutableAttributedString addAttributes:attributes range:NSMakeRange(0, length)];
     }
     
-    self.attributedString = mutableAttributedString;
+    _attributedString = mutableAttributedString;
 }
 
 - (MBLinkText *)linkAtPoint:(CGPoint)point
@@ -352,6 +371,9 @@ typedef NS_ENUM(NSUInteger, MBToucheState) {
             CGRect geoRect = geo.rect;
             
             [self.linkHighlightColor set];
+            geoRect.origin.y -= 3;
+            geoRect.size.height += 6;
+            // 上下端の行だと切れます。
             UIBezierPath *bezierPath = [self bezierPathWithRect:geoRect cornerRadius:4.0f];
             [bezierPath fill];
         }
@@ -365,8 +387,8 @@ typedef NS_ENUM(NSUInteger, MBToucheState) {
 
 - (void)clickedOnLink:(MBLinkText *)link
 {
-    if ([_delegate respondsToSelector:@selector(tweetTextView:clickOnLink:)]) {
-        [_delegate tweetTextView:self clickOnLink:link];
+    if ([_delegate respondsToSelector:@selector(tweetTextView:clickOnLink:point:)]) {
+        [_delegate tweetTextView:self clickOnLink:link point:self.touchedPoint];
     }
 }
 
