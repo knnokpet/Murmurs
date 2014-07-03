@@ -11,6 +11,7 @@
 
 @interface MBListViewController ()
 
+
 @end
 
 @implementation MBListViewController
@@ -35,12 +36,16 @@
 
 #pragma mark -
 #pragma mark View
+- (void)configureListManager
+{
+    _listManager = [[MBListManager alloc] init];
+}
+
 - (void)commonConfigureModel
 {
     _aoAPICenter = [[MBAOuth_TwitterAPICenter alloc] init];
     _aoAPICenter.delegate = self;
-    _listManager = [[MBListManager alloc] init];
-    
+    [self configureListManager];
 }
 
 - (void)commonConfigureView
@@ -49,6 +54,9 @@
     
     self.tableView.dataSource = self;
     self.tableView.delegate = self;
+    
+    _loadingView = [[MBLoadingView alloc] initWithFrame:self.view.bounds];
+    //[self.view insertSubview:self.loadingView aboveSubview:self.tableView];
     
     self.enableAdding = NO;
     self.ownershipNextCursor = [NSNumber numberWithInt:-1];
@@ -133,7 +141,15 @@
 #pragma mark UITableView Datasource & Delegate
 - (NSInteger )numberOfSectionsInTableView:(UITableView *)tableView
 {
-    return [self.listManager.lists count];
+    NSInteger sectionCount = 0;
+    if (0 < self.listManager.ownerShipLists.count) {
+        sectionCount ++;
+    }
+    if (0 < self.listManager.subscriptionLists.count) {
+        sectionCount ++;
+    }
+    
+    return sectionCount;
 }
 
 - (NSInteger )tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
@@ -163,7 +179,7 @@
         }
     }
     
-    if (0 == [self.listManager.lists count]) {
+    if (0 == [(NSArray *)[self.listManager.lists objectAtIndex:section] count]) {
         headername = nil;
     }
     
@@ -209,6 +225,16 @@
     
     if (0 != [self.ownershipNextCursor longLongValue] || 0 != [self.subscriveNextCursor longLongValue] ) {
         [self goBacksLists];
+    }
+    
+    // ラウンチ時に表示されている UIActivityView を remove
+    if (self.loadingView.superview) {
+        [UIView animateWithDuration:1.0f animations:^{
+            [self.loadingView setHidden:YES];
+        }completion:^(BOOL finished){
+            [self.loadingView removeFromSuperview];
+            _loadingView = nil;
+        }];
     }
     
 }

@@ -7,6 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+
+#import "MBLoadingView.h"
+
 #import "MBAOuth_TwitterAPICenter.h"
 #import "MBAccountManager.h"
 #import "MBAccount.h"
@@ -26,8 +29,11 @@
 @property (nonatomic, assign) BOOL enableAdding;
 
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
+@property (nonatomic, readonly) MBLoadingView *loadingView;
 
 - (void)setUser:(MBUser *)user;
+
+- (void)configureListManager;
 - (void)commonConfigureModel;
 - (void)commonConfigureView;
 - (void)commonConfigureNavigationitem;
