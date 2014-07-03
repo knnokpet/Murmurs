@@ -47,6 +47,7 @@
     self = [super init];
     if (self) {
         [self initializeWithDictionary:user];
+        self.relationship = nil;
     }
     
     return self;
@@ -102,6 +103,7 @@
         _characterName = [aDecoder decodeObjectForKey:KEY_CHARACTER_NAME];
         _urlHTTPSAtProfileImage = [aDecoder decodeObjectForKey:KEY_PROFILE_IMAGE_URL_HTTPS];
         _requireLoading = YES;
+        _relationship = nil;
     }
     
     return self;

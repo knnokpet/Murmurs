@@ -11,6 +11,7 @@
 
 @class MBTweet;
 @class MBEntity;
+@class MBRelationship;
 @interface MBUser : NSObject <NSCoding>
 
 @property (nonatomic, assign, readonly) BOOL requireLoading;
@@ -31,6 +32,7 @@
 @property (nonatomic, readonly) MBTweet *currentTweet; // Nullable
 @property (nonatomic, readonly) NSString *timeZone; // Nullable
 @property (nonatomic, readonly) NSString *language;
+@property (nonatomic) MBRelationship *relationship;
 
 
 @property (nonatomic, assign, readonly) BOOL isVerified;
