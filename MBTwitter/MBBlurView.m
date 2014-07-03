@@ -30,11 +30,13 @@
 - (void)drawRect:(CGRect)rect
 {
     // Drawing code
-    UIGraphicsBeginImageContextWithOptions(self.bounds.size, NO, 0.0);
+    UIGraphicsBeginImageContextWithOptions(rect.size, NO, 1.0);
     
     [self.backgroundView drawViewHierarchyInRect:self.backgroundView.bounds afterScreenUpdates:NO];
+    //[self.backgroundView drawViewHierarchyInRect:rect afterScreenUpdates:YES];
     
     UIImage *backgroundImage = UIGraphicsGetImageFromCurrentImageContext();
+    
     UIImage *blurdImage = [backgroundImage applyLightEffect];
     
     UIGraphicsEndImageContext();
