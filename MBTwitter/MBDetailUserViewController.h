@@ -9,7 +9,6 @@
 #import <UIKit/UIKit.h>
 #import "MBAOuth_TwitterAPICenter.h"
 
-@class MBTweetTextView;
 @class MBUser;
 @interface MBDetailUserViewController : UIViewController <MBAOuth_TwitterAPICenterDelegate, UIScrollViewDelegate>
 
