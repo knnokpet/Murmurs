@@ -9,10 +9,19 @@
 #import "MBTimelineViewController.h"
 
 @class MBList;
-@interface MBListTimelineViewController : MBTimelineViewController
+@protocol MBListTimelineViewControllerDelegate;
+@interface MBListTimelineViewController : MBTimelineViewController <UIScrollViewDelegate>
 
 @property (nonatomic, readonly) MBList *list;
+@property (nonatomic, weak) id <MBListTimelineViewControllerDelegate> delegate;
 
 - (void)setList:(MBList *)list;
+
+@end
+
+
+@protocol MBListTimelineViewControllerDelegate <NSObject>
+
+- (void)scrollTimelineViewController:(MBListTimelineViewController *)controller;
 
 @end

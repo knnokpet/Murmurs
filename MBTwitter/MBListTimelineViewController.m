@@ -7,6 +7,8 @@
 //
 
 #import "MBListTimelineViewController.h"
+
+#import "MBListManager.h"
 #import "MBList.h"
 
 @interface MBListTimelineViewController ()
@@ -34,6 +36,20 @@
 
 #pragma mark -
 #pragma mark View
+- (void)configureTimelineManager
+{
+    MBAccount *currentAccount = [MBAccountManager sharedInstance].currentAccount;
+    if (currentAccount) {
+        if ([self.list.user.userIDStr isEqualToString:currentAccount.userID]) {
+            self.timelineManager = [currentAccount.listManager timelineManagerForListID:self.list.listID];
+            self.dataSource = self.timelineManager.tweets;
+        }
+    } else {
+        self.timelineManager = [[MBTimeLineManager alloc] init];
+        self.dataSource = self.timelineManager.tweets;
+    }
+}
+
 - (void)commonConfigureNavigationItem
 {
     
@@ -76,6 +92,14 @@
 - (void)twitterAPICenter:(MBAOuth_TwitterAPICenter *)center parsedTweets:(NSArray *)tweets
 {
     [self updateTableViewDataSource:tweets];
+}
+
+#pragma mark ScrollViewController Delegate
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView
+{
+    if ([_delegate respondsToSelector:@selector(scrollTimelineViewController:)]) {
+        [_delegate scrollTimelineViewController:self];
+    }
 }
 
 @end
