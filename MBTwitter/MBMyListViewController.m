@@ -29,6 +29,16 @@
 
 #pragma mark -
 #pragma mark View
+
+- (void)configureListManager
+{
+    MBAccount *currentAccount;
+    if (YES == [[MBAccountManager sharedInstance] isSelectedAccount]) {
+        currentAccount = [[MBAccountManager sharedInstance] currentAccount];
+        self.listManager = currentAccount.listManager;
+    }
+}
+
 - (void)commonConfigureNavigationitem
 {
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(didPushRefreshButton)];
@@ -40,15 +50,14 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-    
+    // viewWillAppea にあったので viewDidLoad に変更。なぜ viewWillAppear に？
+    [self setttingMyUser];
     [self receiveChangedAccountNotification];
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    
-    [self setttingMyUser];
 }
 
 - (void)setttingMyUser
@@ -61,6 +70,8 @@
         
         if (!self.user) {
             [self.aoAPICenter getUser:0 screenName:currentAccount.screenName];
+        } else {
+            [self goBacksLists];
         }
     }
 }
@@ -69,9 +80,10 @@
 {
     [[NSNotificationCenter defaultCenter] addObserverForName:@"ChangeMyAccount" object:nil queue:nil usingBlock:^(NSNotification *notification) {
         NSLog(@"user change account to = %@", [[MBAccountManager sharedInstance] currentAccount].screenName);
-        self.aoAPICenter = [[MBAOuth_TwitterAPICenter alloc] init];
-        self.aoAPICenter.delegate = self;
-        self.listManager = [[MBListManager alloc] init];
+        [self.listManager removeAllLists];/* アカウント変更時に account.listManager に保存されているリストを全消去 */
+        [self commonConfigureModel];
+        [self commonConfigureView];
+
         [self.tableView reloadData];
         
         [self setttingMyUser];
