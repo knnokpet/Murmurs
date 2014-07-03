@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="5056" systemVersion="13D65" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES">
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3733"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="KGk-i7-Jjw" customClass="MBDetailUserTableViewCell">
+            <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
+                <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gky-pP-2iP">
+                        <rect key="frame" x="20" y="7" width="46" height="30"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <state key="normal" title="Reply">
+                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                        </state>
+                    </button>
+                    <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="RSi-69-mDB">
+                        <rect key="frame" x="74" y="7" width="46" height="30"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <state key="normal" title="Message">
+                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                        </state>
+                    </button>
+                    <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vO9-4Q-VIW">
+                        <rect key="frame" x="278" y="11" width="22" height="22"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <state key="normal" title="Follow"/>
+                    </button>
+                    <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pQH-RE-mKz">
+                        <rect key="frame" x="128" y="7" width="46" height="30"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <state key="normal" title="Other">
+                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                        </state>
+                    </button>
+                </subviews>
+                <constraints>
+                    <constraint firstAttribute="trailing" secondItem="vO9-4Q-VIW" secondAttribute="trailing" constant="20" id="2CI-FL-Ovr"/>
+                    <constraint firstItem="gky-pP-2iP" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="20" id="2gc-nn-XN7"/>
+                    <constraint firstAttribute="centerY" secondItem="vO9-4Q-VIW" secondAttribute="centerY" constant="-0.5" id="BQY-bp-2FW"/>
+                    <constraint firstAttribute="centerY" secondItem="gky-pP-2iP" secondAttribute="centerY" constant="-0.5" id="BXv-CS-XXD"/>
+                    <constraint firstAttribute="centerY" secondItem="RSi-69-mDB" secondAttribute="centerY" constant="-0.5" id="MJe-VC-H5a"/>
+                    <constraint firstItem="pQH-RE-mKz" firstAttribute="leading" secondItem="RSi-69-mDB" secondAttribute="trailing" constant="8" id="O7G-Dk-iMc"/>
+                    <constraint firstItem="RSi-69-mDB" firstAttribute="leading" secondItem="gky-pP-2iP" secondAttribute="trailing" constant="8" id="a9e-kc-8pF"/>
+                    <constraint firstAttribute="centerY" secondItem="pQH-RE-mKz" secondAttribute="centerY" constant="-0.5" id="vFE-w1-3HK"/>
+                </constraints>
+            </tableViewCellContentView>
+            <connections>
+                <outlet property="MessageButton" destination="RSi-69-mDB" id="x5v-Lh-eGS"/>
+                <outlet property="followButton" destination="vO9-4Q-VIW" id="0uI-nQ-b2M"/>
+                <outlet property="otherButton" destination="pQH-RE-mKz" id="xnY-yl-OYL"/>
+                <outlet property="replyButton" destination="gky-pP-2iP" id="ZSQ-pb-wyn"/>
+            </connections>
+        </tableViewCell>
+    </objects>
+</document>
