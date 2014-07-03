@@ -14,7 +14,6 @@
 
 - (UIImage *)cachedProfileImageForUserID:(NSString *)userID;
 - (UIImage *)cachedProfileImageForUserID:(NSString *)userID defaultImage:(UIImage *)defaultImage;
-
 - (UIImage *)cachedMediaImageForMediaID:(NSString *)mediaID;
 
 - (void)storeProfileImage:(UIImage *)image data:(NSData *)data forUserID:(NSString *)userID;
