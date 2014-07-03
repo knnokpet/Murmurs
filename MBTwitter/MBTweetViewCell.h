@@ -11,7 +11,11 @@
 #import "MBTweetTextView.h"
 
 @class MBTweetTextView;
+@protocol MBtweetViewCellLongPressDelegate;
 @interface MBTweetViewCell : UITableViewCell
+
+@property (nonatomic, readonly) UILongPressGestureRecognizer *longPressRecognizer;
+@property (nonatomic, weak) id <MBtweetViewCellLongPressDelegate> delegate;
 
 //@property (weak, nonatomic) IBOutlet UIImageView *iconImageView;
 @property (weak, nonatomic) IBOutlet UILabel *chacacterNameLabel;
@@ -36,5 +40,11 @@
 
 - (void)setScreenName:(NSString *)screenName;
 //- (void)setNameRetweeted:(NSString *)nameRetweeted;
+
+@end
+
+@protocol MBtweetViewCellLongPressDelegate <NSObject>
+
+- (void)didLongPressTweetViewCell:(MBTweetViewCell *)cell atPoint:(CGPoint)touchPoint;
 
 @end
