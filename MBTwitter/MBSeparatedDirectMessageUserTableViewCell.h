@@ -15,4 +15,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *dateLabel;
 @property (weak, nonatomic) IBOutlet UILabel *subtitleLabel;
 
+@property (nonatomic, readonly) NSString *screenName;
+- (void)setScreenName:(NSString *)screenName;
+
 @end
