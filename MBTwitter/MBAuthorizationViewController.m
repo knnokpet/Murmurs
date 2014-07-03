@@ -39,8 +39,7 @@
 
 - (void)commonConfigureNavigationItem
 {
-    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Cancel", nil) style:UIBarButtonItemStylePlain target:self action:@selector(didPushCancelButton)];
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Log In", nil) style:UIBarButtonItemStyleDone target:self action:@selector(didPushLoginButton)];
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Cancel", nil) style:UIBarButtonItemStylePlain target:self action:@selector(didPushCancelButton)];
 }
 
 - (void)viewDidLoad
@@ -72,12 +71,6 @@
         [_delegate dismissAuthorizationViewController:self animated:YES];
     }
 }
-
-- (void)didPushLoginButton
-{
-    
-}
-
 
 #pragma mark Private Methods
 - (NSString *)authPinInWebView: (UIWebView *)webView;
