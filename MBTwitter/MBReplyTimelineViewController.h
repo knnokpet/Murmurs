@@ -7,7 +7,8 @@
 //
 
 #import "MBTimelineViewController.h"
+#import "MBMyAccountsViewController.h"
 
-@interface MBReplyTimelineViewController : MBTimelineViewController
+@interface MBReplyTimelineViewController : MBTimelineViewController<MBMyAccountsViewControlerDelegate>
 
 @end
