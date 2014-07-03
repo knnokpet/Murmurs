@@ -12,7 +12,7 @@
 
 #import "MBImageCacher.h"
 #import "MBImageDownloader.h"
-#import "UIImage+Resize.h"
+#import "MBImageApplyer.h"
 
 #import "MBTweetTextComposer.h"
 #import "MBTweet.h"
@@ -213,7 +213,7 @@ static NSString *actionsCellIdentifier = @"ActionsCellIdentifier";
 {
     MBUser *user = self.tweet.tweetUser;
     cell.characterNameLabel.text = user.characterName;
-    cell.screenNameLabel.text = user.characterName;
+    //cell.screenNameLabel.text = user.characterName;
     [cell setScreenName:user.screenName];
     
     UIImage *avatorImage = [[MBImageCacher sharedInstance] cachedTimelineImageForUser:user.userIDStr];
@@ -230,12 +230,12 @@ static NSString *actionsCellIdentifier = @"ActionsCellIdentifier";
                 [MBImageDownloader downloadBigImageWithURL:user.urlHTTPSAtProfileImage completionHandler:^(UIImage *image, NSData *imageData){
                     if (image) {
                         [[MBImageCacher sharedInstance] storeProfileImage:image data:imageData forUserID:user.userIDStr];
-                        
-                        image = [image imageByScallingToFillSize:CGSizeMake(cell.avatorImageView.frame.size.width, cell.avatorImageView.frame.size.height)];
+                        CGSize imageSize = CGSizeMake(cell.avatorImageView.frame.size.width, cell.avatorImageView.frame.size.height);
+                        UIImage *radiusImage = [MBImageApplyer imageForTwitter:image byScallingToFillSize:imageSize radius:cell.avatorImageView.layer.cornerRadius];
                         [[MBImageCacher sharedInstance] storeTimelineImage:image forUserID:user.userIDStr];
                         
                         dispatch_async(dispatch_get_main_queue(), ^{
-                            cell.avatorImageView.image = image;
+                            cell.avatorImageView.image = radiusImage;
                         });
                     }
                     
@@ -246,13 +246,20 @@ static NSString *actionsCellIdentifier = @"ActionsCellIdentifier";
             });
             
         }
+    } else {
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+            CGSize imageSize = CGSizeMake(cell.avatorImageView.frame.size.width, cell.avatorImageView.frame.size.height);
+            UIImage *radiusImage = [MBImageApplyer imageForTwitter:avatorImage byScallingToFillSize:imageSize radius:cell.avatorImageView.layer.cornerRadius];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                cell.avatorImageView.image = radiusImage;
+            });
+        });
     }
-    cell.avatorImageView.image = avatorImage;
+    
 }
 
 - (void)updateTweetViewCell:(MBDetailTweetTextTableViewCell *)cell
 {
-    cell.selectionStyle = UITableViewCellSelectionStyleNone;
     
     cell.tweetTextView.font = [UIFont systemFontOfSize:FONT_SIZE];
     cell.tweetTextView.lineSpace = LINE_SPACING;
@@ -262,12 +269,11 @@ static NSString *actionsCellIdentifier = @"ActionsCellIdentifier";
     //cell.tweetTextView.isSelectable = YES; ルーペを実装できないため。
     cell.tweetTextView.delegate = self;
     
-    cell.dateView.attributedString = [MBTweetTextComposer attributedStringForDetailTweetDate:[self.tweet.createdDate description] font:[UIFont systemFontOfSize:12.0f] screeName:self.tweet.tweetUser.screenName tweetID:[self.tweet.tweetID unsignedLongLongValue]];
+    cell.dateView.attributedString = [MBTweetTextComposer attributedStringForDetailTweetDate:[self.tweet.createdDate descriptionWithLocale:nil] font:[UIFont systemFontOfSize:12.0f] screeName:self.tweet.tweetUser.screenName tweetID:[self.tweet.tweetID unsignedLongLongValue]];
 }
 
 - (void)updateActionsCell:(MBDetailTweetActionsTableViewCell *)cell
 {
-    cell.selectionStyle = UITableViewCellSelectionStyleNone;
     
     [cell.replyButton addTarget:self action:@selector(didPushReplyButton:) forControlEvents:UIControlEventTouchUpInside];
     [cell.retweetWithComentButton addTarget:self action:@selector(didPushRetweetWithComentButton:) forControlEvents:UIControlEventTouchUpInside];
@@ -312,9 +318,11 @@ static NSString *actionsCellIdentifier = @"ActionsCellIdentifier";
 - (void)twitterAPICenter:(MBAOuth_TwitterAPICenter *)center parsedTweets:(NSArray *)tweets
 {
     MBTweet *parsedTweet = [tweets firstObject];
-    [self setTweet:parsedTweet];
-    [self.tableView reloadData];
-    NSLog(@"retweet or destroyRetweet  parsed Text = %@", parsedTweet.tweetText);
+    if (parsedTweet) {
+        [self setTweet:parsedTweet];
+        [self.tableView reloadData];
+        NSLog(@"retweet or destroyRetweet  parsed Text = %@", parsedTweet.tweetText);
+    }
 }
 
 #pragma mark TweetTextViewDelegate
