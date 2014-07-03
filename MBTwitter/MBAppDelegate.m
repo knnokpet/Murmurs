@@ -14,6 +14,7 @@
 #import "MBMyListViewController.h"
 
 #import "MBAccountManager.h"
+#import "MBTimeLineManager.h"
 
 @implementation MBAppDelegate
 
@@ -24,7 +25,9 @@
     self.tabBarController = [[UITabBarController alloc] init];
     
     MBAccountManager *accountManager = [MBAccountManager sharedInstance];
-    [accountManager requestAccessToAccountWithCompletionHandler:^(BOOL granted, NSArray *accounts, NSError *error){}];
+    [accountManager requestAccessToAccountWithCompletionHandler:^(BOOL granted, NSArray *accounts, NSError *error){
+        
+    }];
     
     // viewControllers
     NSMutableArray *viewControllers = [NSMutableArray arrayWithCapacity:5];
@@ -45,16 +48,16 @@
     MBSeparatedDirectMessageUserViewController *separatedDMUserViewController = [[MBSeparatedDirectMessageUserViewController alloc] initWithNibName:@"SeparatedDirectMessagesView" bundle:nil];
     UINavigationController *dmUserNavigation = [[UINavigationController alloc] initWithRootViewController:separatedDMUserViewController];
     [viewControllers addObject:dmUserNavigation];
-    UIImage *messageImage = [[UIImage alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"Message@2x" ofType:@"png"]];
-    UIImage *messageSelectedImage = [[UIImage alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"Message-Selected@2x" ofType:@"png"]];
-    UITabBarItem *messageBarItem = [[UITabBarItem alloc] initWithTitle:NSLocalizedString(@"Message", nil) image:messageImage selectedImage:messageSelectedImage];
+    UIImage *messageImage = [[UIImage alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"Message-Fukidashi@2x" ofType:@"png"]];
+    UIImage *messageSelectedImage = [[UIImage alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"Message-Selected-2@2x" ofType:@"png"]];
+    UITabBarItem *messageBarItem = [[UITabBarItem alloc] initWithTitle:NSLocalizedString(@"Message", nil) image:messageImage selectedImage:nil];
     separatedDMUserViewController.tabBarItem = messageBarItem;
     
     MBMyListViewController *myListViewController = [[MBMyListViewController alloc] initWithNibName:@"MBListViewController" bundle:nil];
     UINavigationController *listNavigation = [[UINavigationController alloc] initWithRootViewController:myListViewController];
     [viewControllers addObject:listNavigation];
-    UIImage *listImage = [[UIImage alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"List@2x" ofType:@"png"]];
-    UIImage *listSelectedImage = [[UIImage alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"List-Selected@2x" ofType:@"png"]];
+    UIImage *listImage = [[UIImage alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"List2@2x" ofType:@"png"]];
+    UIImage *listSelectedImage = [[UIImage alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"List-Selected-2@2x" ofType:@"png"]];
     UITabBarItem *listBarItem = [[UITabBarItem alloc] initWithTitle:NSLocalizedString(@"List", nil) image:listImage selectedImage:listSelectedImage];
     myListViewController.tabBarItem = listBarItem;
     
@@ -76,11 +79,39 @@
 {
     // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later. 
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+    MBHomeTimelineViewController *homeViewController = nil;
+    id obj = [self.tabBarController.viewControllers firstObject];
+    if ([obj isKindOfClass:[UINavigationController class]]) {
+        UINavigationController *navigationController = obj;
+        id objInNavigation = [navigationController.viewControllers firstObject];
+        if ([objInNavigation isKindOfClass:[MBHomeTimelineViewController class]]) {
+            homeViewController = objInNavigation;
+        }
+    }
+    [[MBTweetManager sharedInstance] deleteAllSavedTweetsOfCurrentAccount];
+    [homeViewController saveTimeline];
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application
 {
     // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
+    for (UINavigationController *navigationController in self.tabBarController.viewControllers) {
+        id rootViewController = [navigationController.viewControllers firstObject];
+        if ([rootViewController isKindOfClass:[MBHomeTimelineViewController class]]) {
+            MBHomeTimelineViewController *timelineViewController = rootViewController;
+            [timelineViewController refreshAction];
+            [timelineViewController refreshMyAccountUser];
+            
+        } else if ([rootViewController isKindOfClass:[MBReplyTimelineViewController class]]) {
+            MBReplyTimelineViewController *replyViewController = rootViewController;
+            [replyViewController refreshAction];
+        } else if ([rootViewController isKindOfClass:[MBSeparatedDirectMessageUserViewController class]]) {
+            MBSeparatedDirectMessageUserViewController *messageViewController = rootViewController;
+            
+        } else if ([rootViewController isKindOfClass:[MBMyListViewController class]]) {
+            MBMyListViewController *listViewController = rootViewController;
+        }
+    }
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application
@@ -100,6 +131,7 @@
             homeViewController = obj;
         }
     }
+    [[MBTweetManager sharedInstance] deleteAllSavedTweetsOfCurrentAccount];
     [homeViewController saveTimeline];
     
 }
