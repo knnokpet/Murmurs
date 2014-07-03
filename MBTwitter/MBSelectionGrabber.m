@@ -52,6 +52,9 @@
     self = [super initWithFrame:frame];
     if (self) {
         self.backgroundColor = [UIColor clearColor];
+        CGRect frame = self.frame;
+        frame.size = CGSizeMake(44, 44);
+        self.frame = frame;
         
         self.caretView = [[UIView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 2.0f, 0.0f)];
         self.caretView.backgroundColor = self.caretColor;
@@ -84,9 +87,9 @@
     
     CGRect dotFrame = self.dotView.frame;
     if (self.dotMetric == MBSelectionGrabberDotMetricTop) {
-        dotFrame.origin = CGPointMake((CGRectGetWidth(self.bounds) - CGRectGetWidth(dotFrame)) / 2, - CGRectGetHeight(dotFrame));
+        dotFrame.origin = CGPointMake((CGRectGetWidth(self.bounds) - CGRectGetWidth(dotFrame)) / 2, - CGRectGetHeight(dotFrame) + CGRectGetHeight(self.bounds) / 2);
     } else {
-        dotFrame.origin = CGPointMake((CGRectGetWidth(self.bounds) - CGRectGetWidth(dotFrame)) / 2, CGRectGetHeight(self.bounds));
+        dotFrame.origin = CGPointMake((CGRectGetWidth(self.bounds) - CGRectGetWidth(dotFrame)) / 2, CGRectGetHeight(self.bounds) / 2);
     }
     self.dotView.frame = dotFrame;
 }
