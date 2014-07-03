@@ -7,13 +7,18 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "MBPostTweetViewController.h"
 #import "MBDetailTweetViewController.h"
 #import "MBDetailUserViewController.h"
 #import "MBWebBrowsViewController.h"
+#import "MBImageViewController.h"
+#import "MBZoomTransitioning.h"
 
 #import "MBTweetViewCell.h"
 #import "MBGapedTweetViewCell.h"
 #import "MBTweetTextView.h"
+#import "MBTimelineActionView.h"
+#import "MBLoadingView.h"
 
 #import "MBTwitterAccesser.h"
 #import "MBAOuth_TwitterAPICenter.h"
@@ -25,9 +30,9 @@
 #import "MBUser.h"
 #import "MBImageCacher.h"
 #import "MBImageDownloader.h"
-#import "UIImage+Resize.h"
+#import "MBImageApplyer.h"
 #import "MBTweetTextComposer.h"
-#import "UIImage+Radius.h"
+#import "NSString+TimeMargin.h"
 
 #import "MBTwitterAccessibility.h"
 
@@ -37,7 +42,7 @@
 #define FONT_SIZE 15.0f
 
 @class MBTimeLineManager;
-@interface MBTimelineViewController : UIViewController <UIScrollViewDelegate, UITableViewDataSource, UITableViewDelegate, MBTwitterAccesserDelegate,MBAOuth_TwitterAPICenterDelegate, MBWebBrowsViewControllerDelegate, MBAvatorImageViewDelegate, MBTweetTextViewDelegate>
+@interface MBTimelineViewController : UIViewController <UIScrollViewDelegate, UITableViewDataSource, UITableViewDelegate, UIViewControllerTransitioningDelegate, MBTwitterAccesserDelegate,MBAOuth_TwitterAPICenterDelegate, MBPostTweetViewControllerDelegate, MBWebBrowsViewControllerDelegate, MBAvatorImageViewDelegate, MBTweetTextViewDelegate, MBtweetViewCellLongPressDelegate, MBImageViewControllerDelegate, MBTimelineActionViewDelegate>
 
 @property (nonatomic) MBAOuth_TwitterAPICenter *aoAPICenter;
 @property (nonatomic) MBTimeLineManager *timelineManager;
@@ -45,9 +50,11 @@
 @property (nonatomic) NSArray *dataSource;
 
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
+@property (nonatomic, readonly) MBLoadingView *loadingView;
 
 @property (nonatomic) UIRefreshControl *refreshControl;
 
+- (void)configureTimelineManager;
 - (void)commonConfigureModel;
 - (void)commonConfigureView;
 - (void)commonConfigureNavigationItem;
@@ -56,6 +63,7 @@
 - (void)didPushRightBarButtonItem;
 - (void)didPushGapButtonSinceID:(unsigned long long)since max:(unsigned long long)max;
 - (void)refreshAction;
+- (void)refreshMyAccountUser;
 
 - (void)goBacksAtIndex:(NSInteger )index;
 - (NSArray *)savedTweetsAtIndex:(NSInteger)index;
