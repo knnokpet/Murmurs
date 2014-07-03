@@ -11,8 +11,8 @@
 @class MBTweetTextView;
 @interface MBProfileDesciptionView : UIView
 
-@property (nonatomic) MBTweetTextView *descriptionTextView;
-@property (nonatomic) MBTweetTextView *locationTextView;
-@property (nonatomic) UITextView *urlTextView;
+@property (nonatomic, readonly) MBTweetTextView *textView;
+@property (nonatomic, readonly) NSAttributedString *attributedString;
+- (void)setAttributedString:(NSAttributedString *)attributedString;
 
 @end
