@@ -7,8 +7,16 @@
 //
 
 #import "MBListManager.h"
+
+#import "MBTimeLineManager.h"
 #import "MBList.h"
 #import "MBUser.h"
+
+@interface MBListManager()
+
+@property (nonatomic, readonly) NSMutableDictionary *timelineManagers;
+
+@end
 
 @implementation MBListManager
 - (id)init
@@ -36,6 +44,8 @@
     _ownerShipLists = [NSMutableArray array];
     _subscriptionLists = [NSMutableArray array];
     _lists = [NSMutableArray arrayWithObjects:self.ownerShipLists, self.subscriptionLists, nil];
+    
+    _timelineManagers = [NSMutableDictionary dictionary]; /* 自身のアカウント使用時でしか使われないため、普遍的ではない。 */
 }
 
 #pragma mark - Setter & Accesser
@@ -72,5 +82,25 @@
     [fromLists removeObjectAtIndex:index];
 }
 
+- (void)removeAllLists
+{
+    [self.ownerShipLists removeAllObjects];
+    [self.subscriptionLists removeAllObjects];
+}
+
+
+#pragma mark - 
+/* for Multi Accout */
+- (MBTimeLineManager *)timelineManagerForListID:(NSNumber *)listID
+{
+    MBTimeLineManager *storedManager = [self.timelineManagers objectForKey:listID];
+    
+    if (!storedManager) {
+        storedManager = [[MBTimeLineManager alloc] init];
+        [self.timelineManagers setObject:storedManager forKey:listID];
+    }
+    
+    return storedManager;
+}
 
 @end

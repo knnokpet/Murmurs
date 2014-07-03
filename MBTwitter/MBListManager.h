@@ -10,6 +10,7 @@
 
 @class MBList;
 @class MBUser;
+@class MBTimeLineManager;
 @interface MBListManager : NSObject
 
 @property (nonatomic, readonly) MBUser *owner;
@@ -24,5 +25,9 @@
 - (void)addLists:(NSArray *)lists;
 - (void)removeListOfOwner:(NSInteger)index;
 - (void)removeListOfSubscrive:(NSInteger)index;
+- (void)removeAllLists;
+
+- (MBTimeLineManager *)timelineManagerForListID:(NSNumber *)listID;/* マルチアカウント用 */
+
 
 @end
