@@ -26,11 +26,21 @@
 
 #pragma mark -
 #pragma mark View
+
+- (void)configureTimelineManager
+{
+    MBAccount *currentAccount = [[MBAccountManager sharedInstance] currentAccount];
+    self.timelineManager = currentAccount.timelineManager;
+    self.dataSource = self.timelineManager.tweets;
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     self.title = [[MBAccountManager sharedInstance] currentAccount].screenName;
+    
+   [self refreshMyAccountUser];
     
     [self receiveChangedAccountNotification];
 }
@@ -39,13 +49,21 @@
 {
     [[NSNotificationCenter defaultCenter] addObserverForName:@"ChangeMyAccount" object:nil queue:nil usingBlock:^(NSNotification *notification) {
         NSLog(@"user change account to = %@", [[MBAccountManager sharedInstance] currentAccount].screenName);
-        self.title = [[MBAccountManager sharedInstance] currentAccount].screenName;
-        self.timelineManager = [[MBTimeLineManager alloc] init];
+        MBAccount *currentAccount = [[MBAccountManager sharedInstance] currentAccount];
+        self.title = currentAccount.screenName;
+        self.timelineManager = currentAccount.timelineManager;
         self.dataSource = self.timelineManager.tweets;
         self.aoAPICenter = [[MBAOuth_TwitterAPICenter alloc] init];
         self.aoAPICenter.delegate = self;
         [self.tableView reloadData];
-        [self goBacksAtIndex:0];
+        
+        // アカウントを変更すると保存されていたものが再び読み込まれてしまうぞ
+        if (0 == self.dataSource.count) {
+            [self goBacksAtIndex:0];
+        } else {
+            [self refreshAction];
+        }
+        
     }];
 }
 
@@ -72,6 +90,23 @@
 - (void)goBackTimelineMaxID:(unsigned long long)max
 {
     [self.aoAPICenter getBackHomeTimeLineMaxID:max];
+}
+
+- (void)refreshMyAccountUser
+{
+    NSLog(@"refresh myaccount");
+    NSArray *accounts = [[MBAccountManager sharedInstance] accounts];
+    if (0 == accounts.count) {
+        return;
+    }
+    
+    NSMutableArray *accountIDs = [NSMutableArray array];
+    NSNumberFormatter *numberFormetter = [[NSNumberFormatter alloc] init];
+    for (MBAccount *account in accounts) {
+        NSNumber *accountID = [numberFormetter numberFromString:account.userID];
+        [accountIDs addObject:accountID];
+    }
+    [self.aoAPICenter getUsersLookupUserIDs:accountIDs];
 }
 
 #pragma mark Action
@@ -128,6 +163,12 @@
     [controller dismissViewControllerAnimated:YES completion:^{
         [self refreshAction];
     }];
+}
+
+#pragma mark AOuthAPICenter Delegate
+- (void)twitterAPICenter:(MBAOuth_TwitterAPICenter *)center parsedUsers:(NSArray *)users
+{
+    NSLog(@"user count = %d", users.count);
 }
 
 @end

@@ -8,8 +8,8 @@
 
 #import "MBTimelineViewController.h"
 #import "MBMyAccountsViewController.h"
-#import "MBPostTweetViewController.h"
 
-@interface MBHomeTimelineViewController : MBTimelineViewController <MBMyAccountsViewControlerDelegate, MBPostTweetViewControllerDelegate>
+@interface MBHomeTimelineViewController : MBTimelineViewController <MBMyAccountsViewControlerDelegate>
+
 
 @end
