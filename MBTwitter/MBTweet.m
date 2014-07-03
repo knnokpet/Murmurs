@@ -134,6 +134,7 @@
     [aCoder encodeObject:_tweetID forKey:KEY_TWEET_ID];
     [aCoder encodeObject:_tweetIDStr forKey:KEY_TWEET_ID_STR];
     [aCoder encodeObject:_tweetUser forKey:KEY_TWEET_USER];
+    [aCoder encodeObject:_createdDate forKey:KEY_CREATED_AT_TIME];
     [aCoder encodeObject:_entity forKey:KEY_ENTITY];
     [aCoder encodeObject:_place forKey:KEY_PLACE];
     
