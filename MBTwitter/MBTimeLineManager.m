@@ -13,6 +13,7 @@
 
 #define UPDATE_KEY @"update"
 #define REMOVE_KEY @"remove"
+#define GAPS_KEY @"gaps"
 
 @interface MBTimeLineManager()
 @property (nonatomic, readonly) NSMutableArray *sourceTweets;
@@ -80,13 +81,16 @@
                         NSInteger addingIndex = [tweets count];
                         NSMutableIndexSet *indexSet = [NSMutableIndexSet indexSetWithIndexesInRange:NSMakeRange(gapedTweet.index, addingIndex)];
                         [self.sourceTweets insertObjects:tweets atIndexes:indexSet];
-                        [updates setObject:indexSet forKey:UPDATE_KEY];
+                        
 
                         // 足された分、残りの Gap.index をずらす
                         for (NSInteger i = index ; i < gapsCount; i ++) {
                             MBGapedTweet *gap = self.gaps[i];
                             gap.index = gap.index + addingIndex;
                         }
+                        [updates setObject:[NSNumber numberWithBool:YES] forKey:UPDATE_KEY];
+                        [updates setObject:[NSNumber numberWithBool:YES] forKey:GAPS_KEY];
+                        
                         
                     }break;
                         
@@ -99,8 +103,6 @@
                         NSMutableIndexSet *indexSet = [NSMutableIndexSet indexSetWithIndexesInRange:NSMakeRange(gapedTweet.index, addingIndex)];
                         [self.sourceTweets insertObjects:addingTweets atIndexes:indexSet];
                         [updates setObject:indexSet forKey:UPDATE_KEY];
-                        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:[indexSet lastIndex] + 1 inSection:0];
-                        [updates setObject:indexPath forKey:REMOVE_KEY];
                         
                         // 足された分、残りの Gap.index をずらす
                         for (NSInteger i = index + 1; i < gapsCount; i ++) {
@@ -108,6 +110,9 @@
                             gapedTweet.index = gapedTweet.index + addingIndex;
                         }
                         [self.gaps removeObjectAtIndex:index];
+                        
+                        [updates setObject:[NSNumber numberWithBool:NO] forKey:UPDATE_KEY];
+                        [updates setObject:[NSNumber numberWithBool:NO] forKey:GAPS_KEY];
                         
                     }break;
                         
@@ -134,12 +139,15 @@
                         NSMutableIndexSet *indexSet = [NSMutableIndexSet indexSetWithIndexesInRange:NSMakeRange(0, addingTweetsIndex)];
                         [self.sourceTweets insertObjects:tweets atIndexes:indexSet];
                         [indexSet addIndex:addingTweetsIndex + 1];
-                        [updates setObject:indexSet forKey:UPDATE_KEY];
+                        
                         
                         // 足された分、残りの Gap.index をずらす
                         for (MBGapedTweet *gap in self.gaps) {
                             gap.index = gap.index + addingTweetsIndex + 1;
                         }
+                        
+                        [updates setObject:[NSNumber numberWithBool:YES] forKey:UPDATE_KEY];
+                        [updates setObject:[NSNumber numberWithBool:YES] forKey:GAPS_KEY];
                         
                     }break;
                     case NSOrderedSame: {
@@ -149,20 +157,22 @@
                         NSInteger addingTweetsIndex = [addingTweets count];
                         NSMutableIndexSet *indexSet = [NSMutableIndexSet indexSetWithIndexesInRange:NSMakeRange(0, addingTweetsIndex)];
                         [self.sourceTweets insertObjects:addingTweets atIndexes:indexSet];
-                        [updates setObject:indexSet forKey:UPDATE_KEY];
+                        
                         
                         // 足された分、残りの Gap.index をずらす
                         for (MBGapedTweet *gap in self.gaps) {
                             gap.index = gap.index + addingTweetsIndex;
                         }
                         
+                        [updates setObject:[NSNumber numberWithBool:YES] forKey:UPDATE_KEY];
+                        [updates setObject:[NSNumber numberWithBool:NO] forKey:GAPS_KEY];
+                        
                     }break;
                     case NSOrderedDescending: {
-                        NSInteger sourceCount = [self.sourceTweets count];
+                        
                         [self.sourceTweets addObjectsFromArray:tweets];
-                        NSInteger addingIndex = [tweets count];
-                        NSIndexSet *indexSet = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(sourceCount, addingIndex)];
-                        [updates setObject:indexSet forKey:UPDATE_KEY];
+                        
+                        [updates setObject:[NSNumber numberWithBool:NO] forKey:UPDATE_KEY];
                     }break;
                         
                     default:
@@ -170,7 +180,8 @@
                 }
             }
         }
-
+        
+        
         return updates;
     } else {
         MBTweet *lastAddingTweet = [[MBTweetManager sharedInstance] storedTweetForKey:[tweets lastObject]];
@@ -185,7 +196,9 @@
                 NSMutableIndexSet *indexSet = [NSMutableIndexSet indexSetWithIndexesInRange:NSMakeRange(0, addingTweetsIndex)];
                 [self.sourceTweets insertObjects:tweets atIndexes:indexSet];
                 [indexSet addIndex:addingTweetsIndex + 1];
-                [updates setObject:indexSet forKey:UPDATE_KEY];
+                
+                [updates setObject:[NSNumber numberWithBool:YES] forKey:UPDATE_KEY];
+                [updates setObject:[NSNumber numberWithBool:YES] forKey:GAPS_KEY];
                 
             }break;
             case NSOrderedSame: {
@@ -195,15 +208,15 @@
                 NSInteger addingTweetsIndex = [addingTweets count];
                 NSMutableIndexSet *indexSet = [NSMutableIndexSet indexSetWithIndexesInRange:NSMakeRange(0, addingTweetsIndex)];
                 [self.sourceTweets insertObjects:addingTweets atIndexes:indexSet];
-                [updates setObject:indexSet forKey:UPDATE_KEY];
+                
+                [updates setObject:[NSNumber numberWithBool:YES] forKey:UPDATE_KEY];
+                [updates setObject:[NSNumber numberWithBool:NO] forKey:GAPS_KEY];
                 
             }break;
             case NSOrderedDescending: {
-                NSInteger sourceCount = [self.sourceTweets count];
                 [self.sourceTweets addObjectsFromArray:tweets];
-                NSInteger addingIndex = [tweets count];
-                NSIndexSet *indexSet = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(sourceCount, addingIndex)];
-                [updates setObject:indexSet forKey:UPDATE_KEY];
+                
+                [updates setObject:[NSNumber numberWithBool:NO] forKey:UPDATE_KEY];
             }break;
                 
             default:
