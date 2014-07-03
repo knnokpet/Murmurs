@@ -23,6 +23,8 @@
 - (void)twitterAPICenter:(MBAOuth_TwitterAPICenter *)center parsedTweets:(NSArray *)tweets;
 - (void)twitterAPICenter:(MBAOuth_TwitterAPICenter *)center parsedUsers:(NSArray *)users;
 - (void)twitterAPICenter:(MBAOuth_TwitterAPICenter *)center parsedUsers:(NSArray *)users next:(NSNumber *)next previous:(NSNumber *)previous;
+- (void)twitterAPICenter:(MBAOuth_TwitterAPICenter *)center parsedUserIDs:(NSArray *)userIDs next:(NSNumber *)next previous:(NSNumber *)previous;
+- (void)twitterAPICenter:(MBAOuth_TwitterAPICenter *)center relationships:(NSArray *)relationships;
 - (void)twitterAPICenter:(MBAOuth_TwitterAPICenter *)center parsedLists:(NSArray *)lists;
 - (void)twitterAPICenter:(MBAOuth_TwitterAPICenter *)center parsedLists:(NSArray *)lists next:(NSNumber *)next previous:(NSNumber *)previous;
 - (void)twitterAPICenter:(MBAOuth_TwitterAPICenter *)center parsedDirectMessages:(NSArray *)messages;
