@@ -34,6 +34,17 @@
     return self;
 }
 
+- (void)dealloc
+{
+    if (framesetterRef) {
+        CFRelease(framesetterRef);
+    }
+    
+    if (frameRef) {
+        CFRelease(frameRef);
+    }
+}
+
 #pragma mark -
 #pragma mark Frame
 + (CGRect)frameRectWithAttributedString:(NSAttributedString *)attributedString constraintSize:(CGSize)constraintSize
@@ -285,11 +296,13 @@
 {
     CFIndex start = [self stringIndexForClosePosition:point];
     CFIndex end = NSMaxRange(self.textSelection.selectedRange);
-    
+
     if (start != kCFNotFound) {
-        self.textSelection = [[MBTextSelection alloc] initWithIndex:start];
-    } else {
-        end = start;
+        if (start < end) {
+            self.textSelection = [[MBTextSelection alloc] initWithIndex:start];
+        } else {
+            end = start;
+        }
     }
     
     [self.textSelection setSelectionAtEndIndex:end];

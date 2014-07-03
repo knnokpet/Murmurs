@@ -17,6 +17,9 @@
 @property (nonatomic, readonly) NSArray *links;
 @property (nonatomic) MBTextSelection *textSelection;
 
+@property (nonatomic) CTTextAlignment textAlignment;
+@property (nonatomic) CTLineBreakMode lineBreakMode;
+
 @property (nonatomic) CGRect bound;
 @property (nonatomic, readonly) CGRect frameRect;
 
