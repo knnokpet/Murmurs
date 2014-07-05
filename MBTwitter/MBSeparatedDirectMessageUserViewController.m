@@ -52,10 +52,11 @@
 - (void)configureModel
 {
     _aoAPICenter = [[MBAOuth_TwitterAPICenter alloc] init];
-    self.aoAPICenter.delegate = self;
-    self.dataSource = [NSMutableArray array];
-    
     self.followerIDManager = [[[MBAccountManager sharedInstance] currentAccount] followerIDManager];
+    
+    self.aoAPICenter.delegate = self;
+    self.dataSource = [[MBDirectMessageManager sharedInstance] separatedMessages].mutableCopy;
+    
     [self fetchFollowerIDs];
 }
 
@@ -97,10 +98,6 @@
     [self receiveChangedAccountNotification];
 }
 
-
-
-
-
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
@@ -125,7 +122,7 @@
         NSLog(@"user change account to = %@", [[MBAccountManager sharedInstance] currentAccount].screenName);
         [self configureModel];
         [self.tableView reloadData];
-        [self loadMessages];
+        [self fetchCurrentMessage];
     }];
 }
 
@@ -153,8 +150,15 @@
 - (void)fetchCurrentMessage
 {
     if ([[MBAccountManager sharedInstance] isSelectedAccount]) {
-        [self.aoAPICenter getDeliveredDirectMessagesSinceID:0 maxID:0];
-        [self.aoAPICenter getSentDirectMessagesSinceID:0 maxID:0];
+        
+        MBDirectMessageManager *messageManager = [MBDirectMessageManager sharedInstance];
+        MBDirectMessage *sent = [messageManager currentSentMessage];
+        MBDirectMessage *deliverd = [messageManager currentDeliverdMessage];
+        
+        NSLog(@"sent deli  %@ %@", sent.tweetText, deliverd.tweetText);
+        
+        [self.aoAPICenter getDeliveredDirectMessagesSinceID:[deliverd.tweetID unsignedLongLongValue] maxID:0];
+        [self.aoAPICenter getSentDirectMessagesSinceID:[sent.tweetID unsignedLongLongValue] maxID:0];
     }
 }
 
