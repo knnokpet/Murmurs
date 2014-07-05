@@ -32,6 +32,7 @@
 
 @property (nonatomic) NSString *userIDStr;
 @property (nonatomic, readonly) NSString *screenName;
+@property (nonatomic, readonly) NSAttributedString *dateString;
 //@property (nonatomic, readonly ) NSString *nameRetweeted;
 
 - (void)configureView;
@@ -39,6 +40,7 @@
 
 
 - (void)setScreenName:(NSString *)screenName;
+- (void)setDateString:(NSAttributedString *)dateString;
 //- (void)setNameRetweeted:(NSString *)nameRetweeted;
 
 @end

@@ -84,7 +84,7 @@
     [bezierPath stroke];
     [bezierPath fill];
 }*/
-/*
+/* ボタン内で弄るとボタン特有の動きがなくなる
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
     UITouch *touch = [touches anyObject];

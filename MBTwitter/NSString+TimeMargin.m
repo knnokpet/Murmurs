@@ -21,7 +21,6 @@
     NSInteger secondsFromGMT = [[NSTimeZone localTimeZone] secondsFromGMT];
     NSInteger intervalUTC = interval + secondsFromGMT;
     
-    NSLog(@"interval = %ld", (long)intervalUTC);
     
     NSInteger daySecond = 60 * 60 * 24;
     

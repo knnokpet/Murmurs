@@ -212,6 +212,8 @@
     if ([_delegate respondsToSelector:@selector(didPushReplyButtonOnActionView:)]) {
         [_delegate didPushReplyButtonOnActionView:self];
     }
+    
+    [self showViews:NO animated:YES];
     [self sendDelegateMethodDismissing];
 }
 
@@ -220,6 +222,8 @@
     if ([_delegate respondsToSelector:@selector(didPushRetweetButtonOnActionView:)]) {
         [_delegate didPushRetweetButtonOnActionView:self];
     }
+    
+    [self showViews:NO animated:YES];
     [self sendDelegateMethodDismissing];
 }
 
@@ -228,6 +232,8 @@
     if ([_delegate respondsToSelector:@selector(didPushFavoriteButtonOnActionView:)]) {
         [_delegate didPushFavoriteButtonOnActionView:self];
     }
+    
+    [self showViews:NO animated:YES];
     [self sendDelegateMethodDismissing];
 }
 

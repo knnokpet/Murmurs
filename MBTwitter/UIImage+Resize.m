@@ -30,7 +30,7 @@
         UIImage *image = [self imageByScallingToFillSize:sizeForAspectScale];
         
         if (contentMode == UIViewContentModeScaleAspectFill) {
-            CGRect subRect = CGRectMake(floor((sizeForAspectScale.width - size.width) / 2), floor((sizeForAspectScale.height - size.height / 2)), size.width, size.height);
+            CGRect subRect = CGRectMake(floor((sizeForAspectScale.width - size.width) / 2), floor((sizeForAspectScale.height - size.height) / 2), size.width, size.height);
             image = [image imageByCroppingToBounds:subRect];
         }
         
@@ -50,7 +50,7 @@
 
 - (UIImage *)imageByScallingToFillSize:(CGSize)size
 {
-    UIGraphicsBeginImageContextWithOptions(size, YES, 0.0);
+    UIGraphicsBeginImageContextWithOptions(size, NO, 0.0);
     CGContextRef context = UIGraphicsGetCurrentContext();
     CGContextSetInterpolationQuality(context, kCGInterpolationHigh);
     [self drawInRect:CGRectMake(0, 0, size.width, size.height)];

@@ -53,8 +53,7 @@
     CGRect bound = CGRectZero;
     bound.size = constraintSize;
     textLayout.bound = bound;
-    
-    
+#warning 高さの算出はまだうまくいっていない。改行があるとずれるのだろうか？
     [textLayout createFramesetter];
     [textLayout createFrame];
     

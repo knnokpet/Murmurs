@@ -1,0 +1,2 @@
+/Users/ikedamasayuki/Library/Developer/Xcode/DerivedData/MBTwitter-fstedtsyghhzlmelehztqxvsamkr/Build/Products/Debug-iphoneos/MBTwitter.app
+iPhone Developer

@@ -58,9 +58,6 @@
 {
     [self commonConfigureNavigationItem];
     
-    self.view.backgroundColor = [UIColor groupTableViewBackgroundColor];
-    self.tableView.backgroundColor = [UIColor whiteColor];
-    
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
     UINib *cellNib = [UINib nibWithNibName:@"TweetTavbleViewCell" bundle:nil];
@@ -287,10 +284,11 @@
     NSInteger textViewWidth = tableViewForCalculate.bounds.size.width - (66.0f + 10.0f);
     CGRect textRect = [MBTweetTextView frameRectWithAttributedString:attributedString constraintSize:CGSizeMake(textViewWidth, CGFLOAT_MAX) lineSpace:LINE_SPACING font:[UIFont systemFontOfSize:FONT_SIZE]];
     
-    CGFloat tweetViewSpace = 34.0f;
+    CGFloat tweetViewSpace = 33.0f;
     CGFloat bottomHeight = 0.0f;
     if (nil != tweet.tweetOfOriginInRetweet) {
-        bottomHeight = 18.0f + 4.0f + 12.0f;
+        NSLog(@"tweet = %@", tweet.tweetText);
+        bottomHeight = 18.0f + /*あると Retweet 時に大きく幅が開いてしまう*/ 4.0f + 4.0f;
     } else {
         bottomHeight = 12.0f;
     }
@@ -372,7 +370,8 @@
     MBUser *userAtIndexPath = tweetAtIndexPath.tweetUser;
     
     NSString *timeIntervalString = [NSString timeMarginWithDate:tweetAtIndexPath.createdDate];
-    cell.dateView.attributedString = [MBTweetTextComposer attributedStringForTimelineDate:timeIntervalString font:[UIFont systemFontOfSize:12.0f] screeName:userAtIndexPath.screenName tweetID:[tweetAtIndexPath.tweetID unsignedLongLongValue]];
+    //cell.dateView.attributedString = [MBTweetTextComposer attributedStringForTimelineDate:timeIntervalString font:[UIFont systemFontOfSize:12.0f] screeName:userAtIndexPath.screenName tweetID:[tweetAtIndexPath.tweetID unsignedLongLongValue]];
+    [cell setDateString:[MBTweetTextComposer attributedStringForTimelineDate:timeIntervalString font:[UIFont systemFontOfSize:12.0f] screeName:userAtIndexPath.screenName tweetID:[tweetAtIndexPath.tweetID unsignedLongLongValue]]];
     
     cell.chacacterNameLabel.text = tweetAtIndexPath.tweetUser.characterName;
     [cell setScreenName:tweetAtIndexPath.tweetUser.screenName];
@@ -558,6 +557,13 @@
 - (void)twitterAPICenter:(MBAOuth_TwitterAPICenter *)center parsedTweets:(NSArray *)tweets
 {
     [self updateTableViewDataSource:tweets];
+}
+
+#pragma mark MBPostTweetViewController Delegate
+- (void)dismissPostTweetViewController:(MBPostTweetViewController *)controller animated:(BOOL)animated
+{
+    [self refreshAction];
+    [controller dismissViewControllerAnimated:YES completion:nil];
 }
 
 #pragma mark MBAvatorImageView Delegate

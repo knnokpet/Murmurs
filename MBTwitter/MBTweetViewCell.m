@@ -77,6 +77,13 @@
     }
 }*/
 
+- (void)setDateString:(NSAttributedString *)dateString
+{
+    _dateString = dateString;
+    self.dateView.attributedString = dateString;
+    [self setNeedsLayout];
+}
+
 - (void)setUserIDStr:(NSString *)userIDStr
 {
     _userIDStr = userIDStr;
@@ -98,14 +105,14 @@
 - (void)addRetweetLabelConstraints
 {
     self.topConstraint.constant = 4.0f;
-    self.bottomSpace.constant = 12.0f;
+    self.bottomSpace.constant = 4.0f;
     self.heightConstraint.constant = 18.0f;
 }
 
 - (void)removeRetweetLabelConstraints
 {
     self.topConstraint.constant = 0.f;
-    //self.bottomSpace.constant = 0.f;
+    self.bottomSpace.constant = 0.f;
     self.heightConstraint.constant = 0.0f;
 }
 
@@ -153,6 +160,13 @@
     [self.screenNameLabel sizeToFit];
     [self.dateView sizeToFit];
     
+    // dateView
+    CGRect dateRect = self.dateView.frame;
+    dateRect.origin.x = self.bounds.size.width - (dateRect.size.width + 8.0f);
+    dateRect.origin.y = (self.chacacterNameLabel.frame.origin.y + self.chacacterNameLabel.frame.size.height) - dateRect.size.height;
+    self.dateView.frame = dateRect;
+    
+    NSLog(@"origin %f", self.dateView.frame.origin.x);
     CGFloat namesSpace = (self.dateView.frame.origin.x - self.chacacterNameLabel.frame.origin.x);
     if (namesSpace < self.chacacterNameLabel.frame.size.width + self.screenNameLabel.frame.size.width) {
         CGRect screenFrame = self.screenNameLabel.frame;
