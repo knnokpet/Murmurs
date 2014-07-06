@@ -53,13 +53,34 @@
     CGRect bound = CGRectZero;
     bound.size = constraintSize;
     textLayout.bound = bound;
-#warning 高さの算出はまだうまくいっていない。改行があるとずれるのだろうか？
+
     [textLayout createFramesetter];
     [textLayout createFrame];
     
     CGRect textLayoutFrame = textLayout.frameRect;
     
     return textLayoutFrame;
+}
+
++ (CGRect)rectForLongestDrawingWithAttributedString:(NSAttributedString *)attributedString constraintSize:(CGSize)constraintSize
+{
+    MBTextLayout *textLayout = [[MBTextLayout alloc] initWithAttributedString:attributedString];
+    CGRect bounds = CGRectZero;
+    bounds.size = constraintSize;
+    textLayout.bound = bounds;
+    
+    [textLayout createFramesetter];
+    [textLayout createFrame];
+    [textLayout createLine];
+    
+    CGRect longestRect = CGRectZero;
+    for (MBLineLayout *lineLayout in textLayout.lineLayouts) {
+        if (lineLayout.drawingRect.size.width > longestRect.size.width) {
+            longestRect = lineLayout.rect;
+        }
+    }
+    
+    return longestRect;
 }
 
 #pragma mark -

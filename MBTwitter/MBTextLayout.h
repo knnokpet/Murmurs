@@ -24,6 +24,7 @@
 @property (nonatomic, readonly) CGRect frameRect;
 
 + (CGRect)frameRectWithAttributedString:(NSAttributedString *)attributedString constraintSize:(CGSize)constraintSize;
++ (CGRect)rectForLongestDrawingWithAttributedString:(NSAttributedString *)attributedString constraintSize:(CGSize)constraintSize;
 
 - (id)initWithAttributedString:(NSAttributedString *)attributedString;
 - (void)update;
