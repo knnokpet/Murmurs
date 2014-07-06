@@ -44,6 +44,11 @@
                               lineSpace:(CGFloat)lineSpace
                          paragraghSpace:(CGFloat)paragraghSpace
                                    font:(UIFont *)font;
++ (CGRect)rectForLongestDrawingTextWithAttributedString:(NSAttributedString *)attributedString
+                                         constraintSize:(CGSize)constraintSize
+                                              lineSpace:(CGFloat)lineSpace
+                                         paragraghSpace:(CGFloat)paragraghSpace
+                                                   font:(UIFont *)font;
 
 - (void)setAttributedString:(NSAttributedString *)attributedString;
 - (void)setIsSelectable:(BOOL)isSelectable;

@@ -146,6 +146,45 @@ typedef NS_ENUM(NSUInteger, MBToucheState) {
     return [MBTextLayout frameRectWithAttributedString:attributedString constraintSize:constraintSize];
 }
 
++ (CGRect)rectForLongestDrawingTextWithAttributedString:(NSAttributedString *)attributedString constraintSize:(CGSize)constraintSize lineSpace:(CGFloat)lineSpace paragraghSpace:(CGFloat)paragraghSpace font:(UIFont *)font
+{
+    NSInteger length = attributedString.length;
+    NSRange textRange = NSMakeRange(0, length);
+    NSMutableAttributedString *mutableAttributedString = attributedString.mutableCopy;
+    
+    CTTextAlignment textAlignment = kCTTextAlignmentNatural;
+    CGFloat lineSpacing = roundf(lineSpace);
+    CGFloat lineHeight = 0.0f;
+    CGFloat paragraphSpacing = roundf(paragraghSpace);
+    
+    CTParagraphStyleSetting setting[] = {
+        {kCTParagraphStyleSpecifierAlignment, sizeof(textAlignment), &textAlignment},
+        {kCTParagraphStyleSpecifierMinimumLineHeight, sizeof(lineHeight), &lineHeight},
+        {kCTParagraphStyleSpecifierMaximumLineHeight, sizeof(lineHeight), &lineHeight},
+        {kCTParagraphStyleSpecifierLineSpacing, sizeof(lineSpacing), &lineSpacing},
+        {kCTParagraphStyleSpecifierMinimumLineSpacing, sizeof(lineSpacing), &lineSpacing},
+        {kCTParagraphStyleSpecifierMaximumLineSpacing, sizeof(lineSpacing), &lineSpacing},
+        {kCTParagraphStyleSpecifierParagraphSpacing, sizeof(paragraphSpacing), &paragraphSpacing},
+    };
+    
+    CTParagraphStyleRef paragraphStyleRef = CTParagraphStyleCreate(setting, sizeof(setting) / sizeof(CTParagraphStyleSetting));
+    [mutableAttributedString addAttributes:@{(id)kCTParagraphStyleAttributeName: (__bridge id) paragraphStyleRef} range:textRange];
+    CFRelease(paragraphStyleRef);
+    
+    attributedString = mutableAttributedString;
+    
+    if (font) {
+        CFStringRef fontName = (__bridge CFStringRef)font.fontName;
+        CGFloat fontSize = font.pointSize;
+        CTFontRef fontRef = CTFontCreateWithName(fontName, fontSize, NULL);
+        [mutableAttributedString addAttributes:@{(id)kCTFontAttributeName: (__bridge id)fontRef} range:textRange];
+        CFRelease(fontRef);
+        attributedString = mutableAttributedString;
+    }
+    
+    return [MBTextLayout rectForLongestDrawingWithAttributedString:attributedString constraintSize:constraintSize];
+}
+
 #pragma mark -
 #pragma mark Setter & Getter
 - (void)setAttributedString:(NSAttributedString *)attributedString
@@ -231,6 +270,7 @@ typedef NS_ENUM(NSUInteger, MBToucheState) {
     _attributedString = mutableAttributedString;
 }
 
+#pragma mark -
 - (MBLinkText *)linkAtPoint:(CGPoint)point
 {
     for (MBLineLayout *lineLayout in self.textLayout.lineLayouts) {
