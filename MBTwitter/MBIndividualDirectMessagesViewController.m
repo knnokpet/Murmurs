@@ -16,6 +16,22 @@
 #import "MBUser.h"
 #import "MBAccountManager.h"
 #import "MBAccount.h"
+#import "MBTweetTextComposer.h"
+
+#import "MBMessageTableViewCell.h"
+#import "MBSendMessageTableViewCell.h"
+#import "MBMessageView.h"
+#import "MBTweetTextView.h"
+#import "MBAvatorImageView.h"
+
+static NSString *deliverdCellIdentifier = @"DeliverdCellIdentifier";
+static NSString *sendCellIdentifier = @"SendCellIdentifier";
+
+#define FONT_SIZE_MESSAGE 15.0f
+#define LINE_SPACING_MESSAGE 4.0f
+#define LINE_HEIGHT_MESSAGE 0.0f
+#define PARAGRAPH_SPACING_MESSAGE 0.0f
+
 
 @interface MBIndividualDirectMessagesViewController () <UITableViewDataSource, UITableViewDelegate>
 
@@ -85,6 +101,12 @@
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
     self.tableView.keyboardDismissMode = UIScrollViewKeyboardDismissModeInteractive;
+    
+    UINib *deliverdCell = [UINib nibWithNibName:@"MBMessageTableViewCell" bundle:nil];
+    [self.tableView registerNib:deliverdCell forCellReuseIdentifier:deliverdCellIdentifier];
+    UINib *sendCell = [UINib nibWithNibName:@"MBSendMessageTableViewCell" bundle:nil];
+    [self.tableView registerNib:sendCell forCellReuseIdentifier:sendCellIdentifier];
+    
     
     self.textView.delegate = self;
     
@@ -354,18 +376,71 @@
     return [self.dataSource count];
 }
 
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    MBDirectMessage *message = [self.dataSource objectAtIndex:indexPath.row];
+    NSAttributedString *attributedString = [MBTweetTextComposer attributedStringForTweet:message tintColor:[self.navigationController.navigationBar tintColor]];
+    
+    CGFloat messageViewMargin = 4.0 + 4.0;
+    CGFloat textViewMargin = 4.0 + 4.0;
+    
+    
+    // calculate textView
+    NSInteger textViewWidthSpace = tableView.bounds.size.width - (42 + 54) - textViewMargin;
+    CGFloat lineSpace = LINE_SPACING_MESSAGE;
+    CGFloat fontSize = FONT_SIZE_MESSAGE;
+    CGRect textViewRect = [MBTweetTextView frameRectWithAttributedString:attributedString constraintSize:CGSizeMake(textViewWidthSpace, CGFLOAT_MAX) lineSpace:lineSpace font:[UIFont systemFontOfSize:fontSize]];
+    
+    CGFloat cellHeight = textViewRect.size.height + messageViewMargin + textViewMargin;
+    CGFloat defaultHeight = 40;
+    
+    return MAX(defaultHeight, cellHeight);
+}
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSString *CellIdentifier = @"CellIdentifier";
+    MBDirectMessage *message = [self.dataSource objectAtIndex:indexPath.row];
+    BOOL isPartner = ([message.sender.userIDStr isEqualToString:self.partner.userIDStr])? YES : NO;
     
-    UITableViewCell *cell = [self.tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    if (nil == cell) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+    UITableViewCell *cell;
+    if (YES == isPartner) {
+        cell = [self.tableView dequeueReusableCellWithIdentifier:deliverdCellIdentifier];
+        [self updateDeliverdCell:(MBMessageTableViewCell *)cell atIndexPath:indexPath];
+    } else {
+        cell = [self.tableView dequeueReusableCellWithIdentifier:sendCellIdentifier];
+        [self updateSentCell:(MBSendMessageTableViewCell *)cell atIndexPath:indexPath];
     }
     
-    [self updateCell:cell atIndexPath:indexPath];
-    
     return cell;
+}
+
+- (void)updateDeliverdCell:(MBMessageTableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
+{
+    MBDirectMessage *message = [self.dataSource objectAtIndex:indexPath.row];
+    
+    cell.tweetTextView.font = [UIFont systemFontOfSize:FONT_SIZE_MESSAGE];
+    cell.tweetTextView.lineSpace = LINE_SPACING_MESSAGE;
+    cell.tweetTextView.lineHeight = LINE_HEIGHT_MESSAGE;
+    cell.tweetTextView.paragraphSpace = PARAGRAPH_SPACING_MESSAGE;
+    cell.tweetTextView.attributedString = [MBTweetTextComposer attributedStringForTweet:message tintColor:[self.navigationController.navigationBar tintColor]];
+    CGRect longestRect = [MBTweetTextView rectForLongestDrawingTextWithAttributedString:[MBTweetTextComposer attributedStringForTweet:message tintColor:[self.navigationController.navigationBar tintColor]] constraintSize:cell.tweetTextView.frame.size lineSpace:LINE_SPACING_MESSAGE paragraghSpace:PARAGRAPH_SPACING_MESSAGE font:[UIFont systemFontOfSize:FONT_SIZE_MESSAGE]];
+    [cell setTweetViewRect:longestRect];
+}
+
+- (void)updateSentCell:(MBSendMessageTableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
+{
+    MBDirectMessage *message = [self.dataSource objectAtIndex:indexPath.row];
+    
+    cell.tweetTextView.font = [UIFont systemFontOfSize:FONT_SIZE_MESSAGE];
+    cell.tweetTextView.lineSpace = LINE_SPACING_MESSAGE;
+    cell.tweetTextView.lineHeight = LINE_HEIGHT_MESSAGE;
+    cell.tweetTextView.paragraphSpace = PARAGRAPH_SPACING_MESSAGE;
+    cell.tweetTextView.textColor = [UIColor whiteColor];
+    cell.tweetTextView.attributedString = [MBTweetTextComposer attributedStringForTweet:message tintColor:[self.navigationController.navigationBar tintColor]];
+    CGRect longestRect = [MBTweetTextView rectForLongestDrawingTextWithAttributedString:[MBTweetTextComposer attributedStringForTweet:message tintColor:[self.navigationController.navigationBar tintColor]] constraintSize:cell.tweetTextView.frame.size lineSpace:LINE_SPACING_MESSAGE paragraghSpace:PARAGRAPH_SPACING_MESSAGE font:[UIFont systemFontOfSize:FONT_SIZE_MESSAGE]];
+    [cell setTweetViewRect:longestRect];
+    
+    [cell.messageView setPopsFromRight:YES];
 }
 
 - (void)updateCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
