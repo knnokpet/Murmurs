@@ -58,7 +58,8 @@
 
 - (NSDictionary *)addTweets:(NSArray *)tweets
 {
-    if (0 == [tweets count]) {
+    if (tweets.count <= 1) {
+        /* sinceTweet がそのまま１つだけ帰ってきた場合、tableView の更新は行わないため */
         return nil;
     }
     

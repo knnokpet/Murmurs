@@ -148,27 +148,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "MBTwitter/MBTimeLineManager.m"
-            timestampString = "423806683.197535"
+            timestampString = "426402816.484575"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "62"
-            endingLineNumber = "62"
-            landmarkName = "-addTweets:"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "MBTwitter/MBTimeLineManager.m"
-            timestampString = "424678451.409306"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "120"
-            endingLineNumber = "120"
+            startingLineNumber = "121"
+            endingLineNumber = "121"
             landmarkName = "-addTweets:"
             landmarkType = "5">
          </BreakpointContent>
@@ -180,11 +164,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "MBTwitter/MBTimeLineManager.m"
-            timestampString = "423806683.197535"
+            timestampString = "426402816.484575"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "98"
-            endingLineNumber = "98"
+            startingLineNumber = "99"
+            endingLineNumber = "99"
             landmarkName = "-addTweets:"
             landmarkType = "5">
          </BreakpointContent>
@@ -340,11 +324,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "MBTwitter/MBTweetTextView.m"
-            timestampString = "425974357.710769"
+            timestampString = "426402816.484575"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "648"
-            endingLineNumber = "648">
+            startingLineNumber = "688"
+            endingLineNumber = "688">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -609,7 +593,7 @@
                   symbolName = "-[MBMyAccountsViewController downloadBannerImageForCell:]"
                   moduleName = "MBTwitter"
                   urlString = "file:///Users/ikedamasayuki/%E9%96%8B%E7%99%BA/MBTwitter20140701/MBTwitter/MBMyAccountsViewController.m"
-                  timestampString = "426243575.55436"
+                  timestampString = "426402836.535499"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "154"
@@ -623,7 +607,7 @@
                   symbolName = "__57-[MBMyAccountsViewController downloadBannerImageForCell:]_block_invoke"
                   moduleName = "MBTwitter"
                   urlString = "file:///Users/ikedamasayuki/%E9%96%8B%E7%99%BA/MBTwitter20140701/MBTwitter/MBMyAccountsViewController.m"
-                  timestampString = "426243575.554733"
+                  timestampString = "426402836.535855"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "154"
