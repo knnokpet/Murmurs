@@ -50,6 +50,17 @@
 - (NSString *)postDestroyTweetForTweetID:(unsigned long long)tweetID;
 - (NSString *)postRetweetForTweetID:(unsigned long long)retweetID;
 
+- (NSString *)getSearchedTweetsWithQuery:(NSString *)query;
+- (NSString *)getSearchedTweetsWithQuery:(NSString *)query geocode:(NSDictionary *)geocode resultLang:(NSString *)langISO639_1 langOfQuery:(NSString *)lang untilDate:(NSString *)YYYY_MM_DD sinceID:(unsigned long long)since;
+- (NSString *)getSearchedTweetsWithQuery:(NSString *)query geocode:(NSDictionary *)geocode resultLang:(NSString *)langISO639_1 langOfQuery:(NSString *)lang untilDate:(NSString *)YYYY_MM_DD maxID:(unsigned long long)max;
+- (NSString *)getSearchedTweetsWithQuery:(NSString *)query geocode:(NSDictionary *)geocode resultLang:(NSString *)langISO639_1 langOfQuery:(NSString *)lang untilDate:(NSString *)YYYY_MM_DD sinceID:(unsigned long long)since maxID:(unsigned long long)max;
+- (NSString *)getSearchedRecentTweetsWithQuery:(NSString *)query geocode:(NSDictionary *)geocode resultLang:(NSString *)langISO639_1 langOfQuery:(NSString *)lang untilDate:(NSString *)YYYY_MM_DD sinceID:(unsigned long long)since;
+- (NSString *)getSearchedRecentTweetsWithQuery:(NSString *)query geocode:(NSDictionary *)geocode resultLang:(NSString *)langISO639_1 langOfQuery:(NSString *)lang untilDate:(NSString *)YYYY_MM_DD maxID:(unsigned long long)max;
+- (NSString *)getSearchedRecentTweetsWithQuery:(NSString *)query geocode:(NSDictionary *)geocode resultLang:(NSString *)langISO639_1 langOfQuery:(NSString *)lang untilDate:(NSString *)YYYY_MM_DD sinceID:(unsigned long long)since maxID:(unsigned long long)max;
+- (NSString *)getSearchedPopularTweetsWithQuery:(NSString *)query geocode:(NSDictionary *)geocode resultLang:(NSString *)langISO639_1 langOfQuery:(NSString *)lang untilDate:(NSString *)YYYY_MM_DD sinceID:(unsigned long long)since;
+- (NSString *)getSearchedPopularTweetsWithQuery:(NSString *)query geocode:(NSDictionary *)geocode resultLang:(NSString *)langISO639_1 langOfQuery:(NSString *)lang untilDate:(NSString *)YYYY_MM_DD maxID:(unsigned long long)max;
+- (NSString *)getSearchedPopularTweetsWithQuery:(NSString *)query geocode:(NSDictionary *)geocode resultLang:(NSString *)langISO639_1 langOfQuery:(NSString *)lang untilDate:(NSString *)YYYY_MM_DD sinceID:(unsigned long long)since maxID:(unsigned long long)max;
+
 - (NSString *)getBackFavoritesForUserID:(unsigned long long)userID screenName:(NSString *)screenName maxID:(unsigned long long)max;
 - (NSString *)getForwardFavoritesForUserID:(unsigned long long)userID screenName:(NSString *)screenName sinceID:(unsigned long long)since;
 - (NSString *)getFavoritesForUserID:(unsigned long long)userID screenName:(NSString *)screenName sinceID:(unsigned long long)since maxID:(unsigned long long)max;
@@ -63,6 +74,8 @@
 - (NSString *)getUsersFollowingMe:(unsigned long long)userID screenName:(NSString *)screenName cursor:(long long)cursor;
 - (NSString *)getFollowingIDs:(unsigned long long)userID screenName:(NSString *)screenName cursor:(long long)cursor;
 - (NSString *)getFollowingMeIDs:(unsigned long long)userID screenName:(NSString *)screenName cursor:(long long)cursor;
+- (NSString *)getUserIDsForPendingRequestToMeWithCursor:(long long)cursor;
+- (NSString *)getUserIDsForPendingRequestToProtectedAccountWithCursor:(long long)cursor;
 - (NSString *)getRelationshipsOfMyAccountsWith:(NSArray *)userIDs;
 - (NSString *)getUsersLookupUserIDs:(NSArray *)userIDs;
 - (NSString *)getSearchedUsersWithQuery:(NSString *)query page:(unsigned long)page;

@@ -16,6 +16,7 @@
 #define COUNT_OF_USERS 50
 #define COUNT_OF_OWNER_LISTS 40
 #define COUNT_OF_IDS 5000
+#define COUNT_OF_SEARCH_TWEETS 100
 #define COUNT_OF_SEARCH_USERS 20
 
 @interface MBTwitterAPICenter() 
@@ -357,6 +358,104 @@
     return [self sendRequestMethod:HTTP_POST_METHOD resource:resource parameters:parameters requestType:MBTwitterStatusesRetweetsOfTweetRequest responseType:MBTwitterStatuseResponse];
 }
 
+#pragma mark Search
+- (NSString *)getSearchedTweetsWithQuery:(NSString *)query
+{
+    return [self getSearchedTweetsWithQuery:query geocode:nil resultLang:nil langOfQuery:nil untilDate:nil sinceID:0 maxID:0 resultType:nil];
+}
+
+- (NSString *)getSearchedTweetsWithQuery:(NSString *)query geocode:(NSDictionary *)geocode resultLang:(NSString *)langISO639_1 langOfQuery:(NSString *)lang untilDate:(NSString *)YYYY_MM_DD sinceID:(unsigned long long)since
+{
+    return [self getSearchedTweetsWithQuery:query geocode:geocode resultLang:langISO639_1 langOfQuery:lang untilDate:YYYY_MM_DD sinceID:since maxID:0];
+}
+
+- (NSString *)getSearchedTweetsWithQuery:(NSString *)query geocode:(NSDictionary *)geocode resultLang:(NSString *)langISO639_1 langOfQuery:(NSString *)lang untilDate:(NSString *)YYYY_MM_DD maxID:(unsigned long long)max
+{
+    return [self getSearchedTweetsWithQuery:query geocode:geocode resultLang:langISO639_1 langOfQuery:lang untilDate:YYYY_MM_DD sinceID:0 maxID:max];
+}
+
+- (NSString *)getSearchedTweetsWithQuery:(NSString *)query geocode:(NSDictionary *)geocode resultLang:(NSString *)langISO639_1 langOfQuery:(NSString *)lang untilDate:(NSString *)YYYY_MM_DD sinceID:(unsigned long long)since maxID:(unsigned long long)max
+{
+    return [self getSearchedTweetsWithQuery:query geocode:geocode resultLang:langISO639_1 langOfQuery:lang untilDate:YYYY_MM_DD sinceID:since maxID:max resultType:nil];
+}
+
+- (NSString *)getSearchedRecentTweetsWithQuery:(NSString *)query geocode:(NSDictionary *)geocode resultLang:(NSString *)langISO639_1 langOfQuery:(NSString *)lang untilDate:(NSString *)YYYY_MM_DD sinceID:(unsigned long long)since
+{
+    return [self getSearchedRecentTweetsWithQuery:query geocode:geocode resultLang:langISO639_1 langOfQuery:lang untilDate:YYYY_MM_DD sinceID:since maxID:0];
+}
+
+- (NSString *)getSearchedRecentTweetsWithQuery:(NSString *)query geocode:(NSDictionary *)geocode resultLang:(NSString *)langISO639_1 langOfQuery:(NSString *)lang untilDate:(NSString *)YYYY_MM_DD maxID:(unsigned long long)max
+{
+    return [self getSearchedRecentTweetsWithQuery:query geocode:geocode resultLang:langISO639_1 langOfQuery:lang untilDate:YYYY_MM_DD sinceID:0 maxID:max];
+}
+
+- (NSString *)getSearchedRecentTweetsWithQuery:(NSString *)query geocode:(NSDictionary *)geocode resultLang:(NSString *)langISO639_1 langOfQuery:(NSString *)lang untilDate:(NSString *)YYYY_MM_DD sinceID:(unsigned long long)since maxID:(unsigned long long)max
+{
+    return [self getSearchedTweetsWithQuery:query geocode:geocode resultLang:langISO639_1 langOfQuery:lang untilDate:YYYY_MM_DD sinceID:since maxID:max resultType:@"recent"];
+}
+
+- (NSString *)getSearchedPopularTweetsWithQuery:(NSString *)query geocode:(NSDictionary *)geocode resultLang:(NSString *)langISO639_1 langOfQuery:(NSString *)lang untilDate:(NSString *)YYYY_MM_DD sinceID:(unsigned long long)since
+{
+    return [self getSearchedPopularTweetsWithQuery:query geocode:geocode resultLang:langISO639_1 langOfQuery:lang untilDate:YYYY_MM_DD sinceID:since maxID:0];
+}
+
+- (NSString *)getSearchedPopularTweetsWithQuery:(NSString *)query geocode:(NSDictionary *)geocode resultLang:(NSString *)langISO639_1 langOfQuery:(NSString *)lang untilDate:(NSString *)YYYY_MM_DD maxID:(unsigned long long)max
+{
+    return [self getSearchedPopularTweetsWithQuery:query geocode:geocode resultLang:langISO639_1 langOfQuery:lang untilDate:YYYY_MM_DD sinceID:0 maxID:max];
+}
+
+- (NSString *)getSearchedPopularTweetsWithQuery:(NSString *)query geocode:(NSDictionary *)geocode resultLang:(NSString *)langISO639_1 langOfQuery:(NSString *)lang untilDate:(NSString *)YYYY_MM_DD sinceID:(unsigned long long)since maxID:(unsigned long long)max
+{
+    return [self getSearchedTweetsWithQuery:query geocode:geocode resultLang:langISO639_1 langOfQuery:lang untilDate:YYYY_MM_DD sinceID:since maxID:max resultType:@"popular"];
+}
+
+- (NSString *)getSearchedTweetsWithQuery:(NSString *)query geocode:(NSDictionary *)geocode resultLang:(NSString *)langISO639_1 langOfQuery:(NSString *)lang untilDate:(NSString *)YYYY_MM_DD sinceID:(unsigned long long)since maxID:(unsigned long long)max resultType:(NSString *)type
+{
+    NSString *resource = @"search/tweets";
+    NSMutableDictionary *parameters = [NSMutableDictionary dictionaryWithCapacity:0];
+    if (query.length == 0) {
+        return nil;
+    }
+    
+    if (query.length > 0) {
+        [parameters setObject:query forKey:@"q"];
+    }
+    if (geocode) {
+        /* dictionary で渡すのはイマイチかも。クラス間の結合が強すぎる */
+        NSNumber *lati = [geocode objectForKey:@"latitude"];
+        NSNumber *longi = [geocode objectForKey:@"longitude"];
+        NSNumber *radius = [geocode objectForKey:@"radius"];
+        NSString *unit = [geocode objectForKey:@"unit"];
+        if (lati && longi && radius && unit) {
+            NSString *parameter = [NSString stringWithFormat:@"%ld,%ld,%u%@", [lati longValue], [longi longValue], [radius unsignedIntValue], unit];
+            [parameters setObject:parameter forKey:@"geocode"];
+        }
+    }
+    if (langISO639_1.length > 0) {
+        [parameters setObject:langISO639_1 forKey:@"lang"];
+    }
+    if (lang.length > 0) {
+        [parameters setObject:lang forKey:@"locale"];
+    }
+    if (type.length > 0) {
+        /* default == mixed */
+        [parameters setObject:type forKey:@"result_type"];
+    }
+    if (YYYY_MM_DD.length > 0) {
+        [parameters setObject:YYYY_MM_DD forKey:@"until"];
+    }
+    if (since > 0) {
+        [parameters setObject:[NSString stringWithFormat:@"%llu", since] forKey:@"since_id"];
+    }
+    if (max > 0) {
+        [parameters setObject:[NSString stringWithFormat:@"%llu", max] forKey:@"max_id"];
+    }
+    
+    [parameters setObject:[NSString stringWithFormat:@"%d", COUNT_OF_SEARCH_TWEETS] forKey:@"count"];
+    [parameters setObject:@"true" forKey:@"include_entities"];
+    
+    return [self sendRequestMethod:HTTP_GET_METHOD resource:resource parameters:parameters requestType:MBTwitterSearchTweetsRequest responseType:MBTwitterSearchedStatusesResponse];
+}
 
 #pragma mark Favorite
 - (NSString *)getBackFavoritesForUserID:(unsigned long long)userID screenName:(NSString *)screenName maxID:(unsigned long long)max
@@ -580,6 +679,28 @@
     [parameters setObject:[NSString stringWithFormat:@"%d", COUNT_OF_IDS] forKey:@"count"];
     
     return [self sendRequestMethod:HTTP_GET_METHOD resource:resource parameters:parameters requestType:MBTwitterFollowersRequest responseType:MBTwitterUserIDsResponse];
+}
+
+- (NSString *)getUserIDsForPendingRequestToMeWithCursor:(long long)cursor
+{
+    NSString *resource = @"friendships/incoming";
+    NSMutableDictionary *parameters = [NSMutableDictionary dictionaryWithCapacity:0];
+    if (0 != cursor) {
+        [parameters setObject:[NSString stringWithFormat:@"%lld", cursor] forKey:@"cursor"];
+    }
+    
+    return [self sendRequestMethod:HTTP_GET_METHOD resource:resource parameters:parameters requestType:MBTwitterFriendShipsInComingRequest responseType:MBTwitterUserIDsResponse];
+}
+
+- (NSString *)getUserIDsForPendingRequestToProtectedAccountWithCursor:(long long)cursor
+{
+    NSString *resource = @"friendships/outgoing";
+    NSMutableDictionary *parameters = [NSMutableDictionary dictionaryWithCapacity:0];
+    if (0 != cursor) {
+        [parameters setObject:[NSString stringWithFormat:@"%lld", cursor] forKey:@"cursor"];
+    }
+    
+    return [self sendRequestMethod:HTTP_GET_METHOD resource:resource parameters:parameters requestType:MBTwitterFriendShipsOutGoingRequest responseType:MBTwitterUserIDsResponse];
 }
 
 - (NSString *)getRelationshipsOfMyAccountsWith:(NSArray *)userIDs
