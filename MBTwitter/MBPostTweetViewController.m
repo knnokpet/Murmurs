@@ -367,25 +367,18 @@
     if (YES == locationEnabled) {
         
         CLAuthorizationStatus status = [CLLocationManager authorizationStatus];
-        switch (status) {
-            case kCLAuthorizationStatusNotDetermined: {
-                [self.locationManager startUpdatingLocation];
-            }
-                break;
-            case kCLAuthorizationStatusAuthorized: {
-                [self.locationManager startUpdatingLocation];
-            }
-                break;
-            case kCLAuthorizationStatusRestricted: {
-                NSLog(@"位置情報サービス機能が制限されています。");
-            }
-                break;
-            case kCLAuthorizationStatusDenied: {
-                NSLog(@"プライバシー＞位置情報サービスをオン、MurmurBird をオンにしろ");
-            }
-                break;
-            default:
-                break;
+        if (status == kCLAuthorizationStatusNotDetermined) {
+            [self.locationManager startUpdatingLocation];
+            
+        } else if (status == kCLAuthorizationStatusAuthorized) {
+            [self.locationManager startUpdatingLocation];
+            
+        } else if (status == kCLAuthorizationStatusRestricted) {
+            NSLog(@"位置情報サービス機能が制限されています。");
+            
+        } else if (status == kCLAuthorizationStatusDenied) {
+            NSLog(@"プライバシー＞位置情報サービスをオン、MurmurBird をオンにしろ");
+            
         }
         
     } else {
@@ -534,18 +527,12 @@
     if (error) {
         NSString *message = nil;
         NSInteger errorCode = [error code];
-        switch (errorCode) {
-            case kCLErrorDenied: {
-                NSLog(@"位置情報サービスがオンになってない");
-            }
-                break;
-            case kCLErrorNetwork: {
-                NSLog(@"ネットワークエラー");
-            }
-                break;
-                
-            default:
-                break;
+        if (errorCode == kCLErrorDenied) {
+            NSLog(@"位置情報サービスがオンになってない");
+            
+        } else if (errorCode == kCLErrorNetwork) {
+            NSLog(@"ネットワークエラー");
+            
         }
     }
 }
