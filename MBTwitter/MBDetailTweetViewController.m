@@ -15,6 +15,7 @@
 #import "MBImageApplyer.h"
 
 #import "MBTweetTextComposer.h"
+#import "MBTweetManager.h"
 #import "MBTweet.h"
 #import "MBUser.h"
 
@@ -30,13 +31,26 @@
 #define PARAGRAPF_SPACING 0.0f
 #define FONT_SIZE 20.0f
 
+static NSString *countCellIdentifier = @"CountCellIdentifier";
 static NSString *userCellIdentifier = @"UserCellIdentifier";
 static NSString *tweetCellIdentifier = @"TweetCellIdentifier";
 static NSString *actionsCellIdentifier = @"ActionsCellIdentifier";
 
+static NSString *countKey = @"CountKey";
+static NSString *contentKey = @"ContentKey";
+static NSString *contentIdentifier = @"ContentIdentifier";
+static NSString *favoriteStr = @"fav";
+static NSString *retweetStr = @"ret";
+
 @interface MBDetailTweetViewController () <UIActionSheetDelegate, UITableViewDataSource, UITableViewDelegate>
+{
+    NSInteger cellsOnCountCell;
+}
 
 @property (nonatomic, readonly) MBAOuth_TwitterAPICenter *aoAPICenter;
+@property (nonatomic, readonly) NSMutableArray *expandingDataSource;
+@property (nonatomic, readonly) NSMutableArray *replyedTweets;
+@property (nonatomic, assign) BOOL fetchsReplyedTweet;/* unused */
 
 @property (nonatomic) MBMagnifierView *magnifierView;
 @property (nonatomic) MBMagnifierRangeView *magnifierRangeView;
@@ -62,6 +76,16 @@ static NSString *actionsCellIdentifier = @"ActionsCellIdentifier";
 - (void)setTweet:(MBTweet *)tweet
 {
     _tweet = tweet;
+    
+    
+    if (tweet.favoritedCount > 0) {
+        NSDictionary *favoritDict = @{countKey: [NSNumber numberWithInteger:tweet.favoritedCount], contentKey: NSLocalizedString(@"Favorite", nil), contentIdentifier: favoriteStr};
+        [self.expandingDataSource addObject:favoritDict];
+    }
+    if (tweet.retweetedCount > 0) {
+        NSDictionary *retweetDict = @{countKey: [NSNumber numberWithInteger:tweet.retweetedCount], contentKey: NSLocalizedString(@"Retweet", nil), contentIdentifier: retweetStr};
+        [self.expandingDataSource addObject:retweetDict];
+    }
 }
 
 #pragma mark -
@@ -70,12 +94,24 @@ static NSString *actionsCellIdentifier = @"ActionsCellIdentifier";
 {
     _aoAPICenter = [[MBAOuth_TwitterAPICenter alloc] init];
     _aoAPICenter.delegate = self;
+    
+    _expandingDataSource = [NSMutableArray array];
+    _replyedTweets = [NSMutableArray array];
+    self.fetchsReplyedTweet = NO;
+    
+    cellsOnCountCell = 2; /* userCell & tweetCell */
 }
 
 - (void)configureViews
 {
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
+    UIView *view = [[UIView alloc] init];
+    /* remove nonContent's separator */
+    view.backgroundColor  = [UIColor clearColor];
+    [self.tableView setTableHeaderView:view];
+    [self.tableView setTableFooterView:view];
+    
     UINib *userCell = [UINib nibWithNibName:@"MBDetailTweetUserTableViewCell" bundle:nil];
     [self.tableView registerNib:userCell forCellReuseIdentifier:userCellIdentifier];
     UINib *tweetCell = [UINib nibWithNibName:@"MBDetailTweetTextTableViewCell" bundle:nil];
@@ -113,6 +149,34 @@ static NSString *actionsCellIdentifier = @"ActionsCellIdentifier";
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+#pragma mark -
+#pragma mark Instance Methods
+/* un used, because low performance for API. And there is not API for the behavior */
+- (void)fetchTweetInReply:(MBTweet *)tweet
+{
+    if (tweet.tweetIDStrOfOriginInReply || tweet.tweetIDOfOriginInReply) {
+        NSString *key = tweet.tweetIDStrOfOriginInReply;
+        if (!key) {
+            key = [tweet.tweetIDOfOriginInReply stringValue];
+        }
+        
+        MBTweet *replyedTweet = [[MBTweetManager sharedInstance] storedTweetForKey:key];
+        if (replyedTweet) {
+            [self fetchTweetInReply:replyedTweet];
+        } else {
+            NSNumber *replyedTweetID = tweet.tweetIDOfOriginInReply;
+            if (!replyedTweetID) {
+                replyedTweetID = [[[NSNumberFormatter alloc] init] numberFromString:tweet.tweetIDStrOfOriginInReply];
+            }
+            
+            self.fetchsReplyedTweet = YES;
+            [self.aoAPICenter getTweet:[replyedTweetID unsignedLongLongValue]];
+        }
+    } else {
+        self.fetchsReplyedTweet = NO;
+    }
 }
 
 #pragma mark Button Action
@@ -186,11 +250,22 @@ static NSString *actionsCellIdentifier = @"ActionsCellIdentifier";
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return 3; // default
+    return 3 + [self.expandingDataSource count];
+}
+
+- (NSIndexPath *)lastIndexPath
+{
+    NSInteger sectionAmount = [self.tableView numberOfSections];
+    NSInteger rowsForIndexPath = [self.tableView numberOfRowsInSection:sectionAmount - 1];
+    NSIndexPath *lastIndexpath = [NSIndexPath indexPathForRow:rowsForIndexPath - 1 inSection:sectionAmount - 1];
+    
+    return lastIndexpath;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    NSIndexPath *lastIndexPath = [self lastIndexPath];
+    
     UITableViewCell *cell;
     if (0 == indexPath.row) {
         MBDetailTweetUserTableViewCell *userCell = [self.tableView dequeueReusableCellWithIdentifier:userCellIdentifier];
@@ -200,10 +275,17 @@ static NSString *actionsCellIdentifier = @"ActionsCellIdentifier";
         MBDetailTweetTextTableViewCell *textCell = [self.tableView dequeueReusableCellWithIdentifier:tweetCellIdentifier];
         [self updateTweetViewCell:textCell];
         cell = textCell;
-    } else if (2 == indexPath.row) {
+    } else if (lastIndexPath.row == indexPath.row) {
         MBDetailTweetActionsTableViewCell *actionsCell = [self.tableView dequeueReusableCellWithIdentifier:actionsCellIdentifier];
         [self updateActionsCell:actionsCell];
         cell = actionsCell;
+    }else {
+        cell = [self.tableView dequeueReusableCellWithIdentifier:countCellIdentifier];
+        if (!cell) {
+            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:countCellIdentifier];
+            cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+        }
+        [self updateCountCell:cell atIndexPath:indexPath];
     }
     
     return cell;
@@ -272,6 +354,21 @@ static NSString *actionsCellIdentifier = @"ActionsCellIdentifier";
     cell.dateView.attributedString = [MBTweetTextComposer attributedStringForDetailTweetDate:[self.tweet.createdDate descriptionWithLocale:nil] font:[UIFont systemFontOfSize:12.0f] screeName:self.tweet.tweetUser.screenName tweetID:[self.tweet.tweetID unsignedLongLongValue]];
 }
 
+- (void)updateCountCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
+{
+    NSInteger expandedIndex = indexPath.row - cellsOnCountCell;
+    if (self.expandingDataSource.count - 1 < expandedIndex) {
+        return;
+    }
+    
+    NSDictionary *countDict = [self.expandingDataSource objectAtIndex:expandedIndex];
+    NSNumber *count = [countDict objectForKey:countKey];
+    NSString *contentStr = [countDict objectForKey:contentKey];
+    
+    cell.textLabel.text = contentStr;
+    cell.detailTextLabel.text = [NSString stringWithFormat:@"%ld", (long)count.integerValue];
+}
+
 - (void)updateActionsCell:(MBDetailTweetActionsTableViewCell *)cell
 {
     
@@ -281,11 +378,24 @@ static NSString *actionsCellIdentifier = @"ActionsCellIdentifier";
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    
     if (0 == indexPath.row) {
         MBUser *selectedUser = self.tweet.tweetUser;
         MBDetailUserViewController *userViewController = [[MBDetailUserViewController alloc] initWithNibName:@"MBUserDetailView" bundle:nil];
         [userViewController setUser:selectedUser];
         [self.navigationController pushViewController:userViewController animated:YES];
+    } else if (self.expandingDataSource.count > 0 && indexPath.row >= cellsOnCountCell) {
+        NSInteger expandedIndex = indexPath.row - cellsOnCountCell;
+        if (self.expandingDataSource.count - 1 < expandedIndex) {
+            return;
+        }
+        NSDictionary *countDict = [self.expandingDataSource objectAtIndex:expandedIndex];
+        NSString *identifier = [countDict objectForKey:contentIdentifier];
+        if ([identifier isEqualToString:favoriteStr]) {
+            ;
+        } else if ([identifier isEqualToString:retweetStr]) {
+            
+        }
     }
 }
 
@@ -319,8 +429,14 @@ static NSString *actionsCellIdentifier = @"ActionsCellIdentifier";
 {
     MBTweet *parsedTweet = [tweets firstObject];
     if (parsedTweet) {
-        [self setTweet:parsedTweet];
-        [self.tableView reloadData];
+        if (self.fetchsReplyedTweet) {
+            [self.replyedTweets addObject:parsedTweet];
+            /* unused */
+        } else {
+            [self setTweet:parsedTweet];
+            [self.tableView reloadData];
+        }
+        
         NSLog(@"retweet or destroyRetweet  parsed Text = %@", parsedTweet.tweetText);
     }
 }
