@@ -9,39 +9,32 @@
 #import <UIKit/UIKit.h>
 #import "MBAvatorImageView.h"
 #import "MBTweetTextView.h"
+#import "MBCharacterScreenNameView.h"
 
-@class MBTweetTextView;
 @protocol MBtweetViewCellLongPressDelegate;
 @interface MBTweetViewCell : UITableViewCell
 
 @property (nonatomic, readonly) UILongPressGestureRecognizer *longPressRecognizer;
 @property (nonatomic, weak) id <MBtweetViewCellLongPressDelegate> delegate;
 
-//@property (weak, nonatomic) IBOutlet UIImageView *iconImageView;
-@property (weak, nonatomic) IBOutlet UILabel *chacacterNameLabel;
-@property (weak, nonatomic) IBOutlet UILabel *screenNameLabel;
+
 @property (weak, nonatomic) IBOutlet MBTweetTextView *retweetView;
+@property (weak, nonatomic) IBOutlet MBCharacterScreenNameView *characterScreenNameView;
 
 @property (weak, nonatomic) IBOutlet MBTweetTextView *dateView;
 @property (weak, nonatomic) IBOutlet MBTweetTextView *tweetTextView;
 @property (weak, nonatomic) IBOutlet MBAvatorImageView *avatorImageView;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint *topConstraint;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint *bottomSpace;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint *heightConstraint;
+
 
 
 @property (nonatomic) NSString *userIDStr;
-@property (nonatomic, readonly) NSString *screenName;
 @property (nonatomic, readonly) NSAttributedString *dateString;
-//@property (nonatomic, readonly ) NSString *nameRetweeted;
+@property (nonatomic, readonly) NSAttributedString *charaScreenString;
 
-- (void)configureView;
-- (void)applyConstraints;
+- (void)removeRetweetView;
 
-
-- (void)setScreenName:(NSString *)screenName;
 - (void)setDateString:(NSAttributedString *)dateString;
-//- (void)setNameRetweeted:(NSString *)nameRetweeted;
+- (void)setCharaScreenString:(NSAttributedString *)charaScreenString;
 
 @end
 
