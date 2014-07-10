@@ -24,9 +24,8 @@
 
 - (void)setUser:(MBUser *)user;
 
-- (void)commonConfigureModel;
-- (void)commonConfigureView;
-- (void)commonConfigureNavigationItem;
+- (void)configureModel;
+- (void)configureNavigationItem;
 
 - (void)backUsersAtCursor:(long long)cursor;
 - (NSArray *)decorateAddingArray:(NSArray *)addingArray;

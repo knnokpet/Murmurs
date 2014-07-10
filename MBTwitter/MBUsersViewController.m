@@ -35,6 +35,11 @@
 
 #pragma mark -
 #pragma mark View
+- (void)configureModel
+{
+    
+}
+
 - (void)commonConfigureModel
 {
     _aoAPICenter = [[MBAOuth_TwitterAPICenter alloc] init];
@@ -43,6 +48,8 @@
     
     self.enableAdding = NO;
     self.nextCursor = [NSNumber numberWithInt:-1];
+    
+    [self configureModel];
 }
 
 - (void)commonConfigureView
@@ -53,9 +60,14 @@
     self.tableView.delegate = self;
 }
 
-- (void)commonConfigureNavigationItem
+- (void)configureNavigationItem
 {
     
+}
+
+- (void)commonConfigureNavigationItem
+{
+    [self configureNavigationItem];
 }
 
 - (void)viewDidLoad
