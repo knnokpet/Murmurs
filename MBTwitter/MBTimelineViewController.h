@@ -36,7 +36,7 @@
 
 #import "MBTwitterAccessibility.h"
 
-#define LINE_SPACING 4.0f
+#define LINE_SPACING 2.0f
 #define LINE_HEIGHT 0.0f
 #define PARAGRAPF_SPACING 0.0f
 #define FONT_SIZE 15.0f
@@ -55,9 +55,8 @@
 @property (nonatomic) UIRefreshControl *refreshControl;
 
 - (void)configureTimelineManager;
-- (void)commonConfigureModel;
-- (void)commonConfigureView;
-- (void)commonConfigureNavigationItem;
+- (void)configureNavigationItem;
+- (void)configureLoadingView;
 - (void)saveTimeline;
 - (void)didPushLeftBarButtonItem;
 - (void)didPushRightBarButtonItem;

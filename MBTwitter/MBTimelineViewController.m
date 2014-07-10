@@ -40,7 +40,7 @@ static NSString *retweetCellIdentifier = @"RetweetTableViewCellIdentifier";
 - (void)configureTimelineManager
 {
     // override
-    // アカウントの変更時に Home, Reply の timelineManager を保持するため
+    // アカウントの変更時に Home, Reply の timelineManager を保持するために、継承メソッドに
     _timelineManager = [[MBTimeLineManager alloc] init];
     self.dataSource = self.timelineManager.tweets;
 }
@@ -63,6 +63,7 @@ static NSString *retweetCellIdentifier = @"RetweetTableViewCellIdentifier";
     
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
+    
     UINib *cellNib = [UINib nibWithNibName:@"TweetTavbleViewCell" bundle:nil];
     [self.tableView registerNib:cellNib forCellReuseIdentifier:tweetCellIdentifier];
     UINib *gapedCellNib = [UINib nibWithNibName:@"GapedTweetTableViewCell" bundle:nil];
@@ -75,16 +76,26 @@ static NSString *retweetCellIdentifier = @"RetweetTableViewCellIdentifier";
     [self.refreshControl addTarget:self action:@selector(refreshAction) forControlEvents:UIControlEventValueChanged];
     [self.tableView addSubview:self.refreshControl];
     
-    // loadingView
-    _loadingView = [[MBLoadingView alloc] initWithFrame:self.view.bounds];
-    [self.view insertSubview:self.loadingView aboveSubview:self.tableView];
-    
+    [self configureLoadingView];
+}
+
+- (void)configureNavigationItem
+{
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Account", nil) style:UIBarButtonItemStylePlain target:self action:@selector(didPushLeftBarButtonItem)];
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCompose target:self action:@selector(didPushRightBarButtonItem)];
 }
 
 - (void)commonConfigureNavigationItem
 {
-    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Account", nil) style:UIBarButtonItemStylePlain target:self action:@selector(didPushLeftBarButtonItem)];
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCompose target:self action:@selector(didPushRightBarButtonItem)];
+    [self configureNavigationItem];
+}
+
+- (void)configureLoadingView
+{
+    if (!self.loadingView.superview) {
+        _loadingView = [[MBLoadingView alloc] initWithFrame:self.view.bounds];
+        [self.view insertSubview:self.loadingView aboveSubview:self.tableView];
+    }
 }
 
 - (void)viewDidLoad
@@ -144,8 +155,8 @@ static NSString *retweetCellIdentifier = @"RetweetTableViewCellIdentifier";
 {
     // ラウンチ時に表示されている UIActivityView を remove
     if (self.loadingView.superview) {
-        [UIView animateWithDuration:1.0f animations:^{
-            [self.loadingView setHidden:YES];
+        [UIView animateWithDuration:0.3f animations:^{
+            self.loadingView.alpha = 0.0f;
         }completion:^(BOOL finished){
             [self.loadingView removeFromSuperview];
             _loadingView = nil;
@@ -283,24 +294,32 @@ static NSString *retweetCellIdentifier = @"RetweetTableViewCellIdentifier";
         tableViewForCalculate = self.tableView;
     }
     
-    NSAttributedString *attributedString = [MBTweetTextComposer attributedStringForTweet:tweet tintColor:[self.navigationController.navigationBar tintColor]];
+    BOOL isRetweet = NO;
+    MBTweet *calcuTweet = tweet;
+    if (tweet.tweetOfOriginInRetweet) {
+        isRetweet = YES;
+        calcuTweet = tweet.tweetOfOriginInRetweet;
+    }
+    
+    NSAttributedString *attributedString = [MBTweetTextComposer attributedStringForTweet:calcuTweet tintColor:[self.navigationController.navigationBar tintColor]];
     
     
     NSInteger textViewWidth = tableViewForCalculate.bounds.size.width - (64.0f + 8.0f);
     CGRect textRect = [MBTweetTextView frameRectWithAttributedString:attributedString constraintSize:CGSizeMake(textViewWidth, CGFLOAT_MAX) lineSpace:LINE_SPACING font:[UIFont systemFontOfSize:FONT_SIZE]];
     
-    CGFloat tweetViewSpace = 34.0f;
+    CGFloat tweetViewSpace = 32.0f;
     CGFloat bottomHeight = 0.0f;
-    if (nil != tweet.tweetOfOriginInRetweet) {
-        /*というか、つぶやきの最終行に改行があるのでは？*/
-        bottomHeight = 18.0f + /*あると Retweet 時に大きく幅が開いてしまう*/ 4.0f + 4.0f;
+    CGFloat verticalMargin = 12.0f;
+    if (isRetweet) {
+        bottomHeight = 14.0f + 4.0f + 4.0f;
     } else {
-        bottomHeight = 12.0f;
+        bottomHeight = verticalMargin;
     }
+    
     CGFloat customCellHeight = textRect.size.height + tweetViewSpace + bottomHeight;
     
-    CGFloat defaultHeight = 48 + 12 + 12;
-    
+    CGFloat defaultHeight = 48 + verticalMargin * 2;
+        
     return MAX(defaultHeight, customCellHeight);
 }
 
@@ -350,15 +369,12 @@ static NSString *retweetCellIdentifier = @"RetweetTableViewCellIdentifier";
     NSString *key = [self.dataSource objectAtIndex:indexPath.row];
     MBTweet *tweetAtIndex = [[MBTweetManager sharedInstance] storedTweetForKey:key];
     if (nil != tweetAtIndex.tweetOfOriginInRetweet) {
-        cell = [self.tableView dequeueReusableCellWithIdentifier:retweetCellIdentifier forIndexPath:indexPath];
+        cell = [self.tableView dequeueReusableCellWithIdentifier:retweetCellIdentifier];
     } else {
-        cell = [self.tableView dequeueReusableCellWithIdentifier:tweetCellIdentifier forIndexPath:indexPath];
+        cell = [self.tableView dequeueReusableCellWithIdentifier:tweetCellIdentifier];
         [cell removeRetweetView];
     }
     
-    //MBTweetViewCell *cell= [self.tableView dequeueReusableCellWithIdentifier:tweetCellIdentifier forIndexPath:indexPath];
-    
-    //[self updateCell:cell AtIndexPath:indexPath];
     [self updateCell:cell tweet:tweetAtIndex AtIndexPath:indexPath];
     
     return cell;
@@ -372,27 +388,39 @@ static NSString *retweetCellIdentifier = @"RetweetTableViewCellIdentifier";
     if (tweetAtIndexPath == nil) {
         NSString *key = [self.dataSource objectAtIndex:indexPath.row];
         tweetAtIndexPath = [[MBTweetManager sharedInstance] storedTweetForKey:key];
+        if (nil != tweetAtIndexPath.tweetOfOriginInRetweet) {
+            MBTweet *retweetedTweet = tweetAtIndexPath.tweetOfOriginInRetweet;
+            NSString *retweetText = NSLocalizedString(@"retweeted by ", nil);
+            NSString *textWithUser = [NSString stringWithFormat:@"%@%@", retweetText, tweetAtIndexPath.tweetUser.characterName];
+            cell.retweetView.attributedString = [MBTweetTextComposer attributedStringForTimelineDate:textWithUser font:[UIFont systemFontOfSize:12.0f] screeName:retweetedTweet.tweetUser.screenName tweetID:[tweetAtIndexPath.tweetID unsignedLongLongValue]];
+            
+            tweetAtIndexPath = retweetedTweet;
+        }
     }
     
-    cell.retweetView.attributedString = [[NSAttributedString alloc] initWithString:@""];
-    if (nil != tweetAtIndexPath.tweetOfOriginInRetweet) {
+    // check retweet
+    if (tweetAtIndexPath.tweetOfOriginInRetweet) {
         MBTweet *retweetedTweet = tweetAtIndexPath.tweetOfOriginInRetweet;
-        NSString *retweetText = NSLocalizedString(@"retweeted by ", nil);
-        NSString *textWithUser = [NSString stringWithFormat:@"%@%@", retweetText, tweetAtIndexPath.tweetUser.characterName];
-        cell.retweetView.attributedString = [MBTweetTextComposer attributedStringForTimelineDate:textWithUser font:[UIFont systemFontOfSize:12.0f] screeName:retweetedTweet.tweetUser.screenName tweetID:[tweetAtIndexPath.tweetID unsignedLongLongValue]];
-        
         tweetAtIndexPath = retweetedTweet;
+    }
+    
+    // retweetView
+    if (cell.retweetView.superview) {
+        NSString *retweetText = NSLocalizedString(@"retweeted by ", nil);
+        NSString *textWithUser = [NSString stringWithFormat:@"%@%@", retweetText, tweet.tweetUser.characterName];
+        cell.retweetView.attributedString = [MBTweetTextComposer attributedStringForTimelineDate:textWithUser font:[UIFont systemFontOfSize:12.0f] screeName:tweet.tweetUser.screenName tweetID:[tweetAtIndexPath.tweetID unsignedLongLongValue]];
     }
     
     MBUser *userAtIndexPath = tweetAtIndexPath.tweetUser;
     
+    // timeView
     NSString *timeIntervalString = [NSString timeMarginWithDate:tweetAtIndexPath.createdDate];
     [cell setDateString:[MBTweetTextComposer attributedStringForTimelineDate:timeIntervalString font:[UIFont systemFontOfSize:12.0f] screeName:userAtIndexPath.screenName tweetID:[tweetAtIndexPath.tweetID unsignedLongLongValue]]];
     
-    [cell setCharacterName:tweetAtIndexPath.tweetUser.characterName];
-    [cell setScreenName:tweetAtIndexPath.tweetUser.screenName];
+    // charaScreenNameView
+    [cell setCharaScreenString:[MBTweetTextComposer attributedStringForTimelineUser:tweetAtIndexPath.tweetUser charFont:[UIFont systemFontOfSize:15.0f] screenFont:[UIFont systemFontOfSize:14.0f]]];
     
-    
+    // tweetText
     cell.tweetTextView.font = [UIFont systemFontOfSize:FONT_SIZE];
     cell.tweetTextView.lineSpace = LINE_SPACING;
     cell.tweetTextView.lineHeight = LINE_HEIGHT;
@@ -400,9 +428,10 @@ static NSString *retweetCellIdentifier = @"RetweetTableViewCellIdentifier";
     cell.tweetTextView.attributedString = [MBTweetTextComposer attributedStringForTweet:tweetAtIndexPath tintColor:[self.navigationController.navigationBar tintColor]];
     cell.tweetTextView.delegate = self;
     
-    
+    // AvatorImageView
     cell.userIDStr = userAtIndexPath.userIDStr;
     cell.avatorImageView.userID = userAtIndexPath.userID;
+    cell.avatorImageView.delegate = self;
     UIImage *avatorImage = [[MBImageCacher sharedInstance] cachedTimelineImageForUser:userAtIndexPath.userIDStr];
     if (!avatorImage) {
         
@@ -434,9 +463,6 @@ static NSString *retweetCellIdentifier = @"RetweetTableViewCellIdentifier";
     } else {
         cell.avatorImageView.image = avatorImage;
     }
-    
-    
-    cell.avatorImageView.delegate = self;
 }
 
 - (void)updateTableViewDataSource:(NSArray *)addingData
@@ -639,6 +665,9 @@ static NSString *retweetCellIdentifier = @"RetweetTableViewCellIdentifier";
     NSIndexPath *selectedIndexPath = view.selectedIndexPath;
     NSString *tweetKey = [self.dataSource objectAtIndex:selectedIndexPath.row];
     MBTweet *tweet = [[MBTweetManager sharedInstance] storedTweetForKey:tweetKey];
+    if (tweet.tweetOfOriginInRetweet) {
+        tweet = tweet.tweetOfOriginInRetweet;
+    }
     
     MBPostTweetViewController *postTweetViewController = [[MBPostTweetViewController alloc] initWithNibName:@"PostTweetView" bundle:nil];
     postTweetViewController.delegate = self;
@@ -655,6 +684,9 @@ static NSString *retweetCellIdentifier = @"RetweetTableViewCellIdentifier";
     NSIndexPath *selectedIndexPath = view.selectedIndexPath;
     NSString *tweetKey = [self.dataSource objectAtIndex:selectedIndexPath.row];
     MBTweet *tweet = [[MBTweetManager sharedInstance] storedTweetForKey:tweetKey];
+    if (tweet.tweetOfOriginInRetweet) {
+        tweet = tweet.tweetOfOriginInRetweet;
+    }
     
     [self.aoAPICenter postRetweetForTweetID:[tweet.tweetID unsignedLongLongValue]];
 }
@@ -665,6 +697,9 @@ static NSString *retweetCellIdentifier = @"RetweetTableViewCellIdentifier";
     NSIndexPath *selectedIndexPath = view.selectedIndexPath;
     NSString *tweetKey = [self.dataSource objectAtIndex:selectedIndexPath.row];
     MBTweet *tweet = [[MBTweetManager sharedInstance] storedTweetForKey:tweetKey];
+    if (tweet.tweetOfOriginInRetweet) {
+        tweet = tweet.tweetOfOriginInRetweet;
+    }
     
     [self.aoAPICenter postFavoriteForTweetID:[tweet.tweetID unsignedLongLongValue]];
 }
