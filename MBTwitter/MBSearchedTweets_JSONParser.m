@@ -19,7 +19,9 @@
         
         for (NSDictionary *parsedTweet in statuses) {
             MBTweet *tweet = [[MBTweet alloc] initWithDictionary:parsedTweet];
-            [gotTweets addObject:tweet];
+            [[MBTweetManager sharedInstance] storeTweet:tweet];
+            [[MBUserManager sharedInstance] storeUser:tweet.tweetUser];
+            [gotTweets addObject:tweet.tweetIDStr];
         }
         
         self.completion(gotTweets);
