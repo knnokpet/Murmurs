@@ -27,7 +27,7 @@
         linkTextColor = [UIColor blueColor];
     }
     
-    UIFont *font = [UIFont systemFontOfSize:14.0f];
+    UIFont *font = [UIFont systemFontOfSize:15.0f];
     CTFontRef fontRef = CTFontCreateWithName((__bridge CFStringRef)font.fontName, font.pointSize, NULL);
     
     UIColor *defaultTextColor = [UIColor blackColor];
@@ -233,6 +233,49 @@
             range = [attributedString.string rangeOfString:key];
         }
     }
+    
+    return attributedString;
+}
+
++ (NSAttributedString *)attributedStringForTimelineUser:(MBUser *)user charFont:(UIFont *)charaFont screenFont:(UIFont *)screenFont
+{
+    if (!user) {
+        return [[NSAttributedString alloc] init];
+    }
+    UIFont *characterNameFont = charaFont;
+    if (characterNameFont) {
+        characterNameFont = [UIFont boldSystemFontOfSize:15.0f];
+    }
+    UIFont *screenNameFont = screenFont;
+    if (screenNameFont) {
+        screenNameFont = [UIFont systemFontOfSize:14.0f];
+    }
+    CTFontRef characterFontRef = CTFontCreateWithName((__bridge CFStringRef)characterNameFont.fontName, characterNameFont.pointSize, NULL);
+    CTFontRef screenFontRef = CTFontCreateWithName((__bridge CFStringRef)screenNameFont.fontName, screenNameFont.pointSize, NULL);
+    
+    UIColor *charaColor = [UIColor blackColor];
+    UIColor *screenColor = [UIColor lightGrayColor];
+    
+    NSString *characterName = user.characterName;
+    NSString *screenName = user.screenName;
+    NSString *charaScreenName = [NSString stringWithFormat:@"%@ @%@", characterName, screenName];
+    
+    NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:charaScreenName];
+    
+    NSMutableParagraphStyle *style = [[NSMutableParagraphStyle alloc] init];
+    style.lineBreakMode = NSLineBreakByTruncatingTail;
+    [attributedString addAttributes:@{NSParagraphStyleAttributeName: style} range:NSMakeRange(0, charaScreenName.length)];
+    
+    // character attributed
+    [attributedString addAttributes:@{(id)kCTForegroundColorAttributeName: (id)charaColor, (id)kCTFontAttributeName: (__bridge id)characterFontRef} range:NSMakeRange(0, characterName.length)];
+    // screen attributed
+    [attributedString addAttributes:@{NSForegroundColorAttributeName: (id)screenColor, (id)kCTFontAttributeName: (__bridge id)screenFontRef} range:NSMakeRange(characterName.length, charaScreenName.length - characterName.length)];
+
+    // release
+    CFRelease(characterFontRef);
+    CFRelease(screenFontRef);
+    
+    /* 特殊文字の処理が必要になるかも。。。 */
     
     return attributedString;
 }

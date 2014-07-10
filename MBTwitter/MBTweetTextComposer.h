@@ -11,10 +11,11 @@
 @class MBTweet;
 @class MBUser;
 @interface MBTweetTextComposer : NSObject
-
+/* font の magicNumber は解消しなきゃ */
 + (NSAttributedString *)attributedStringForTweet:(MBTweet *)tweet;
 + (NSAttributedString *)attributedStringForTweet:(MBTweet *)tweet tintColor:(UIColor *)tintColor;
 + (NSAttributedString *)attributedStringForUser:(MBUser *)user linkColor:(UIColor *)linkColor;
++ (NSAttributedString *)attributedStringForTimelineUser:(MBUser *)user charFont:(UIFont *)charaFont screenFont:(UIFont *)screenFont;
 + (NSAttributedString *)attributedStringForTimelineDate:(NSString *)dateString font:(UIFont *)font screeName:(NSString *)screenName tweetID:(unsigned long long)tweetID;
 + (NSAttributedString *)attributedStringForDetailTweetDate:(NSString *)dateString font:(UIFont *)font screeName:(NSString *)screenName tweetID:(unsigned long long)tweetID;;
 
