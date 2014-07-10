@@ -6,7 +6,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="MBListTimelineManagementViewController">
             <connections>
-                <outlet property="containerView" destination="rdg-b7-mbS" id="8qu-c5-Lcu"/>
+                <outlet property="containerView" destination="rdg-b7-mbS" id="q9d-ps-bHk"/>
                 <outlet property="segmentedController" destination="EZl-p8-BMy" id="1sz-Sv-CXp"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
@@ -16,13 +16,16 @@
             <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="rdg-b7-mbS" customClass="MBListSegmentedContainerView">
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="rdg-b7-mbS" customClass="MBSegmentedContainerView">
                     <rect key="frame" x="0.0" y="64" width="320" height="45"/>
                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                     <subviews>
-                        <segmentedControl opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="EZl-p8-BMy">
+                        <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="EZl-p8-BMy">
                             <rect key="frame" x="20" y="9" width="280" height="29"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <constraints>
+                                <constraint firstAttribute="width" constant="280" id="V4T-Bj-yQR"/>
+                            </constraints>
                             <segments>
                                 <segment title="First"/>
                                 <segment title="Second"/>
@@ -34,6 +37,8 @@
                     </subviews>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     <constraints>
+                        <constraint firstAttribute="centerY" secondItem="EZl-p8-BMy" secondAttribute="centerY" constant="-0.5" id="Faj-zz-ukU"/>
+                        <constraint firstAttribute="centerX" secondItem="EZl-p8-BMy" secondAttribute="centerX" id="LQI-BC-c3x"/>
                         <constraint firstAttribute="width" constant="320" id="lFj-CM-w2M"/>
                         <constraint firstAttribute="height" constant="45" id="x8j-3G-iIM"/>
                     </constraints>
