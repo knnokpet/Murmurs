@@ -411,10 +411,11 @@ typedef NS_ENUM(NSUInteger, MBToucheState) {
             CGRect geoRect = geo.rect;
             
             [self.linkHighlightColor set];
-            geoRect.origin.y -= 3;
-            geoRect.size.height += 6;
+            geoRect.origin.y -= 2;
+            geoRect.size.height += 4;
             // 上下端の行だと切れます。
-            UIBezierPath *bezierPath = [self bezierPathWithRect:geoRect cornerRadius:4.0f];
+            /* 描画範囲がビュー端から始まってるからだなこりゃ */
+            UIBezierPath *bezierPath = [self bezierPathWithRect:geoRect cornerRadius:2.0f];
             [bezierPath fill];
         }
     }
