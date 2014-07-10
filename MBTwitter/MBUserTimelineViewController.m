@@ -33,9 +33,9 @@
 
 #pragma mark -
 #pragma mark View
-- (void)commonConfigureNavigationItem
+- (void)configureNavigationItem
 {
-    
+    // nothing
 }
 
 - (void)viewDidLoad
