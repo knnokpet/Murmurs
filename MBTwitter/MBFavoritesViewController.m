@@ -30,9 +30,9 @@
 
 #pragma mark -
 #pragma mark View
-- (void)commonConfigureNavigationItem
+- (void)configureNavigationItem
 {
-    
+    // nothing
 }
 
 - (void)viewDidLoad
@@ -59,6 +59,11 @@
 - (void)goForwardTimelineSinceID:(unsigned long long)since
 {
     [self.aoAPICenter getForwardFavoritesForUserID:[self.user.userID unsignedLongLongValue] screenName:self.user.screenName sinceID:since];
+}
+
+- (void)didPushGapButtonSinceID:(unsigned long long)since max:(unsigned long long)max
+{
+    [self.aoAPICenter getFavoritesForUserID:[self.user.userID unsignedLongLongValue] screenName:self.user.screenName sinceID:since maxID:max];
 }
 
 /*
