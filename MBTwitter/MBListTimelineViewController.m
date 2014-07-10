@@ -50,7 +50,7 @@
     }
 }
 
-- (void)commonConfigureNavigationItem
+- (void)configureNavigationItem
 {
     
 }
@@ -92,14 +92,6 @@
 - (void)twitterAPICenter:(MBAOuth_TwitterAPICenter *)center parsedTweets:(NSArray *)tweets
 {
     [self updateTableViewDataSource:tweets];
-}
-
-#pragma mark ScrollViewController Delegate
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView
-{
-    if ([_delegate respondsToSelector:@selector(scrollTimelineViewController:)]) {
-        [_delegate scrollTimelineViewController:self];
-    }
 }
 
 @end
