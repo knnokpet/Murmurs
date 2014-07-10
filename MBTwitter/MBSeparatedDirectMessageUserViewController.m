@@ -130,8 +130,8 @@
 - (void)removeLoadingView
 {
     if (self.loadingView.superview) {
-        [UIView animateWithDuration:1.0f animations:^{
-            [self.loadingView setHidden:YES];
+        [UIView animateWithDuration:0.3f animations:^{
+            self.loadingView.alpha  = 0.0f;
         }completion:^(BOOL finished){
             [self.loadingView removeFromSuperview];
             _loadingView = nil;
