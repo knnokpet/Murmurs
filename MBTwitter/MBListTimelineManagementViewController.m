@@ -73,14 +73,13 @@
     listTimelineViewController.tableView.scrollIndicatorInsets = indicatorInsets;
     [self.view addSubview:listTimelineViewController.view];
     self.listTimelineViewController = listTimelineViewController;
-    self.listTimelineViewController.delegate = self;
     
     MBListMembersViewController *listMembersViewController = [[MBListMembersViewController alloc] initWithNibName:@"MBUsersViewController" bundle:nil];
     [listMembersViewController setList:self.list];
+    [self addChildViewController:listMembersViewController];
     listMembersViewController.view.frame = self.view.frame;
     // insets
     CGFloat navigationStatusBarHeight = self.navigationController.navigationBar.frame.size.height + [UIApplication sharedApplication].statusBarFrame.size.height;
-    NSLog(@"navista = %f", navigationStatusBarHeight);
     CGFloat tabBarHeight = self.tabBarController.tabBar.frame.size.height;
     UIEdgeInsets contInsets = listMembersViewController.tableView.contentInset;
     contInsets.top = containerHeight + navigationStatusBarHeight;
@@ -99,9 +98,7 @@
     [self.segmentedController setTitle:NSLocalizedString(@"Tweet", nil) forSegmentAtIndex:0];
     [self.segmentedController setTitle:NSLocalizedString(@"Users", nil) forSegmentAtIndex:1];
     
-    //[self.containerView setBackgroundView:self.currentController.view];
     [self.view bringSubviewToFront:self.containerView];
-    //[self.containerView updateBlurView];
 }
 
 - (void)didReceiveMemoryWarning
@@ -116,32 +113,19 @@
 - (IBAction)didChangeSegmentedControl:(id)sender {
     NSInteger selectedIndex = self.segmentedController.selectedSegmentIndex;
     UIViewController *selectedViewController = [self.viewControllers objectAtIndex:selectedIndex];
-    [self addChildViewController:selectedViewController];
-    
+    [self addChildViewController:selectedViewController];/* willMoveTo を呼んでくれる */
     
     // ViewController 遷移
     [self transitionFromViewController:self.currentController toViewController:selectedViewController duration:0.0f options:UIViewAnimationOptionTransitionNone animations:^{
-        [self.currentController.view removeFromSuperview];
-        CGRect frame =self.view.frame;
-        selectedViewController.view.frame = frame;
-        [self.view addSubview:selectedViewController.view];
+        // 勝手に剥がされる [self.currentController.view removeFromSuperview];
+        // 勝手に追加される [self.view addSubview:selectedViewController.view];
         
     }completion: ^(BOOL finished){
-        [selectedViewController didMoveToParentViewController:self];
+        // willMoveTo が呼ばれているから良いのでは？ [selectedViewController didMoveToParentViewController:self];
         [self.currentController removeFromParentViewController];
         self.currentController = selectedViewController;
     }];
-    //[self.containerView setBackgroundView:self.currentController.view];
     [self.view bringSubviewToFront:self.containerView];
-    //[self.containerView updateBlurView];
-    
 }
-
-#pragma mark -
-- (void)scrollTimelineViewController:(MBListTimelineViewController *)controller
-{
-    //[self.containerView updateBlurView];
-}
-
 
 @end
