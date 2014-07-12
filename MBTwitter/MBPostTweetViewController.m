@@ -71,6 +71,9 @@
     if (screenName && 0 < screenName.length) {
         NSString *screenNameAt = [NSString stringWithFormat:@"@%@ ", screenName];
         [self setText:screenNameAt];
+        
+        NSString *title = NSLocalizedString(@"Reply to ", nil);
+        self.title = [NSString stringWithFormat:@"%@%@", title, screenName];
     }
 }
 
@@ -144,6 +147,7 @@
     // Do any additional setup after loading the view.
     [self commonConfigureView];
     
+    self.title = NSLocalizedString(@"New Tweet", nil);
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -492,6 +496,10 @@
 {
     MBTweet *postedTweet = [tweets firstObject];
     if (postedTweet) {
+        if ([_delegate respondsToSelector:@selector(sendTweetPostTweetViewController:)]) {
+            [_delegate sendTweetPostTweetViewController:self];
+        }
+        
         if ([_delegate respondsToSelector:@selector(dismissPostTweetViewController:animated:)]) {
             [_delegate dismissPostTweetViewController:self animated:YES];
         }

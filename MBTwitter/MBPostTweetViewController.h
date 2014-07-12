@@ -40,5 +40,7 @@
 @protocol MBPostTweetViewControllerDelegate <NSObject>
 
 - (void)dismissPostTweetViewController:(MBPostTweetViewController *)controller animated:(BOOL)animated;
+@optional
+- (void)sendTweetPostTweetViewController:(MBPostTweetViewController *)controller;
 
 @end
