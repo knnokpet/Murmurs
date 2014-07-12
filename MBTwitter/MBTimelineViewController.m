@@ -390,7 +390,7 @@ static NSString *retweetCellIdentifier = @"RetweetTableViewCellIdentifier";
         tweetAtIndexPath = [[MBTweetManager sharedInstance] storedTweetForKey:key];
         if (nil != tweetAtIndexPath.tweetOfOriginInRetweet) {
             MBTweet *retweetedTweet = tweetAtIndexPath.tweetOfOriginInRetweet;
-            NSString *retweetText = NSLocalizedString(@"retweeted by ", nil);
+            NSString *retweetText = NSLocalizedString(@"Retweeted by ", nil);
             NSString *textWithUser = [NSString stringWithFormat:@"%@%@", retweetText, tweetAtIndexPath.tweetUser.characterName];
             cell.retweetView.attributedString = [MBTweetTextComposer attributedStringForTimelineDate:textWithUser font:[UIFont systemFontOfSize:12.0f] screeName:retweetedTweet.tweetUser.screenName tweetID:[tweetAtIndexPath.tweetID unsignedLongLongValue]];
             
@@ -430,11 +430,10 @@ static NSString *retweetCellIdentifier = @"RetweetTableViewCellIdentifier";
     
     // AvatorImageView
     cell.userIDStr = userAtIndexPath.userIDStr;
-    cell.avatorImageView.userID = userAtIndexPath.userID;
     cell.avatorImageView.delegate = self;
     UIImage *avatorImage = [[MBImageCacher sharedInstance] cachedTimelineImageForUser:userAtIndexPath.userIDStr];
     if (!avatorImage) {
-        
+        cell.avatorImageView.image = [UIImage imageNamed:@"DefaultImage@2x"];
         if (NO == tweetAtIndexPath.tweetUser.isDefaultProfileImage) {
             
             dispatch_queue_t globalQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0);
@@ -559,11 +558,14 @@ static NSString *retweetCellIdentifier = @"RetweetTableViewCellIdentifier";
 {
     NSString *selectedID = self.dataSource[indexPath.row];
     MBTweet *selectedTweet = [[MBTweetManager sharedInstance] storedTweetForKey:selectedID];
+    
+    MBDetailTweetViewController *detailTweetViewController = [[MBDetailTweetViewController alloc] initWithNibName:@"MBTweetDetailView" bundle:nil];
     if (nil != selectedTweet.tweetOfOriginInRetweet) {
+        [detailTweetViewController setRetweeter:selectedTweet.tweetUser];
+        
         MBTweet *retweetedTweet = selectedTweet.tweetOfOriginInRetweet;
         selectedTweet = retweetedTweet;
     }
-    MBDetailTweetViewController *detailTweetViewController = [[MBDetailTweetViewController alloc] initWithNibName:@"MBTweetDetailView" bundle:nil];
     [detailTweetViewController setTweet:selectedTweet];
     [self.navigationController pushViewController:detailTweetViewController animated:YES];
 }
