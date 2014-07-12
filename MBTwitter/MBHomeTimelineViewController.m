@@ -161,8 +161,13 @@
 - (void)dismissPostTweetViewController:(MBPostTweetViewController *)controller animated:(BOOL)animated
 {
     [controller dismissViewControllerAnimated:YES completion:^{
-        [self refreshAction];
+        
     }];
+}
+
+- (void)sendTweetPostTweetViewController:(MBPostTweetViewController *)controller
+{
+    [self refreshAction];
 }
 
 #pragma mark AOuthAPICenter Delegate
