@@ -8,9 +8,20 @@
 
 #import "MBUsersViewController.h"
 
-@interface MBSearchedUsersViewController : MBUsersViewController
+
+@protocol MBSearchedUsersViewControllerDelegate;
+@interface MBSearchedUsersViewController : MBUsersViewController <UIScrollViewDelegate>
+
+@property (nonatomic, weak) id <MBSearchedUsersViewControllerDelegate> delegate;
 
 @property (nonatomic, readonly) NSString *query;
 - (void)setQuery:(NSString *)query;
+
+@end
+
+
+@protocol MBSearchedUsersViewControllerDelegate <NSObject>
+
+- (void)scrollViewInSearchedUsersViewControllerBeginDragging:(MBSearchedUsersViewController *)controller;
 
 @end

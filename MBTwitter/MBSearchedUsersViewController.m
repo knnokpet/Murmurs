@@ -93,4 +93,12 @@
     }
 }
 
+#pragma mark UIScrollView Delegate
+- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
+{
+    if ([_delegate respondsToSelector:@selector(scrollViewInSearchedUsersViewControllerBeginDragging:)]) {
+        [_delegate scrollViewInSearchedUsersViewControllerBeginDragging:self];
+    }
+}
+
 @end
