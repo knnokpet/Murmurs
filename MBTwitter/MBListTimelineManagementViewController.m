@@ -62,7 +62,7 @@
     MBListTimelineViewController *listTimelineViewController = [[MBListTimelineViewController alloc] initWithNibName:@"TimelineTableView" bundle:nil];
     [listTimelineViewController setList:self.list];
     [self addChildViewController:listTimelineViewController];
-    listTimelineViewController.view.frame = self.view.frame;
+    listTimelineViewController.view.frame = self.view.bounds;
     self.currentController = listTimelineViewController;
     // insets
     UIEdgeInsets contentInsets = listTimelineViewController.tableView.contentInset;
@@ -73,11 +73,12 @@
     listTimelineViewController.tableView.scrollIndicatorInsets = indicatorInsets;
     [self.view addSubview:listTimelineViewController.view];
     self.listTimelineViewController = listTimelineViewController;
+    [self.listTimelineViewController didMoveToParentViewController:self];
     
     MBListMembersViewController *listMembersViewController = [[MBListMembersViewController alloc] initWithNibName:@"MBUsersViewController" bundle:nil];
     [listMembersViewController setList:self.list];
     [self addChildViewController:listMembersViewController];
-    listMembersViewController.view.frame = self.view.frame;
+    listMembersViewController.view.frame = self.view.bounds;
     // insets
     CGFloat navigationStatusBarHeight = self.navigationController.navigationBar.frame.size.height + [UIApplication sharedApplication].statusBarFrame.size.height;
     CGFloat tabBarHeight = self.tabBarController.tabBar.frame.size.height;
@@ -114,6 +115,7 @@
     NSInteger selectedIndex = self.segmentedController.selectedSegmentIndex;
     UIViewController *selectedViewController = [self.viewControllers objectAtIndex:selectedIndex];
     [self addChildViewController:selectedViewController];/* willMoveTo を呼んでくれる */
+    selectedViewController.view.frame = self.view.bounds;
     
     // ViewController 遷移
     [self transitionFromViewController:self.currentController toViewController:selectedViewController duration:0.0f options:UIViewAnimationOptionTransitionNone animations:^{
