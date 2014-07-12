@@ -8,9 +8,20 @@
 
 #import "MBTimelineViewController.h"
 
-@interface MBSearchedTweetViewController : MBTimelineViewController
+@protocol MBSearchedTweetViewControllerDelegate;
+@interface MBSearchedTweetViewController : MBTimelineViewController <UIScrollViewDelegate>
+
+@property (nonatomic, weak) id <MBSearchedTweetViewControllerDelegate> delegate;
 
 @property (nonatomic, readonly) NSString *query;
 - (void)setQuery:(NSString *)query;
+
+@end
+
+
+
+@protocol MBSearchedTweetViewControllerDelegate <NSObject>
+
+- (void)scrollViewInSearchedTweetsViewControllerBeginDragging:(MBSearchedTweetViewController *)controller;
 
 @end
