@@ -11,5 +11,8 @@
 @interface MBDetailTweetTextTableViewCell : UITableViewCell
 @property (weak, nonatomic) IBOutlet MBTweetTextView *tweetTextView;
 @property (weak, nonatomic) IBOutlet MBTweetTextView *dateView;
+@property (weak, nonatomic) IBOutlet MBTweetTextView *retweetView;
+
+- (void)removeRetweetView;
 
 @end

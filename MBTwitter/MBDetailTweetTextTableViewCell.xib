@@ -6,42 +6,53 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
-        <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="145" id="KGk-i7-Jjw" customClass="MBDetailTweetTextTableViewCell">
-            <rect key="frame" x="0.0" y="0.0" width="320" height="145"/>
+        <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="238" id="KGk-i7-Jjw" customClass="MBDetailTweetTextTableViewCell">
+            <rect key="frame" x="0.0" y="0.0" width="320" height="238"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
-                <rect key="frame" x="0.0" y="0.0" width="320" height="144"/>
+                <rect key="frame" x="0.0" y="0.0" width="320" height="237"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="r6M-6n-16l" customClass="MBTweetTextView">
-                        <rect key="frame" x="20" y="10" width="280" height="108"/>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="r6M-6n-16l" customClass="MBTweetTextView">
+                        <rect key="frame" x="20" y="10" width="280" height="175"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
-                    <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="xww-mZ-dhf" customClass="MBTweetTextView">
-                        <rect key="frame" x="20" y="121" width="280" height="18"/>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="iag-ax-DYD" customClass="MBTweetTextView">
+                        <rect key="frame" x="20" y="213" width="280" height="20"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstAttribute="width" constant="280" id="CN2-ea-RQj"/>
-                            <constraint firstAttribute="height" constant="18" id="Zoo-4b-E96"/>
+                            <constraint firstAttribute="height" constant="20" id="bfx-Yp-Y9f"/>
+                        </constraints>
+                    </view>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="xww-mZ-dhf" customClass="MBTweetTextView">
+                        <rect key="frame" x="20" y="189" width="280" height="20"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="20" id="Zoo-4b-E96"/>
                         </constraints>
                     </view>
                 </subviews>
                 <constraints>
-                    <constraint firstAttribute="bottom" secondItem="r6M-6n-16l" secondAttribute="bottom" priority="250" constant="10" id="5Ed-od-A7m"/>
-                    <constraint firstItem="xww-mZ-dhf" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="20" id="6Fm-BF-6t6"/>
+                    <constraint firstItem="xww-mZ-dhf" firstAttribute="top" secondItem="r6M-6n-16l" secondAttribute="bottom" constant="4" id="106-5K-U8f"/>
                     <constraint firstItem="r6M-6n-16l" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="20" id="82B-EV-l5R"/>
-                    <constraint firstAttribute="trailing" secondItem="xww-mZ-dhf" secondAttribute="trailing" constant="20" id="KGi-bn-Oc6"/>
+                    <constraint firstItem="xww-mZ-dhf" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="20" id="HTc-6b-vci"/>
+                    <constraint firstAttribute="trailing" secondItem="xww-mZ-dhf" secondAttribute="trailing" constant="20" id="N2f-jD-iYl"/>
+                    <constraint firstAttribute="bottom" secondItem="iag-ax-DYD" secondAttribute="bottom" constant="4" id="NzD-8L-uJ0"/>
+                    <constraint firstItem="iag-ax-DYD" firstAttribute="top" secondItem="xww-mZ-dhf" secondAttribute="bottom" constant="4" id="Sr2-TK-kBY"/>
                     <constraint firstAttribute="trailing" secondItem="r6M-6n-16l" secondAttribute="trailing" constant="20" id="XYb-Yy-TLe"/>
-                    <constraint firstItem="xww-mZ-dhf" firstAttribute="top" secondItem="r6M-6n-16l" secondAttribute="bottom" constant="8" id="qXf-kw-Kyp"/>
+                    <constraint firstItem="iag-ax-DYD" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="20" id="qiZ-M5-EXs"/>
+                    <constraint firstAttribute="bottom" secondItem="xww-mZ-dhf" secondAttribute="bottom" priority="250" constant="10" id="rUm-qE-Pln"/>
+                    <constraint firstAttribute="trailing" secondItem="iag-ax-DYD" secondAttribute="trailing" constant="20" id="riM-6h-sIf"/>
                     <constraint firstItem="r6M-6n-16l" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="10" id="w48-PU-ARR"/>
-                    <constraint firstAttribute="bottom" secondItem="xww-mZ-dhf" secondAttribute="bottom" priority="750" constant="8" id="wVi-ui-f8T"/>
                 </constraints>
             </tableViewCellContentView>
             <inset key="separatorInset" minX="15" minY="0.0" maxX="0.0" maxY="0.0"/>
             <connections>
                 <outlet property="dateView" destination="xww-mZ-dhf" id="PkB-fD-3cO"/>
+                <outlet property="retweetView" destination="iag-ax-DYD" id="1Ga-e1-dQG"/>
                 <outlet property="tweetTextView" destination="r6M-6n-16l" id="Cxd-D2-hlY"/>
             </connections>
         </tableViewCell>
