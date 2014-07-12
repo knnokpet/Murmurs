@@ -13,7 +13,7 @@
 #import "MBAOuth_TwitterAPICenter.h"
 #import "MBSegmentedContainerView.h"
 
-@interface MBSearchViewController : UIViewController <UISearchBarDelegate, MBAOuth_TwitterAPICenterDelegate>
+@interface MBSearchViewController : UIViewController <UISearchBarDelegate, MBAOuth_TwitterAPICenterDelegate, MBSearchedTweetViewControllerDelegate, MBSearchedUsersViewControllerDelegate>
 
 @property (nonatomic, readonly) MBAOuth_TwitterAPICenter *aoAPICenter;
 

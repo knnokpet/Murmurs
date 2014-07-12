@@ -11,7 +11,6 @@
 @interface MBSearchViewController ()
 
 @property (nonatomic, readonly) UISearchBar *searchBar;
-@property (nonatomic, readonly) UIBarButtonItem *cancelButton;
 @property (nonatomic, readonly) UIBarButtonItem *tweetButton;
 
 @end
@@ -39,12 +38,16 @@
 {
     // searchBar
     _searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 300, 44)];
+    self.searchBar.barStyle = UISearchBarStyleMinimal;
+    NSString *searchBarPlaceHolder = NSLocalizedString(@"Search for Tweet or User", nil);
+    [self.searchBar setPlaceholder:searchBarPlaceHolder];
     self.searchBar.delegate = self;
     [self.navigationItem setTitleView:self.searchBar];
     
     // segmentedControlContainerView
     _segmentedContainerView = [[MBSegmentedContainerView alloc] initWithFrame:CGRectMake(0, self.navigationController.navigationBar.frame.origin.y + self.navigationController.navigationBar.frame.size.height, self.view.bounds.size.width, 45)];
     [self.view addSubview:self.segmentedContainerView];
+    [self updateContainerView];
     
     // segmentedControl
     /* アイコンもアリだ */
@@ -66,7 +69,6 @@
 
 - (void)configureNabigationItem
 {
-    _cancelButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Cancel", nil) style:UIBarButtonItemStylePlain target:self action:@selector(didPushCancelButton)];
     _tweetButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCompose target:self action:@selector(didPushTweetButton)];
 }
 
@@ -83,7 +85,8 @@
     CGFloat tabBarHeight = self.tabBarController.tabBar.frame.size.height;
     
     _tweetViewController = [[MBSearchedTweetViewController alloc] initWithNibName:@"TimelineTableView" bundle:nil];
-    self.tweetViewController.view.frame = self.view.frame;
+    self.tweetViewController.delegate = self;
+    self.tweetViewController.view.frame = self.view.bounds;/* bounds であることが重要 */
     [self addChildViewController:self.tweetViewController];
     self.currentController = self.tweetViewController;
     // insets
@@ -97,17 +100,18 @@
     self.tweetViewController.tableView.scrollIndicatorInsets = indicatorInsets;
     
     _usersViewController = [[MBSearchedUsersViewController alloc] initWithNibName:@"MBUsersViewController" bundle:nil];
-    self.usersViewController.view.frame = self.view.frame;
+    self.usersViewController.delegate = self;
+    self.usersViewController.view.frame = self.view.bounds;
     [self addChildViewController:self.usersViewController];
     // inset
     
     UIEdgeInsets contInset = self.usersViewController.tableView.contentInset;
     contInset.top = containeHeight; //+ containerOriginY;
-    contInset.bottom = tabBarHeight;
+    //contInset.bottom = tabBarHeight;
     self.usersViewController.tableView.contentInset = contInset;
     UIEdgeInsets scrollInsets = self.usersViewController.tableView.scrollIndicatorInsets;
     scrollInsets.top = containeHeight; //+ containerOriginY;
-    scrollInsets.bottom = tabBarHeight;NSLog(@"tabbarhei = %f", tabBarHeight);
+    //scrollInsets.bottom = tabBarHeight;NSLog(@"tabbarhei = %f", tabBarHeight);
     self.usersViewController.tableView.scrollIndicatorInsets = scrollInsets;
     
     
@@ -132,12 +136,16 @@
 }
 
 #pragma mark - Instance Methods
+- (void)updateContainerView
+{
+    if (self.tweetViewController.view.superview || self.usersViewController.view.superview) {
+        [self.view addSubview:self.segmentedContainerView];
+    } else {
+        [self.segmentedContainerView removeFromSuperview];
+    }
+}
 
 #pragma mark NavigationItem
-- (void)changeNavigationItemToCancelButtonWithAnimated:(BOOL)animated
-{
-    [self.navigationItem setRightBarButtonItem:self.cancelButton animated:animated];
-}
 
 - (void)changeNavigationItemToTweetButtonWithAnimated:(BOOL)animated
 {
@@ -150,11 +158,6 @@
 }
 
 #pragma mark View Action
-- (void)didPushCancelButton
-{
-    [self changeNavigationItemtoNonWithAnimated:YES];
-}
-
 - (void)didPushTweetButton
 {
     
@@ -165,6 +168,7 @@
     NSInteger selectedIndex = self.segmentedControl.selectedSegmentIndex;
     UIViewController *nextViewController = [self.viewControllers objectAtIndex:selectedIndex];
     [self addChildViewController:nextViewController];
+    nextViewController.view.frame = self.view.bounds;
     
     [self transitionFromViewController:self.currentController toViewController:nextViewController duration:0.0f options:UIViewAnimationOptionTransitionNone animations:^{
         
@@ -189,12 +193,15 @@
 {
     [searchBar resignFirstResponder];
     [searchBar setShowsCancelButton:NO animated:YES];
+    [self changeNavigationItemToTweetButtonWithAnimated:YES];
 }
 
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar
 {
-    //[searchBar setShowsCancelButton:NO animated:YES];
+    [searchBar setShowsCancelButton:NO animated:YES];
     [searchBar resignFirstResponder];
+    [self.navigationItem setRightBarButtonItem:self.tweetButton animated:YES];
+    [self changeNavigationItemToTweetButtonWithAnimated:YES];
     
     self.tweetViewController.query = searchBar.text;
     self.usersViewController.query = searchBar.text;
@@ -208,15 +215,31 @@
         [self.view bringSubviewToFront:self.usersViewController.view];
     }
     
-    [self.view bringSubviewToFront:self.segmentedContainerView];
+    [self updateContainerView];
+    //[self.view bringSubviewToFront:self.segmentedContainerView];
 }
 
 - (BOOL)searchBarShouldBeginEditing:(UISearchBar *)searchBar
 {
-    //[self changeNavigationItemToCancelButtonWithAnimated:YES];
+    [self changeNavigationItemtoNonWithAnimated:YES];
     [searchBar setShowsCancelButton:YES animated:YES];
     return YES;
 }
 
+#pragma mark SearchedTweetsViewController Delegate
+- (void)scrollViewInSearchedTweetsViewControllerBeginDragging:(MBSearchedTweetViewController *)controller
+{
+    [self.searchBar resignFirstResponder];
+    [self.searchBar setShowsCancelButton:NO animated:YES];
+    [self changeNavigationItemToTweetButtonWithAnimated:YES];
+}
+
+#pragma mark SearchedUsersViewCOntroller Delegate
+- (void)scrollViewInSearchedUsersViewControllerBeginDragging:(MBSearchedUsersViewController *)controller
+{
+    [self.searchBar resignFirstResponder];
+    [self.searchBar setShowsCancelButton:NO animated:YES];
+    [self changeNavigationItemToTweetButtonWithAnimated:YES];
+}
 
 @end
