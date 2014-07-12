@@ -9,6 +9,13 @@
 #import "MBUsersViewController.h"
 #import "MBDetailUserViewController.h"
 
+#import "MBUsersTableViewCell.h"
+#import "MBImageDownloader.h"
+#import "MBImageApplyer.h"
+#import "MBImageCacher.h"
+
+static NSString *usersCellIdentifier = @"UsersCellIdentifier";
+
 @interface MBUsersViewController ()
 
 
@@ -58,6 +65,15 @@
     
     self.tableView.dataSource = self;
     self.tableView.delegate = self;
+    
+    UINib *cellNib = [UINib nibWithNibName:@"MBUsersTableViewCell" bundle:nil];
+    [self.tableView registerNib:cellNib forCellReuseIdentifier:usersCellIdentifier];
+    
+    /* remove nonContent's separator */
+    UIView *view = [[UIView alloc] init];
+    view.backgroundColor  = [UIColor clearColor];
+    [self.tableView setTableHeaderView:view];
+    [self.tableView setTableFooterView:view];
 }
 
 - (void)configureNavigationItem
@@ -124,20 +140,48 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    static NSString *cellIdentifier = @"CellIdentifier";
-    UITableViewCell *cell = [self.tableView dequeueReusableCellWithIdentifier:cellIdentifier];
-    if (!cell) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier];
-    }
+    MBUsersTableViewCell *cell = [self.tableView dequeueReusableCellWithIdentifier:usersCellIdentifier];
     [self updateCell:cell atIndexPath:indexPath];
     
     return cell;
 }
 
-- (void)updateCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
+- (void)updateCell:(MBUsersTableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
 {
     MBUser *userAtIndex = [self.users objectAtIndex:indexPath.row];
-    cell.textLabel.text = userAtIndex.characterName;
+    
+    cell.characterNameLabel.text = userAtIndex.characterName;
+    cell.screenNameLabel.text = userAtIndex.screenName;
+    
+    UIImage *avatorImage = [[MBImageCacher sharedInstance] cachedProfileImageForUserID:userAtIndex.userIDStr];
+    if (!avatorImage) {
+        cell.avatorImageView.image = [UIImage imageNamed:@"DefaultImage@2x"];
+        if (NO == userAtIndex.isDefaultProfileImage) {
+            
+            dispatch_queue_t globalQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0);
+            dispatch_async(globalQueue, ^{
+                [MBImageDownloader downloadBigImageWithURL:userAtIndex.urlHTTPSAtProfileImage completionHandler:^(UIImage *image, NSData *imageData){
+                    if (image) {
+                        [[MBImageCacher sharedInstance] storeProfileImage:image data:imageData forUserID:userAtIndex.userIDStr];
+                        CGSize imageSize = CGSizeMake(cell.avatorImageView.frame.size.width, cell.avatorImageView.frame.size.height);
+                        UIImage *radiusImage = [MBImageApplyer imageForTwitter:image byScallingToFillSize:imageSize radius:cell.avatorImageView.layer.cornerRadius];
+                        [[MBImageCacher sharedInstance] storeTimelineImage:radiusImage forUserID:userAtIndex.userIDStr];
+                        
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            cell.avatorImageView.image = radiusImage;
+                        });
+                    }
+                    
+                }failedHandler:^(NSURLResponse *response, NSError *error){
+                    
+                }];
+                
+            });
+            
+        }
+    } else {
+        cell.avatorImageView.image = avatorImage;
+    }
 }
 
 - (NSArray *)decorateAddingArray:(NSArray *)decoratedArray
