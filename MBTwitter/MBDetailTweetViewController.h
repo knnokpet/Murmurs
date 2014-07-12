@@ -12,11 +12,14 @@
 #import "MBTweetTextView.h"
 
 @class MBTweet;
+@class MBUser;
 @interface MBDetailTweetViewController : UIViewController <MBPostTweetViewControllerDelegate, MBAOuth_TwitterAPICenterDelegate, MBTweetTextViewDelegate>
 
 @property (nonatomic, readonly) MBTweet *tweet;
+@property (nonatomic, readonly) MBUser *retweeter;
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 
 - (void)setTweet:(MBTweet *)tweet;
+- (void)setRetweeter:(MBUser *)retweeter;
 
 @end

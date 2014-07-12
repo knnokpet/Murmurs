@@ -18,6 +18,8 @@
 #import "MBTweetManager.h"
 #import "MBTweet.h"
 #import "MBUser.h"
+#import "MBEntity.h"
+#import "MBMentionUserLink.h"
 
 #import "MBMagnifierView.h"
 #import "MBMagnifierRangeView.h"
@@ -88,6 +90,11 @@ static NSString *retweetStr = @"ret";
     }
 }
 
+- (void)setRetweeter:(MBUser *)retweeter
+{
+    _retweeter = retweeter;
+}
+
 #pragma mark -
 #pragma mark View
 - (void)configureModel
@@ -106,8 +113,9 @@ static NSString *retweetStr = @"ret";
 {
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
-    UIView *view = [[UIView alloc] init];
+    
     /* remove nonContent's separator */
+    UIView *view = [[UIView alloc] init];
     view.backgroundColor  = [UIColor clearColor];
     [self.tableView setTableHeaderView:view];
     [self.tableView setTableFooterView:view];
@@ -154,6 +162,7 @@ static NSString *retweetStr = @"ret";
 #pragma mark -
 #pragma mark Instance Methods
 /* un used, because low performance for API. And there is not API for the behavior */
+/* stream API でとろう */
 - (void)fetchTweetInReply:(MBTweet *)tweet
 {
     if (tweet.tweetIDStrOfOriginInReply || tweet.tweetIDOfOriginInReply) {
@@ -229,16 +238,28 @@ static NSString *retweetStr = @"ret";
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     CGFloat height = 48.0f;
+    CGFloat verticalMargin = 10.0f;
+    CGFloat horizontalMargin = 20.0f;
+    CGFloat innnerVerticalMargin = 4.0f;
+    CGFloat dateRetweetViewHeight = 20.0f;
+    
     if (0 == indexPath.row) {
-        height = 48.0f + (10.0f + 10.f);
+        height = 48.0f + (verticalMargin * 2);
     } else if (1 == indexPath.row) {
         
         NSAttributedString *attributedString = [MBTweetTextComposer attributedStringForTweet:self.tweet tintColor:[self.navigationController.navigationBar tintColor]];
         
-        NSInteger viewWidth = self.tableView.bounds.size.width - (20.0f + 20.0f);
+        NSInteger viewWidth = self.tableView.bounds.size.width - (horizontalMargin * 2);
         CGRect textRect = [MBTweetTextView frameRectWithAttributedString:attributedString constraintSize:CGSizeMake(viewWidth, CGFLOAT_MAX) lineSpace:LINE_SPACING font:[UIFont systemFontOfSize:FONT_SIZE]];
+        
+        CGFloat bottomHeifht;
+        if (self.retweeter) {
+            bottomHeifht = dateRetweetViewHeight * 2 + innnerVerticalMargin * 3;
+        } else {
+            bottomHeifht = dateRetweetViewHeight + innnerVerticalMargin + verticalMargin;
+        }
 
-        height = textRect.size.height + (20.0f ) + (8.0f + 18.f + 8.0f);
+        height = textRect.size.height + verticalMargin + bottomHeifht;
     } else {
         height = 48.0f;
     }
@@ -351,7 +372,37 @@ static NSString *retweetStr = @"ret";
     //cell.tweetTextView.isSelectable = YES; ルーペを実装できないため。
     cell.tweetTextView.delegate = self;
     
-    cell.dateView.attributedString = [MBTweetTextComposer attributedStringForDetailTweetDate:[self.tweet.createdDate descriptionWithLocale:nil] font:[UIFont systemFontOfSize:12.0f] screeName:self.tweet.tweetUser.screenName tweetID:[self.tweet.tweetID unsignedLongLongValue]];
+    // date
+    // parse 時に strp で locale を計算した createDate を作成しているので。
+    NSCalendar *calendaar = [NSCalendar currentCalendar];
+    NSTimeZone *currentTimezone = calendaar.timeZone;
+    NSDateComponents *components = [calendaar components:NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit | NSHourCalendarUnit | NSMinuteCalendarUnit fromDate:self.tweet.createdDate];
+    
+    NSInteger second = [currentTimezone secondsFromGMT];
+    int hour = second / (60 * 60);
+    if (hour < 1) {
+        int minute = second / 60;
+        [components setMinute:components.minute - minute];
+    } else {
+        [components setHour:components.hour - hour];
+        if (components.hour < 0) {
+            [components setDay:components.day - 1];
+            [components setHour:24 + components.hour];
+        }
+    }
+    
+    NSString *dateString = [NSString stringWithFormat:@"%d/%02d/%02d %02d:%02d", components.year, components.month, components.day, components.hour, components.minute];
+    
+    cell.dateView.attributedString = [MBTweetTextComposer attributedStringForDetailTweetDate:dateString font:[UIFont systemFontOfSize:12.0f] screeName:self.tweet.tweetUser.screenName tweetID:[self.tweet.tweetID unsignedLongLongValue]];
+    
+    // retweet
+    if (!self.retweeter) {
+        [cell removeRetweetView];
+    } else {
+        NSString *retweetText = NSLocalizedString(@"Retweeted by ", nil);
+        NSString *textWithUser = [NSString stringWithFormat:@"%@%@", retweetText, self.retweeter.characterName];
+        cell.retweetView.attributedString = [MBTweetTextComposer attributedStringForTimelineDate:textWithUser font:[UIFont systemFontOfSize:12.0f] screeName:self.retweeter.screenName tweetID:[self.tweet.tweetID unsignedLongLongValue]];
+    }
 }
 
 - (void)updateCountCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
@@ -427,17 +478,13 @@ static NSString *retweetStr = @"ret";
 #pragma mark AOuth_APICenterDelegate
 - (void)twitterAPICenter:(MBAOuth_TwitterAPICenter *)center parsedTweets:(NSArray *)tweets
 {
-    MBTweet *parsedTweet = [tweets firstObject];
-    if (parsedTweet) {
-        if (self.fetchsReplyedTweet) {
-            [self.replyedTweets addObject:parsedTweet];
-            /* unused */
-        } else {
-            [self setTweet:parsedTweet];
-            [self.tableView reloadData];
-        }
+    id obj = [tweets firstObject];
+    NSLog(@"class %@ count %d", [obj class], [tweets count]);
+    if ([obj isKindOfClass:[MBTweet class]]) {
+        MBTweet *tweet = (MBTweet *)obj;
+        [self setTweet:tweet];
+        [self.tableView reloadData];
         
-        NSLog(@"retweet or destroyRetweet  parsed Text = %@", parsedTweet.tweetText);
     }
 }
 
