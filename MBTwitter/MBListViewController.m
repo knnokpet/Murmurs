@@ -55,6 +55,12 @@
     self.tableView.dataSource = self;
     self.tableView.delegate = self;
     
+    /* remove nonContent's separator */
+    UIView *view = [[UIView alloc] init];
+    view.backgroundColor  = [UIColor clearColor];
+    [self.tableView setTableHeaderView:view];
+    [self.tableView setTableFooterView:view];
+    
     _loadingView = [[MBLoadingView alloc] initWithFrame:self.view.bounds];
     //[self.view insertSubview:self.loadingView aboveSubview:self.tableView];
     
