@@ -43,11 +43,12 @@
         if ([self.list.user.userIDStr isEqualToString:currentAccount.userID]) {
             self.timelineManager = [currentAccount.listManager timelineManagerForListID:self.list.listID];
             self.dataSource = self.timelineManager.tweets;
+            return;
         }
-    } else {
-        self.timelineManager = [[MBTimeLineManager alloc] init];
-        self.dataSource = self.timelineManager.tweets;
     }
+    
+    self.timelineManager = [[MBTimeLineManager alloc] init];
+    self.dataSource = self.timelineManager.tweets;
 }
 
 - (void)configureNavigationItem
