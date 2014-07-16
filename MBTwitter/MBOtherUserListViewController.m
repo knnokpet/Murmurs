@@ -36,8 +36,7 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     if (self.user) {
-        [self.listManager setOwner:self.user];
-        [self.aoAPICenter getListsOfUser:[self.user.userID unsignedLongLongValue] screenName:self.user.screenName];
+        [self goBacksLists];
     }
 }
 
