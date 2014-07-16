@@ -82,7 +82,7 @@
 
 #pragma mark -
 #pragma mark AOuthAPICenter Delegate
-- (void)twitterAPICenter:(MBAOuth_TwitterAPICenter *)center parsedUsers:(NSArray *)users
+- (void)twitterAPICenter:(MBAOuth_TwitterAPICenter *)center requestType:(MBRequestType)requestType parsedUsers:(NSArray *)users
 {
     if (users.count > 0) {
         page++;
