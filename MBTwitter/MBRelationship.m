@@ -34,7 +34,7 @@
 - (void)initializeWithArray:(NSArray *)connections
 {
     _isFollowing = NO;
-    _isRequestedFollowing = NO;
+    _sentFollowRequest = NO;
     _followdByTheUser = NO;
     _none = NO;
     _isBlocking = NO;
@@ -44,7 +44,7 @@
         if ([value isEqualToString:KEY_FOLLOWING]) {
             _isFollowing = YES;
         } else if ([value isEqualToString:KEY_FOLLOWING_REQUESTED]) {
-            _isRequestedFollowing = YES;
+            _sentFollowRequest = YES;
         } else if ([value isEqualToString:KEY_FOLLOWD_BY]) {
             _followdByTheUser = YES;
         } else if ([value isEqualToString:KEY_NONE]) {
@@ -55,6 +55,28 @@
             _isMuting = YES;
         }
     }
+}
+
+#pragma mark -
+#pragma mark Setter 
+- (void)setIsFollowing:(BOOL)isFollowing
+{
+    _isFollowing = isFollowing;
+}
+
+- (void)setSentFollowRequest:(BOOL)sentFollowRequest
+{
+    _sentFollowRequest = sentFollowRequest;
+}
+
+- (void)setIsBlocking:(BOOL)isBlocking
+{
+    _isBlocking = isBlocking;
+}
+
+- (void)setIsMuting:(BOOL)isMuting
+{
+    _isMuting = isMuting;
 }
 
 @end

@@ -15,12 +15,17 @@
 @property (nonatomic, readonly) NSString *userIDStr;
 
 @property (nonatomic, readonly, assign) BOOL isFollowing;
-@property (nonatomic, readonly, assign) BOOL isRequestedFollowing;
+@property (nonatomic, readonly, assign) BOOL sentFollowRequest;
 @property (nonatomic, readonly, assign) BOOL followdByTheUser;
 @property (nonatomic, readonly, assign) BOOL none;
 @property (nonatomic, readonly, assign) BOOL isBlocking;
 @property (nonatomic, readonly, assign) BOOL isMuting;
 
 - (instancetype)initWithDictionary:(NSDictionary *)dictionary;
+
+- (void)setIsFollowing:(BOOL)isFollowing;
+- (void)setSentFollowRequest:(BOOL)sentFollowRequest;
+- (void)setIsBlocking:(BOOL)isBlocking;
+- (void)setIsMuting:(BOOL)isMuting;
 
 @end
