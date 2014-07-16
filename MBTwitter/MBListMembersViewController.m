@@ -112,6 +112,8 @@
             }
         }
         index++;
+        
+        [self.list.memberIDs setObject:addingUser.userID forKey:addingUser.userID];
     }
     return addingUsers;
 }
