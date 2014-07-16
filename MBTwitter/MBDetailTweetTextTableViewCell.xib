@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="5056" systemVersion="13D65" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="5056" systemVersion="13E28" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3733"/>
     </dependencies>
@@ -14,12 +14,12 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="r6M-6n-16l" customClass="MBTweetTextView">
-                        <rect key="frame" x="20" y="10" width="280" height="175"/>
+                        <rect key="frame" x="16" y="10" width="288" height="175"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="iag-ax-DYD" customClass="MBTweetTextView">
-                        <rect key="frame" x="20" y="213" width="280" height="20"/>
+                        <rect key="frame" x="16" y="213" width="288" height="20"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
@@ -27,7 +27,7 @@
                         </constraints>
                     </view>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="xww-mZ-dhf" customClass="MBTweetTextView">
-                        <rect key="frame" x="20" y="189" width="280" height="20"/>
+                        <rect key="frame" x="16" y="189" width="288" height="20"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
@@ -37,15 +37,15 @@
                 </subviews>
                 <constraints>
                     <constraint firstItem="xww-mZ-dhf" firstAttribute="top" secondItem="r6M-6n-16l" secondAttribute="bottom" constant="4" id="106-5K-U8f"/>
-                    <constraint firstItem="r6M-6n-16l" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="20" id="82B-EV-l5R"/>
-                    <constraint firstItem="xww-mZ-dhf" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="20" id="HTc-6b-vci"/>
-                    <constraint firstAttribute="trailing" secondItem="xww-mZ-dhf" secondAttribute="trailing" constant="20" id="N2f-jD-iYl"/>
+                    <constraint firstItem="r6M-6n-16l" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="16" id="82B-EV-l5R"/>
+                    <constraint firstItem="xww-mZ-dhf" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="16" id="HTc-6b-vci"/>
+                    <constraint firstAttribute="trailing" secondItem="xww-mZ-dhf" secondAttribute="trailing" constant="16" id="N2f-jD-iYl"/>
                     <constraint firstAttribute="bottom" secondItem="iag-ax-DYD" secondAttribute="bottom" constant="4" id="NzD-8L-uJ0"/>
                     <constraint firstItem="iag-ax-DYD" firstAttribute="top" secondItem="xww-mZ-dhf" secondAttribute="bottom" constant="4" id="Sr2-TK-kBY"/>
-                    <constraint firstAttribute="trailing" secondItem="r6M-6n-16l" secondAttribute="trailing" constant="20" id="XYb-Yy-TLe"/>
-                    <constraint firstItem="iag-ax-DYD" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="20" id="qiZ-M5-EXs"/>
+                    <constraint firstAttribute="trailing" secondItem="r6M-6n-16l" secondAttribute="trailing" constant="16" id="XYb-Yy-TLe"/>
+                    <constraint firstItem="iag-ax-DYD" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="16" id="qiZ-M5-EXs"/>
                     <constraint firstAttribute="bottom" secondItem="xww-mZ-dhf" secondAttribute="bottom" priority="250" constant="10" id="rUm-qE-Pln"/>
-                    <constraint firstAttribute="trailing" secondItem="iag-ax-DYD" secondAttribute="trailing" constant="20" id="riM-6h-sIf"/>
+                    <constraint firstAttribute="trailing" secondItem="iag-ax-DYD" secondAttribute="trailing" constant="16" id="riM-6h-sIf"/>
                     <constraint firstItem="r6M-6n-16l" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="10" id="w48-PU-ARR"/>
                 </constraints>
             </tableViewCellContentView>

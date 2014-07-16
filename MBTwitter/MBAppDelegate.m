@@ -12,6 +12,7 @@
 #import "MBReplyTimelineViewController.h"
 #import "MBSeparatedDirectMessageUserViewController.h"
 #import "MBMyListViewController.h"
+#import "MBSearchViewController.h"
 
 #import "MBAccountManager.h"
 #import "MBTimeLineManager.h"
@@ -48,9 +49,9 @@
     MBSeparatedDirectMessageUserViewController *separatedDMUserViewController = [[MBSeparatedDirectMessageUserViewController alloc] initWithNibName:@"SeparatedDirectMessagesView" bundle:nil];
     UINavigationController *dmUserNavigation = [[UINavigationController alloc] initWithRootViewController:separatedDMUserViewController];
     [viewControllers addObject:dmUserNavigation];
-    UIImage *messageImage = [[UIImage alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"Message-Fukidashi@2x" ofType:@"png"]];
+    UIImage *messageImage = [[UIImage alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"Message-Fukidashi-Line@2x" ofType:@"png"]];
     UIImage *messageSelectedImage = [[UIImage alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"Message-Selected-2@2x" ofType:@"png"]];
-    UITabBarItem *messageBarItem = [[UITabBarItem alloc] initWithTitle:NSLocalizedString(@"Message", nil) image:messageImage selectedImage:nil];
+    UITabBarItem *messageBarItem = [[UITabBarItem alloc] initWithTitle:NSLocalizedString(@"Message", nil) image:messageImage selectedImage:messageSelectedImage];
     separatedDMUserViewController.tabBarItem = messageBarItem;
     
     MBMyListViewController *myListViewController = [[MBMyListViewController alloc] initWithNibName:@"MBListViewController" bundle:nil];
@@ -60,6 +61,12 @@
     UIImage *listSelectedImage = [[UIImage alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"List-Selected-2@2x" ofType:@"png"]];
     UITabBarItem *listBarItem = [[UITabBarItem alloc] initWithTitle:NSLocalizedString(@"List", nil) image:listImage selectedImage:listSelectedImage];
     myListViewController.tabBarItem = listBarItem;
+    
+    MBSearchViewController *searchViewController = [[MBSearchViewController alloc] init];
+    UINavigationController *searchNavigationController = [[UINavigationController alloc] initWithRootViewController:searchViewController];
+    [viewControllers addObject:searchNavigationController];
+    UITabBarItem *searchItem = [[UITabBarItem alloc] initWithTabBarSystemItem:UITabBarSystemItemSearch tag:5];
+    searchViewController.tabBarItem = searchItem;
     
     self.tabBarController.viewControllers = viewControllers;
     self.window.rootViewController = self.tabBarController;
@@ -125,10 +132,10 @@
     MBHomeTimelineViewController *homeViewController = nil;
     id obj = [self.tabBarController.viewControllers firstObject];
     if ([obj isKindOfClass:[UINavigationController class]]) {
-        UINavigationController *navigationController = obj;
+        UINavigationController *navigationController = (UINavigationController *)obj;
         id objInNavigation = [navigationController.viewControllers firstObject];
         if ([objInNavigation isKindOfClass:[MBHomeTimelineViewController class]]) {
-            homeViewController = obj;
+            homeViewController = (MBHomeTimelineViewController *)objInNavigation;
         }
     }
     [[MBTweetManager sharedInstance] deleteAllSavedTweetsOfCurrentAccount];
