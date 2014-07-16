@@ -69,6 +69,8 @@ static NSString *retweetStr = @"ret";
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // Custom initialization
+        
+        _expandingDataSource = [NSMutableArray array];
     }
     return self;
 }
@@ -102,7 +104,6 @@ static NSString *retweetStr = @"ret";
     _aoAPICenter = [[MBAOuth_TwitterAPICenter alloc] init];
     _aoAPICenter.delegate = self;
     
-    _expandingDataSource = [NSMutableArray array];
     _replyedTweets = [NSMutableArray array];
     self.fetchsReplyedTweet = NO;
     
@@ -232,6 +233,18 @@ static NSString *retweetStr = @"ret";
     [self.aoAPICenter postDestroyFavoriteForTweetID:[self.tweet.tweetID unsignedLongLongValue]];
 }
 
+- (void)didPushTweetButton
+{
+    NSString *tweetURLString = [NSString stringWithFormat:@"https://twitter.com/%@/status/%lld", self.tweet.tweetUser.screenName, [self.tweet.tweetID unsignedLongLongValue]];
+    NSURL *url = [NSURL URLWithString:tweetURLString];
+    NSURLRequest *urlRequest = [NSURLRequest requestWithURL:url];
+    MBWebBrowsViewController *webViewController = [[MBWebBrowsViewController alloc] init];
+    [webViewController setUrlRequest:urlRequest];
+    webViewController.delegate = self;
+    UINavigationController *webNavigation = [[UINavigationController alloc] initWithRootViewController:webViewController];
+    [self.navigationController presentViewController:webNavigation animated:YES completion:nil];
+}
+
 #pragma mark -
 #pragma mark Delegate
 #pragma mark TableView Delegate Datasource
@@ -239,7 +252,7 @@ static NSString *retweetStr = @"ret";
 {
     CGFloat height = 48.0f;
     CGFloat verticalMargin = 10.0f;
-    CGFloat horizontalMargin = 20.0f;
+    CGFloat horizontalMargin = 16.0f;
     CGFloat innnerVerticalMargin = 4.0f;
     CGFloat dateRetweetViewHeight = 20.0f;
     
@@ -316,8 +329,8 @@ static NSString *retweetStr = @"ret";
 {
     MBUser *user = self.tweet.tweetUser;
     cell.characterNameLabel.text = user.characterName;
-    //cell.screenNameLabel.text = user.characterName;
     [cell setScreenName:user.screenName];
+    [cell.twitterButton addTarget:self action:@selector(didPushTweetButton) forControlEvents:UIControlEventTouchUpInside];
     
     UIImage *avatorImage = [[MBImageCacher sharedInstance] cachedTimelineImageForUser:user.userIDStr];
     if (!avatorImage) {
@@ -393,7 +406,8 @@ static NSString *retweetStr = @"ret";
     
     NSString *dateString = [NSString stringWithFormat:@"%d/%02d/%02d %02d:%02d", components.year, components.month, components.day, components.hour, components.minute];
     
-    cell.dateView.attributedString = [MBTweetTextComposer attributedStringForDetailTweetDate:dateString font:[UIFont systemFontOfSize:12.0f] screeName:self.tweet.tweetUser.screenName tweetID:[self.tweet.tweetID unsignedLongLongValue]];
+    cell.dateView.attributedString = [MBTweetTextComposer attributedStringForDetailTweetDate:dateString font:[UIFont systemFontOfSize:14.0f] screeName:self.tweet.tweetUser.screenName tweetID:[self.tweet.tweetID unsignedLongLongValue]];
+    
     
     // retweet
     if (!self.retweeter) {
@@ -401,7 +415,7 @@ static NSString *retweetStr = @"ret";
     } else {
         NSString *retweetText = NSLocalizedString(@"Retweeted by ", nil);
         NSString *textWithUser = [NSString stringWithFormat:@"%@%@", retweetText, self.retweeter.characterName];
-        cell.retweetView.attributedString = [MBTweetTextComposer attributedStringForTimelineDate:textWithUser font:[UIFont systemFontOfSize:12.0f] screeName:self.retweeter.screenName tweetID:[self.tweet.tweetID unsignedLongLongValue]];
+        cell.retweetView.attributedString = [MBTweetTextComposer attributedStringForTimelineDate:textWithUser font:[UIFont systemFontOfSize:14.0f] screeName:self.retweeter.screenName tweetID:[self.tweet.tweetID unsignedLongLongValue]];
     }
 }
 
@@ -475,6 +489,12 @@ static NSString *retweetStr = @"ret";
     [controller dismissViewControllerAnimated:animated completion:nil];
 }
 
+#pragma mark WebBrowsViewController Delegate
+- (void)closeBrowsViewController:(MBWebBrowsViewController *)controller animated:(BOOL)animated
+{
+    [controller dismissViewControllerAnimated:YES completion:nil];
+}
+
 #pragma mark AOuth_APICenterDelegate
 - (void)twitterAPICenter:(MBAOuth_TwitterAPICenter *)center parsedTweets:(NSArray *)tweets
 {
@@ -489,6 +509,11 @@ static NSString *retweetStr = @"ret";
 }
 
 #pragma mark TweetTextViewDelegate
+- (void)tweetTextView:(MBTweetTextView *)textView clickOnLink:(MBLinkText *)linktext point:(CGPoint)touchePoint
+{
+    
+}
+
 - (void)tweetTextViewShowMagnifier:(MBTweetTextView *)textView point:(CGPoint)point
 {
     if (!self.magnifierView.superview) {
