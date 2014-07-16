@@ -69,6 +69,11 @@
 
 - (NSString *)postFollowForUserID:(unsigned long long)userID screenName:(NSString *)screenName;
 - (NSString *)postUnfollowForUserID:(unsigned long long)userID screenName:(NSString *)screenName;
+- (NSString *)postBlockForUserID:(unsigned long long)userID screenName:(NSString *)screenName;
+- (NSString *)postDestroyBlockForUserID:(unsigned long long)userID screenName:(NSString *)screenName;
+- (NSString *)postMuteForUserID:(unsigned long long)userID screenName:(NSString *)screenName;
+- (NSString *)postDestroyMuteForUserID:(unsigned long long)userID screenName:(NSString *)screenName;
+- (NSString *)postSpamForUserID:(unsigned long long)userID screenName:(NSString *)screenName;
 - (NSString *)getUser:(unsigned long long)userID screenName:(NSString *)screenName;
 - (NSString *)getUsersFollowing:(unsigned long long)userID screenName:(NSString *)screenName cursor:(long long)cursor;
 - (NSString *)getUsersFollowingMe:(unsigned long long)userID screenName:(NSString *)screenName cursor:(long long)cursor;
@@ -93,7 +98,9 @@
 - (NSString *)postDestroyOwnList:(unsigned long long)listID slug:(NSString *)slug ownerScreenName:(NSString *)screenName ownerID:(unsigned long long)ownerID;
 - (NSString *)postSubscriveList:(unsigned long long)listID slug:(NSString *)slug ownerScreenName:(NSString *)screenName ownerID:(unsigned long long)ownerID;
 - (NSString *)postDestroySubscrivedList:(unsigned long long)listID slug:(NSString *)slug ownerScreenName:(NSString *)screenName ownerID:(unsigned long long)ownerID;
+- (NSString *)postCreateMemberOfList:(unsigned long long)listID slug:(NSString *)slug userID:(unsigned long long)userID screenName:(NSString *)screenName ownerScreenName:(NSString *)ownerName ownerID:(unsigned long long)ownerID;
 - (NSString *)postDestroyMemberOfList:(unsigned long long)listID slug:(NSString *)slug userID:(unsigned long long)userID screenName:(NSString *)screenName ownerScreenName:(NSString *)ownerName ownerID:(unsigned long long)ownerID;
+- (NSString *)getShowsMemberOfList:(unsigned long long)listID slug:(NSString *)slug userID:(unsigned long long)userID userScreenName:(NSString *)userScreenName ownerScreenName:(NSString *)ownerScreenName ownerID:(unsigned long long)ownerID;
 
 
 - (NSString *)getDeliveredDirectMessagesSinceID:(unsigned long long)since maxID:(unsigned long long)max;

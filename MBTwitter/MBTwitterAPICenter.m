@@ -577,6 +577,100 @@
     return [self sendRequestMethod:HTTP_POST_METHOD resource:resource parameters:parameters requestType:MBTwitterFriendShipsDestroyRequest responseType:MBTwitterUserResponse];
 }
 
+- (NSString *)postBlockForUserID:(unsigned long long)userID screenName:(NSString *)screenName
+{
+    NSString *resource = @"blocks/create";
+    NSMutableDictionary *parameters = [NSMutableDictionary dictionaryWithCapacity:0];
+    if (userID == 0 && screenName.length == 0) {
+        return nil;
+    }
+    
+    if (userID > 0) {
+        [parameters setObject:[NSString stringWithFormat:@"%llu", userID] forKey:@"user_id"];
+    }
+    if (screenName.length > 0) {
+        [parameters setObject:screenName forKey:@"screen_name"];
+    }
+    [parameters setObject:@"true" forKey:@"skip_status"];
+    [parameters setObject:@"true" forKey:@"include_entities"];
+    
+    return [self sendRequestMethod:HTTP_POST_METHOD resource:resource parameters:parameters requestType:MBTwitterBlocksCreateRequest responseType:MBTwitterUserResponse];
+}
+
+- (NSString *)postDestroyBlockForUserID:(unsigned long long)userID screenName:(NSString *)screenName
+{
+    NSString *resource = @"blocks/destroy";
+    NSMutableDictionary *parameters = [NSMutableDictionary dictionaryWithCapacity:0];
+    if (userID == 0 && screenName.length == 0) {
+        return nil;
+    }
+    
+    if (userID > 0) {
+        [parameters setObject:[NSString stringWithFormat:@"%llu", userID] forKey:@"user_id"];
+    }
+    if (screenName.length > 0) {
+        [parameters setObject:screenName forKey:@"screen_name"];
+    }
+    [parameters setObject:@"true" forKey:@"skip_status"];
+    [parameters setObject:@"true" forKey:@"include_entities"];
+    
+    return [self sendRequestMethod:HTTP_POST_METHOD resource:resource parameters:parameters requestType:MBTwitterBlocksDestroyRequest responseType:MBTwitterUserResponse];
+}
+
+- (NSString *)postMuteForUserID:(unsigned long long)userID screenName:(NSString *)screenName
+{
+    NSString *resource = @"mutes/users/create";
+    NSMutableDictionary *parameters = [NSMutableDictionary dictionaryWithCapacity:0];
+    if (userID == 0 && screenName.length == 0) {
+        return nil;
+    }
+    
+    if (userID > 0) {
+        [parameters setObject:[NSString stringWithFormat:@"%llu", userID] forKey:@"user_id"];
+    }
+    if (screenName.length > 0) {
+        [parameters setObject:screenName forKey:@"screen_name"];
+    }
+    
+    return [self sendRequestMethod:HTTP_POST_METHOD resource:resource parameters:parameters requestType:MBTwitterMuteCreaterequest responseType:MBTwitterUserResponse];
+}
+
+- (NSString *)postDestroyMuteForUserID:(unsigned long long)userID screenName:(NSString *)screenName
+{
+    NSString *resource = @"mutes/users/destroy";
+    NSMutableDictionary *parameters = [NSMutableDictionary dictionaryWithCapacity:0];
+    if (userID == 0 && screenName.length == 0) {
+        return nil;
+    }
+    
+    if (userID > 0) {
+        [parameters setObject:[NSString stringWithFormat:@"%llu", userID] forKey:@"user_id"];
+    }
+    if (screenName.length > 0) {
+        [parameters setObject:screenName forKey:@"screen_name"];
+    }
+    
+    return [self sendRequestMethod:HTTP_POST_METHOD resource:resource parameters:parameters requestType:MBTwitterMuteDestroyRequest responseType:MBTwitterUserResponse];
+}
+
+- (NSString *)postSpamForUserID:(unsigned long long)userID screenName:(NSString *)screenName
+{
+    NSString *resource = @"users/report_spam";
+    NSMutableDictionary *parameters = [NSMutableDictionary dictionaryWithCapacity:0];
+    if (userID == 0 && screenName.length == 0) {
+        return nil;
+    }
+    
+    if (userID > 0) {
+        [parameters setObject:[NSString stringWithFormat:@"%llu", userID] forKey:@"user_id"];
+    }
+    if (screenName.length > 0) {
+        [parameters setObject:screenName forKey:@"screen_name"];
+    }
+    
+    return [self sendRequestMethod:HTTP_POST_METHOD resource:resource parameters:parameters requestType:MBTwitterUsersReportSpamRequest responseType:MBTwitterUserResponse];
+}
+
 - (NSString *)getUsersFollowing:(unsigned long long)userID screenName:(NSString *)screenName cursor:(long long)cursor
 {
     NSString *resource = @"friends/list";
@@ -773,7 +867,7 @@
     [parameters setObject:query forKey:@"q"];
     [parameters setObject:[NSString stringWithFormat:@"%lu", page] forKey:@"page"];
     [parameters setObject:[NSString stringWithFormat:@"%d", COUNT_OF_SEARCH_USERS] forKey:@"count"];
-    [parameters setObject:@"false" forKey:@"include_entities"];
+    [parameters setObject:@"true" forKey:@"include_entities"];
     
     return [self sendRequestMethod:HTTP_GET_METHOD resource:resource parameters:parameters requestType:MBTwitterUsersSearchRequest responseType:MBTwitterUsersLookUpResponse];
 }
@@ -1071,6 +1165,42 @@
     return [self sendRequestMethod:HTTP_POST_METHOD resource:resource parameters:parameters requestType:MBTwitterListsSubscriptionRequest responseType:MBTwitterListResponse];
 }
 
+- (NSString *)postCreateMemberOfList:(unsigned long long)listID slug:(NSString *)slug userID:(unsigned long long)userID screenName:(NSString *)screenName ownerScreenName:(NSString *)ownerName ownerID:(unsigned long long)ownerID
+{
+    NSString *resource = @"lists/members/create";
+    NSMutableDictionary *parameters = [NSMutableDictionary dictionaryWithCapacity:0];
+    if (0 == listID) {
+        if (0 == slug.length & nil == slug) {
+            return nil;
+        } else {
+            if (0 == screenName.length & nil == screenName && 0 == ownerID) {
+                return nil;
+            }
+        }
+    }
+    
+    if (0 < listID) {
+        [parameters setObject:[NSString stringWithFormat:@"%llu", listID] forKey:@"list_id"];
+    }
+    if (0 < slug.length) {
+        [parameters setObject:slug forKey:@"slug"];
+    }
+    if (0 < userID) {
+        [parameters setObject:[NSString stringWithFormat:@"%llu", userID] forKey:@"user_id"];
+    }
+    if (0 < screenName.length) {
+        [parameters setObject:screenName forKey:@"screen_name"];
+    }
+    if (0 < ownerName) {
+        [parameters setObject:ownerName forKey:@"owner_screen_name"];
+    }
+    if (0 < ownerID) {
+        [parameters setObject:[NSString stringWithFormat:@"%llu", ownerID] forKey:@"owner_id"];
+    }
+    
+    return [self sendRequestMethod:HTTP_POST_METHOD resource:resource parameters:parameters requestType:MBTwitterListsMembersCreateRequest responseType:MBTwitterUserResponse];
+}
+
 - (NSString *)postDestroyMemberOfList:(unsigned long long)listID slug:(NSString *)slug userID:(unsigned long long)userID screenName:(NSString *)screenName ownerScreenName:(NSString *)ownerName ownerID:(unsigned long long)ownerID
 {
     NSString *resource = @"lists/members/destroy";
@@ -1106,6 +1236,43 @@
     
     return [self sendRequestMethod:HTTP_POST_METHOD resource:resource parameters:parameters requestType:MBTwitterListsMembersDestroyRequest responseType:MBTwitterUserResponse];
     
+}
+
+- (NSString *)getShowsMemberOfList:(unsigned long long)listID slug:(NSString *)slug userID:(unsigned long long)userID userScreenName:(NSString *)userScreenName ownerScreenName:(NSString *)ownerScreenName ownerID:(unsigned long long)ownerID
+{
+    NSString *resource = @"lists/members/show";
+    NSMutableDictionary *parameters = [NSMutableDictionary dictionaryWithCapacity:0];
+    if (listID == 0 && slug.length == 0) {
+        return nil;
+    }
+    if (userID == 0) {
+        return nil;
+    }
+    
+    // set parameters
+    if (listID > 0) {
+        [parameters setObject:[NSString stringWithFormat:@"%llu", listID] forKey:@"list_id"];
+    }
+    if (slug.length > 0) {
+        [parameters setObject:slug forKey:@"slug"];
+    }
+    if (userID > 0) {
+        [parameters setObject:[NSString stringWithFormat:@"%llu", userID] forKey:@"user_id"];
+    }
+    if (userScreenName.length > 0) {
+        [parameters setObject:userScreenName forKey:@"screen_name"];
+    }
+    if (ownerScreenName.length > 0) {
+        [parameters setObject:ownerScreenName forKey:@"owner_screen_name"];
+    }
+    if (ownerID > 0) {
+        [parameters setObject:[NSString stringWithFormat:@"%llu", ownerID] forKey:@"owner_id"];
+    }
+    
+    [parameters setObject:@"true" forKey:@"include_entities"];
+    [parameters setObject:@"true" forKey:@"skip_status"];
+    
+    return [self sendRequestMethod:HTTP_GET_METHOD resource:resource parameters:parameters requestType:MBTwitterListsMembersShowRequest responseType:MBTwitterUserResponse];
 }
 
 #pragma mark Direct Messages
