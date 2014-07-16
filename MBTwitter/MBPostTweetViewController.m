@@ -129,7 +129,7 @@
     self.navigationItem.rightBarButtonItems = @[self.postBarButtonitem, self.countBarButtonItem];
     
     CGFloat barHeight = 44.0f; // 横向きには対応させないのでマジックナンバー
-    self.toolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, self.view.bounds.size.height, self.view.bounds.size.width, barHeight)];
+    self.toolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, barHeight)];
     self.photoButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemBookmarks target:self action:@selector(didPushPhotoButton)];
     self.cameraButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCamera target:self action:@selector(didPushCameraButton)];
     self.geoButton = [[UIBarButtonItem alloc] initWithTitle:@"Geo" style:UIBarButtonItemStylePlain target:self action:@selector(didPushGeoButton)];
@@ -137,7 +137,9 @@
     UIBarButtonItem *sparcer = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
     NSArray *buttons = [NSArray arrayWithObjects:self.photoButton, self.cameraButton, self.geoButton, sparcer, nil];
     [self.toolbar setItems:buttons];
-    [self.view addSubview:self.toolbar];
+    
+    self.tweetTextView.inputAccessoryView =self.toolbar;
+    //[self.view addSubview:self.toolbar];
     
 }
 
@@ -227,6 +229,13 @@
     }
 }
 
+- (NSInteger)countOfTweetText
+{
+    NSRange httpsRange = [self.tweetTextView.text rangeOfString:@"https"];
+    NSLog(@"location %d length %d", httpsRange.location, httpsRange.length);
+    return 0;
+}
+
 - (void)applyConstraint
 {
     if (self.showsImageView) {
@@ -264,18 +273,14 @@
     
     UIEdgeInsets contentInsets = self.tweetTextView.contentInset;
     UIEdgeInsets scrollIndicatorInsets = self.tweetTextView.scrollIndicatorInsets;
-    contentInsets.bottom = size.height + self.toolbar.frame.size.height;
-    scrollIndicatorInsets.bottom = size.height + self.toolbar.frame.size.height;
+    contentInsets.bottom = size.height;
+    scrollIndicatorInsets.bottom = size.height;
     
-    CGRect toolbarFrame = self.toolbar.frame;
-    toolbarFrame.origin.y = self.view.bounds.size.height - (size.height + toolbarFrame.size.height);
     
-    duration += 0.5;
     [UIView animateWithDuration:duration delay:0.0f options:curve animations:^{
         self.tweetTextView.contentInset = contentInsets;
         self.tweetTextView.scrollIndicatorInsets = scrollIndicatorInsets;
         
-        self.toolbar.frame = toolbarFrame;
     }completion:nil];
 }
 
@@ -290,15 +295,11 @@
     contentInsets.bottom = 0;
     scrollIndicator.bottom = 0;
     
-    CGRect toolbarFrame = self.toolbar.frame;
-    toolbarFrame.origin.y = self.view.bounds.size.height;
     
-    duration -= 0.1;
     [UIView animateWithDuration:duration delay:0.0f options:curve animations:^{
         self.tweetTextView.contentInset = contentInsets;
         self.tweetTextView.scrollIndicatorInsets = scrollIndicator;
         
-        self.toolbar.frame = toolbarFrame;
     }completion:nil];
 }
 
@@ -484,7 +485,7 @@
     
 }
 
-- (void)twitterAPICenter:(MBAOuth_TwitterAPICenter *)center parsedUsers:(NSArray *)users
+- (void)twitterAPICenter:(MBAOuth_TwitterAPICenter *)center requestType:(MBRequestType)requestType parsedUsers:(NSArray *)users
 {
     MBUser *gotUser = [users firstObject];
     if (gotUser) {
