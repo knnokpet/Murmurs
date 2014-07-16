@@ -71,12 +71,17 @@
     [self.avatorImageView setUserIDStr:userIDStr];
 }
 
+- (void)setUserID:(NSNumber *)userID
+{
+    _userID = userID;
+    [self.avatorImageView setUserID:userID];
+}
+
 #pragma mark -
 
 - (void)removeRetweetView
 {
     if (self.retweetView.superview) {
-        NSLog(@"remove retView");
         [self.retweetView removeFromSuperview];
         self.retweetView = nil;
     }

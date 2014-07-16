@@ -26,7 +26,7 @@
 @property (weak, nonatomic) IBOutlet MBAvatorImageView *avatorImageView;
 
 
-
+@property (nonatomic) NSNumber *userID;
 @property (nonatomic) NSString *userIDStr;
 @property (nonatomic, readonly) NSAttributedString *dateString;
 @property (nonatomic, readonly) NSAttributedString *charaScreenString;
