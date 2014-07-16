@@ -430,6 +430,7 @@ static NSString *retweetCellIdentifier = @"RetweetTableViewCellIdentifier";
     
     // AvatorImageView
     cell.userIDStr = userAtIndexPath.userIDStr;
+    cell.userID = userAtIndexPath.userID;
     cell.avatorImageView.delegate = self;
     UIImage *avatorImage = [[MBImageCacher sharedInstance] cachedTimelineImageForUser:userAtIndexPath.userIDStr];
     if (!avatorImage) {
