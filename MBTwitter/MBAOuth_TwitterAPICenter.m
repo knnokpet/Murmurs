@@ -89,7 +89,7 @@
                 return ;
             }
             
-            [weakSelf parseJSONData:data responseType:responseType];
+            [weakSelf parseJSONData:data responseType:responseType requestType:requestType];
         }];
         
     });
@@ -112,7 +112,7 @@
 }*/
 
 #pragma mark APICenter Methods : Parsed
-- (void)parseJSONData:(NSData *)jsonData responseType:(MBResponseType)responseType
+- (void)parseJSONData:(NSData *)jsonData responseType:(MBResponseType)responseType requestType:(MBRequestType)requestType
 {
     MBJSONParser *jsonParser;
     id __weak weakSelf = self;
@@ -146,8 +146,8 @@
     } else if (responseType == MBTwitterUserResponse) {
         jsonParser = [[MBUser_JSONParser alloc] initWithJSONData:jsonData completionHandler:^ (NSArray *parsedObj) {
             dispatch_async(dispatch_get_main_queue(), ^{
-                if ([_delegate respondsToSelector:@selector(twitterAPICenter:parsedUsers:)]) {
-                    [_delegate twitterAPICenter:weakSelf parsedUsers:parsedObj];
+                if ([_delegate respondsToSelector:@selector(twitterAPICenter:requestType:parsedUsers:)]) {
+                    [_delegate twitterAPICenter:weakSelf requestType:requestType parsedUsers:parsedObj];
                 }
             });
         }];
@@ -164,8 +164,8 @@
     } else if (responseType == MBTwitterUsersLookUpResponse) {
         jsonParser = [[MBUsersLookUp_JSONParser alloc] initWithJSONData:jsonData completionHandler:^ (NSArray *parsedObj) {
             dispatch_async(dispatch_get_main_queue(), ^{
-                if ([_delegate respondsToSelector:@selector(twitterAPICenter:parsedUsers:)]) {
-                    [_delegate twitterAPICenter:weakSelf parsedUsers:parsedObj];
+                if ([_delegate respondsToSelector:@selector(twitterAPICenter:requestType:parsedUsers:)]) {
+                    [_delegate twitterAPICenter:weakSelf requestType:requestType parsedUsers:parsedObj];
                 }
             });
         }];
@@ -237,6 +237,12 @@
         jsonParser = [[MBHelp_JSONParser alloc] initWithJSONData:jsonData completionHandler:nil];
         
     }
+    
+    [jsonParser setErrorCompletion:^(NSError *error) {
+        if ([_delegate respondsToSelector:@selector(twitterAPICenter:error:)]) {
+            [_delegate twitterAPICenter:weakSelf error:error];
+        }
+    }];
     
     [jsonParser startParsing];
 }
