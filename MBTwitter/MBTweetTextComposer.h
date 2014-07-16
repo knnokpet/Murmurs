@@ -17,6 +17,6 @@
 + (NSAttributedString *)attributedStringForUser:(MBUser *)user linkColor:(UIColor *)linkColor;
 + (NSAttributedString *)attributedStringForTimelineUser:(MBUser *)user charFont:(UIFont *)charaFont screenFont:(UIFont *)screenFont;
 + (NSAttributedString *)attributedStringForTimelineDate:(NSString *)dateString font:(UIFont *)font screeName:(NSString *)screenName tweetID:(unsigned long long)tweetID;
-+ (NSAttributedString *)attributedStringForDetailTweetDate:(NSString *)dateString font:(UIFont *)font screeName:(NSString *)screenName tweetID:(unsigned long long)tweetID;;
++ (NSAttributedString *)attributedStringForDetailTweetDate:(NSString *)dateString font:(UIFont *)font screeName:(NSString *)screenName tweetID:(unsigned long long)tweetID;
 
 @end
