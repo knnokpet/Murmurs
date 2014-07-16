@@ -97,7 +97,7 @@
     
     CGRect screenLabelFrame = self.screenNameLabel.frame;
     screenLabelFrame.origin.x = self.frame.size.width / 2 - self.screenNameLabel.frame.size.width / 2;
-    screenLabelFrame.origin.y = self.characterNameLabel.frame.origin.y + self.characterNameLabel.frame.size.height + 4;
+    screenLabelFrame.origin.y = self.characterNameLabel.frame.origin.y + self.characterNameLabel.frame.size.height;
     self.screenNameLabel.frame = screenLabelFrame;
 }
 
