@@ -13,5 +13,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *characterNameLabel;
 @property (weak, nonatomic) IBOutlet UILabel *screenNameLabel;
 
+@property (nonatomic, readonly) NSString *screenName;
+- (void)setScreenName:(NSString *)screenName;
 
 @end

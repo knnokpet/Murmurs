@@ -31,4 +31,13 @@
     // Configure the view for the selected state
 }
 
+- (void)setScreenName:(NSString *)screenName
+{
+    _screenName = screenName;
+    if (screenName.length > 0) {
+        NSString *screenNameWithAt = [NSString stringWithFormat:@"@%@", screenName];
+        self.screenNameLabel.text = screenNameWithAt;
+    }
+}
+
 @end
