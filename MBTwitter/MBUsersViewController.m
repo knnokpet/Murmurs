@@ -151,7 +151,7 @@ static NSString *usersCellIdentifier = @"UsersCellIdentifier";
     MBUser *userAtIndex = [self.users objectAtIndex:indexPath.row];
     
     cell.characterNameLabel.text = userAtIndex.characterName;
-    cell.screenNameLabel.text = userAtIndex.screenName;
+    cell.screenName = userAtIndex.screenName;
     
     UIImage *avatorImage = [[MBImageCacher sharedInstance] cachedProfileImageForUserID:userAtIndex.userIDStr];
     if (!avatorImage) {
