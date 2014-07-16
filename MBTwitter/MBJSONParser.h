@@ -16,15 +16,19 @@
 
 typedef void (^ParsingCompletion)(NSArray *parsedObjects);
 typedef void (^ParsingCompletionWithCursor)(NSArray *parsedObjects, NSNumber *nextCursor, NSNumber *previousCursor);
+typedef void (^ErrorCompletion)(NSError *error);
 
 @interface MBJSONParser : NSObject
 
 @property (nonatomic, readonly) NSData *jsonData;
 @property (nonatomic, readonly) ParsingCompletion completion;
 @property (nonatomic, readonly) ParsingCompletionWithCursor completionWithCursor;
+@property (nonatomic, readonly) ErrorCompletion errorCompletion;
 
 - (id)initWithJSONData:(NSData *)jsonData completionHandler:(ParsingCompletion)completion;
 - (id)initWithJSONData:(NSData *)jsonData completionHandlerWithCursor:(ParsingCompletionWithCursor)completion;
+
+- (void)setErrorCompletion:(ErrorCompletion)errorCompletion;
 
 - (void)startParsing;
 - (void)configure:(id)parsedObj;
