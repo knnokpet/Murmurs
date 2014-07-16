@@ -63,6 +63,11 @@
 {
     [super viewWillAppear:animated];
     
+    NSIndexPath *selectedIndexPath = [self.tableView indexPathForSelectedRow];
+    if (selectedIndexPath) {
+        [self.tableView deselectRowAtIndexPath:selectedIndexPath animated:animated];
+    }
+    
     NSNotificationCenter *nCenter = [NSNotificationCenter defaultCenter];
     [nCenter addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
     [nCenter addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
@@ -128,7 +133,7 @@
     }
 }
 
-#warning リストネームの添削が必要。だけど、それは API に任せようかしら
+#warning リストネームの添削が必要。だけど、それは API に任せようかしら 説明の添削も必要じゃん
 - (void)didPushCreateButton
 {
     MBTextFieldTableViewCell *listNameCell = (MBTextFieldTableViewCell *)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
@@ -141,6 +146,9 @@
     }
     
     NSString *description = descriptionCell.textField.text;
+    if (description.length > 100) {
+        return;
+    }
     BOOL isOn = switchCell.switchView.on;
     
     [self.aoAPICenter postCreateList:listName isPublic:isOn description:description];
