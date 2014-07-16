@@ -1,21 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="5056" systemVersion="13D65" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="5056" systemVersion="13E28" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3733"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="MBIndividualDirectMessagesViewController">
             <connections>
-                <outlet property="cameraButton" destination="BoC-0e-bf3" id="4rC-bT-YrP"/>
-                <outlet property="containedView" destination="bJN-zZ-d1v" id="2Ag-Vg-rEA"/>
                 <outlet property="receiverTextField" destination="J0e-jd-ORM" id="Kaa-OA-qnf"/>
                 <outlet property="receiverToolbar" destination="Bxa-ch-5sb" id="is3-gR-in8"/>
                 <outlet property="receiverToolbarConstraint" destination="6KE-32-Qaj" id="fbQ-QG-1Kv"/>
                 <outlet property="searchDisplayController" destination="8MY-zz-CQ6" id="RVR-dO-VbF"/>
-                <outlet property="sendButton" destination="f0B-AP-ISQ" id="Gx3-Oj-7le"/>
                 <outlet property="tableView" destination="haj-rC-wD4" id="wgR-dd-oMs"/>
-                <outlet property="textView" destination="7FT-Yt-Ksy" id="o74-aS-qyr"/>
-                <outlet property="toolbar" destination="76G-y8-ekA" id="tvk-Ot-1fw"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>
@@ -29,59 +24,18 @@
                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                 </tableView>
-                <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="76G-y8-ekA">
-                    <rect key="frame" x="0.0" y="475" width="320" height="44"/>
-                    <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
-                    <constraints>
-                        <constraint firstAttribute="width" constant="320" id="5fl-LA-uOr"/>
-                    </constraints>
-                    <items>
-                        <barButtonItem style="plain" systemItem="camera" id="BoC-0e-bf3">
-                            <connections>
-                                <action selector="didPushCameraButton:" destination="-1" id="E73-ci-dgr"/>
-                            </connections>
-                        </barButtonItem>
-                        <barButtonItem style="plain" id="oOS-ND-kd6">
-                            <view key="customView" contentMode="scaleToFill" id="bJN-zZ-d1v">
-                                <rect key="frame" x="51" y="6" width="207" height="33"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <subviews>
-                                    <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="7FT-Yt-Ksy">
-                                        <rect key="frame" x="0.0" y="0.0" width="207" height="33"/>
-                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                        <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
-                                    </textView>
-                                </subviews>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
-                                <constraints>
-                                    <constraint firstItem="7FT-Yt-Ksy" firstAttribute="top" secondItem="bJN-zZ-d1v" secondAttribute="top" id="JHN-AT-8aC"/>
-                                    <constraint firstItem="7FT-Yt-Ksy" firstAttribute="leading" secondItem="bJN-zZ-d1v" secondAttribute="leading" id="Wa9-QY-wSw"/>
-                                    <constraint firstAttribute="bottom" secondItem="7FT-Yt-Ksy" secondAttribute="bottom" id="cUO-zM-Hje"/>
-                                    <constraint firstAttribute="centerX" secondItem="7FT-Yt-Ksy" secondAttribute="centerX" id="jP3-ld-mst"/>
-                                </constraints>
-                            </view>
-                        </barButtonItem>
-                        <barButtonItem title="Send" style="done" id="f0B-AP-ISQ">
-                            <connections>
-                                <action selector="didPushSendButton:" destination="-1" id="rxU-LV-Am4"/>
-                            </connections>
-                        </barButtonItem>
-                    </items>
-                </toolbar>
                 <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Bxa-ch-5sb">
                     <rect key="frame" x="0.0" y="64" width="320" height="44"/>
                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                     <items>
-                        <barButtonItem enabled="NO" title="Item" style="plain" id="shy-it-0xG">
+                        <barButtonItem enabled="NO" title="To:" style="plain" id="shy-it-0xG">
                             <color key="tintColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                         </barButtonItem>
                         <barButtonItem style="plain" id="gfT-1a-7Xx">
                             <textField key="customView" opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" minimumFontSize="17" id="J0e-jd-ORM">
-                                <rect key="frame" x="60" y="7" width="240" height="30"/>
+                                <rect key="frame" x="49" y="7" width="240" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
                         </barButtonItem>
@@ -93,12 +47,9 @@
                 <constraint firstItem="haj-rC-wD4" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="0Zy-ed-xXs"/>
                 <constraint firstAttribute="trailing" secondItem="haj-rC-wD4" secondAttribute="trailing" id="5gd-gn-XXA"/>
                 <constraint firstItem="Bxa-ch-5sb" firstAttribute="top" secondItem="haj-rC-wD4" secondAttribute="top" constant="64" id="6KE-32-Qaj"/>
-                <constraint firstItem="Bxa-ch-5sb" firstAttribute="leading" secondItem="76G-y8-ekA" secondAttribute="leading" id="7ee-WI-zfM"/>
-                <constraint firstAttribute="trailing" secondItem="76G-y8-ekA" secondAttribute="trailing" id="J3s-PL-7EI"/>
-                <constraint firstItem="76G-y8-ekA" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="UGc-9z-WbR"/>
-                <constraint firstAttribute="bottom" secondItem="76G-y8-ekA" secondAttribute="bottom" constant="49" id="fVd-kR-rlF"/>
+                <constraint firstItem="Bxa-ch-5sb" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="IZK-0h-ARz"/>
+                <constraint firstAttribute="trailing" secondItem="Bxa-ch-5sb" secondAttribute="trailing" id="Nvf-lV-qmn"/>
                 <constraint firstAttribute="bottom" secondItem="haj-rC-wD4" secondAttribute="bottom" id="fjK-2Y-Xlc"/>
-                <constraint firstItem="Bxa-ch-5sb" firstAttribute="trailing" secondItem="76G-y8-ekA" secondAttribute="trailing" id="g96-OY-Niv"/>
                 <constraint firstItem="haj-rC-wD4" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="tnk-B5-07t"/>
             </constraints>
             <simulatedStatusBarMetrics key="simulatedStatusBarMetrics"/>

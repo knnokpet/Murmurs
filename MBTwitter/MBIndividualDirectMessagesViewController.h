@@ -28,11 +28,7 @@
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *receiverToolbarConstraint;
 
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
-@property (weak, nonatomic) IBOutlet UIToolbar *toolbar;
-@property (weak, nonatomic) IBOutlet UIView *containedView;
-@property (weak, nonatomic) IBOutlet UITextView *textView;
-@property (weak, nonatomic) IBOutlet UIBarButtonItem *sendButton;
-@property (weak, nonatomic) IBOutlet UIBarButtonItem *cameraButton;
+
 
 @property (nonatomic, readonly, assign) BOOL isEditing;
 

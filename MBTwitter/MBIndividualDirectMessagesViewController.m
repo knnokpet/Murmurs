@@ -34,15 +34,24 @@ static NSString *sendCellIdentifier = @"SendCellIdentifier";
 
 
 @interface MBIndividualDirectMessagesViewController () <UITableViewDataSource, UITableViewDelegate>
+{
+    CGPoint defaultToolBarPoint;
+    CGSize defaultToolBarSize;
+    CGSize defaultTextViewSize;
+}
 
 @property (nonatomic) MBMessageReceiverViewController *currentReceiverViewController;
 
 @property (nonatomic, readonly) MBAOuth_TwitterAPICenter *aoAPICenter;
 @property (nonatomic) NSMutableArray *dataSource;
 
+@property (nonatomic, readonly) UIToolbar *toolBar;
+@property (nonatomic, readonly) UITextView *textView;
+@property (nonatomic, readonly) UIBarButtonItem *cameraButton;
+@property (nonatomic, readonly) UIBarButtonItem *sendButton;
+
 @property (nonatomic) NSNumber *currentKeyboardHeight;
-@property (nonatomic, assign) BOOL isShownKeyboard;
-@property (nonatomic, assign) BOOL isDragging;
+
 
 @end
 
@@ -108,31 +117,48 @@ static NSString *sendCellIdentifier = @"SendCellIdentifier";
     [self.tableView registerNib:sendCell forCellReuseIdentifier:sendCellIdentifier];
     
     
-    self.textView.delegate = self;
+    _cameraButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCamera target:self action:@selector(didPushCameraButton:)];
+    _sendButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Send", nil) style:UIBarButtonItemStyleDone target:self action:@selector(didPushSendButton:)];
     
-    self.sendButton.title = NSLocalizedString(@"Send", nil);
-    self.sendButton.enabled = NO;
+    defaultTextViewSize = CGSizeMake(210, 32);
+    _textView = [[UITextView alloc] initWithFrame:CGRectMake(0, 0, defaultTextViewSize.width, defaultTextViewSize.height)];
+    self.textView.layer.cornerRadius = 4.0f;
+    self.textView.font = [UIFont systemFontOfSize:17.0f];
+    UIBarButtonItem *textBarItem = [[UIBarButtonItem alloc] initWithCustomView:self.textView];
+    
+
+    defaultToolBarSize = CGSizeMake(self.view.bounds.size.width, 44.0f);
+    defaultToolBarPoint = CGPointMake(0, self.tabBarController.tabBar.frame.origin.y - defaultToolBarSize.height);
+    _toolBar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, defaultToolBarPoint.y, defaultToolBarSize.width, defaultToolBarSize.height)];
+    [self.toolBar setItems:@[self.cameraButton, textBarItem, self.sendButton]];
+    self.textView.delegate = self;
+    __weak UIView *toolBar = self.toolBar;
+    self.textView.inputAccessoryView = toolBar;
+    [self.view addSubview:self.toolBar];
     
     UIEdgeInsets contentInsets = self.tableView.contentInset;
     UIEdgeInsets scrollInsets = self.tableView.scrollIndicatorInsets;
-    contentInsets.bottom = self.toolbar.frame.size.height;
-    scrollInsets.bottom = self.toolbar.frame.size.height;
+    contentInsets.bottom = self.toolBar.frame.size.height;
+    scrollInsets.bottom = self.toolBar.frame.size.height;
     self.tableView.contentInset = contentInsets;
     self.tableView.scrollIndicatorInsets = scrollInsets;
+
+    self.sendButton.title = NSLocalizedString(@"Send", nil);
+    self.sendButton.enabled = NO;
     
     [self commonConfigureNavigationItem];
 }
 
 - (void)configureMessageView
 {
-    CGFloat defaultTopConstant = 64.0f;
-    CGFloat defaultBottomConstant = 49.0f;
-    
     if (YES == self.isEditing) {
         
         UIEdgeInsets topInsets = self.tableView.contentInset;
-        topInsets.top = defaultTopConstant ; //self.containedView.frame.size.height;
+        UIEdgeInsets scrollInsets = self.tableView.scrollIndicatorInsets;
+        topInsets.top = self.receiverToolbar.bounds.size.height;
+        scrollInsets.top = self.receiverToolbar.bounds.size.height;
         self.tableView.contentInset = topInsets;
+        self.tableView.scrollIndicatorInsets = scrollInsets;
         
         [self.tableView setHidden:YES];
         
@@ -141,12 +167,7 @@ static NSString *sendCellIdentifier = @"SendCellIdentifier";
         
     } else {
         
-        UIEdgeInsets topInsets = self.tableView.contentInset;
-        topInsets.top = defaultTopConstant;
-        //self.tableView.contentInset = topInsets;
-        
         [self.tableView setHidden:NO];
-        [self.view insertSubview:self.toolbar aboveSubview:self.tableView];
         
         [self.receiverToolbar removeFromSuperview];
     }
@@ -154,7 +175,7 @@ static NSString *sendCellIdentifier = @"SendCellIdentifier";
 
 - (void)commonConfigureNavigationItem
 {
-    self.containedView.layer.cornerRadius = 4.0f;
+    
 }
 
 - (void)commonConfigureModel
@@ -180,12 +201,11 @@ static NSString *sendCellIdentifier = @"SendCellIdentifier";
 {
     [super viewWillAppear:animated];
     
+    
     NSNotificationCenter *nCenter = [NSNotificationCenter defaultCenter];
     [nCenter addObserver:self selector:@selector(keyBoardWillAppear:) name:UIKeyboardWillShowNotification object:nil];
     [nCenter addObserver:self selector:@selector(keyboardWillDIsappear:) name:UIKeyboardWillHideNotification object:nil];
-    NSLog(@"container = %f", self.containedView.frame.size.height);
-    NSLog(@"textview height = %f", self.textView.frame.size.height);
-    
+    [nCenter addObserver:self selector:@selector(keyboardDidDisappear:) name:UIKeyboardDidHideNotification object:nil];
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -201,6 +221,8 @@ static NSString *sendCellIdentifier = @"SendCellIdentifier";
 {
     [super viewWillDisappear:animated];
     
+    [self.textView resignFirstResponder];
+    
     self.tableView.delegate = nil;
     self.textView.delegate = nil;
 }
@@ -208,6 +230,7 @@ static NSString *sendCellIdentifier = @"SendCellIdentifier";
 - (void)viewDidDisappear:(BOOL)animated
 {
     [super viewDidDisappear:animated];
+    
     
     NSNotificationCenter *nCenter = [NSNotificationCenter defaultCenter];
     [nCenter removeObserver:self name:UIKeyboardWillShowNotification object:nil];
@@ -231,14 +254,10 @@ static NSString *sendCellIdentifier = @"SendCellIdentifier";
     
     UIEdgeInsets contentInsets = self.tableView.contentInset;
     UIEdgeInsets scrollInsets = self.tableView.scrollIndicatorInsets;
-    contentInsets.bottom = keyboardSize.height + self.toolbar.frame.size.height;
-    scrollInsets.bottom = keyboardSize.height + self.toolbar.frame.size.height;
+    contentInsets.bottom = keyboardSize.height;
+    scrollInsets.bottom = keyboardSize.height;
     
     
-    CGRect toolbarFrame = self.toolbar.frame;
-    toolbarFrame.origin.y = self.view.frame.size.height - self.currentKeyboardHeight.floatValue - self.toolbar.frame.size.height;
-    
-    duration += 0.5;
     [UIView animateWithDuration:duration delay:0 options:curve animations:^{
         self.tableView.contentInset = contentInsets;
         self.tableView.scrollIndicatorInsets = scrollInsets;
@@ -246,9 +265,8 @@ static NSString *sendCellIdentifier = @"SendCellIdentifier";
         self.currentReceiverViewController.tableView.contentInset = contentInsets;
         self.currentReceiverViewController.tableView.scrollIndicatorInsets = scrollInsets;
         
-        self.toolbar.frame = toolbarFrame;
     }completion:^(BOOL stop) {
-        self.isShownKeyboard = YES;
+        
     }];
     
 }
@@ -259,13 +277,15 @@ static NSString *sendCellIdentifier = @"SendCellIdentifier";
     double duration = [[userInfo objectForKey:UIKeyboardAnimationDurationUserInfoKey] doubleValue];
     unsigned int curve = [[userInfo objectForKey:UIKeyboardAnimationCurveUserInfoKey] unsignedIntValue];
     
+    CGRect toolBarRect = CGRectMake(0, self.view.frame.size.height, defaultToolBarSize.width, self.toolBar.frame.size.height);
+    self.toolBar.frame = toolBarRect;
+    [self.view addSubview:self.toolBar];
+    
     UIEdgeInsets contentInsets = self.tableView.contentInset;
     UIEdgeInsets scrollInsets = self.tableView.scrollIndicatorInsets;
-    contentInsets.bottom = self.tabBarController.tabBar.frame.size.height + self.toolbar.frame.size.height;
-    scrollInsets.bottom = self.tabBarController.tabBar.frame.size.height + self.toolbar.frame.size.height;
+    contentInsets.bottom = self.tabBarController.tabBar.frame.size.height + self.toolBar.frame.size.height;
+    scrollInsets.bottom = self.tabBarController.tabBar.frame.size.height + self.toolBar.frame.size.height;
     
-    CGRect toolbarFrame = self.toolbar.frame;
-    toolbarFrame.origin.y = self.view.frame.size.height - self.tabBarController.tabBar.frame.size.height - self.toolbar.frame.size.height;
     
     [UIView animateWithDuration:duration delay:0.0f options:curve animations:^{
         self.tableView.contentInset = contentInsets;
@@ -274,10 +294,23 @@ static NSString *sendCellIdentifier = @"SendCellIdentifier";
         self.currentReceiverViewController.tableView.contentInset = contentInsets;
         self.currentReceiverViewController.tableView.scrollIndicatorInsets = scrollInsets;
         
-        self.toolbar.frame = toolbarFrame;
     }completion:^(BOOL stop){
-        self.isShownKeyboard = NO;
+        
     }];
+}
+
+- (void)keyboardDidDisappear:(NSNotification *)notification
+{
+    NSDictionary *userInfo = [notification userInfo];
+    double duration = [[userInfo objectForKey:UIKeyboardAnimationDurationUserInfoKey] doubleValue];
+    unsigned int curve = [[userInfo objectForKey:UIKeyboardAnimationCurveUserInfoKey] unsignedIntValue];
+
+    [UIView animateWithDuration:duration delay:0 options:curve animations:^{
+        CGFloat toolBarOriginY = self.tabBarController.tabBar.frame.origin.y - self.toolBar.frame.size.height;
+        CGRect toolBarRect = CGRectMake(0, toolBarOriginY, defaultToolBarSize.width, self.toolBar.frame.size.height);
+        self.toolBar.frame = toolBarRect;
+        [self.view addSubview:self.toolBar];
+    }completion:nil];
 }
 
 - (NSArray *)suggestedUserIDs:(NSArray *)resourceArray suggestString:(NSString *)suggestString
@@ -345,28 +378,32 @@ static NSString *sendCellIdentifier = @"SendCellIdentifier";
     
     if (0 < textLength) {
         self.currentReceiverViewController = [[MBMessageReceiverViewController alloc] init];
+        self.currentReceiverViewController.view.frame = self.view.bounds;
         NSArray *userIDs = [self.userIDManager storedUserIDs];
         self.currentReceiverViewController.dataSource = [self suggestedUserIDs:userIDs suggestString:suggestString];
         self.currentReceiverViewController.inputedString = suggestString;
         self.currentReceiverViewController.delegate = self;
         [self.currentReceiverViewController.tableView reloadData];
-        
-        
         [self addChildViewController:self.currentReceiverViewController];
-        [self.view insertSubview:self.currentReceiverViewController.view belowSubview:self.receiverToolbar];
         
         UIEdgeInsets tableViewInset = self.tableView.contentInset;
-        tableViewInset.top = 64.0f + self.containedView.frame.size.height;
+        UIEdgeInsets scrollInset = self.tableView.scrollIndicatorInsets;
+        tableViewInset.top = self.receiverToolbar.bounds.size.height;
         tableViewInset.bottom = self.tabBarController.tabBar.frame.size.height;
+        scrollInset.top = self.receiverToolbar.bounds.size.height;
+        scrollInset.bottom = self.tabBarController.tabBar.frame.size.height;
+        
         self.currentReceiverViewController.tableView.contentInset = tableViewInset;
-        self.currentReceiverViewController.tableView.scrollIndicatorInsets = tableViewInset;
+        self.currentReceiverViewController.tableView.scrollIndicatorInsets = scrollInset;
+        
+        [self.view insertSubview:self.currentReceiverViewController.view belowSubview:self.receiverToolbar];
         
     } else if (0 == textLength) {
         [self.tableView setHidden:YES];
         [self.view insertSubview:self.receiverToolbar aboveSubview:self.tableView];
     }
     
-    [self.view insertSubview:self.toolbar aboveSubview:self.receiverToolbar];
+    [self.view insertSubview:self.toolBar aboveSubview:self.receiverToolbar];
 }
 
 #pragma mark -
@@ -468,65 +505,43 @@ static NSString *sendCellIdentifier = @"SendCellIdentifier";
 }
 
 #pragma mark TextView Delegate
+- (void)textViewDidBeginEditing:(UITextView *)textView
+{
+    [textView becomeFirstResponder]; // keyboard 表示トリガー
+}
+
 - (void)textViewDidChangeSelection:(UITextView *)textView
 {
     
     UITextView *sizingTextView = [[UITextView alloc] init];
     sizingTextView.attributedText = textView.attributedText;
-    CGSize textSize = [sizingTextView sizeThatFits:CGSizeMake(self.containedView.frame.size.width, CGFLOAT_MAX)];
-    NSLog(@"%@ contain = %f", textView.text, textSize.height);
+    CGSize textSize = [sizingTextView sizeThatFits:CGSizeMake(defaultTextViewSize.width, CGFLOAT_MAX)];
     
-    CGFloat defaultToolbarHeight = 44.0f;
-    CGFloat defaultContainerViewHeight = 33.0f;
-    CGFloat defaultTextVIewHeight = 36.5;
-    NSInteger heightMargin = textSize.height - defaultToolbarHeight;
-    
-    CGFloat toolbarheight = defaultToolbarHeight;
-    CGFloat toolbarOriginY = self.view.frame.size.height - self.currentKeyboardHeight.floatValue - toolbarheight;
-    CGFloat textViewHeight = defaultTextVIewHeight;
+    CGFloat defaultTabbarItemMargin = 6.0f;
+    CGFloat defaultToolbarHeight = defaultToolBarSize.height;
+    CGFloat textViewHeightMargin = textSize.height - defaultTextViewSize.height;
+    CGFloat defaultKeyBoardHeight = self.currentKeyboardHeight.floatValue - textView.inputAccessoryView.frame.size.height;
     
     
-    CGFloat limitOriginY = (self.navigationController.navigationBar.frame.size.height + [[UIApplication sharedApplication] statusBarFrame].size.height);
-    CGFloat maxSpace = self.view.frame.size.height - self.currentKeyboardHeight.floatValue - (self.navigationController.navigationBar.frame.size.height + [[UIApplication sharedApplication] statusBarFrame].size.height);
+    CGFloat limitOriginY = (self.navigationController.navigationBar.bounds.size.height + [[UIApplication sharedApplication] statusBarFrame].size.height);
+    CGFloat maxSpace = self.view.bounds.size.height - limitOriginY - defaultKeyBoardHeight;
     
+    CGFloat toolbarHeight = defaultToolbarHeight + textViewHeightMargin;
+    CGFloat textViewHeight;
     
-    if (0 < heightMargin) {
-        toolbarheight = defaultToolbarHeight + heightMargin;
-        if (maxSpace < toolbarheight) {
-            toolbarheight = maxSpace;
-        }
-        
-        toolbarOriginY = self.view.frame.size.height - self.currentKeyboardHeight.floatValue - toolbarheight;
-        if (limitOriginY > toolbarOriginY) {
-            toolbarOriginY = limitOriginY;
-        }
-        
-        textViewHeight = textSize.height;
+    if (toolbarHeight > maxSpace) {
+        toolbarHeight = maxSpace;
     }
     
-    CGRect toolbarFrame = self.toolbar.frame;
-    toolbarFrame.size.height = toolbarheight;
-    toolbarFrame.origin.y = toolbarOriginY;
-    self.toolbar.frame = toolbarFrame;
+    textViewHeight = toolbarHeight -(defaultTabbarItemMargin * 2) ;
     
-    
-    CGFloat containerHeight = defaultContainerViewHeight + heightMargin;
-    if (toolbarheight < containerHeight) {
-        containerHeight = toolbarheight;
-    }
-    CGRect containerFrame = self.containedView.frame;
-    containerFrame.size.height = containerHeight;
-    self.containedView.frame = containerFrame;
+    CGRect toolBarRect = self.toolBar.frame;
+    toolBarRect.size.height = toolbarHeight;
+    self.toolBar.frame = toolBarRect;
     
     CGRect textFrame = self.textView.frame;
-    self.textView.scrollEnabled = NO;
-    if (containerHeight < textViewHeight) {
-        textViewHeight = containerHeight - (6.0f + 6.0f);
-        self.textView.scrollEnabled = YES;
-    }
     textFrame.size.height = textViewHeight;
     self.textView.frame = textFrame;
-    NSLog(@"container = %f text = %f", self.containedView.frame.size.height, self.textView.frame.size.height);
     
     
     // enable sendButton
@@ -536,69 +551,6 @@ static NSString *sendCellIdentifier = @"SendCellIdentifier";
         self.sendButton.enabled = NO;
     }
 }
-
-#pragma mark - UIScrollView Delegate
-
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView
-{
-    if (NO == self.isShownKeyboard) {
-        return;
-    }
-    if (scrollView != self.tableView) {
-        return;
-    }
-    
-    
-    CGPoint touchPoint = [scrollView.panGestureRecognizer locationInView:self.view];
-    NSLog(@"point x = %f y %f", touchPoint.x, touchPoint.y);
-    if (YES == self.isDragging) {
-        
-        CGFloat defaultToolbarOriginY = self.view.frame.size.height - self.currentKeyboardHeight.floatValue - self.toolbar.frame.size.height;
-        CGFloat bottomToolbarOriginY = self.view.frame.size.height - self.tabBarController.tabBar.frame.size.height - self.toolbar.frame.size.height;
-        
-        CGRect toolbarFrame = self.toolbar.frame;
-        if (defaultToolbarOriginY < touchPoint.y) {
-            toolbarFrame.origin.y = touchPoint.y;
-            
-            if (bottomToolbarOriginY < touchPoint.y) {
-                toolbarFrame.origin.y = bottomToolbarOriginY;
-            }
-            
-        } else if (defaultToolbarOriginY > touchPoint.y) {
-            toolbarFrame.origin.y = defaultToolbarOriginY;
-        }
-        
-        self.toolbar.frame = toolbarFrame;
-    }
-}
-
-- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
-{
-    if (scrollView != self.tableView) {
-        return;
-    }
-    
-    self.isDragging = YES;
-}
-
-- (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset
-{
-    if (scrollView != self.tableView) {
-        return;
-    }
-    
-    self.isDragging = NO;
-    
-    CGPoint touchPoint = [scrollView.panGestureRecognizer locationInView:self.view];
-    CGFloat currentKeyBoardOriginY = self.view.frame.size.height - self.currentKeyboardHeight.floatValue;
-    if (currentKeyBoardOriginY < touchPoint.y) {
-        CGFloat bottomToolbarOriginY = self.view.frame.size.height - self.tabBarController.tabBar.frame.size.height - self.toolbar.frame.size.height;
-        CGRect frame = self.toolbar.frame;
-        frame.origin.y = bottomToolbarOriginY;
-        //self.toolbar.frame = frame;
-    }
-}
-
 
 #pragma mark MessageReceiverViewController Delegate
 - (void)selectReceiverViewController:(MBMessageReceiverViewController *)controller user:(MBUser *)user
@@ -620,10 +572,8 @@ static NSString *sendCellIdentifier = @"SendCellIdentifier";
         [self.tableView reloadData];
         [self.tableView setHidden:NO];
         [self.view insertSubview:self.tableView belowSubview:self.receiverToolbar];
-        [self.view insertSubview:self.toolbar aboveSubview:self.tableView];
+        [self.view insertSubview:self.toolBar aboveSubview:self.tableView];
     }
-    
-    //[self.textView becomeFirstResponder];
 }
 
 - (void)selectSearchReceiverViewController:(MBMessageReceiverViewController *)controller
