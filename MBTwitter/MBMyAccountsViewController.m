@@ -374,6 +374,7 @@ static NSString *avatorInfomationTableViewCellIdentifier = @"MBDetailUserInfomat
         } else {
             [_aoAPICenter getUser:0 screenName:[MBAccountManager sharedInstance].currentAccount.screenName];
         }
+        
     } else if (1 == indexPath.section) {
         return;
     } else if (2 == indexPath.section) {
@@ -426,7 +427,7 @@ static NSString *avatorInfomationTableViewCellIdentifier = @"MBDetailUserInfomat
 }
 
 #pragma mark TwitterAPICenter Delegate
-- (void)twitterAPICenter:(MBAOuth_TwitterAPICenter *)center parsedUsers:(NSArray *)users
+- (void)twitterAPICenter:(MBAOuth_TwitterAPICenter *)center requestType:(MBRequestType)requestType parsedUsers:(NSArray *)users
 {
     MBUser *user = [users firstObject];
     if (user) {
