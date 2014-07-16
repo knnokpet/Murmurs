@@ -12,6 +12,7 @@
 @property (weak, nonatomic) IBOutlet UIImageView *avatorImageView;
 @property (weak, nonatomic) IBOutlet UILabel *characterNameLabel;
 @property (weak, nonatomic) IBOutlet UILabel *screenNameLabel;
+@property (weak, nonatomic) IBOutlet UIButton *twitterButton;
 
 @property (nonatomic, readonly) NSString *screenName;
 - (void)setScreenName:(NSString *)screenName;
