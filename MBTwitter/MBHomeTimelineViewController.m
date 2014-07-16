@@ -171,7 +171,7 @@
 }
 
 #pragma mark AOuthAPICenter Delegate
-- (void)twitterAPICenter:(MBAOuth_TwitterAPICenter *)center parsedUsers:(NSArray *)users
+- (void)twitterAPICenter:(MBAOuth_TwitterAPICenter *)center requestType:(MBRequestType)requestType parsedUsers:(NSArray *)users
 {
     NSLog(@"user count = %d", users.count);
 }
