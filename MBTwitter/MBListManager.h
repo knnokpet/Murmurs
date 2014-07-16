@@ -19,6 +19,9 @@
 @property (nonatomic, readonly) NSMutableArray *ownerShipLists;
 @property (nonatomic, readonly) NSMutableArray *subscriptionLists;
 
+@property (nonatomic) NSNumber *ownerNextCursor;
+@property (nonatomic) NSNumber *subscriveNextCursor;
+
 - (instancetype)initWithUser:(MBUser *)user;
 - (void)setOwner:(MBUser *)owner;
 

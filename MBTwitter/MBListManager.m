@@ -44,6 +44,8 @@
     _ownerShipLists = [NSMutableArray array];
     _subscriptionLists = [NSMutableArray array];
     _lists = [NSMutableArray arrayWithObjects:self.ownerShipLists, self.subscriptionLists, nil];
+    _ownerNextCursor = [NSNumber numberWithInteger:-1];
+    _subscriveNextCursor = [NSNumber numberWithInteger:-1];
     
     _timelineManagers = [NSMutableDictionary dictionary]; /* 自身のアカウント使用時でしか使われないため、普遍的ではない。 */
 }
