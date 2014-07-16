@@ -8,9 +8,10 @@
 
 #import <UIKit/UIKit.h>
 #import "MBAOuth_TwitterAPICenter.h"
+#import "MBSelecting_ListViewController.h"
 
 @class MBUser;
-@interface MBDetailUserViewController : UIViewController <MBAOuth_TwitterAPICenterDelegate, UIScrollViewDelegate>
+@interface MBDetailUserViewController : UIViewController <MBAOuth_TwitterAPICenterDelegate, MBSelecting_ListViewControllerDelegate, UIScrollViewDelegate, UIActionSheetDelegate>
 
 @property (nonatomic, readonly) MBUser *user;
 @property (weak, nonatomic) IBOutlet UITableView *tableView;

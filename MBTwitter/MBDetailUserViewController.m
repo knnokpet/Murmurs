@@ -25,7 +25,7 @@
 #import "MBProfileAvatorView.h"
 #import "MBProfileDesciptionView.h"
 #import "MBProfileInfomationView.h"
-#import "MBDetailUserTableViewCell.h"
+#import "MBDetailUserActionTableViewCell.h"
 
 static NSString *detailUserTableViewCellIdentifier = @"MBDetailUserTableViewCellIdentifier";
 
@@ -42,6 +42,8 @@ static NSString *detailUserTableViewCellIdentifier = @"MBDetailUserTableViewCell
 @property (nonatomic) MBProfileDesciptionView *profileDescriptionView;
 @property (nonatomic) MBProfileInfomationView *profileInformationView;
 @property (nonatomic) UIPageControl *pageControl;
+
+@property (nonatomic) NSMutableArray *otherActions;
 
 @end
 
@@ -91,8 +93,6 @@ static NSString *detailUserTableViewCellIdentifier = @"MBDetailUserTableViewCell
     self.tableView.dataSource = self;
     self.tableView.delegate = self;
     
-    UINib *actionNib = [UINib nibWithNibName:@"MBDetailUserTableViewCell" bundle:nil];
-    [self.tableView registerNib:actionNib forCellReuseIdentifier:detailUserTableViewCellIdentifier];
     
     CGFloat tableHeaderHeight = 160.0f;
     UIView *tableHeaderView = [[UIView alloc] initWithFrame:CGRectMake(0.0, 0.0, self.view.frame.size.width, tableHeaderHeight)];
@@ -191,6 +191,7 @@ static NSString *detailUserTableViewCellIdentifier = @"MBDetailUserTableViewCell
     // Do any additional setup after loading the view.
     [self configureModel];
     [self configureView];
+    [self configureOtherActions];
     
     if (self.user.requireLoading) {
         [self.aoAPICenter getUser:[self.user.userID unsignedLongLongValue] screenName:self.user.screenName];
@@ -317,8 +318,54 @@ static NSString *detailUserTableViewCellIdentifier = @"MBDetailUserTableViewCell
         [self downloadAvatorImage];
     }
     
-    if(NO == self.user.requireLoading && self.user.userID) {
+    if(NO == self.user.requireLoading && self.user.userID && !self.user.relationship) {
         [self.aoAPICenter getRelationshipsOfMyAccountsWith:@[self.user.userID]];
+    }
+}
+
+- (void)configureOtherActions
+{
+    self.otherActions = [NSMutableArray array];
+    if (self.user.relationship) {
+        MBRelationship *relation = self.user.relationship;
+        
+        NSString *listAction = NSLocalizedString(@"Add / Remove List", nil);
+        NSString *followAction;
+        if (relation.isFollowing) {
+            followAction = NSLocalizedString(@"UnFollow", nil);
+        } else if (relation.sentFollowRequest) {
+            followAction = NSLocalizedString(@"Cancel Request", nil);
+        }
+        
+        NSString *blockAction;
+        if (relation.isBlocking) {
+            blockAction = NSLocalizedString(@"Cancel Blocking", nil);
+        } else {
+            blockAction = NSLocalizedString(@"Block User", nil);
+        }
+        
+        NSString *spamAction = NSLocalizedString(@"Spam Report", nil);
+        
+        NSString *muteAction;
+        if (relation.isMuting) {
+            muteAction = NSLocalizedString(@"Cancel Mute", nil);
+        } else {
+            muteAction = NSLocalizedString(@"Mute", nil);
+        }
+        
+        
+        if (relation.isBlocking) {
+            [self.otherActions addObject:blockAction];
+            [self.otherActions addObject:spamAction];
+        } else {
+            [self.otherActions addObject:listAction];
+            if (followAction) {
+                [self.otherActions addObject:followAction];
+            }
+            [self.otherActions addObject:blockAction];
+            //[self.otherActions addObject:muteAction];
+            [self.otherActions addObject:spamAction];
+        }
     }
 }
 
@@ -328,6 +375,41 @@ static NSString *detailUserTableViewCellIdentifier = @"MBDetailUserTableViewCell
 }
 - (IBAction)didPushUnfollowButton:(id)sender {
     [self.aoAPICenter postUnfollowForUserID:[self.user.userID unsignedLongLongValue] screenName:self.user.screenName];
+}
+
+- (void)didPushFollowButton
+{
+    [self.aoAPICenter postFollowForUserID:[self.user.userID unsignedLongLongValue] screenName:self.user.screenName];
+}
+
+- (void)didPushUnFollowButton
+{
+    [self.aoAPICenter postUnfollowForUserID:[self.user.userID unsignedLongLongValue] screenName:self.user.screenName];
+}
+
+- (void)didPushCancelBlockingButton
+{
+    [self.aoAPICenter postDestroyBlockForUserID:[self.user.userID unsignedLongLongValue] screenName:self.user.screenName];
+}
+
+- (void)didPushBlockButton
+{
+    [self.aoAPICenter postBlockForUserID:[self.user.userID unsignedLongLongValue] screenName:self.user.screenName];
+}
+
+- (void)didPushCancelMuteButton
+{
+    [self.aoAPICenter postDestroyMuteForUserID:[self.user.userID unsignedLongLongValue] screenName:self.user.screenName];
+}
+
+- (void)didPushMuteButton
+{
+    [self.aoAPICenter postMuteForUserID:[self.user.userID unsignedLongLongValue] screenName:self.user.screenName];
+}
+
+- (void)didPushSpamButton
+{
+    [self.aoAPICenter postSpamForUserID:[self.user.userID unsignedLongLongValue] screenName:self.user.screenName];
 }
 
 - (void)didPushReplyButton
@@ -340,9 +422,18 @@ static NSString *detailUserTableViewCellIdentifier = @"MBDetailUserTableViewCell
     
 }
 
+
 - (void)didPushOtherButton
 {
+    UIActionSheet *actionSheet = [[UIActionSheet alloc] init];
+    actionSheet.delegate = self;
+    for (NSString *buttonTitle in self.otherActions) {
+        [actionSheet addButtonWithTitle:buttonTitle];
+    }
+    [actionSheet addButtonWithTitle:NSLocalizedString(@"Chancel", nil)];
+    actionSheet.cancelButtonIndex = self.otherActions.count;
     
+    [actionSheet showFromTabBar:self.tabBarController.tabBar];
 }
 
 #pragma mark -
@@ -368,7 +459,10 @@ static NSString *detailUserTableViewCellIdentifier = @"MBDetailUserTableViewCell
     
     if (0 == indexPath.section) {
         cell = [self.tableView dequeueReusableCellWithIdentifier:detailUserTableViewCellIdentifier];
-        [self updateActionCell:(MBDetailUserTableViewCell *)cell];
+        if (!cell) {
+            cell = [[MBDetailUserActionTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:detailUserTableViewCellIdentifier];
+        }
+        [self updateActionCell:(MBDetailUserActionTableViewCell *)cell];
     } else {
         cell = [self.tableView dequeueReusableCellWithIdentifier:CellIdentifier];
         if (nil == cell) {
@@ -380,16 +474,29 @@ static NSString *detailUserTableViewCellIdentifier = @"MBDetailUserTableViewCell
     return cell;
 }
 
-- (void)updateActionCell:(MBDetailUserTableViewCell *)cell
+- (void)updateActionCell:(MBDetailUserActionTableViewCell *)cell
 {
     if (self.user.relationship) {
         MBRelationship *relationship = self.user.relationship;
+        
         BOOL canFollow = (relationship.isFollowing) ? NO : YES;
         cell.canFollow = canFollow;
         
         BOOL canMessage = (relationship.followdByTheUser) ? YES : NO;
         cell.canMessage = canMessage;
+        
+        cell.followsMyAccount = relationship.followdByTheUser;
+        
+        cell.sentFollowRequest = relationship.sentFollowRequest;
+        
+        cell.isBlocking = relationship.isBlocking;
+        
+        
     }
+    
+    // add Target
+    [cell.followButton addTarget:self action:@selector(didPushFollowButton) forControlEvents:UIControlEventTouchUpInside];
+    [cell.otherButton addTarget:self action:@selector(didPushOtherButton) forControlEvents:UIControlEventTouchUpInside];
 }
 
 - (void)updateCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
@@ -474,11 +581,35 @@ static NSString *detailUserTableViewCellIdentifier = @"MBDetailUserTableViewCell
 */
 
 #pragma mark -AOuthAPICenter Delegate
-- (void)twitterAPICenter:(MBAOuth_TwitterAPICenter *)center parsedUsers:(NSArray *)users
+- (void)twitterAPICenter:(MBAOuth_TwitterAPICenter *)center requestType:(MBRequestType)requestType parsedUsers:(NSArray *)users
 {
     MBUser *user = [users firstObject];
     if (user) {
+        NSLog(@"screen %@ chara %@", user.screenName, user.characterName);
         [self setUser:user];
+        
+        if (requestType == MBTwitterFriendShipsCreateRequest) {
+            if (self.user.isProtected) {
+                self.user.relationship.sentFollowRequest = YES;
+            } else {
+                self.user.relationship.isFollowing = YES;
+            }
+        } else if (requestType == MBTwitterFriendShipsDestroyRequest) {
+            self.user.relationship.isFollowing = NO;
+            self.user.relationship.sentFollowRequest = NO;
+        } else if (requestType == MBTwitterBlocksCreateRequest) {
+            self.user.relationship.isBlocking = YES;
+        } else if (requestType == MBTwitterBlocksDestroyRequest) {
+            self.user.relationship.isBlocking = NO;
+        } else if (requestType == MBTwitterMuteCreaterequest) {
+            self.user.relationship.isMuting = YES;
+        } else if (requestType == MBTwitterMuteDestroyRequest) {
+            self.user.relationship.isMuting = NO;
+        } else if (requestType == MBTwitterUsersReportSpamRequest) {
+            self.user.relationship.isBlocking = YES;
+        }
+        
+        [self configureOtherActions];
         [self updateViews];
     }
 }
@@ -492,7 +623,8 @@ static NSString *detailUserTableViewCellIdentifier = @"MBDetailUserTableViewCell
             if (NSOrderedSame == [self.user.userID compare:relationship.userID]) {
                 self.user.relationship = relationship;
                 UITableViewCell *actionCell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
-                [self updateActionCell:(MBDetailUserTableViewCell *)actionCell];
+                [self updateActionCell:(MBDetailUserActionTableViewCell *)actionCell];
+                [self configureOtherActions];
             }
         }
         NSLog(@"relation count = %d", relationships.count);
@@ -520,6 +652,47 @@ static NSString *detailUserTableViewCellIdentifier = @"MBDetailUserTableViewCell
     } else if (self.scrollView == scrollView) {
         CGFloat viewWidth = self.view.frame.size.width;
         self.pageControl.currentPage = (self.scrollView.contentOffset.x + 1) / viewWidth;
+    }
+}
+
+#pragma mark MBSelecting_MyListViewController Delegate
+- (void)cancelSelectingListViewController:(MBSelecting_ListViewController *)controller animated:(BOOL)animated
+{
+    [controller dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (void)doneSelectingListViewController:(MBSelecting_ListViewController *)controller animated:(BOOL)animated
+{
+    [controller dismissViewControllerAnimated:YES completion:nil];
+}
+
+#pragma mark UIActionsheetView Delegate
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    NSString *buttonTitle = [actionSheet buttonTitleAtIndex:buttonIndex];
+    if ([buttonTitle isEqualToString:NSLocalizedString(@"Add / Remove List", nil)]) {
+        MBSelecting_ListViewController *selectingListViewController = [[MBSelecting_ListViewController alloc] initWithNibName:@"MBListViewController" bundle:nil];
+        selectingListViewController.delegate = self;
+        [selectingListViewController setSelectingUser:self.user];
+        UINavigationController *listNavigationController = [[UINavigationController alloc] initWithRootViewController:selectingListViewController];
+        [self.navigationController presentViewController:listNavigationController animated:YES completion:nil];
+        
+    } else if ([buttonTitle isEqualToString:NSLocalizedString(@"UnFollow", nil)]) {
+        [self didPushUnFollowButton];
+    } else if ([buttonTitle isEqualToString:NSLocalizedString(@"Cancel Request", nil)]) {
+        [self didPushUnFollowButton];
+    } else if ([buttonTitle isEqualToString:NSLocalizedString(@"Cancel Blocking", nil)]) {
+        [self didPushCancelBlockingButton];
+    } else if ([buttonTitle isEqualToString:NSLocalizedString(@"Block User", nil)]) {
+        [self didPushBlockButton];
+    } else if ([buttonTitle isEqualToString:NSLocalizedString(@"Cancel Mute", nil)]) {
+        
+    } else if ([buttonTitle isEqualToString:NSLocalizedString(@"Mute", nil)]) {
+        
+    } else if ([buttonTitle isEqualToString:NSLocalizedString(@"Spam Report", nil)]) {
+        [self didPushSpamButton];
+    } else if (buttonIndex == actionSheet.cancelButtonIndex) {
+        
     }
 }
 
