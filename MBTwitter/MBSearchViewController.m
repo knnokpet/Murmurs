@@ -38,7 +38,7 @@
 {
     // searchBar
     _searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 300, 44)];
-    self.searchBar.barStyle = UISearchBarStyleMinimal;
+    self.searchBar.barStyle = UISearchBarStyleDefault;
     NSString *searchBarPlaceHolder = NSLocalizedString(@"Search for Tweet or User", nil);
     [self.searchBar setPlaceholder:searchBarPlaceHolder];
     self.searchBar.delegate = self;
