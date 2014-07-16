@@ -39,7 +39,7 @@
     }
 }
 
-- (void)commonConfigureNavigationitem
+- (void)configureNavigationitem
 {
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(didPushRefreshButton)];
     self.navigationItem.rightBarButtonItem = self.editButtonItem;
@@ -130,7 +130,8 @@
 - (void)didPushAddListButton
 {
     if ([self reachsTheLimitOfList]) {
-        NSLog(@"リストの限界に達しています");
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil message:NSLocalizedString(@"Limit the Limit of List", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
+        [alertView show];
     }
     
     MBCreateListViewController *createListViewController = [[MBCreateListViewController alloc] init];
@@ -243,7 +244,7 @@
 }
 
 #pragma mark AouthAPICenter
-- (void)twitterAPICenter:(MBAOuth_TwitterAPICenter *)center parsedUsers:(NSArray *)users
+- (void)twitterAPICenter:(MBAOuth_TwitterAPICenter *)center requestType:(MBRequestType)requestType parsedUsers:(NSArray *)users
 {
     MBUser *myUser = [users firstObject];
     if (myUser) {
