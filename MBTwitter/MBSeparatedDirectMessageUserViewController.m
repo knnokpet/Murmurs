@@ -18,6 +18,8 @@
 #import "MBAccount.h"
 #import "MBUser.h"
 #import "MBImageApplyer.h"
+#import "NSString+TimeMargin.h"
+#import "MBTweetTextComposer.h"
 
 #import "MBUserIDManager.h"
 
@@ -66,6 +68,12 @@
     
     self.tableView.dataSource = self;
     self.tableView.delegate = self;
+    
+    /* remove nonContent's separator */
+    UIView *view = [[UIView alloc] init];
+    view.backgroundColor  = [UIColor clearColor];
+    [self.tableView setTableHeaderView:view];
+    [self.tableView setTableFooterView:view];
     
     // refreshControl
     _refreshControl = [[UIRefreshControl alloc] init];
@@ -241,11 +249,20 @@
 
     MBUser *user = [[MBUserManager sharedInstance] storedUserForKey:userKey];
     
-    cell.screenNameLabel.text = user.screenName;
-    cell.characterNameLabel.text = user.characterName;
-    cell.dateLabel.text = [[[NSDateFormatter alloc] init] stringFromDate:lastMessage.createdDate];
-    cell.subtitleLabel.text = lastMessage.tweetText;
     
+    // timeInterval
+    NSString *timeInterval = [NSString timeMarginWithDate:lastMessage.createdDate];
+    [cell setDateString:timeInterval];
+    
+    // charaScreenNameView
+    [cell setCharaScreenString:[MBTweetTextComposer attributedStringForTimelineUser:user charFont:[UIFont systemFontOfSize:15.0f] screenFont:[UIFont systemFontOfSize:14.0f]]];
+    
+    // subtitleText
+    [cell setSubtitleString:lastMessage.tweetText];
+    
+    // avatorImage
+    [cell setUserIDStr:user.userIDStr];
+    cell.avatorImageView.delegate = self;
     UIImage *avatorImage = [[MBImageCacher sharedInstance] cachedProfileImageForUserID:user.userIDStr];
     if (!avatorImage) {
         if (NO == user.isDefaultProfileImage) {
@@ -254,11 +271,11 @@
                     if (image) {
                         [[MBImageCacher sharedInstance] storeProfileImage:image data:imageData forUserID:user.userIDStr];
                         
-                        CGSize imageSize = CGSizeMake(cell.iconImageView.frame.size.width, cell.iconImageView.frame.size.height);
-                        UIImage *radiusImage = [MBImageApplyer imageForTwitter:image byScallingToFillSize:imageSize radius:cell.iconImageView.layer.cornerRadius];
+                        CGSize imageSize = CGSizeMake(cell.avatorImageView.frame.size.width, cell.avatorImageView.frame.size.height);
+                        UIImage *radiusImage = [MBImageApplyer imageForTwitter:image byScallingToFillSize:imageSize radius:cell.avatorImageView.layer.cornerRadius];
 
                         dispatch_async(dispatch_get_main_queue(), ^{
-                            cell.iconImageView.image = radiusImage;
+                            cell.avatorImageView.image = radiusImage;
                         });
                     }
                 }failedHandler:^(NSURLResponse *response, NSError *error){
@@ -268,10 +285,10 @@
         }
     } else {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
-            CGSize imageSize = CGSizeMake(cell.iconImageView.frame.size.width, cell.iconImageView.frame.size.height);
-            UIImage *radiusImage = [MBImageApplyer imageForTwitter:avatorImage byScallingToFillSize:imageSize radius:cell.iconImageView.layer.cornerRadius];
+            CGSize imageSize = CGSizeMake(cell.avatorImageView.frame.size.width, cell.avatorImageView.frame.size.height);
+            UIImage *radiusImage = [MBImageApplyer imageForTwitter:avatorImage byScallingToFillSize:imageSize radius:cell.avatorImageView.layer.cornerRadius];
             dispatch_async(dispatch_get_main_queue(), ^{
-                cell.iconImageView.image = radiusImage;
+                cell.avatorImageView.image = radiusImage;
             });
         });
     }
@@ -370,7 +387,7 @@
     }
 }
 
-- (void)twitterAPICenter:(MBAOuth_TwitterAPICenter *)center parsedUsers:(NSArray *)users
+- (void)twitterAPICenter:(MBAOuth_TwitterAPICenter *)center requestType:(MBRequestType)requestType parsedUsers:(NSArray *)users
 {
     if (0 < users.count) {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
