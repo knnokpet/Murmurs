@@ -24,8 +24,6 @@
 @property (nonatomic, readonly) MBUser *user;
 @property (nonatomic) MBAOuth_TwitterAPICenter *aoAPICenter;
 @property (nonatomic) MBListManager *listManager;
-@property (nonatomic) NSNumber *ownershipNextCursor;
-@property (nonatomic) NSNumber *subscriveNextCursor;
 @property (nonatomic, assign) BOOL enableAdding;
 
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
@@ -36,11 +34,14 @@
 - (void)configureListManager;
 - (void)commonConfigureModel;
 - (void)commonConfigureView;
-- (void)commonConfigureNavigationitem;
+- (void)configureNavigationitem;
 - (void)didPushRefreshButton;
 - (void)didPushAddListButton;
 
 - (void)goBacksLists;
+- (void)backOwnerLists;
+- (void)backSubscriveLists;
+- (void)updateCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath;
 - (void)updateTableViewDataSource:(NSArray *)addingData;
 
 @end

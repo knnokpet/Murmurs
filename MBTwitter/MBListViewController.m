@@ -39,6 +39,7 @@
 - (void)configureListManager
 {
     _listManager = [[MBListManager alloc] init];
+    _listManager.owner = self.user;
 }
 
 - (void)commonConfigureModel
@@ -50,7 +51,7 @@
 
 - (void)commonConfigureView
 {
-    [self commonConfigureNavigationitem];
+    [self configureNavigationitem];
     
     self.tableView.dataSource = self;
     self.tableView.delegate = self;
@@ -61,15 +62,16 @@
     [self.tableView setTableHeaderView:view];
     [self.tableView setTableFooterView:view];
     
-    _loadingView = [[MBLoadingView alloc] initWithFrame:self.view.bounds];
-    //[self.view insertSubview:self.loadingView aboveSubview:self.tableView];
+    if (self.listManager.ownerShipLists.count == 0 && self.listManager.subscriptionLists.count == 0) {
+        _loadingView = [[MBLoadingView alloc] initWithFrame:self.view.bounds];
+        [self.view insertSubview:self.loadingView aboveSubview:self.tableView];
+    }
+    
     
     self.enableAdding = NO;
-    self.ownershipNextCursor = [NSNumber numberWithInt:-1];
-    self.subscriveNextCursor = [NSNumber numberWithInt:-1];
 }
 
-- (void)commonConfigureNavigationitem
+- (void)configureNavigationitem
 {
 
 }
@@ -81,9 +83,7 @@
     
     [self commonConfigureModel];
     [self commonConfigureView];
-    [self commonConfigureNavigationitem];
     
-    [self goBacksLists];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -113,7 +113,7 @@
 
 - (void)backOwnerLists
 {
-    long long cursor = [self.ownershipNextCursor longLongValue];
+    long long cursor = [self.listManager.ownerNextCursor longLongValue];
     if (0 == cursor) {
         return;
     } else {
@@ -123,11 +123,23 @@
 
 - (void)backSubscriveLists
 {
-    long long cursor = [self.ownershipNextCursor longLongValue];
+    long long cursor = [self.listManager.subscriveNextCursor longLongValue];
     if (0 == cursor) {
         return;
     } else {
         [self.aoAPICenter getListsOfSubscriptionWithUser:[self.user.userID unsignedLongLongValue] screenName:self.user.screenName cursor:cursor];
+    }
+}
+
+- (void)removeLoadingView
+{
+    if (self.loadingView.superview) {
+        [UIView animateWithDuration:1.0f animations:^{
+            [self.loadingView setHidden:YES];
+        }completion:^(BOOL finished){
+            [self.loadingView removeFromSuperview];
+            _loadingView = nil;
+        }];
     }
 }
 
@@ -229,19 +241,8 @@
     }
     self.enableAdding = YES;
     
-    if (0 != [self.ownershipNextCursor longLongValue] || 0 != [self.subscriveNextCursor longLongValue] ) {
-        [self goBacksLists];
-    }
-    
     // ラウンチ時に表示されている UIActivityView を remove
-    if (self.loadingView.superview) {
-        [UIView animateWithDuration:1.0f animations:^{
-            [self.loadingView setHidden:YES];
-        }completion:^(BOOL finished){
-            [self.loadingView removeFromSuperview];
-            _loadingView = nil;
-        }];
-    }
+    [self removeLoadingView];
     
 }
 
@@ -250,26 +251,36 @@
 - (void)twitterAPICenter:(MBAOuth_TwitterAPICenter *)center parsedLists:(NSArray *)lists next:(NSNumber *)next previous:(NSNumber *)previous
 {
     if (!lists || !next || !previous) {
+        [self removeLoadingView];
         return;
     }
     
-    NSLog(@"count = %d", [lists count]);
+    
     MBList *addingList = [lists firstObject];
     if (!addingList) {
+        [self removeLoadingView];
         return ;
     }
     MBUser *ownerOfList = addingList.user;
     if (!ownerOfList) {
+        [self removeLoadingView];
         return;
     }
     
+    [self updateTableViewDataSource:lists];
+    
     if (NSOrderedSame == [self.user.userID compare:ownerOfList.userID]) {
-        self.ownershipNextCursor = next;
+        self.listManager.ownerNextCursor = next;
+        if (next != 0) {
+            [self backOwnerLists];
+        }
     } else {
-        self.subscriveNextCursor = next;
+        self.listManager.subscriveNextCursor = next;
+        if (next != 0) {
+            [self backSubscriveLists];
+        }
     }
     
-    [self updateTableViewDataSource:lists];
 }
 
 @end
