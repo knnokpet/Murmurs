@@ -127,11 +127,11 @@
 
 - (void)createButtons
 {
-    MBTimelineActionButton *hoge1Button = [[MBTimelineActionButton alloc] initWithTitle:@"Reply" image:[UIImage imageNamed:@"Message-2@x"]];
+    MBTimelineActionButton *hoge1Button = [[MBTimelineActionButton alloc] initWithTitle:@"Reply" image:[UIImage imageNamed:@"Reply"]];
     [hoge1Button addTarget:self action:@selector(didPushReplyButton) forControlEvents:UIControlEventTouchUpInside];
-    MBTimelineActionButton *hoge2Button = [[MBTimelineActionButton alloc] initWithTitle:@"Retwet" image:[UIImage imageNamed:@"Message-2@x"]];
+    MBTimelineActionButton *hoge2Button = [[MBTimelineActionButton alloc] initWithTitle:@"Retweet" image:[UIImage imageNamed:@"Retweet"]];
     [hoge2Button addTarget:self action:@selector(didPushRetweetButton) forControlEvents:UIControlEventTouchUpInside];
-    MBTimelineActionButton *hoge3Button = [[MBTimelineActionButton alloc] initWithTitle:@"Favorite" image:[UIImage imageNamed:@"Message-2@x"]];
+    MBTimelineActionButton *hoge3Button = [[MBTimelineActionButton alloc] initWithTitle:@"Favorite" image:[UIImage imageNamed:@"Favorite"]];
     [hoge3Button addTarget:self action:@selector(didPushFavoriteButton) forControlEvents:UIControlEventTouchUpInside];
     [self setButtonItems:@[hoge1Button, hoge2Button, hoge3Button]];
 }
