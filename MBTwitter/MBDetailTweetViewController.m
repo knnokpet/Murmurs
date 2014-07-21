@@ -70,7 +70,6 @@ static NSString *retweetStr = @"ret";
     if (self) {
         // Custom initialization
         
-        _expandingDataSource = [NSMutableArray array];
     }
     return self;
 }
@@ -81,7 +80,7 @@ static NSString *retweetStr = @"ret";
 {
     _tweet = tweet;
     
-    
+    _expandingDataSource = [NSMutableArray array];
     if (tweet.favoritedCount > 0) {
         NSDictionary *favoritDict = @{countKey: [NSNumber numberWithInteger:tweet.favoritedCount], contentKey: NSLocalizedString(@"Favorite", nil), contentIdentifier: favoriteStr};
         [self.expandingDataSource addObject:favoritDict];
@@ -343,11 +342,11 @@ static NSString *retweetStr = @"ret";
             
             dispatch_queue_t globalQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0);
             dispatch_async(globalQueue, ^{
-                [MBImageDownloader downloadBigImageWithURL:user.urlHTTPSAtProfileImage completionHandler:^(UIImage *image, NSData *imageData){
+                [MBImageDownloader downloadOriginImageWithURL:user.urlHTTPSAtProfileImage completionHandler:^(UIImage *image, NSData *imageData){
                     if (image) {
                         [[MBImageCacher sharedInstance] storeProfileImage:image data:imageData forUserID:user.userIDStr];
                         CGSize imageSize = CGSizeMake(cell.avatorImageView.frame.size.width, cell.avatorImageView.frame.size.height);
-                        UIImage *radiusImage = [MBImageApplyer imageForTwitter:image byScallingToFillSize:imageSize radius:cell.avatorImageView.layer.cornerRadius];
+                        UIImage *radiusImage = [MBImageApplyer imageForTwitter:image size:imageSize radius:cell.avatorImageView.layer.cornerRadius];
                         [[MBImageCacher sharedInstance] storeTimelineImage:image forUserID:user.userIDStr];
                         
                         dispatch_async(dispatch_get_main_queue(), ^{
@@ -365,7 +364,7 @@ static NSString *retweetStr = @"ret";
     } else {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
             CGSize imageSize = CGSizeMake(cell.avatorImageView.frame.size.width, cell.avatorImageView.frame.size.height);
-            UIImage *radiusImage = [MBImageApplyer imageForTwitter:avatorImage byScallingToFillSize:imageSize radius:cell.avatorImageView.layer.cornerRadius];
+            UIImage *radiusImage = [MBImageApplyer imageForTwitter:avatorImage size:imageSize radius:cell.avatorImageView.layer.cornerRadius];
             dispatch_async(dispatch_get_main_queue(), ^{
                 cell.avatorImageView.image = radiusImage;
             });
@@ -498,13 +497,10 @@ static NSString *retweetStr = @"ret";
 #pragma mark AOuth_APICenterDelegate
 - (void)twitterAPICenter:(MBAOuth_TwitterAPICenter *)center parsedTweets:(NSArray *)tweets
 {
-    id obj = [tweets firstObject];
-    NSLog(@"class %@ count %d", [obj class], [tweets count]);
-    if ([obj isKindOfClass:[MBTweet class]]) {
-        MBTweet *tweet = (MBTweet *)obj;
+    MBTweet *tweet = [tweets firstObject];
+    if (tweet) {
         [self setTweet:tweet];
         [self.tableView reloadData];
-        
     }
 }
 
