@@ -20,7 +20,8 @@ static NSString *retweetCellIdentifier = @"RetweetTableViewCellIdentifier";
 @property (nonatomic) MBZoomTransitioning *zoomTransitioning;
 
 @property (nonatomic) NSInteger saveIndex;
-@property (nonatomic, assign) BOOL enableAdding;
+@property (nonatomic, assign) BOOL enableBacking;
+@property (nonatomic, assign) BOOL backsTimeline;
 
 @end
 
@@ -50,7 +51,8 @@ static NSString *retweetCellIdentifier = @"RetweetTableViewCellIdentifier";
     [self configureTimelineManager];
     _aoAPICenter = [[MBAOuth_TwitterAPICenter alloc] init];
     self.aoAPICenter.delegate = self;
-    self.enableAdding = NO;
+    self.enableBacking = YES;
+    self.backsTimeline = NO;
     
     self.saveIndex = 0;
 }
@@ -70,6 +72,22 @@ static NSString *retweetCellIdentifier = @"RetweetTableViewCellIdentifier";
     [self.tableView registerNib:gapedCellNib forCellReuseIdentifier:gapedCellIdentifier];
     UINib *retweetCel = [UINib nibWithNibName:@"TweetTavbleViewCell" bundle:nil];
     [self.tableView registerNib:retweetCel forCellReuseIdentifier:retweetCellIdentifier];
+    
+    // remove nonCell separator
+    UIView *view = [[UIView alloc] init];
+    view.backgroundColor = [UIColor clearColor];
+    self.tableView.tableHeaderView = view;
+    
+    // backTimelineIndicator
+    UIActivityIndicatorView *indicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    [indicatorView startAnimating];
+    CGFloat bottomMargin = 4.0f;
+    CGFloat indicatorHeight = indicatorView.frame.size.height;
+    UIView *indicatorContanerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.tableView.bounds.size.width, indicatorHeight + bottomMargin * 2)];
+    [indicatorContanerView addSubview:indicatorView];
+    indicatorView.center = indicatorContanerView.center;
+    self.tableView.tableFooterView = indicatorContanerView;
+    
     
     // refreshControl
     _refreshControl = [[UIRefreshControl alloc] init];
@@ -164,6 +182,13 @@ static NSString *retweetCellIdentifier = @"RetweetTableViewCellIdentifier";
     }
 }
 
+- (void)removeBackTimelineIndicatorView
+{
+    UIView *view = [[UIView alloc] init];
+    view.backgroundColor = [UIColor clearColor];
+    self.tableView.tableFooterView = view;
+}
+
 #pragma mark save & load Tweets
 - (void)saveTimeline
 {
@@ -173,7 +198,12 @@ static NSString *retweetCellIdentifier = @"RetweetTableViewCellIdentifier";
 
 - (void)goBacksAtIndex:(NSInteger )index
 {
-    self.enableAdding = NO;
+    if (self.enableBacking == NO) {
+        return;
+    }
+    
+    self.enableBacking = NO;
+    self.backsTimeline = YES;
     if (0 == index) {
         NSArray *savedTweets = [self savedTweetsAtIndex:index];
         if (0 < [savedTweets count]) {
@@ -211,7 +241,6 @@ static NSString *retweetCellIdentifier = @"RetweetTableViewCellIdentifier";
 
 - (void)backTimeline
 {
-    self.enableAdding = NO;
     unsigned long long maxid;
     if (0 < [self.dataSource count]) {
         
@@ -307,7 +336,7 @@ static NSString *retweetCellIdentifier = @"RetweetTableViewCellIdentifier";
     NSInteger textViewWidth = tableViewForCalculate.bounds.size.width - (64.0f + 8.0f);
     CGRect textRect = [MBTweetTextView frameRectWithAttributedString:attributedString constraintSize:CGSizeMake(textViewWidth, CGFLOAT_MAX) lineSpace:LINE_SPACING font:[UIFont systemFontOfSize:FONT_SIZE]];
     
-    CGFloat tweetViewSpace = 32.0f;
+    CGFloat tweetViewSpace = 30.0f;
     CGFloat bottomHeight = 0.0f;
     CGFloat verticalMargin = 12.0f;
     if (isRetweet) {
@@ -390,10 +419,6 @@ static NSString *retweetCellIdentifier = @"RetweetTableViewCellIdentifier";
         tweetAtIndexPath = [[MBTweetManager sharedInstance] storedTweetForKey:key];
         if (nil != tweetAtIndexPath.tweetOfOriginInRetweet) {
             MBTweet *retweetedTweet = tweetAtIndexPath.tweetOfOriginInRetweet;
-            NSString *retweetText = NSLocalizedString(@"Retweeted by ", nil);
-            NSString *textWithUser = [NSString stringWithFormat:@"%@%@", retweetText, tweetAtIndexPath.tweetUser.characterName];
-            cell.retweetView.attributedString = [MBTweetTextComposer attributedStringForTimelineDate:textWithUser font:[UIFont systemFontOfSize:12.0f] screeName:retweetedTweet.tweetUser.screenName tweetID:[tweetAtIndexPath.tweetID unsignedLongLongValue]];
-            
             tweetAtIndexPath = retweetedTweet;
         }
     }
@@ -406,9 +431,8 @@ static NSString *retweetCellIdentifier = @"RetweetTableViewCellIdentifier";
     
     // retweetView
     if (cell.retweetView.superview) {
-        NSString *retweetText = NSLocalizedString(@"retweeted by ", nil);
-        NSString *textWithUser = [NSString stringWithFormat:@"%@%@", retweetText, tweet.tweetUser.characterName];
-        cell.retweetView.attributedString = [MBTweetTextComposer attributedStringForTimelineDate:textWithUser font:[UIFont systemFontOfSize:12.0f] screeName:tweet.tweetUser.screenName tweetID:[tweetAtIndexPath.tweetID unsignedLongLongValue]];
+        cell.retweetView.attributedString = [MBTweetTextComposer attributedStringForTimelineRetweeter:tweet.tweetUser font:[UIFont systemFontOfSize:15.0f]];
+        cell.retweetView.delegate = self;
     }
     
     MBUser *userAtIndexPath = tweetAtIndexPath.tweetUser;
@@ -416,6 +440,7 @@ static NSString *retweetCellIdentifier = @"RetweetTableViewCellIdentifier";
     // timeView
     NSString *timeIntervalString = [NSString timeMarginWithDate:tweetAtIndexPath.createdDate];
     [cell setDateString:[MBTweetTextComposer attributedStringForTimelineDate:timeIntervalString font:[UIFont systemFontOfSize:12.0f] screeName:userAtIndexPath.screenName tweetID:[tweetAtIndexPath.tweetID unsignedLongLongValue]]];
+    cell.dateView.delegate = self;
     
     // charaScreenNameView
     [cell setCharaScreenString:[MBTweetTextComposer attributedStringForTimelineUser:tweetAtIndexPath.tweetUser charFont:[UIFont systemFontOfSize:15.0f] screenFont:[UIFont systemFontOfSize:14.0f]]];
@@ -434,16 +459,16 @@ static NSString *retweetCellIdentifier = @"RetweetTableViewCellIdentifier";
     cell.avatorImageView.delegate = self;
     UIImage *avatorImage = [[MBImageCacher sharedInstance] cachedTimelineImageForUser:userAtIndexPath.userIDStr];
     if (!avatorImage) {
-        cell.avatorImageView.image = [UIImage imageNamed:@"DefaultImage@2x"];
+        cell.avatorImageView.image = [UIImage imageNamed:@"DefaultImage"];
         if (NO == tweetAtIndexPath.tweetUser.isDefaultProfileImage) {
             
             dispatch_queue_t globalQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0);
             dispatch_async(globalQueue, ^{
-                [MBImageDownloader downloadBigImageWithURL:userAtIndexPath.urlHTTPSAtProfileImage completionHandler:^(UIImage *image, NSData *imageData){
+                [MBImageDownloader downloadOriginImageWithURL:userAtIndexPath.urlHTTPSAtProfileImage completionHandler:^(UIImage *image, NSData *imageData){
                     if (image) {
                         [[MBImageCacher sharedInstance] storeProfileImage:image data:imageData forUserID:userAtIndexPath.userIDStr];
                         CGSize imageSize = CGSizeMake(cell.avatorImageView.frame.size.width, cell.avatorImageView.frame.size.height);
-                        UIImage *radiusImage = [MBImageApplyer imageForTwitter:image byScallingToFillSize:imageSize radius:cell.avatorImageView.layer.cornerRadius];
+                        UIImage *radiusImage = [MBImageApplyer imageForTwitter:image size:imageSize radius:cell.avatorImageView.layer.cornerRadius];
                         [[MBImageCacher sharedInstance] storeTimelineImage:radiusImage forUserID:userAtIndexPath.userIDStr];
                         
                         dispatch_async(dispatch_get_main_queue(), ^{
@@ -498,8 +523,8 @@ static NSString *retweetCellIdentifier = @"RetweetTableViewCellIdentifier";
                 
                 // tableView の更新後に endRefreshing を呼ばないと、tableViewOffset が反映されない
                 [self.refreshControl endRefreshing];
-                self.enableAdding = YES;
-                
+                self.enableBacking = YES;
+                self.backsTimeline = NO;
                 [self removeLoadingView];
             });
             
@@ -507,9 +532,15 @@ static NSString *retweetCellIdentifier = @"RetweetTableViewCellIdentifier";
         
     } else {
         [self.refreshControl endRefreshing];
-        self.enableAdding = YES;
+        self.enableBacking = YES;
         [self removeLoadingView];
+        if (self.backsTimeline) {
+            self.enableBacking = NO;
+            [self removeBackTimelineIndicatorView];
+        }
+        self.backsTimeline = NO;
     }
+    
 }
 
 - (CGFloat)rowHeightForAddingData:(NSArray *)addingData isGap:(BOOL)isGap
@@ -581,7 +612,7 @@ static NSString *retweetCellIdentifier = @"RetweetTableViewCellIdentifier";
     int intMax = max * 0.5;
     int intCurrent = current;
     if (intMax < intCurrent) {
-        if (self.enableAdding && 0 != self.dataSource.count) {
+        if (self.enableBacking && 0 != self.dataSource.count) {
             [self goBacksAtIndex:self.saveIndex];
         }
     }
@@ -757,16 +788,19 @@ static NSString *retweetCellIdentifier = @"RetweetTableViewCellIdentifier";
         }
         
         MBMediaLink *link = linktext.obj;
+        
         MBImageViewController *imageViewController = [[MBImageViewController alloc] init];
         [imageViewController setImageURLString:link.originalURLHttpsText];
         [imageViewController setMediaIDStr:link.mediaIDStr];
         [imageViewController setTweet:selectedTweet];
         imageViewController.delegate = self;
-        UINavigationController *imageNavigationController = [[UINavigationController alloc] initWithRootViewController:imageViewController];
-        imageNavigationController.transitioningDelegate = self;
+        imageViewController.transitioningDelegate = self;
+        //UINavigationController *imageNavigationController = [[UINavigationController alloc] initWithRootViewController:imageViewController];
+        //imageNavigationController.transitioningDelegate = self;
+        
         
         self.zoomTransitioning = [[MBZoomTransitioning alloc] initWithPoint:convertedPointToSelfView];
-        [self presentViewController:imageNavigationController animated:YES completion:nil];
+        [self presentViewController:imageViewController animated:YES completion:nil];
     }
     
 }
