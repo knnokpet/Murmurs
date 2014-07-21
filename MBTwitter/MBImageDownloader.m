@@ -10,7 +10,7 @@
 
 @implementation MBImageDownloader
 
-+ (void)downloadImageWithURL:(NSString *)imageURL completionHandler:(ImageDownloadCompletionHandler)completionHandler failedHandler:(ImageDownloadFailedHandler)failedHandler
++ (void)downloadMediaImageWithURL:(NSString *)imageURL completionHandler:(ImageDownloadCompletionHandler)completionHandler failedHandler:(ImageDownloadFailedHandler)failedHandler
 {
     MBImageDownloader *downloader = [[MBImageDownloader alloc] init];
     [downloader downloadImageWithURL:imageURL completionHandler:completionHandler failedHandler:failedHandler];
