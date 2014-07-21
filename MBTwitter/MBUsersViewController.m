@@ -74,6 +74,16 @@ static NSString *usersCellIdentifier = @"UsersCellIdentifier";
     view.backgroundColor  = [UIColor clearColor];
     [self.tableView setTableHeaderView:view];
     [self.tableView setTableFooterView:view];
+    
+    // backTimelineIndicator
+    UIActivityIndicatorView *indicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    [indicatorView startAnimating];
+    CGFloat bottomMargin = 4.0f;
+    CGFloat indicatorHeight = indicatorView.frame.size.height;
+    UIView *indicatorContanerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.tableView.bounds.size.width, indicatorHeight + bottomMargin * 2)];
+    [indicatorContanerView addSubview:indicatorView];
+    indicatorView.center = indicatorContanerView.center;
+    self.tableView.tableFooterView = indicatorContanerView;
 }
 
 - (void)configureNavigationItem
@@ -119,6 +129,7 @@ static NSString *usersCellIdentifier = @"UsersCellIdentifier";
     long long llCursor = [cursor longLongValue];
 
     if (0 == llCursor) {
+        [self removeBackTimelineIndicatorView];
         return;
     } else {
         self.enableAdding = NO;
@@ -129,6 +140,13 @@ static NSString *usersCellIdentifier = @"UsersCellIdentifier";
 - (void)backUsersAtCursor:(long long)cursor
 {
     
+}
+
+- (void)removeBackTimelineIndicatorView
+{
+    UIView *view = [[UIView alloc] init];
+    view.backgroundColor = [UIColor clearColor];
+    self.tableView.tableFooterView = view;
 }
 
 #pragma mark -
@@ -155,16 +173,16 @@ static NSString *usersCellIdentifier = @"UsersCellIdentifier";
     
     UIImage *avatorImage = [[MBImageCacher sharedInstance] cachedProfileImageForUserID:userAtIndex.userIDStr];
     if (!avatorImage) {
-        cell.avatorImageView.image = [UIImage imageNamed:@"DefaultImage@2x"];
+        cell.avatorImageView.image = [UIImage imageNamed:@"DefaultImage"];
         if (NO == userAtIndex.isDefaultProfileImage) {
             
             dispatch_queue_t globalQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0);
             dispatch_async(globalQueue, ^{
-                [MBImageDownloader downloadBigImageWithURL:userAtIndex.urlHTTPSAtProfileImage completionHandler:^(UIImage *image, NSData *imageData){
+                [MBImageDownloader downloadOriginImageWithURL:userAtIndex.urlHTTPSAtProfileImage completionHandler:^(UIImage *image, NSData *imageData){
                     if (image) {
                         [[MBImageCacher sharedInstance] storeProfileImage:image data:imageData forUserID:userAtIndex.userIDStr];
                         CGSize imageSize = CGSizeMake(cell.avatorImageView.frame.size.width, cell.avatorImageView.frame.size.height);
-                        UIImage *radiusImage = [MBImageApplyer imageForTwitter:image byScallingToFillSize:imageSize radius:cell.avatorImageView.layer.cornerRadius];
+                        UIImage *radiusImage = [MBImageApplyer imageForTwitter:image size:imageSize radius:cell.avatorImageView.layer.cornerRadius];
                         [[MBImageCacher sharedInstance] storeTimelineImage:radiusImage forUserID:userAtIndex.userIDStr];
                         
                         dispatch_async(dispatch_get_main_queue(), ^{
@@ -180,7 +198,13 @@ static NSString *usersCellIdentifier = @"UsersCellIdentifier";
             
         }
     } else {
-        cell.avatorImageView.image = avatorImage;
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+            CGSize imageSize = CGSizeMake(cell.avatorImageView.frame.size.width, cell.avatorImageView.frame.size.height);
+            UIImage *radiusImage = [MBImageApplyer imageForTwitter:avatorImage size:imageSize radius:cell.avatorImageView.layer.cornerRadius];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                cell.avatorImageView.image = radiusImage;
+            });
+        });
     }
 }
 
@@ -196,12 +220,14 @@ static NSString *usersCellIdentifier = @"UsersCellIdentifier";
     NSInteger addingCount = [decoratedArray count];
     NSLog(@"addingArray = %d", [decoratedArray count]);
     if (0 == addingCount) {
-        ;
+        [self removeBackTimelineIndicatorView];
     } else {
         NSInteger base = [self.users count];
         [self decorateAddingArray:decoratedArray];
         [self.users addObjectsFromArray:decoratedArray];
         
+        [self.tableView reloadData];
+        /*
         [self.tableView beginUpdates];
         NSMutableArray *indexPaths = [NSMutableArray array];
         for (NSInteger i = 0; i < addingCount; i ++) {
@@ -210,7 +236,7 @@ static NSString *usersCellIdentifier = @"UsersCellIdentifier";
         }
         [self.tableView insertRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationAutomatic];
         
-        [self.tableView endUpdates];
+        [self.tableView endUpdates];*/
     }
     self.enableAdding = YES;
 }
