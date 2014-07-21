@@ -23,6 +23,7 @@
 {
     // Initialization code
     self.scrollView.delegate = self;
+    self.backgroundColor = [UIColor darkGrayColor];
     //[self updateCellContentsView];
 }
 
@@ -45,10 +46,13 @@
 
 - (void)configureAvatorView
 {
+    if (_profileAvatorView.superview) {
+        [_profileAvatorView removeFromSuperview];
+    }
+    
     _profileAvatorView = [[MBProfileAvatorView alloc] initWithFrame:CGRectMake(0, 0, self.bounds.size.width, self.bounds.size.height)];
     _profileAvatorView.characterName = self.user.characterName;
     _profileAvatorView.screenName = self.user.screenName;
-    _profileAvatorView.backgroundColor = [UIColor darkGrayColor];
     [self.scrollView addSubview:self.profileAvatorView];
 }
 
@@ -68,7 +72,6 @@
         NSAttributedString *descriptionText = [MBTweetTextComposer attributedStringForUser:self.user linkColor:nil];
         [_profileDescriptionView setAttributedString:descriptionText];
         [self.scrollView addSubview:_profileDescriptionView];
-        _profileDescriptionView.backgroundColor = [UIColor blackColor];
     }
 }
 
@@ -89,7 +92,6 @@
         MBURLLink *urlInProfile = self.user.entity.urls.firstObject;
         [self.profileInformationView setUrlText:urlInProfile.displayText];
         [self.scrollView addSubview:self.profileInformationView];
-        _profileInformationView.backgroundColor = [UIColor blackColor];
     }
     
 }
@@ -141,6 +143,20 @@
     if (self.scrollView == scrollView) {
         CGFloat viewWidth = self.bounds.size.width;
         self.pageControl.currentPage = (self.scrollView.contentOffset.x + 1) / viewWidth;
+    }
+}
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView
+{
+    if (scrollView == self.scrollView) {
+        CGFloat viewWidth = self.bounds.size.width;
+        
+        CGFloat alpha = scrollView.contentOffset.x / viewWidth;
+        if (alpha > 0.5) {
+            alpha = 0.5;
+        }
+        UIColor *tlancerucentBlack = [UIColor colorWithRed:0 green:0 blue:0 alpha:alpha];
+        self.scrollView.backgroundColor = tlancerucentBlack;
     }
 }
 
