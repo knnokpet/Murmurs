@@ -28,6 +28,7 @@
 - (void)addLists:(NSArray *)lists;
 - (void)removeListOfOwner:(NSInteger)index;
 - (void)removeListOfSubscrive:(NSInteger)index;
+- (void)removeListOfSubscriveWithList:(MBList *)list;
 - (void)removeAllLists;
 
 - (MBTimeLineManager *)timelineManagerForListID:(NSNumber *)listID;/* マルチアカウント用 */

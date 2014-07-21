@@ -79,6 +79,18 @@
     [self removeListFrom:self.subscriptionLists atIndex:index];
 }
 
+- (void)removeListOfSubscriveWithList:(MBList *)list
+{
+    NSInteger i = 0;
+    for (MBList *subscrivedList in self.subscriptionLists) {
+        if ([subscrivedList.listID compare:list.listID] == NSOrderedSame) {
+            [self.subscriptionLists removeObjectAtIndex:i];
+            break;
+        }
+        i ++;
+    }
+}
+
 - (void)removeListFrom:(NSMutableArray *)fromLists atIndex:(NSInteger)index
 {
     [fromLists removeObjectAtIndex:index];
