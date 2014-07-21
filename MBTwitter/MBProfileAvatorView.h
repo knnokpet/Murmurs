@@ -9,11 +9,12 @@
 #import <UIKit/UIKit.h>
 
 @class MBAvatorImageView;
+@class MBShadowBlurLabel;
 @interface MBProfileAvatorView : UIView
 
 @property (nonatomic) MBAvatorImageView *avatorImageView;
-@property (nonatomic) UILabel *characterNameLabel;
-@property (nonatomic) UILabel *screenNameLabel;
+@property (nonatomic) MBShadowBlurLabel *characterNameLabel;
+@property (nonatomic) MBShadowBlurLabel *screenNameLabel;
 
 @property (nonatomic) NSString *characterName;
 @property (nonatomic) NSString *screenName;
