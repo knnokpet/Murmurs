@@ -10,6 +10,27 @@
 
 @implementation UIImage (Resize)
 
+- (UIImage *)imageForResizing:(UIImage *)image ToSize:(CGSize)size
+{
+    if (UIGraphicsBeginImageContextWithOptions != NULL) {
+        UIGraphicsBeginImageContextWithOptions(size, NO, [UIScreen mainScreen].scale);
+    } else {
+        UIGraphicsBeginImageContext(size);
+    }
+    
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    CGContextSetInterpolationQuality(context, kCGInterpolationHigh);
+    
+    [image drawInRect:CGRectMake(0, 0, size.width, size.height)];
+    
+    UIImage *resizedImage = UIGraphicsGetImageFromCurrentImageContext();
+    
+    UIGraphicsEndImageContext();
+    
+    return resizedImage;
+}
+
+/* 以下 unused */
 - (UIImage *)imageByScallingToSize:(CGSize)size contentMode:(UIViewContentMode)contentMode
 {
     if (contentMode == UIViewContentModeScaleToFill) {
