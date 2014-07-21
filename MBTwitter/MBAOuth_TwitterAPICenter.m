@@ -239,9 +239,11 @@
     }
     
     [jsonParser setErrorCompletion:^(NSError *error) {
-        if ([_delegate respondsToSelector:@selector(twitterAPICenter:error:)]) {
-            [_delegate twitterAPICenter:weakSelf error:error];
-        }
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if ([_delegate respondsToSelector:@selector(twitterAPICenter:error:)]) {
+                [_delegate twitterAPICenter:weakSelf error:error];
+            }
+        });
     }];
     
     [jsonParser startParsing];
