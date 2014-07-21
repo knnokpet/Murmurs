@@ -15,9 +15,12 @@
 #import "MBUserManager.h"
 #import "MBUser.h"
 #import "MBImageApplyer.h"
+#import "MBPlace.h"
 
 #import "MBReplyTextView.h"
 #import "NSDictionary+Objects.h"
+#import "MBGeoPinView.h"
+
 
 @interface MBPostTweetViewController () <UITextViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate>
 
@@ -31,6 +34,7 @@
 
 @property (nonatomic, readonly) NSString *tweetText;
 
+@property (nonatomic) MBGeoPinView *geoPinView;
 @property (nonatomic) MBReplyTextView *replyTextView;
 @property (nonatomic) UIBarButtonItem *postBarButtonitem;
 @property (nonatomic) UIBarButtonItem *countBarButtonItem;
@@ -139,7 +143,6 @@
     [self.toolbar setItems:buttons];
     
     self.tweetTextView.inputAccessoryView =self.toolbar;
-    //[self.view addSubview:self.toolbar];
     
 }
 
@@ -149,6 +152,8 @@
     // Do any additional setup after loading the view.
     [self commonConfigureView];
     
+    self.tweetTextView.text = self.tweetText;
+    
     self.title = NSLocalizedString(@"New Tweet", nil);
 }
 
@@ -156,7 +161,6 @@
 {
     [super viewWillAppear:animated];
     
-    self.tweetTextView.text = self.tweetText;
     [self beEnableButtonForTextViewLength];
     
     NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
@@ -263,6 +267,60 @@
     self.heightConstraint.constant = .0f;
 }
 
+- (void)configurePinView
+{
+    CGRect initialRect = CGRectMake(0, 0, 32, 32);
+    self.geoPinView = [[MBGeoPinView alloc] initWithFrame:initialRect];
+    [self.view addSubview:self.geoPinView];
+}
+
+- (void)placePinView
+{
+    CGFloat pinMargin = 4.0f;
+    CGRect initialRect = self.geoPinView.frame;
+    CGRect placedRect = initialRect;
+    placedRect.origin.y = self.tweetTextView.frame.origin.y + self.tweetTextView.bounds.size.height - self.tweetTextView.contentInset.bottom - initialRect.size.height - pinMargin;
+    self.geoPinView.frame = placedRect;
+}
+
+- (void)showingAnimatePinView
+{
+    [UIView animateWithDuration:0.3f animations:^{
+        [self placePinView];
+        
+        CGFloat pinHeight = self.geoPinView.frame.size.height;
+        UIEdgeInsets contentInsets = self.tweetTextView.contentInset;
+        UIEdgeInsets scrollIndicatorInsets = self.tweetTextView.scrollIndicatorInsets;
+        contentInsets.bottom += pinHeight;
+        scrollIndicatorInsets.bottom += pinHeight;
+        self.tweetTextView.contentInset = contentInsets;
+        self.tweetTextView.scrollIndicatorInsets = scrollIndicatorInsets;
+        
+    }completion:^(BOOL finished) {
+        [self.geoPinView boundingAnimateDotWithCompletion:^(){
+            
+        }];
+        
+    }];
+}
+
+- (void)hidingAnimatePinView
+{
+    [UIView animateWithDuration:0.1f animations:^{
+        [self.geoPinView hidingAnimateWithCompletion:nil];
+        CGFloat pinHeight = self.geoPinView.frame.size.height;
+        UIEdgeInsets contentInsets = self.tweetTextView.contentInset;
+        UIEdgeInsets scrollIndicatorInsets = self.tweetTextView.scrollIndicatorInsets;
+        contentInsets.bottom -= pinHeight;
+        scrollIndicatorInsets.bottom -= pinHeight;
+        self.tweetTextView.contentInset = contentInsets;
+        self.tweetTextView.scrollIndicatorInsets = scrollIndicatorInsets;
+        
+    }completion:^ (BOOL finished) {
+        [self.geoPinView removeFromSuperview];
+    }];
+}
+
 #pragma mark notification
 - (void)keyboardWillShow:(NSNotification *)notification
 {
@@ -270,6 +328,7 @@
     CGSize size = [[userInfo objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue].size;
     double duration = [[userInfo objectForKey:UIKeyboardAnimationDurationUserInfoKey] doubleValue]; /* カテゴリは unsignd ll でやっているので、objectFor~で */
     unsigned int curve = [[userInfo objectForKey:UIKeyboardAnimationCurveUserInfoKey] unsignedIntValue];
+    
     
     UIEdgeInsets contentInsets = self.tweetTextView.contentInset;
     UIEdgeInsets scrollIndicatorInsets = self.tweetTextView.scrollIndicatorInsets;
@@ -280,6 +339,8 @@
     [UIView animateWithDuration:duration delay:0.0f options:curve animations:^{
         self.tweetTextView.contentInset = contentInsets;
         self.tweetTextView.scrollIndicatorInsets = scrollIndicatorInsets;
+        
+        [self placePinView];
         
     }completion:nil];
 }
@@ -368,6 +429,11 @@
         return;
     }
     
+    if (self.geoPinView.superview) {
+        [self hidingAnimatePinView];
+        return;
+    }
+    
     BOOL locationEnabled = [CLLocationManager locationServicesEnabled];
     if (YES == locationEnabled) {
         
@@ -425,7 +491,8 @@
                 sizingTextView.text = sourceTweetText;
                 CGSize fitSize = [sizingTextView sizeThatFits:CGSizeMake(self.view.frame.size.width, CGFLOAT_MAX)];
                 
-                self.replyTextView = [[MBReplyTextView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, fitSize.height)];
+                /* replyText はいちいち初期化するべきではないと思う。 */
+                self.replyTextView = [[MBReplyTextView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width , fitSize.height)];
                 CGRect textFrame = self.replyTextView.frame;
                 textFrame.origin.y -= textFrame.size.height;
                 self.replyTextView.frame = textFrame;
@@ -458,7 +525,7 @@
         NSData *imageData = UIImagePNGRepresentation(selectedImage);
         NSData *data64 = [imageData base64EncodedDataWithOptions:0];
         [self.photos addObject:data64];
-        UIImage *resizedImage = [MBImageApplyer imageForTwitter:selectedImage byScallingAspectFillSize:CGSizeMake(self.mediaImageView.frame.size.width, self.mediaImageView.frame.size.height) radius:0.0f];
+        UIImage *resizedImage = [MBImageApplyer imageForTwitter:selectedImage size:CGSizeMake(self.mediaImageView.frame.size.width, self.mediaImageView.frame.size.height) radius:0.0f];
         dispatch_async(dispatch_get_main_queue(), ^{
             self.mediaImageView.image = resizedImage;
             self.postBarButtonitem.enabled = YES;
@@ -482,7 +549,10 @@
 #pragma mark AOuth_APICenter Delegate
 - (void)twitterAPICenter:(MBAOuth_TwitterAPICenter *)center parsedPlaces:(NSArray *)places
 {
-    
+    MBPlace *place = [places firstObject];
+    if (place) {
+        NSLog(@"name = %@ ful %@", place.countryShortName, place.countryFullName);
+    }
 }
 
 - (void)twitterAPICenter:(MBAOuth_TwitterAPICenter *)center requestType:(MBRequestType)requestType parsedUsers:(NSArray *)users
@@ -525,6 +595,9 @@
         NSDictionary *place = @{@"longi": longitudeStr, @"lati": latitudeStr};
         [self.place setObject:place forKey:@"place"];
         [self.locationManager stopUpdatingLocation];
+        
+        [self configurePinView];
+        [self showingAnimatePinView];
         
         [self.aoAPICenter getReverseGeocode:longitude longi:latitude];
     }
