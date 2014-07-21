@@ -9,6 +9,17 @@
 #import "MBMentionUserLink.h"
 
 @implementation MBMentionUserLink
+- (instancetype)initWithUserID:(NSNumber *)userID IDStr:(NSString *)IDStr screenName:(NSString *)screenName
+{
+    self = [super init];
+    if (self) {
+        _userID = userID;
+        _userIDStr = IDStr;
+        _screenName = screenName;
+    }
+    
+    return self;
+}
 
 - (void)initializeWithDictionary:(NSDictionary *)dictionary
 {
