@@ -128,7 +128,7 @@ static NSString *detailUserTableViewCellIdentifier = @"MBDetailUserTableViewCell
     } else {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
             CGSize imageSize = CGSizeMake(self.profileAvatorView.avatorImageView.frame.size.width, self.profileAvatorView.avatorImageView.frame.size.height);
-            UIImage *radiusImage = [MBImageApplyer imageForTwitter:avatorImage byScallingToFillSize:imageSize radius:self.profileAvatorView.avatorImageView.layer.cornerRadius];
+            UIImage *radiusImage = [MBImageApplyer imageForTwitter:avatorImage size:imageSize radius:self.profileAvatorView.avatorImageView.layer.cornerRadius];
             
             dispatch_async(dispatch_get_main_queue(), ^{
                 self.profileAvatorView.avatorImageView.image = radiusImage;
@@ -163,7 +163,6 @@ static NSString *detailUserTableViewCellIdentifier = @"MBDetailUserTableViewCell
         self.profileDescriptionView = [[MBProfileDesciptionView alloc] initWithFrame:profileFrame];
         NSAttributedString *descriptionText = [MBTweetTextComposer attributedStringForUser:self.user linkColor:nil];
         [self.profileDescriptionView setAttributedString:descriptionText];
-        [self.profileDescriptionView setBackgroundColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.5]];
         [self.scrollView addSubview:self.profileDescriptionView];
     }
 }
@@ -180,7 +179,6 @@ static NSString *detailUserTableViewCellIdentifier = @"MBDetailUserTableViewCell
         [self.profileInformationView setLocationText:self.user.location];
         MBURLLink *urlInProfile = self.user.entity.urls.firstObject;
         [self.profileInformationView setUrlText:urlInProfile.displayText];
-        [self.profileInformationView setBackgroundColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.5]];
         [self.scrollView addSubview:self.profileInformationView];
     }
 }
@@ -258,11 +256,11 @@ static NSString *detailUserTableViewCellIdentifier = @"MBDetailUserTableViewCell
     if (self.user.urlHTTPSAtProfileImage) {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
             
-            [MBImageDownloader downloadBigImageWithURL:self.user.urlHTTPSAtProfileImage completionHandler:^ (UIImage *image, NSData *imageData){
+            [MBImageDownloader downloadOriginImageWithURL:self.user.urlHTTPSAtProfileImage completionHandler:^ (UIImage *image, NSData *imageData){
                 if (image) {
                     [[MBImageCacher sharedInstance] storeProfileImage:image data:imageData forUserID:self.user.userIDStr];
                     CGSize imageSize = CGSizeMake(self.profileAvatorView.avatorImageView.frame.size.width, self.profileAvatorView.avatorImageView.frame.size.height);
-                    UIImage *radiusImage = [MBImageApplyer imageForTwitter:image byScallingToFillSize:imageSize radius:self.profileAvatorView.avatorImageView.layer.cornerRadius];
+                    UIImage *radiusImage = [MBImageApplyer imageForTwitter:image size:imageSize radius:self.profileAvatorView.avatorImageView.layer.cornerRadius];
                     
                     dispatch_async(dispatch_get_main_queue(), ^{
                         self.profileAvatorView.avatorImageView.image = radiusImage;
@@ -504,27 +502,34 @@ static NSString *detailUserTableViewCellIdentifier = @"MBDetailUserTableViewCell
     NSInteger numberOfRow = indexPath.row;
     NSString *textLabel;
     NSInteger detailInteger = 0;
+    UIImage *cellImage;
     
     if (0 == numberOfRow) {
-        textLabel = NSLocalizedString(@"All Tweets", nil);
+        textLabel = NSLocalizedString(@"Tweet", nil);
         detailInteger = self.user.tweetCount;
+        cellImage = [UIImage imageNamed:@"Tweet-Cell"];
     } else if (1 == numberOfRow) {
         textLabel = NSLocalizedString(@"Following", nil);
         detailInteger = self.user.followsCount;
+        cellImage = [UIImage imageNamed:@"Man-Cell"];
     } else if (2 == numberOfRow) {
         textLabel = NSLocalizedString(@"Follower", nil);
         detailInteger = self.user.followersCount;
+        cellImage = [UIImage imageNamed:@"Man-Cell"];
     } else if (3 == numberOfRow) {
         textLabel = NSLocalizedString(@"Favorite", nil);
         detailInteger = self.user.favoritesCount;
+        cellImage = [UIImage imageNamed:@"Favorite-Cell"];
     } else if (4 == numberOfRow) {
         textLabel = NSLocalizedString(@"List", nil);
         detailInteger = self.user.listedCount;
+        cellImage = [UIImage imageNamed:@"List-Cell"];
     } else {
         
     }
     
     cell.textLabel.text = textLabel;
+    cell.imageView.image = cellImage;
     // リストの数はユーザーが登録されているものしかとれないので表示しない
     detailInteger = (0 <= detailInteger) ? detailInteger : 0;
     if (4 != numberOfRow) {
@@ -622,6 +627,7 @@ static NSString *detailUserTableViewCellIdentifier = @"MBDetailUserTableViewCell
             [relationshipManager storeRelationship:relationship];
             if (NSOrderedSame == [self.user.userID compare:relationship.userID]) {
                 self.user.relationship = relationship;
+                NSLog(@"isf %hhd  sentFo %hhd fob %hhd ", relationship.isFollowing, relationship.sentFollowRequest, relationship.followdByTheUser);
                 UITableViewCell *actionCell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
                 [self updateActionCell:(MBDetailUserActionTableViewCell *)actionCell];
                 [self configureOtherActions];
@@ -641,7 +647,14 @@ static NSString *detailUserTableViewCellIdentifier = @"MBDetailUserTableViewCell
         self.scrollView.frame = scrollViewFrame;
         
     } else if (self.scrollView == scrollView) {
+        CGFloat viewWidth = self.view.bounds.size.width;
         
+        CGFloat alpha = scrollView.contentOffset.x / viewWidth;
+        if (alpha > 0.5) {
+            alpha = 0.5;
+        }
+        UIColor *tlancerucentBlack = [UIColor colorWithRed:0 green:0 blue:0 alpha:alpha];
+        self.scrollView.backgroundColor = tlancerucentBlack;
     }
 }
 
