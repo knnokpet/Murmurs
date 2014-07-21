@@ -24,19 +24,20 @@
     self = [super init];
     if (self) {
         _title = title;
-        _image = image;
-        self.frame = CGRectMake(0, 0, 80, 50);
-        //self.backgroundColor = [UIColor blackColor];
+        _image = [image imageWithMaskColor:[UIColor whiteColor]];
+        self.frame = CGRectMake(0, 0, 80, 40);
+        self.backgroundColor = [UIColor blackColor];
+        self.titleLabel.textAlignment = NSTextAlignmentCenter;
+        self.titleLabel.font = [UIFont systemFontOfSize:14.0f];
         
         [self setTitle:self.title forState:UIControlStateNormal];
         //[self setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-        [self setTitleColor:[UIColor clearColor] forState:UIControlStateNormal];
+        [self setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         [self setImage:self.image forState:UIControlStateNormal];
         
         [self setTitle:self.title forState:UIControlStateHighlighted];
-        [self setTitleColor:[UIColor blackColor] forState:UIControlStateHighlighted];
+        [self setTitleColor:[UIColor whiteColor] forState:UIControlStateHighlighted];
         [self setImage:self.image forState:UIControlStateHighlighted];
-        
         
     }
     return self;
@@ -49,7 +50,7 @@
     if (highlighted) {
         self.backgroundColor = [UIColor clearColor];
     } else {
-        //self.backgroundColor = [UIColor greenColor];
+        
     }
 }
 
@@ -57,13 +58,16 @@
 {
     [super layoutSubviews];
     
+    CGRect titleFrame = self.titleLabel.frame;
+    titleFrame = CGRectMake(0, self.bounds.size.height - titleFrame.size.height, self.bounds.size.width, titleFrame.size.height);
+    self.titleLabel.frame = titleFrame;
+    
     CGRect imageFrame = self.imageView.frame;
-    imageFrame = CGRectMake(truncf((self.bounds.size.width - imageFrame.size.width) / 2), 0.0f, imageFrame.size.width, imageFrame.size.height);
+    imageFrame.size = CGSizeMake(imageFrame.size.width / 2, imageFrame.size.height / 2);
+    imageFrame = CGRectMake(truncf((self.bounds.size.width - imageFrame.size.width) / 2), self.titleLabel.frame.origin.y - imageFrame.size.height, imageFrame.size.width, imageFrame.size.height);
     self.imageView.frame = imageFrame;
     
-    CGRect titleFrame = self.titleLabel.frame;
-    titleFrame = CGRectMake(trunc((self.bounds.size.width - titleFrame.size.width) / 2), self.bounds.size.height - titleFrame.size.height, titleFrame.size.width, titleFrame.size.height);
-    self.titleLabel.frame = titleFrame;
+    
 }
 
 /*
