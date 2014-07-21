@@ -25,7 +25,7 @@
     
     UIGraphicsBeginImageContextWithOptions(size, NO, 0.0);
     CGContextRef context = UIGraphicsGetCurrentContext();
-    CGContextSetInterpolationQuality(context, kCGInterpolationDefault);
+    CGContextSetInterpolationQuality(context, kCGInterpolationHigh);
     [layser renderInContext:context];
     UIImage *roundedImage = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
