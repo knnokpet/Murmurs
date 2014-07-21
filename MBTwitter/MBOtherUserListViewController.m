@@ -7,7 +7,7 @@
 //
 
 #import "MBOtherUserListViewController.h"
-#import "MBOther_ListTimelineManagerViewController.h"
+
 
 @interface MBOtherUserListViewController ()
 
@@ -55,6 +55,7 @@
     NSArray *listsAtSection = [self.listManager.lists objectAtIndex:indexPath.section];
     MBList *selectedList = [listsAtSection objectAtIndex:indexPath.row];
     MBOther_ListTimelineManagerViewController *listTimelineManagerViweController = [[MBOther_ListTimelineManagerViewController alloc] initWithNibName:@"MBListTimelineManagementViewController" bundle:nil];
+    listTimelineManagerViweController.delegate = self;
     [listTimelineManagerViweController setList:selectedList];
     
     [self.navigationController pushViewController:listTimelineManagerViweController animated:YES];
@@ -68,5 +69,38 @@
     // Pass the selected object to the new view controller.
 }
 */
+
+#pragma mark Other_ListTimelineManagerViewController Delegate
+- (void)replacePreservedListWithNewList:(MBList *)list
+{
+    NSIndexPath *selectedIndexPath = [self.tableView indexPathForSelectedRow];
+    NSMutableArray *listsAtSection = [self.listManager.lists objectAtIndex:selectedIndexPath.section];
+    MBList *selectedList = [listsAtSection objectAtIndex:selectedIndexPath.row];
+    if ([selectedList.listID compare:list.listID] == NSOrderedSame) {
+        [listsAtSection replaceObjectAtIndex:selectedIndexPath.row withObject:list];
+    }
+}
+
+- (void)subscriveOtherListTimelineManagerViewController:(MBOther_ListTimelineManagerViewController *)controller list:(MBList *)list
+{
+    [self replacePreservedListWithNewList:list];
+    
+    MBAccount *currentAccount = [MBAccountManager sharedInstance].currentAccount;
+    if (currentAccount) {
+        MBListManager *currentListManager = currentAccount.listManager;
+        [currentListManager addLists:@[list]];
+    }
+}
+
+- (void)unsubscriveOtherListTimelineManagerViewController:(MBOther_ListTimelineManagerViewController *)controller list:(MBList *)list
+{
+    [self replacePreservedListWithNewList:list];
+    
+    MBAccount *currentAccount = [MBAccountManager sharedInstance].currentAccount;
+    if (currentAccount) {
+        MBListManager *currentListManager = currentAccount.listManager;
+        [currentListManager removeListOfSubscriveWithList:list];
+    }
+}
 
 @end

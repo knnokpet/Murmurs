@@ -58,6 +58,13 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
+    
+    
+    NSInteger currentDataSourceCount = [self.tableView numberOfRowsInSection:0] + [self.tableView numberOfRowsInSection:1];
+    NSInteger currentListsCount = self.listManager.ownerShipLists.count + self.listManager.subscriptionLists.count;
+    if ( currentDataSourceCount != currentListsCount ) {
+        [self.tableView reloadData];
+    }
 }
 
 - (void)setttingMyUser
@@ -278,7 +285,7 @@
     [self.tableView reloadData];
 }
 
-- (void)unsubscriveOtherListTimelineManagerViewController:(MBOther_ListTimelineManagerViewController *)controller
+- (void)unsubscriveOtherListTimelineManagerViewController:(MBOther_ListTimelineManagerViewController *)controller list:(MBList *)list
 {
     NSIndexPath *selectedPath = [self.tableView indexPathForSelectedRow];
     [self.listManager removeListOfSubscrive:selectedPath.row];

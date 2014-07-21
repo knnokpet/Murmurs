@@ -14,7 +14,7 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="lM1-hF-HhM">
-                        <rect key="frame" x="20" y="8" width="36" height="36"/>
+                        <rect key="frame" x="16" y="8" width="36" height="36"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="36" id="YcC-Vg-Ai5"/>
@@ -37,7 +37,7 @@
                 </subviews>
                 <constraints>
                     <constraint firstItem="lM1-hF-HhM" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="8" id="W4z-r3-g5g"/>
-                    <constraint firstItem="lM1-hF-HhM" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="20" id="tJR-4N-qTw"/>
+                    <constraint firstItem="lM1-hF-HhM" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="16" id="tJR-4N-qTw"/>
                 </constraints>
             </tableViewCellContentView>
             <inset key="separatorInset" minX="15" minY="0.0" maxX="0.0" maxY="0.0"/>

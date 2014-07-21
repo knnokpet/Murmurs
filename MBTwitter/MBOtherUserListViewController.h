@@ -7,7 +7,8 @@
 //
 
 #import "MBListViewController.h"
+#import "MBOther_ListTimelineManagerViewController.h"
 
-@interface MBOtherUserListViewController : MBListViewController
+@interface MBOtherUserListViewController : MBListViewController <MBOther_ListTimelineManagerViewControllerDelegate>
 
 @end

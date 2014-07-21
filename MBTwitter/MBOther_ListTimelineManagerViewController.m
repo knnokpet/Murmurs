@@ -51,7 +51,9 @@
     [self.aoAPICenter postSubscriveList:[self.list.listID unsignedLongLongValue] slug:self.list.slug ownerScreenName:self.list.user.screenName ownerID:[self.list.user.userID unsignedLongLongValue]];
     
     UIBarButtonItem *unSubscriveButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"UnSubscrive", nil) style:UIBarButtonItemStylePlain target:self action:@selector(didPushUnSubscriveButton)];
-    [self.navigationItem setRightBarButtonItem:unSubscriveButton animated:YES];
+    
+    
+    [self.navigationItem setRightBarButtonItem:[self animatingIndicatorButton] animated:YES];
 }
 
 - (void)didPushUnSubscriveButton
@@ -59,7 +61,18 @@
     [self.aoAPICenter postDestroySubscrivedList:[self.list.listID unsignedLongLongValue] slug:self.list.slug ownerScreenName:self.list.user.screenName ownerID:[self.list.user.userID unsignedLongLongValue]];
     
     UIBarButtonItem *subscriveButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Subscrive", nil) style:UIBarButtonItemStylePlain target:self action:@selector(didPushSubscriveButton)];
-    [self.navigationItem setRightBarButtonItem:subscriveButton animated:YES];
+    
+    [self.navigationItem setRightBarButtonItem:[self animatingIndicatorButton] animated:YES];
+}
+
+- (UIBarButtonItem *)animatingIndicatorButton
+{
+    UIActivityIndicatorView *indicatorView = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(0, 0, 20, 20)];
+    [indicatorView sizeToFit];
+    indicatorView.activityIndicatorViewStyle = UIActivityIndicatorViewStyleGray;
+    [indicatorView startAnimating];
+    UIBarButtonItem *loadingButton = [[UIBarButtonItem alloc] initWithCustomView:indicatorView];
+    return loadingButton;
 }
 
 /*
@@ -76,28 +89,28 @@
 - (void)twitterAPICenter:(MBAOuth_TwitterAPICenter *)center parsedLists:(NSArray *)lists
 {
     if (0 < [lists count]) {
-        MBList *subscrivedList = [lists firstObject];
-        if (!subscrivedList) {
+        MBList *parsedList = [lists firstObject];
+        if (!parsedList) {
             return;
         }
+        
         if (self.list.isFollowing) {
+            
             UIBarButtonItem *subscriveButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Subscrive", nil) style:UIBarButtonItemStylePlain target:self action:@selector(didPushSubscriveButton)];
             [self.navigationItem setRightBarButtonItem:subscriveButton animated:YES];
             
-            if ([_delegate respondsToSelector:@selector(unsubscriveOtherListTimelineManagerViewController:)]) {
-                [_delegate unsubscriveOtherListTimelineManagerViewController:self];
+            if ([_delegate respondsToSelector:@selector(unsubscriveOtherListTimelineManagerViewController:list:)]) {
+                [_delegate unsubscriveOtherListTimelineManagerViewController:self list:parsedList];
             }
         } else {
-            [self setList:subscrivedList];
             UIBarButtonItem *unSubscriveButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"UnSubscrive", nil) style:UIBarButtonItemStylePlain target:self action:@selector(didPushUnSubscriveButton)];
             [self.navigationItem setRightBarButtonItem:unSubscriveButton animated:YES];
             
             if ([_delegate respondsToSelector:@selector(subscriveOtherListTimelineManagerViewController:list:)]) {
-                [_delegate subscriveOtherListTimelineManagerViewController:self list:subscrivedList];
+                [_delegate subscriveOtherListTimelineManagerViewController:self list:parsedList];
             }
         }
-        
-    } else {
+        [self setList:parsedList];
     }
 }
 

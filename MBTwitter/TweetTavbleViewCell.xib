@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="5056" systemVersion="13D65" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="5056" systemVersion="13E28" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3733"/>
     </dependencies>
@@ -22,12 +22,12 @@
                         </constraints>
                     </imageView>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Kdl-qO-9E7" customClass="MBTweetTextView">
-                        <rect key="frame" x="64" y="32" width="248" height="175"/>
+                        <rect key="frame" x="64" y="30" width="248" height="177"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="bed-xa-aaB" customClass="MBTweetTextView">
-                        <rect key="frame" x="282" y="14" width="30" height="14"/>
+                        <rect key="frame" x="282" y="12" width="30" height="14"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
@@ -44,7 +44,7 @@
                         </constraints>
                     </view>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="yHN-54-aDN" customClass="MBCharacterScreenNameView">
-                        <rect key="frame" x="66" y="12" width="206" height="16"/>
+                        <rect key="frame" x="64" y="9" width="208" height="17"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
@@ -52,7 +52,7 @@
                 <constraints>
                     <constraint firstAttribute="bottom" secondItem="jHL-St-W7Z" secondAttribute="bottom" constant="4" id="0h2-O7-NqW"/>
                     <constraint firstItem="Kdl-qO-9E7" firstAttribute="leading" secondItem="Pnn-36-8ML" secondAttribute="leading" constant="64" id="2um-Iu-RDV"/>
-                    <constraint firstItem="yHN-54-aDN" firstAttribute="top" secondItem="Pnn-36-8ML" secondAttribute="top" constant="12" id="52j-46-Yh8"/>
+                    <constraint firstItem="yHN-54-aDN" firstAttribute="top" secondItem="Pnn-36-8ML" secondAttribute="top" constant="9" id="52j-46-Yh8"/>
                     <constraint firstItem="OoA-Oc-RDj" firstAttribute="top" secondItem="Pnn-36-8ML" secondAttribute="top" constant="12" id="N4m-Gp-4eD"/>
                     <constraint firstAttribute="trailing" secondItem="Kdl-qO-9E7" secondAttribute="trailing" constant="8" id="PIk-FQ-MIU"/>
                     <constraint firstAttribute="trailing" secondItem="jHL-St-W7Z" secondAttribute="trailing" constant="10" id="U9h-r0-2me"/>
@@ -61,10 +61,10 @@
                     <constraint firstItem="jHL-St-W7Z" firstAttribute="leading" secondItem="Pnn-36-8ML" secondAttribute="leading" constant="66" id="YTb-y6-NCC"/>
                     <constraint firstItem="bed-xa-aaB" firstAttribute="leading" secondItem="yHN-54-aDN" secondAttribute="trailing" constant="10" id="ZaG-rU-dLE"/>
                     <constraint firstAttribute="trailing" secondItem="bed-xa-aaB" secondAttribute="trailing" constant="8" id="eHt-Lz-sP6"/>
-                    <constraint firstItem="yHN-54-aDN" firstAttribute="leading" secondItem="OoA-Oc-RDj" secondAttribute="trailing" constant="10" id="jeg-1N-ndB"/>
+                    <constraint firstItem="yHN-54-aDN" firstAttribute="leading" secondItem="OoA-Oc-RDj" secondAttribute="trailing" constant="8" id="jeg-1N-ndB"/>
                     <constraint firstItem="Kdl-qO-9E7" firstAttribute="top" secondItem="bed-xa-aaB" secondAttribute="bottom" constant="4" id="kkC-cz-iiA"/>
                     <constraint firstAttribute="bottom" secondItem="Kdl-qO-9E7" secondAttribute="bottom" priority="500" constant="12" id="t1n-Vf-3AK"/>
-                    <constraint firstItem="bed-xa-aaB" firstAttribute="top" secondItem="Pnn-36-8ML" secondAttribute="top" constant="14" id="uVT-2R-h2o"/>
+                    <constraint firstItem="bed-xa-aaB" firstAttribute="top" secondItem="Pnn-36-8ML" secondAttribute="top" constant="12" id="uVT-2R-h2o"/>
                     <constraint firstItem="jHL-St-W7Z" firstAttribute="top" secondItem="Kdl-qO-9E7" secondAttribute="bottom" constant="4" id="vLY-Vb-4DY"/>
                 </constraints>
             </tableViewCellContentView>

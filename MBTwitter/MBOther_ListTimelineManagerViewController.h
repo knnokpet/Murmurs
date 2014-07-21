@@ -19,6 +19,6 @@
 @protocol MBOther_ListTimelineManagerViewControllerDelegate <NSObject>
 
 - (void)subscriveOtherListTimelineManagerViewController:(MBOther_ListTimelineManagerViewController *)controller list: (MBList *)list;
-- (void)unsubscriveOtherListTimelineManagerViewController:(MBOther_ListTimelineManagerViewController *)controller;
+- (void)unsubscriveOtherListTimelineManagerViewController:(MBOther_ListTimelineManagerViewController *)controller list: (MBList *)list;
 
 @end
