@@ -34,6 +34,10 @@
     
     
     NSString *tweetText = tweet.tweetText;
+    if (!tweetText) {
+        NSLog(@"%@", tweetText);
+        return [[NSAttributedString alloc] init];
+    }
     NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:tweetText attributes:@{(id)kCTForegroundColorAttributeName: (id)defaultTextColor, (id)kCTFontAttributeName: (__bridge id)fontRef}];
     CFRelease(fontRef);
     
@@ -154,14 +158,14 @@
     NSArray *hashtags = entity.hashtags;
     for (MBHashTagLink *hashtagLink in hashtags) {
         MBTextIndex *index = hashtagLink.textIndex;
-        [attributedString addAttributes:@{NSLinkAttributeName: hashtagLink, (id)kCTForegroundColorAttributeName: (id)linkTextColor} range:NSMakeRange(index.begin, index.end - index.begin)];
+        [attributedString addAttributes:@{NSLinkAttributeName: hashtagLink, (id)kCTForegroundColorAttributeName: (id)linkTextColor, NSUnderlineStyleAttributeName : [NSNumber numberWithInteger:NSUnderlineStyleSingle]} range:NSMakeRange(index.begin, index.end - index.begin)];
     }
     
     // Mention
     NSArray *mentionUsers = entity.userMentions;
     for (MBMentionUserLink *mentionLink in mentionUsers) {
         MBTextIndex *index = mentionLink.textIndex;
-        [attributedString addAttributes:@{NSLinkAttributeName: mentionLink, (id)kCTForegroundColorAttributeName: (id)linkTextColor} range:NSMakeRange(index.begin, index.end - index.begin)];
+        [attributedString addAttributes:@{NSLinkAttributeName: mentionLink, (id)kCTForegroundColorAttributeName: (id)linkTextColor, NSUnderlineStyleAttributeName : [NSNumber numberWithInteger:NSUnderlineStyleSingle]} range:NSMakeRange(index.begin, index.end - index.begin)];
     }
     
     // media
@@ -189,9 +193,9 @@
         }
         
         NSString *replaceString = mediaLink.displayText;
-        
+#warning hoge
         [attributedString replaceCharactersInRange:NSMakeRange(begin, end - begin) withString:replaceString];
-        [attributedString addAttributes:@{NSLinkAttributeName: mediaLink.expandedURLText, (id)kCTForegroundColorAttributeName: (id)linkTextColor} range:NSMakeRange(index.begin, replaceString.length)];
+        [attributedString addAttributes:@{NSLinkAttributeName: mediaLink, (id)kCTForegroundColorAttributeName: (id)linkTextColor} range:NSMakeRange(index.begin, replaceString.length)];
     }
     /*
     // URL
@@ -280,6 +284,26 @@
     return attributedString;
 }
 
++ (NSAttributedString *)attributedStringForTimelineRetweeter:(MBUser *)retweeter font:(UIFont *)font
+{
+    if (!retweeter) {
+        return [[NSAttributedString alloc] init];
+    }
+    if (!retweeter.screenName) {
+        return [[NSAttributedString alloc] init];
+    }
+    UIColor *textColor = [UIColor lightGrayColor];
+    CTFontRef fontRef = CTFontCreateWithName((__bridge CFStringRef)font.fontName, font.pointSize, NULL);
+    NSString *screenName = retweeter.screenName;
+    NSString *retweetString = [NSString stringWithFormat:@"Retweeted by %@", screenName];
+    MBMentionUserLink *mentionLink = [[MBMentionUserLink alloc] initWithUserID:retweeter.userID IDStr:retweeter.userIDStr screenName:retweeter.screenName];
+    
+    NSAttributedString *attributedString = [[NSAttributedString alloc] initWithString:retweetString attributes:@{(id)kCTForegroundColorAttributeName : textColor ,(id)kCTFontAttributeName: (__bridge id)fontRef, NSLinkAttributeName: mentionLink}];
+    CFRelease(fontRef);
+    
+    return attributedString;
+}
+
 + (NSAttributedString *)attributedStringForTimelineDate:(NSString *)dateString font:(UIFont *)font screeName:(NSString *)screenName tweetID:(unsigned long long)tweetID
 {
     if (nil == dateString|| nil == screenName || 0 == tweetID) {
@@ -288,7 +312,8 @@
     UIColor *textColor = [UIColor lightGrayColor];
     CTFontRef fontRef = CTFontCreateWithName((__bridge CFStringRef)font.fontName, font.pointSize, NULL);
     NSString *tweetURL = [NSString stringWithFormat:@"https://twitter.com/%@/status/%lld", screenName, tweetID];
-    NSAttributedString *attributedString = [[NSAttributedString alloc] initWithString:dateString attributes:@{(id)kCTForegroundColorAttributeName: textColor, (id)kCTFontAttributeName: (__bridge id)fontRef, NSLinkAttributeName : tweetURL}];
+    MBURLLink *urlLink = [[MBURLLink alloc] initWithURLString:tweetURL];
+    NSAttributedString *attributedString = [[NSAttributedString alloc] initWithString:dateString attributes:@{(id)kCTForegroundColorAttributeName: textColor, (id)kCTFontAttributeName: (__bridge id)fontRef, NSLinkAttributeName : urlLink}];
     CFRelease(fontRef);
     
     return attributedString;
@@ -303,7 +328,8 @@
     UIColor *textColor = [UIColor lightGrayColor];
     CTFontRef fontRef = CTFontCreateWithName((__bridge CFStringRef)font.fontName, font.pointSize, NULL);
     NSString *tweetURL = [NSString stringWithFormat:@"https://twitter.com/%@/status/%lld", screenName, tweetID];
-    NSAttributedString *attributedString = [[NSAttributedString alloc] initWithString:dateString attributes:@{(id)kCTForegroundColorAttributeName: textColor, (id)kCTFontAttributeName: (__bridge id)fontRef, NSLinkAttributeName: tweetURL}];
+    MBURLLink *urlLink = [[MBURLLink alloc] initWithURLString:tweetURL];
+    NSAttributedString *attributedString = [[NSAttributedString alloc] initWithString:dateString attributes:@{(id)kCTForegroundColorAttributeName: textColor, (id)kCTFontAttributeName: (__bridge id)fontRef, NSLinkAttributeName: urlLink}];
     CFRelease(fontRef);
     
     return attributedString;
