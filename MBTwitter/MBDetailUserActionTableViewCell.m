@@ -97,10 +97,10 @@
 {
     _followsMyAccount = followsMyAccount;
     if (followsMyAccount) {
-        [self.followButton setTitle:NSLocalizedString(@"Follow Back!", nil) forState:UIControlStateNormal];
+        if (self.canFollow) {
+            [self.followButton setTitle:NSLocalizedString(@"Follow Back!", nil) forState:UIControlStateNormal];
+        }
     } else {
-        [self.followButton setTitle:NSLocalizedString(@"Now Following!", nil) forState:UIControlStateNormal];
-        self.followButton.titleLabel.font = [UIFont systemFontOfSize:14.0f];
     }
     self.followButton.titleLabel.font = [UIFont systemFontOfSize:15.0f];
     [self.followButton sizeToFit];
