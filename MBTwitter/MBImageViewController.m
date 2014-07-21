@@ -20,6 +20,8 @@
 @property (nonatomic, readonly) MBAOuth_TwitterAPICenter *aoAPICenter;
 @property (nonatomic, assign) BOOL hiddenViews;
 
+@property (nonatomic, readonly) UIImageView *imageView;
+
 @end
 
 @implementation MBImageViewController
@@ -52,7 +54,10 @@
 #pragma mark - View
 - (void)configureNabigationItem
 {
-    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Back", nil) style:UIBarButtonItemStylePlain target:self action:@selector(didPushBackButton)];
+    //self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Back", nil) style:UIBarButtonItemStylePlain target:self action:@selector(didPushBackButton)];
+    
+    [self.closeButton addTarget:self action:@selector(didPushBackButton) forControlEvents:UIControlEventTouchUpInside];
+    [self.actionButton addTarget:self action:@selector(didPushActionButton) forControlEvents:UIControlEventTouchUpInside];
 }
 
 - (void)configureModel
@@ -64,14 +69,18 @@
 - (void)configureView
 {
     [self configureNabigationItem];
-    [self configureImageView];
+    //[self configureImageView];
     [self configureTweetView];
+    
+    _imageView = [[UIImageView alloc] initWithFrame:CGRectZero];
+    [self.scrollView addSubview:self.imageView];
     
     self.hiddenViews = NO;
     
     self.scrollView.delegate = self;
     
     [self.tapGestureRecognizer addTarget:self action:@selector(didTapGesture)];
+    [self.tapGestureRecognizer requireGestureRecognizerToFail:self.doubletapGestureRecognizer];
     [self.doubletapGestureRecognizer addTarget:self action:@selector(didDoubleTapGesture)];
 }
 
@@ -82,12 +91,11 @@
     if (!self.mediaImage) {
         
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
-            [MBImageDownloader downloadImageWithURL:self.imageURLString completionHandler:^(UIImage *image, NSData *imageData) {
+            [MBImageDownloader downloadMediaImageWithURL:self.imageURLString completionHandler:^(UIImage *image, NSData *imageData) {
                 [[MBImageCacher sharedInstance] storeMediaImage:image data:imageData forMediaID:self.mediaIDStr];
                 
                 dispatch_async(dispatch_get_main_queue(), ^{
                     _mediaImage = image;
-                    self.imageView.image = self.mediaImage;
                     [self renewViews];
                 });
                 
@@ -96,7 +104,6 @@
             }];
         });
     } else {
-        self.imageView.image = self.mediaImage;
         [self renewViews];
     }
 }
@@ -141,9 +148,20 @@
     }
 }
 
-- (void)viewWillAppear:(BOOL)animated
+- (void)viewDidAppear:(BOOL)animated
 {
-    [super viewWillAppear:animated];
+    [super viewDidAppear:animated];
+    
+    [self configureImageView];
+    
+    [[UIApplication sharedApplication] setStatusBarHidden:YES];
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    
+    [[UIApplication sharedApplication] setStatusBarHidden:NO];
 }
 
 - (void)didReceiveMemoryWarning
@@ -154,36 +172,47 @@
 
 #pragma mark - Instance Methods
 - (void)renewViews
-{NSLog(@"renew");
+{
     CGRect rect;
+    CGRect bounds = self.view.bounds;
     
     rect.origin = CGPointZero;
-    rect.size = self.view.frame.size;
-    //self.imageView.frame = rect;
+    rect.size = bounds.size;
     
-    //self.scrollView.frame = rect;
+    self.scrollView.frame = rect;
     
     // reset scale
     self.scrollView.zoomScale = 1.0;
-    self.scrollView.transform = CGAffineTransformIdentity;
+    self.imageView.transform = CGAffineTransformIdentity;
     
     rect.origin = CGPointZero;
     rect.size = self.mediaImage.size;
     self.imageView.frame = rect;
-    
+    self.imageView.image = self.mediaImage;
+
     self.scrollView.contentSize = self.mediaImage.size;
-    self.scrollView.contentOffset = CGPointZero;
-    self.scrollView.contentInset = UIEdgeInsetsZero;
+    
     
     // setting scale
-    float hScale, vScale, minScale;
-    hScale = CGRectGetWidth(self.scrollView.bounds) / self.mediaImage.size.width;
-    vScale = CGRectGetHeight(self.scrollView.bounds) / self.mediaImage.size.height;
+    float hScale, vScale, minScale, maxScale;
+    hScale = CGRectGetWidth(bounds) / self.mediaImage.size.width;
+    vScale = CGRectGetHeight(bounds) / self.mediaImage.size.height;
+    
+    /*
+    BOOL imagePortrait = self.mediaImage.size.height > self.mediaImage.size.width;
+    BOOL phonePortrait = bounds.size.height > bounds.size.width;
+    minScale = imagePortrait == phonePortrait ? hScale : MIN(hScale, vScale);*/
     minScale = MIN(hScale, vScale);
-    NSLog(@"minScale = %f", minScale);
+    maxScale = [[UIScreen mainScreen] scale];
+    if (minScale > maxScale) {
+        minScale = maxScale;
+    }
+    
     self.scrollView.minimumZoomScale = minScale;
-    self.scrollView.maximumZoomScale = 2.0f;
+    self.scrollView.maximumZoomScale = maxScale;
     self.scrollView.zoomScale = minScale;
+    
+    [self updateImageViewCenter];
 }
 
 - (void)updateImageViewCenter
@@ -208,13 +237,14 @@
     if (imageSize.height < CGRectGetHeight(bounds)) {
         point.y += (CGRectGetHeight(bounds) - imageSize.height) * 0.5f;
     }
-    //self.imageView.center = point;
+    self.imageView.center = point;
 }
 
 #pragma mark Action
-- (IBAction)didPushActionButton:(id)sender {
+- (void)didPushActionButton
+{
     UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:NSLocalizedString(@"Chancel", nil) destructiveButtonTitle:nil otherButtonTitles:NSLocalizedString(@"Save Image", nil), nil];
-    [actionSheet showFromToolbar:self.toolbar];
+    [actionSheet showInView:self.view];
 }
 
 - (void)didPushBackButton
@@ -231,7 +261,6 @@
     
     [UIView animateWithDuration:0.3f delay:0 options:0 animations:^{
         [self.tweetContainerView setHidden:isHidden];
-        self.toolbar.hidden = isHidden;
         [self.navigationController setNavigationBarHidden:isHidden];
         self.scrollView.backgroundColor = changedScrollViewBackgroundColor;
         
@@ -242,8 +271,12 @@
 
 - (void)didDoubleTapGesture
 {
-    [self.imageView sizeToFit];
-    self.scrollView.contentSize = self.imageView.bounds.size;
+    CGFloat zoomingScale = (self.scrollView.zoomScale == self.scrollView.minimumZoomScale) ? self.scrollView.maximumZoomScale : self.scrollView.minimumZoomScale;
+    
+    [UIView animateWithDuration:0.3f animations:^{
+        self.scrollView.zoomScale = zoomingScale;
+    }];
+
 }
 
 #pragma mark -
@@ -258,6 +291,7 @@
 }
 
 #pragma mark UIScrollViewController Delegate
+
 - (UIView *)viewForZoomingInScrollView:(UIScrollView *)scrollView
 {
     for (UIView *subView in scrollView.subviews) {
