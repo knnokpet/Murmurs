@@ -170,7 +170,7 @@ static NSString *avatorInfomationTableViewCellIdentifier = @"MBDetailUserInfomat
     if (self.currentUser.urlHTTPSAtProfileImage) {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
             
-            [MBImageDownloader downloadBigImageWithURL:self.currentUser.urlHTTPSAtProfileImage completionHandler:^ (UIImage *image, NSData *imageData) {
+            [MBImageDownloader downloadOriginImageWithURL:self.currentUser.urlHTTPSAtProfileImage completionHandler:^ (UIImage *image, NSData *imageData) {
                 if (image) {
                     [[MBImageCacher sharedInstance] storeProfileImage:image data:imageData forUserID:self.currentUser.userIDStr];
                     UIImage *radiusImage = [self applyImage:image ForAvatorViewInCell:cell];
@@ -189,7 +189,7 @@ static NSString *avatorInfomationTableViewCellIdentifier = @"MBDetailUserInfomat
 - (UIImage *)applyImage:(UIImage *)image ForAvatorViewInCell:(MBDetailUserInfomationTableViewCell *)cell
 {
     CGSize imageSize = CGSizeMake(cell.profileAvatorView.avatorImageView.frame.size.width, cell.profileAvatorView.avatorImageView.frame.size.height);
-    UIImage *radiusImage = [MBImageApplyer imageForTwitter:image byScallingToFillSize:imageSize radius:cell.profileAvatorView.avatorImageView.layer.cornerRadius];
+    UIImage *radiusImage = [MBImageApplyer imageForTwitter:image size:imageSize radius:cell.profileAvatorView.avatorImageView.layer.cornerRadius];
     
     return radiusImage;
 }
