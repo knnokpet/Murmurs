@@ -11,7 +11,6 @@
 @interface MBTemporaryDirectMessage : MBDirectMessage
 
 @property (nonatomic, readonly) MBUser *partner;
-@property (nonatomic, readonly) NSString *text;
 
 - (instancetype)initWithText:(NSString *)text partner:(MBUser *)partner;
 

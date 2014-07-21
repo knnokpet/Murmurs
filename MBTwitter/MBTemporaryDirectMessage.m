@@ -12,10 +12,10 @@
 
 - (instancetype)initWithText:(NSString *)text partner:(MBUser *)partner
 {
-    self = [super init];
+    NSDictionary *initialDict = @{KEY_TWEET_TEXT: text};
+    self = [super initWithDictionary:initialDict];
     if (self) {
         _partner = partner;
-        _text = text;
     }
     
     return self;
