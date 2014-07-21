@@ -9,6 +9,15 @@
 #import "MBURLLink.h"
 
 @implementation MBURLLink
+- (instancetype)initWithURLString:(NSString *)urlString
+{
+    self = [super init];
+    if (self) {
+        _expandedURLText = urlString;
+    }
+    
+    return self;
+}
 
 - (void)initializeWithDictionary:(NSDictionary *)dictionary
 {
