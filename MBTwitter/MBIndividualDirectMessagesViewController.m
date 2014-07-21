@@ -23,6 +23,7 @@
 #import "MBMessageView.h"
 #import "MBTweetTextView.h"
 #import "MBAvatorImageView.h"
+#import "MBUnderLineToolbar.h"
 
 static NSString *deliverdCellIdentifier = @"DeliverdCellIdentifier";
 static NSString *sendCellIdentifier = @"SendCellIdentifier";
@@ -345,7 +346,7 @@ static NSString *sendCellIdentifier = @"SendCellIdentifier";
     }
     
     NSString *sendMessage = self.textView.text;
-    [self.nonSendMessages setObject:[NSNumber numberWithInt:[self.dataSource count]] forKey:sendMessage];
+    [self.nonSendMessages setObject:[NSNumber numberWithInt:[self.dataSource count] - 1] forKey:sendMessage];
     if (self.isEditing) {
         self.isEditing = NO;
         [self configureMessageView];
@@ -356,6 +357,7 @@ static NSString *sendCellIdentifier = @"SendCellIdentifier";
     
     [self.aoAPICenter postDirectMessage:sendMessage screenName:self.partner.screenName userID:[self.partner.userID unsignedLongLongValue]];
     
+    self.textView.text = @"";
 }
 
 - (IBAction)didPushCameraButton:(id)sender {
@@ -379,24 +381,24 @@ static NSString *sendCellIdentifier = @"SendCellIdentifier";
     if (0 < textLength) {
         self.currentReceiverViewController = [[MBMessageReceiverViewController alloc] init];
         self.currentReceiverViewController.view.frame = self.view.bounds;
-        NSArray *userIDs = [self.userIDManager storedUserIDs];
-        self.currentReceiverViewController.dataSource = [self suggestedUserIDs:userIDs suggestString:suggestString];
-        self.currentReceiverViewController.inputedString = suggestString;
-        self.currentReceiverViewController.delegate = self;
-        [self.currentReceiverViewController.tableView reloadData];
-        [self addChildViewController:self.currentReceiverViewController];
-        
         UIEdgeInsets tableViewInset = self.tableView.contentInset;
         UIEdgeInsets scrollInset = self.tableView.scrollIndicatorInsets;
         tableViewInset.top = self.receiverToolbar.bounds.size.height;
         tableViewInset.bottom = self.tabBarController.tabBar.frame.size.height;
         scrollInset.top = self.receiverToolbar.bounds.size.height;
         scrollInset.bottom = self.tabBarController.tabBar.frame.size.height;
-        
         self.currentReceiverViewController.tableView.contentInset = tableViewInset;
         self.currentReceiverViewController.tableView.scrollIndicatorInsets = scrollInset;
         
+        NSArray *userIDs = [self.userIDManager storedUserIDs];
+        self.currentReceiverViewController.dataSource = [self suggestedUserIDs:userIDs suggestString:suggestString];
+        self.currentReceiverViewController.inputedString = suggestString;
+        self.currentReceiverViewController.delegate = self;
+        [self.currentReceiverViewController.tableView reloadData];
+        [self addChildViewController:self.currentReceiverViewController];
+
         [self.view insertSubview:self.currentReceiverViewController.view belowSubview:self.receiverToolbar];
+        
         
     } else if (0 == textLength) {
         [self.tableView setHidden:YES];
@@ -473,6 +475,9 @@ static NSString *sendCellIdentifier = @"SendCellIdentifier";
     cell.tweetTextView.lineHeight = LINE_HEIGHT_MESSAGE;
     cell.tweetTextView.paragraphSpace = PARAGRAPH_SPACING_MESSAGE;
     cell.tweetTextView.textColor = [UIColor whiteColor];
+    if ([message isKindOfClass:[MBTemporaryDirectMessage class]]) {
+        cell.tweetTextView.textColor = [UIColor redColor];
+    }
     cell.tweetTextView.attributedString = [MBTweetTextComposer attributedStringForTweet:message tintColor:[self.navigationController.navigationBar tintColor]];
     CGRect longestRect = [MBTweetTextView rectForLongestDrawingTextWithAttributedString:[MBTweetTextComposer attributedStringForTweet:message tintColor:[self.navigationController.navigationBar tintColor]] constraintSize:cell.tweetTextView.frame.size lineSpace:LINE_SPACING_MESSAGE paragraghSpace:PARAGRAPH_SPACING_MESSAGE font:[UIFont systemFontOfSize:FONT_SIZE_MESSAGE]];
     [cell setTweetViewRect:longestRect];
@@ -480,21 +485,6 @@ static NSString *sendCellIdentifier = @"SendCellIdentifier";
     [cell.messageView setPopsFromRight:YES];
 }
 
-- (void)updateCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
-{
-    id obj = [self.dataSource objectAtIndex:indexPath.row];
-    if ([obj isKindOfClass:[MBTemporaryDirectMessage class]]) {
-        MBTemporaryDirectMessage *temporaryMessage = obj;
-        cell.textLabel.text = temporaryMessage.text;
-        cell.detailTextLabel.text = NSLocalizedString(@"Sending...", nil);
-        cell.backgroundColor = [UIColor blueColor];
-        
-    } else if ([obj isKindOfClass:[MBDirectMessage class]]) {
-        MBDirectMessage *message = obj;
-        cell.textLabel.text = message.tweetText;
-        cell.backgroundColor = [UIColor whiteColor];
-    }
-}
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -578,7 +568,10 @@ static NSString *sendCellIdentifier = @"SendCellIdentifier";
 
 - (void)selectSearchReceiverViewController:(MBMessageReceiverViewController *)controller
 {
-    
+    if (self.receiverTextField.text > 0) {
+        NSString *query = self.receiverTextField.text;
+        [self.aoAPICenter getSearchedUsersWithQuery:query page:0];
+    }
 }
 
 - (void)scrollReceiverViewController:(MBMessageReceiverViewController *)controller
@@ -607,6 +600,19 @@ static NSString *sendCellIdentifier = @"SendCellIdentifier";
                 [_delegate sendMessageIndividualDirectMessagesViewController:self];
             }
         }
+    }
+}
+
+- (void)twitterAPICenter:(MBAOuth_TwitterAPICenter *)center requestType:(MBRequestType)requestType parsedUsers:(NSArray *)users
+{
+    if (users.count > 0) {
+        NSMutableArray *userIDs = [NSMutableArray array];
+        for (MBUser *user in users) {
+            [userIDs addObject:user.userIDStr];
+        }
+        self.currentReceiverViewController.dataSource = userIDs;
+        self.currentReceiverViewController.inputedString = @"";
+        [self.currentReceiverViewController.tableView reloadData];
     }
 }
 

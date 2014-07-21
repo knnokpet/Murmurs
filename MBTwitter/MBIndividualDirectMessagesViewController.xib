@@ -7,7 +7,7 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="MBIndividualDirectMessagesViewController">
             <connections>
                 <outlet property="receiverTextField" destination="J0e-jd-ORM" id="Kaa-OA-qnf"/>
-                <outlet property="receiverToolbar" destination="Bxa-ch-5sb" id="is3-gR-in8"/>
+                <outlet property="receiverToolbar" destination="Bxa-ch-5sb" id="U8b-VX-0Gv"/>
                 <outlet property="receiverToolbarConstraint" destination="6KE-32-Qaj" id="fbQ-QG-1Kv"/>
                 <outlet property="searchDisplayController" destination="8MY-zz-CQ6" id="RVR-dO-VbF"/>
                 <outlet property="tableView" destination="haj-rC-wD4" id="wgR-dd-oMs"/>
@@ -24,7 +24,7 @@
                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                 </tableView>
-                <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Bxa-ch-5sb">
+                <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Bxa-ch-5sb" customClass="MBUnderLineToolbar">
                     <rect key="frame" x="0.0" y="64" width="320" height="44"/>
                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                     <items>

@@ -13,6 +13,7 @@
 @protocol MBIndividualDirectMessagesViewControllerDelegate;
 @class MBUserIDManager;
 @class MBUser;
+@class MBUnderLineToolbar;
 @interface MBIndividualDirectMessagesViewController : UIViewController <MBAOuth_TwitterAPICenterDelegate, MBMessageReceiverViewControllerDelegate,  UITextViewDelegate, UIScrollViewDelegate>
 
 
@@ -23,7 +24,7 @@
 @property (nonatomic, readonly) NSMutableArray *conversation;
 @property (nonatomic, readonly) NSMutableDictionary *nonSendMessages;
 
-@property (weak, nonatomic) IBOutlet UIToolbar *receiverToolbar;
+@property (weak, nonatomic) IBOutlet MBUnderLineToolbar *receiverToolbar;
 @property (weak, nonatomic) IBOutlet UITextField *receiverTextField;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *receiverToolbarConstraint;
 
