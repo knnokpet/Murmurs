@@ -30,6 +30,7 @@
     self.locationTextView.font = [UIFont systemFontOfSize:14.0f];
     self.locationTextView.backgroundColor = [UIColor clearColor];
     self.locationTextView.editable = NO;
+    self.locationTextView.scrollEnabled = NO;
     
     
     [self addSubview:self.locationTextView];
@@ -41,6 +42,7 @@
     self.urlTextView.font = [UIFont systemFontOfSize:14.0f];
     self.urlTextView.backgroundColor = [UIColor clearColor];
     self.urlTextView.editable = NO;
+    self.urlTextView.scrollEnabled = NO;
     [self addSubview:self.urlTextView];
 }
 
