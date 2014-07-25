@@ -63,7 +63,7 @@
     self.titleLabel.frame = titleFrame;
     
     CGRect imageFrame = self.imageView.frame;
-    imageFrame.size = CGSizeMake(imageFrame.size.width / 2, imageFrame.size.height / 2);
+    imageFrame.size = self.image.size;
     imageFrame = CGRectMake(truncf((self.bounds.size.width - imageFrame.size.width) / 2), self.titleLabel.frame.origin.y - imageFrame.size.height, imageFrame.size.width, imageFrame.size.height);
     self.imageView.frame = imageFrame;
     

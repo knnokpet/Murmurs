@@ -10,8 +10,14 @@
 
 
 static NSString *tweetCellIdentifier = @"TweetTableViewCellIdentifier";
-static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
+static NSString *tweetWithImageCellIdentifier = @"TweetWithImageTableViewCellIdentifier";
+static NSString *favoriteCellIdentifier = @"FavoriteTableViewCellIdentifier";
+static NSString *favoriteWithImageCellIdentifier = @"FavoriteWithImageTableViewCellIdentifier";
 static NSString *retweetCellIdentifier = @"RetweetTableViewCellIdentifier";
+static NSString *retweetWithImageCellIdentifier = @"RetweetWithImageTableViewCellIdentifier";
+static NSString *favoriteRetweetCellIdentifier = @"FavoriteRetweetTableViewCellIdentifier";
+static NSString *favoriteRetweetWithImageCellIdentifier = @"FavoriteRetweetWithImageTableViewCellIdentifier";
+static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
 
 @interface MBTimelineViewController ()
 
@@ -68,10 +74,26 @@ static NSString *retweetCellIdentifier = @"RetweetTableViewCellIdentifier";
     
     UINib *cellNib = [UINib nibWithNibName:@"TweetTavbleViewCell" bundle:nil];
     [self.tableView registerNib:cellNib forCellReuseIdentifier:tweetCellIdentifier];
-    UINib *gapedCellNib = [UINib nibWithNibName:@"GapedTweetTableViewCell" bundle:nil];
-    [self.tableView registerNib:gapedCellNib forCellReuseIdentifier:gapedCellIdentifier];
     UINib *retweetCel = [UINib nibWithNibName:@"TweetTavbleViewCell" bundle:nil];
     [self.tableView registerNib:retweetCel forCellReuseIdentifier:retweetCellIdentifier];
+    UINib *favoriteCell = [UINib nibWithNibName:@"TweetTavbleViewCell" bundle:nil];
+    [self.tableView registerNib:favoriteCell forCellReuseIdentifier:favoriteCellIdentifier];
+    UINib *favoriteRetweetCell = [UINib nibWithNibName:@"TweetTavbleViewCell" bundle:nil];
+    [self.tableView registerNib:favoriteRetweetCell forCellReuseIdentifier:favoriteRetweetCellIdentifier];
+    
+    UINib *cellWithImageNib = [UINib nibWithNibName:@"TweetTavbleViewCell" bundle:nil];
+    [self.tableView registerNib:cellWithImageNib forCellReuseIdentifier:tweetWithImageCellIdentifier];
+    UINib *retweetWithImageCell = [UINib nibWithNibName:@"TweetTavbleViewCell" bundle:nil];
+    [self.tableView registerNib:retweetWithImageCell forCellReuseIdentifier:retweetWithImageCellIdentifier];
+    UINib *favoriteWithImageCell = [UINib nibWithNibName:@"TweetTavbleViewCell" bundle:nil];
+    [self.tableView registerNib:favoriteWithImageCell forCellReuseIdentifier:favoriteWithImageCellIdentifier];
+    UINib *favoriteRetweetWithImageCell = [UINib nibWithNibName:@"TweetTavbleViewCell" bundle:nil];
+    [self.tableView registerNib:favoriteRetweetWithImageCell forCellReuseIdentifier:favoriteRetweetWithImageCellIdentifier];
+    
+    
+    
+    UINib *gapedCellNib = [UINib nibWithNibName:@"GapedTweetTableViewCell" bundle:nil];
+    [self.tableView registerNib:gapedCellNib forCellReuseIdentifier:gapedCellIdentifier];
     
     // remove nonCell separator
     UIView *view = [[UIView alloc] init];
@@ -330,6 +352,12 @@ static NSString *retweetCellIdentifier = @"RetweetTableViewCellIdentifier";
         calcuTweet = tweet.tweetOfOriginInRetweet;
     }
     
+    BOOL containsImage = NO;
+    if (calcuTweet.entity.media.count > 0) {
+        containsImage = YES;
+    }
+    
+    
     NSAttributedString *attributedString = [MBTweetTextComposer attributedStringForTweet:calcuTweet tintColor:[self.navigationController.navigationBar tintColor]];
     
     
@@ -337,12 +365,17 @@ static NSString *retweetCellIdentifier = @"RetweetTableViewCellIdentifier";
     CGRect textRect = [MBTweetTextView frameRectWithAttributedString:attributedString constraintSize:CGSizeMake(textViewWidth, CGFLOAT_MAX) lineSpace:LINE_SPACING font:[UIFont systemFontOfSize:FONT_SIZE]];
     
     CGFloat tweetViewSpace = 30.0f;
+    CGFloat verticalMargin = 10.0f;
+    
     CGFloat bottomHeight = 0.0f;
-    CGFloat verticalMargin = 12.0f;
     if (isRetweet) {
-        bottomHeight = 14.0f + 4.0f + 4.0f;
+        bottomHeight = 16.0f + 4.0f + 4.0f;
     } else {
         bottomHeight = verticalMargin;
+    }
+#warning 高さの算出は適当
+    if (containsImage) {
+        bottomHeight += 64;
     }
     
     CGFloat customCellHeight = textRect.size.height + tweetViewSpace + bottomHeight;
@@ -397,11 +430,77 @@ static NSString *retweetCellIdentifier = @"RetweetTableViewCellIdentifier";
     MBTweetViewCell *cell;
     NSString *key = [self.dataSource objectAtIndex:indexPath.row];
     MBTweet *tweetAtIndex = [[MBTweetManager sharedInstance] storedTweetForKey:key];
-    if (nil != tweetAtIndex.tweetOfOriginInRetweet) {
-        cell = [self.tableView dequeueReusableCellWithIdentifier:retweetCellIdentifier];
+    // check retweet
+    if (tweetAtIndex.tweetOfOriginInRetweet) {
+        MBTweet *retweetedTweet = tweetAtIndex.tweetOfOriginInRetweet;
+        NSInteger imageCount = [retweetedTweet.entity.media count];
+        
+        NSString *identifier;
+        if (retweetedTweet.isFavorited || retweetedTweet.place) {
+            identifier = favoriteRetweetCellIdentifier;
+            if (imageCount > 0) {
+                identifier = favoriteRetweetWithImageCellIdentifier;
+            }
+        } else {
+            identifier = retweetCellIdentifier;
+            if (imageCount > 0) {
+                identifier = retweetWithImageCellIdentifier;
+            }
+        }
+        cell = [self.tableView dequeueReusableCellWithIdentifier:identifier];
+        if (identifier == retweetCellIdentifier || identifier == retweetWithImageCellIdentifier) {
+            [cell removeFavoriteView];
+        }
+        if (identifier == retweetCellIdentifier || identifier == favoriteRetweetCellIdentifier) {
+            [cell removeImageContainerView];
+        }
+        
+        /*
+        if (retweetedTweet.isFavorited || retweetedTweet.place) {
+            cell = [self.tableView dequeueReusableCellWithIdentifier:favoriteRetweetCellIdentifier];
+        } else {
+            cell = [self.tableView dequeueReusableCellWithIdentifier:retweetCellIdentifier];
+            [cell removeFavoriteView];
+        }*/
+        /* retweetView が必ずある状態で、という考えでここに */
+        /* retweetTweet の代入もあるのでここに */
+        cell.retweetView.attributedString = [MBTweetTextComposer attributedStringForTimelineRetweeter:tweetAtIndex.tweetUser font:[UIFont systemFontOfSize:15.0f]];
+        cell.retweetView.delegate = self;
+        
+        tweetAtIndex = retweetedTweet;
+        
     } else {
-        cell = [self.tableView dequeueReusableCellWithIdentifier:tweetCellIdentifier];
+        NSInteger imageCount = [tweetAtIndex.entity.media count];
+        NSString *identifier;
+        if (tweetAtIndex.isFavorited || tweetAtIndex.place) {
+            identifier = favoriteCellIdentifier;
+            if (imageCount > 0) {
+                identifier = favoriteWithImageCellIdentifier;
+            }
+        } else {
+            identifier = tweetCellIdentifier;
+            if (imageCount > 0) {
+                identifier = tweetWithImageCellIdentifier;
+            }
+        }
+        cell = [self.tableView dequeueReusableCellWithIdentifier:identifier];
         [cell removeRetweetView];
+        if (identifier == tweetCellIdentifier || identifier == tweetWithImageCellIdentifier) {
+            [cell removeFavoriteView];
+        }
+        if (identifier == tweetCellIdentifier || favoriteCellIdentifier) {
+            [cell removeImageContainerView];
+        }
+        
+        
+        /*
+        if (tweetAtIndex.isFavorited || tweetAtIndex.place) {
+            cell = [self.tableView dequeueReusableCellWithIdentifier:favoriteCellIdentifier];
+        } else {
+            cell = [self.tableView dequeueReusableCellWithIdentifier:tweetCellIdentifier];
+            [cell removeFavoriteView];
+        }
+        [cell removeRetweetView];*/
     }
     
     [self updateCell:cell tweet:tweetAtIndex AtIndexPath:indexPath];
@@ -414,28 +513,25 @@ static NSString *retweetCellIdentifier = @"RetweetTableViewCellIdentifier";
     cell.delegate = self;
     
     MBTweet *tweetAtIndexPath = tweet;
-    if (tweetAtIndexPath == nil) {
+    if (tweetAtIndexPath == nil) { /* nil チェックは必要ないかも */
         NSString *key = [self.dataSource objectAtIndex:indexPath.row];
         tweetAtIndexPath = [[MBTweetManager sharedInstance] storedTweetForKey:key];
-        if (nil != tweetAtIndexPath.tweetOfOriginInRetweet) {
+        if (tweetAtIndexPath.tweetOfOriginInRetweet) {
             MBTweet *retweetedTweet = tweetAtIndexPath.tweetOfOriginInRetweet;
             tweetAtIndexPath = retweetedTweet;
+            if (cell.retweetView.superview) {
+                cell.retweetView.attributedString = [MBTweetTextComposer attributedStringForTimelineRetweeter:tweet.tweetUser font:[UIFont systemFontOfSize:15.0f]];
+                cell.retweetView.delegate = self;
+            }
         }
     }
     
-    // check retweet
-    if (tweetAtIndexPath.tweetOfOriginInRetweet) {
-        MBTweet *retweetedTweet = tweetAtIndexPath.tweetOfOriginInRetweet;
-        tweetAtIndexPath = retweetedTweet;
-    }
-    
-    // retweetView
-    if (cell.retweetView.superview) {
-        cell.retweetView.attributedString = [MBTweetTextComposer attributedStringForTimelineRetweeter:tweet.tweetUser font:[UIFont systemFontOfSize:15.0f]];
-        cell.retweetView.delegate = self;
-    }
-    
     MBUser *userAtIndexPath = tweetAtIndexPath.tweetUser;
+    
+    NSLog(@"pic.twit = %d", tweetAtIndexPath.entity.media.count);
+    // favorite & geo
+    cell.favorited = tweetAtIndexPath.isFavorited;
+    cell.geod = (tweetAtIndexPath.place != nil) ? YES : NO;
     
     // timeView
     NSString *timeIntervalString = [NSString timeMarginWithDate:tweetAtIndexPath.createdDate];
@@ -488,6 +584,14 @@ static NSString *retweetCellIdentifier = @"RetweetTableViewCellIdentifier";
     } else {
         cell.avatorImageView.image = avatorImage;
     }
+    
+    // mediaImage
+    NSInteger imageCounts = tweetAtIndexPath.entity.media.count;
+    if (imageCounts > 0) {
+        cell.imageContainerView.imageCount = imageCounts;
+    }
+    
+    
 }
 
 - (void)updateTableViewDataSource:(NSArray *)addingData
@@ -693,9 +797,7 @@ static NSString *retweetCellIdentifier = @"RetweetTableViewCellIdentifier";
 }
 
 - (void)didPushReplyButtonOnActionView:(MBTimelineActionView *)view
-{
-    NSLog(@"rep");
-    
+{    
     NSIndexPath *selectedIndexPath = view.selectedIndexPath;
     NSString *tweetKey = [self.dataSource objectAtIndex:selectedIndexPath.row];
     MBTweet *tweet = [[MBTweetManager sharedInstance] storedTweetForKey:tweetKey];
@@ -709,12 +811,13 @@ static NSString *retweetCellIdentifier = @"RetweetTableViewCellIdentifier";
     [postTweetViewController setReferencedTweet:tweet];
     [postTweetViewController setScreenName:tweet.tweetUser.screenName];
     UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:postTweetViewController];
-    [self.navigationController presentViewController:navigationController animated:YES completion:nil];
+    [self.navigationController presentViewController:navigationController animated:YES completion:^{
+        [view showViews:NO animated:NO];
+    }];
 }
 
 - (void)didPushRetweetButtonOnActionView:(MBTimelineActionView *)view
 {
-    NSLog(@"ret");
     NSIndexPath *selectedIndexPath = view.selectedIndexPath;
     NSString *tweetKey = [self.dataSource objectAtIndex:selectedIndexPath.row];
     MBTweet *tweet = [[MBTweetManager sharedInstance] storedTweetForKey:tweetKey];
@@ -727,7 +830,6 @@ static NSString *retweetCellIdentifier = @"RetweetTableViewCellIdentifier";
 
 - (void)didPushFavoriteButtonOnActionView:(MBTimelineActionView *)view
 {
-    NSLog(@"fav");
     NSIndexPath *selectedIndexPath = view.selectedIndexPath;
     NSString *tweetKey = [self.dataSource objectAtIndex:selectedIndexPath.row];
     MBTweet *tweet = [[MBTweetManager sharedInstance] storedTweetForKey:tweetKey];

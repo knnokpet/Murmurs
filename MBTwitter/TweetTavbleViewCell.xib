@@ -22,7 +22,7 @@
                         </constraints>
                     </imageView>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Kdl-qO-9E7" customClass="MBTweetTextView">
-                        <rect key="frame" x="64" y="30" width="248" height="177"/>
+                        <rect key="frame" x="64" y="30" width="248" height="103"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
@@ -36,36 +36,61 @@
                         </constraints>
                     </view>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="jHL-St-W7Z" customClass="MBTweetTextView">
-                        <rect key="frame" x="66" y="211" width="244" height="14"/>
+                        <rect key="frame" x="66" y="209" width="246" height="16"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstAttribute="height" constant="14" id="RSA-6R-LzV"/>
+                            <constraint firstAttribute="height" constant="16" id="RSA-6R-LzV"/>
                         </constraints>
                     </view>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="yHN-54-aDN" customClass="MBCharacterScreenNameView">
-                        <rect key="frame" x="64" y="9" width="208" height="17"/>
+                        <rect key="frame" x="64" y="10" width="178" height="16"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                    </view>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Ms6-Bp-7gF" customClass="MBFavoriteView">
+                        <rect key="frame" x="246" y="10" width="32" height="20"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="32" id="LA2-yc-RrF"/>
+                            <constraint firstAttribute="height" constant="20" id="x18-sR-qiS"/>
+                        </constraints>
+                    </view>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="f1k-oa-B9x" customClass="MBTimelineImageContainerView">
+                        <rect key="frame" x="64" y="141" width="248" height="64"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="64" id="FVe-w2-CdV"/>
+                        </constraints>
                     </view>
                 </subviews>
                 <constraints>
                     <constraint firstAttribute="bottom" secondItem="jHL-St-W7Z" secondAttribute="bottom" constant="4" id="0h2-O7-NqW"/>
                     <constraint firstItem="Kdl-qO-9E7" firstAttribute="leading" secondItem="Pnn-36-8ML" secondAttribute="leading" constant="64" id="2um-Iu-RDV"/>
-                    <constraint firstItem="yHN-54-aDN" firstAttribute="top" secondItem="Pnn-36-8ML" secondAttribute="top" constant="9" id="52j-46-Yh8"/>
+                    <constraint firstItem="yHN-54-aDN" firstAttribute="top" secondItem="Pnn-36-8ML" secondAttribute="top" constant="10" id="52j-46-Yh8"/>
+                    <constraint firstAttribute="bottom" secondItem="f1k-oa-B9x" secondAttribute="bottom" priority="750" constant="10" id="EqL-6g-CIM"/>
+                    <constraint firstItem="Ms6-Bp-7gF" firstAttribute="leading" secondItem="yHN-54-aDN" secondAttribute="trailing" constant="4" id="HvP-YB-5YO"/>
+                    <constraint firstItem="f1k-oa-B9x" firstAttribute="top" secondItem="Kdl-qO-9E7" secondAttribute="bottom" constant="8" id="KUq-cs-spq"/>
                     <constraint firstItem="OoA-Oc-RDj" firstAttribute="top" secondItem="Pnn-36-8ML" secondAttribute="top" constant="12" id="N4m-Gp-4eD"/>
                     <constraint firstAttribute="trailing" secondItem="Kdl-qO-9E7" secondAttribute="trailing" constant="8" id="PIk-FQ-MIU"/>
-                    <constraint firstAttribute="trailing" secondItem="jHL-St-W7Z" secondAttribute="trailing" constant="10" id="U9h-r0-2me"/>
+                    <constraint firstAttribute="trailing" secondItem="f1k-oa-B9x" secondAttribute="trailing" constant="8" id="RDy-rd-KCh"/>
+                    <constraint firstAttribute="trailing" secondItem="jHL-St-W7Z" secondAttribute="trailing" constant="8" id="U9h-r0-2me"/>
                     <constraint firstItem="OoA-Oc-RDj" firstAttribute="leading" secondItem="Pnn-36-8ML" secondAttribute="leading" constant="8" id="UE9-uR-SoY"/>
+                    <constraint firstItem="Ms6-Bp-7gF" firstAttribute="top" secondItem="Pnn-36-8ML" secondAttribute="top" constant="10" id="Wkf-1n-Cxn"/>
                     <constraint firstItem="Kdl-qO-9E7" firstAttribute="top" secondItem="yHN-54-aDN" secondAttribute="bottom" constant="4" id="Xv3-Oi-Z7w"/>
                     <constraint firstItem="jHL-St-W7Z" firstAttribute="leading" secondItem="Pnn-36-8ML" secondAttribute="leading" constant="66" id="YTb-y6-NCC"/>
-                    <constraint firstItem="bed-xa-aaB" firstAttribute="leading" secondItem="yHN-54-aDN" secondAttribute="trailing" constant="10" id="ZaG-rU-dLE"/>
+                    <constraint firstItem="bed-xa-aaB" firstAttribute="leading" secondItem="Ms6-Bp-7gF" secondAttribute="trailing" constant="4" id="Yja-lJ-t5u"/>
+                    <constraint firstItem="bed-xa-aaB" firstAttribute="leading" secondItem="yHN-54-aDN" secondAttribute="trailing" priority="250" constant="10" id="ZaG-rU-dLE"/>
                     <constraint firstAttribute="trailing" secondItem="bed-xa-aaB" secondAttribute="trailing" constant="8" id="eHt-Lz-sP6"/>
+                    <constraint firstItem="f1k-oa-B9x" firstAttribute="leading" secondItem="Pnn-36-8ML" secondAttribute="leading" constant="64" id="j4I-t6-2gL"/>
                     <constraint firstItem="yHN-54-aDN" firstAttribute="leading" secondItem="OoA-Oc-RDj" secondAttribute="trailing" constant="8" id="jeg-1N-ndB"/>
                     <constraint firstItem="Kdl-qO-9E7" firstAttribute="top" secondItem="bed-xa-aaB" secondAttribute="bottom" constant="4" id="kkC-cz-iiA"/>
-                    <constraint firstAttribute="bottom" secondItem="Kdl-qO-9E7" secondAttribute="bottom" priority="500" constant="12" id="t1n-Vf-3AK"/>
+                    <constraint firstItem="jHL-St-W7Z" firstAttribute="top" secondItem="f1k-oa-B9x" secondAttribute="bottom" constant="4" id="nig-Lr-4Wd"/>
+                    <constraint firstAttribute="bottom" secondItem="Kdl-qO-9E7" secondAttribute="bottom" priority="250" constant="10" id="t1n-Vf-3AK"/>
                     <constraint firstItem="bed-xa-aaB" firstAttribute="top" secondItem="Pnn-36-8ML" secondAttribute="top" constant="12" id="uVT-2R-h2o"/>
-                    <constraint firstItem="jHL-St-W7Z" firstAttribute="top" secondItem="Kdl-qO-9E7" secondAttribute="bottom" constant="4" id="vLY-Vb-4DY"/>
+                    <constraint firstItem="jHL-St-W7Z" firstAttribute="top" secondItem="Kdl-qO-9E7" secondAttribute="bottom" priority="750" constant="4" id="vLY-Vb-4DY"/>
                 </constraints>
             </tableViewCellContentView>
             <gestureRecognizers/>
@@ -73,6 +98,8 @@
                 <outlet property="avatorImageView" destination="OoA-Oc-RDj" id="swR-u8-ZRz"/>
                 <outlet property="characterScreenNameView" destination="yHN-54-aDN" id="Aq9-Pm-puI"/>
                 <outlet property="dateView" destination="bed-xa-aaB" id="rmP-g3-i0H"/>
+                <outlet property="favoriteView" destination="Ms6-Bp-7gF" id="zSZ-n9-cf9"/>
+                <outlet property="imageContainerView" destination="f1k-oa-B9x" id="ZNe-ae-5PT"/>
                 <outlet property="retweetView" destination="jHL-St-W7Z" id="p6m-3v-0G0"/>
                 <outlet property="tweetTextView" destination="Kdl-qO-9E7" id="UaG-ie-GhQ"/>
             </connections>

@@ -54,6 +54,11 @@
 		8623B8D8197A3F8C004380FF /* Timeline@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8623B8D6197A3F8C004380FF /* Timeline@2x.png */; };
 		8623B8E1197AB60B004380FF /* MBShadowBlurLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 8623B8E0197AB60B004380FF /* MBShadowBlurLabel.m */; };
 		8623B8E4197D1A48004380FF /* MBGeoPinView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8623B8E3197D1A48004380FF /* MBGeoPinView.m */; };
+		8623B8E819800397004380FF /* MBFollowRequestTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8623B8E619800397004380FF /* MBFollowRequestTableViewCell.m */; };
+		8623B8E919800397004380FF /* MBFollowRequestTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8623B8E719800397004380FF /* MBFollowRequestTableViewCell.xib */; };
+		8623B8F119809FA6004380FF /* MBFollowRequestViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8623B8F019809FA6004380FF /* MBFollowRequestViewController.m */; };
+		8623B8F81980DDE6004380FF /* MBFavoriteView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8623B8F71980DDE6004380FF /* MBFavoriteView.m */; };
+		8623B8FB1981E96E004380FF /* MBTimelineImageContainerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8623B8FA1981E96E004380FF /* MBTimelineImageContainerView.m */; };
 		862B25E618D08A69004FC786 /* OAMutableRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 862B25E518D08A69004FC786 /* OAMutableRequest.m */; };
 		862B25E918D08A7C004FC786 /* OAToken.m in Sources */ = {isa = PBXBuildFile; fileRef = 862B25E818D08A7C004FC786 /* OAToken.m */; };
 		862B25EF18D0A03F004FC786 /* OAConsumer.m in Sources */ = {isa = PBXBuildFile; fileRef = 862B25EE18D0A03F004FC786 /* OAConsumer.m */; };
@@ -311,6 +316,15 @@
 		8623B8E0197AB60B004380FF /* MBShadowBlurLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBShadowBlurLabel.m; sourceTree = "<group>"; };
 		8623B8E2197D1A48004380FF /* MBGeoPinView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBGeoPinView.h; sourceTree = "<group>"; };
 		8623B8E3197D1A48004380FF /* MBGeoPinView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBGeoPinView.m; sourceTree = "<group>"; };
+		8623B8E519800397004380FF /* MBFollowRequestTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBFollowRequestTableViewCell.h; sourceTree = "<group>"; };
+		8623B8E619800397004380FF /* MBFollowRequestTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBFollowRequestTableViewCell.m; sourceTree = "<group>"; };
+		8623B8E719800397004380FF /* MBFollowRequestTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MBFollowRequestTableViewCell.xib; sourceTree = "<group>"; };
+		8623B8EF19809FA6004380FF /* MBFollowRequestViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBFollowRequestViewController.h; sourceTree = "<group>"; };
+		8623B8F019809FA6004380FF /* MBFollowRequestViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBFollowRequestViewController.m; sourceTree = "<group>"; };
+		8623B8F61980DDE6004380FF /* MBFavoriteView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBFavoriteView.h; sourceTree = "<group>"; };
+		8623B8F71980DDE6004380FF /* MBFavoriteView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBFavoriteView.m; sourceTree = "<group>"; };
+		8623B8F91981E96E004380FF /* MBTimelineImageContainerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBTimelineImageContainerView.h; sourceTree = "<group>"; };
+		8623B8FA1981E96E004380FF /* MBTimelineImageContainerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBTimelineImageContainerView.m; sourceTree = "<group>"; };
 		862B25E418D08A69004FC786 /* OAMutableRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OAMutableRequest.h; sourceTree = "<group>"; };
 		862B25E518D08A69004FC786 /* OAMutableRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OAMutableRequest.m; sourceTree = "<group>"; };
 		862B25E718D08A7C004FC786 /* OAToken.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OAToken.h; sourceTree = "<group>"; };
@@ -685,6 +699,10 @@
 				8623B8E0197AB60B004380FF /* MBShadowBlurLabel.m */,
 				8623B8E2197D1A48004380FF /* MBGeoPinView.h */,
 				8623B8E3197D1A48004380FF /* MBGeoPinView.m */,
+				8623B8F61980DDE6004380FF /* MBFavoriteView.h */,
+				8623B8F71980DDE6004380FF /* MBFavoriteView.m */,
+				8623B8F91981E96E004380FF /* MBTimelineImageContainerView.h */,
+				8623B8FA1981E96E004380FF /* MBTimelineImageContainerView.m */,
 				868203941963DEF100B336AC /* TimelineActionView */,
 			);
 			name = View;
@@ -749,6 +767,15 @@
 				8623B8CF197A3F7D004380FF /* Tweet-Cell@2x.png */,
 			);
 			name = Cell;
+			sourceTree = "<group>";
+		};
+		8623B8F21980AC0A004380FF /* お蔵入り */ = {
+			isa = PBXGroup;
+			children = (
+				8623B8EF19809FA6004380FF /* MBFollowRequestViewController.h */,
+				8623B8F019809FA6004380FF /* MBFollowRequestViewController.m */,
+			);
+			name = "お蔵入り";
 			sourceTree = "<group>";
 		};
 		862B25DC18D074C2004FC786 /* Model */ = {
@@ -1121,6 +1148,7 @@
 				867A09871941BC9B00741C2F /* MBImageViewController.xib */,
 				869F58A2195A828C00927700 /* MBZoomTransitioning.h */,
 				869F58A3195A828C00927700 /* MBZoomTransitioning.m */,
+				8623B8F21980AC0A004380FF /* お蔵入り */,
 			);
 			name = Controller;
 			sourceTree = "<group>";
@@ -1245,6 +1273,9 @@
 		86BFD24F1974C4EF00269D34 /* 没 */ = {
 			isa = PBXGroup;
 			children = (
+				8623B8E519800397004380FF /* MBFollowRequestTableViewCell.h */,
+				8623B8E619800397004380FF /* MBFollowRequestTableViewCell.m */,
+				8623B8E719800397004380FF /* MBFollowRequestTableViewCell.xib */,
 				867A09BB1948856500741C2F /* MBDetailUserTableViewCell.h */,
 				867A09BC1948856500741C2F /* MBDetailUserTableViewCell.m */,
 				867A09BD1948856500741C2F /* MBDetailUserTableViewCell.xib */,
@@ -1415,6 +1446,7 @@
 				86BC61FD191514E800600EAD /* SeparatedDirectMessagesView.xib in Resources */,
 				863969AE191B550A00A7D0AD /* MBListViewController.xib in Resources */,
 				861AEF3A1931E3B400C02A38 /* Magnifier-high@2x.png in Resources */,
+				8623B8E919800397004380FF /* MBFollowRequestTableViewCell.xib in Resources */,
 				861AEF3C1931E74300C02A38 /* Mask2@2x.png in Resources */,
 				86BC61F019137F4800600EAD /* MyAccountView.xib in Resources */,
 				86BFD2591974F8C100269D34 /* bird_blue_32@2x.png in Resources */,
@@ -1508,11 +1540,14 @@
 				863969F91924A0B100A7D0AD /* MBList_JSONParser.m in Sources */,
 				86B5C58D18E5192A0035CDC3 /* MBTextLayout.m in Sources */,
 				862B25FB18D1738F004FC786 /* OAHMAC-SHA1SignatureProvider.m in Sources */,
+				8623B8F119809FA6004380FF /* MBFollowRequestViewController.m in Sources */,
 				8639E21A196E39630078266B /* MBCharacterScreenNameView.m in Sources */,
 				86396A111924CE3E00A7D0AD /* MBSwitchTableViewCell.m in Sources */,
 				86B5C5A218E7FA380035CDC3 /* MBUser.m in Sources */,
 				8684FEC818CB446F00ECDD91 /* MBAccountManager.m in Sources */,
 				863969FD1924AA9900A7D0AD /* MBCreateListViewController.m in Sources */,
+				8623B8FB1981E96E004380FF /* MBTimelineImageContainerView.m in Sources */,
+				8623B8F81980DDE6004380FF /* MBFavoriteView.m in Sources */,
 				863969BB191B79D200A7D0AD /* MBListTimelineViewController.m in Sources */,
 				860592A9193B254E00559C33 /* MBImageApplyer.m in Sources */,
 				86B5C5CF18EAA5E80035CDC3 /* MBMentionUserLink.m in Sources */,
@@ -1594,6 +1629,7 @@
 				86B5C59318E5226F0035CDC3 /* MBTweetTextView.m in Sources */,
 				867A097F193FF77000741C2F /* MBEditListUserTableViewCell.m in Sources */,
 				86B5C5BD18EA80320035CDC3 /* MBLink.m in Sources */,
+				8623B8E819800397004380FF /* MBFollowRequestTableViewCell.m in Sources */,
 				86B5C5B718EA7E2D0035CDC3 /* MBTextIndex.m in Sources */,
 				86705DC318FFD1B4002A23DD /* MBLineLayout.m in Sources */,
 				86BC620E1917CABF00600EAD /* MBUser_JSONParser.m in Sources */,
