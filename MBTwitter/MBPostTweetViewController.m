@@ -222,11 +222,11 @@
     NSInteger tweetMax = 140;
     NSInteger margin = tweetMax - textCount;
     if (0 <= margin) {
-        self.countBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:[NSString stringWithFormat:@"%d", margin] style:UIBarButtonItemStylePlain target:nil action:nil];
+        self.countBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:[NSString stringWithFormat:@"%ld", (long)margin] style:UIBarButtonItemStylePlain target:nil action:nil];
         self.countBarButtonItem.enabled = NO;
         [self.navigationItem setRightBarButtonItems:@[self.postBarButtonitem, self.countBarButtonItem] animated:NO];
     } else if (0 > margin) {
-        self.countBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:[NSString stringWithFormat:@"%d", margin] style:UIBarButtonItemStylePlain target:nil action:nil];
+        self.countBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:[NSString stringWithFormat:@"%ld", (long)margin] style:UIBarButtonItemStylePlain target:nil action:nil];
         [self.countBarButtonItem setTintColor:[UIColor redColor]];
         self.countBarButtonItem.enabled = YES;
         [self.navigationItem setRightBarButtonItems:@[self.postBarButtonitem, self.countBarButtonItem] animated:NO];
@@ -236,7 +236,7 @@
 - (NSInteger)countOfTweetText
 {
     NSRange httpsRange = [self.tweetTextView.text rangeOfString:@"https"];
-    NSLog(@"location %d length %d", httpsRange.location, httpsRange.length);
+    NSLog(@"location %ld length %ld", httpsRange.location, httpsRange.length);
     return 0;
 }
 
@@ -307,7 +307,7 @@
 - (void)hidingAnimatePinView
 {
     [UIView animateWithDuration:0.1f animations:^{
-        [self.geoPinView hidingAnimateWithCompletion:nil];
+        [self.geoPinView contractView];
         CGFloat pinHeight = self.geoPinView.frame.size.height;
         UIEdgeInsets contentInsets = self.tweetTextView.contentInset;
         UIEdgeInsets scrollIndicatorInsets = self.tweetTextView.scrollIndicatorInsets;
@@ -317,7 +317,9 @@
         self.tweetTextView.scrollIndicatorInsets = scrollIndicatorInsets;
         
     }completion:^ (BOOL finished) {
-        [self.geoPinView removeFromSuperview];
+        [self.geoPinView scallingAnimateDotWithCompletion:^{
+            [self.geoPinView removeFromSuperview];
+        }];
     }];
 }
 
@@ -551,7 +553,9 @@
 {
     MBPlace *place = [places firstObject];
     if (place) {
-        NSLog(@"name = %@ ful %@", place.countryShortName, place.countryFullName);
+        NSLog(@"place name %@ full %@", place.countryName, place.countryFullName);
+        [self configurePinView];
+        [self showingAnimatePinView];
     }
 }
 
@@ -585,6 +589,8 @@
         float longitude = latestLocation.coordinate.longitude;
         float latitude = latestLocation.coordinate.latitude;
         
+        NSLog(@"longi %f lati %f", longitude, latitude);
+        
         NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init];
         formatter.minimumFractionDigits = 6;
         NSNumber *longitudeNumber = [NSNumber numberWithFloat:longitude];
@@ -596,10 +602,8 @@
         [self.place setObject:place forKey:@"place"];
         [self.locationManager stopUpdatingLocation];
         
-        [self configurePinView];
-        [self showingAnimatePinView];
         
-        [self.aoAPICenter getReverseGeocode:longitude longi:latitude];
+        [self.aoAPICenter getReverseGeocode:latitude longi:longitude];
     }
     
 }
