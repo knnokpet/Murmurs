@@ -29,10 +29,14 @@
 
 static NSString *avatorInfomationTableViewCellIdentifier = @"MBDetailUserInfomationTableViewCellIdentifier";
 
+static NSString *titleKey = @"TitleKey";
+static NSString *countKey = @"CountKey";
+
 @interface MBMyAccountsViewController () <UITableViewDataSource, UITableViewDelegate>
 
 @property (nonatomic, readonly) MBAOuth_TwitterAPICenter *aoAPICenter;
 @property (nonatomic) NSArray *accounts;
+@property (nonatomic) NSMutableArray *dataSource;
 @property (nonatomic) MBUser *currentUser;
 
 @end
@@ -55,6 +59,7 @@ static NSString *avatorInfomationTableViewCellIdentifier = @"MBDetailUserInfomat
 {
     _currentUser = currentUser;
     
+    [self configureDataSource];
     [self.tableView reloadData];
 }
 
@@ -71,7 +76,50 @@ static NSString *avatorInfomationTableViewCellIdentifier = @"MBDetailUserInfomat
         NSLog(@"change Account in MyAccountViewController");
         
     }];
+}
+
+- (void)configureDataSource
+{
+    self.dataSource = [NSMutableArray array];
     
+    self.accounts = [MBAccountManager sharedInstance].accounts;
+    if (!self.accounts) {
+        return;
+    }
+    [self.dataSource addObject:self.accounts];
+    
+    if (!self.currentUser) {
+        return;
+    }
+    [self.dataSource addObject:@[self.currentUser]];
+    
+    /* // 自身のプロテクトアカウントへのリクエストの照認/拒否のための API が存在しないので実装できない。
+    if (self.currentUser.isSentRequestToProtectedUser) {
+        NSString *followRequest = NSLocalizedString(@"Follow Request", nil);
+        [self.dataSource addObject:@[followRequest]];
+    }*/
+    
+    [self.dataSource addObject:[self currentUserData]];
+}
+
+- (NSArray *)currentUserData
+{
+    NSDictionary *tweetDict = [self concreateUserDictWithTitle:NSLocalizedString(@"All Tweets", nil) count:self.currentUser.tweetCount];
+    NSDictionary *followingDict = [self concreateUserDictWithTitle:NSLocalizedString(@"Following", nil) count:self.currentUser.followsCount];
+    NSDictionary *followerDict = [self concreateUserDictWithTitle:NSLocalizedString(@"Follower", nil) count:self.currentUser.followersCount];
+    NSDictionary *favoDict = [self concreateUserDictWithTitle:NSLocalizedString(@"Favorite", nil) count:self.currentUser.favoritesCount];
+    NSDictionary *listDict = [self concreateUserDictWithTitle:NSLocalizedString(@"List", nil) count:self.currentUser.listedCount];
+    
+    NSArray *userData = @[tweetDict, followingDict, followerDict, favoDict, listDict];
+    return userData;
+}
+
+- (NSDictionary *)concreateUserDictWithTitle:(NSString *)title count:(NSInteger)count
+{
+    NSNumber *countNumber = [NSNumber numberWithInteger:count];
+    
+    NSDictionary *infoDict = [NSDictionary dictionaryWithObjects:@[title, countNumber] forKeys:@[titleKey, countKey]];
+    return infoDict;
 }
 
 - (void)commonConfigureView
@@ -100,7 +148,7 @@ static NSString *avatorInfomationTableViewCellIdentifier = @"MBDetailUserInfomat
     
     [self.twitterAccessor isAuthorized];
     
-    self.accounts = [MBAccountManager sharedInstance].accounts;
+    [self configureDataSource];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -149,7 +197,7 @@ static NSString *avatorInfomationTableViewCellIdentifier = @"MBDetailUserInfomat
 }
 
 - (void)downloadBannerImageForCell:(MBDetailUserInfomationTableViewCell *)cell
-{NSLog(@"bannerURL = %@", self.currentUser.urlAtProfileBanner);
+{
     if (self.currentUser.urlAtProfileBanner) {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
             [MBImageDownloader downloadBannerImageMobileRetina:self.currentUser.urlAtProfileBanner completionHandler:^(UIImage *image, NSData *imageData) {
@@ -226,7 +274,7 @@ static NSString *avatorInfomationTableViewCellIdentifier = @"MBDetailUserInfomat
 #pragma mark TableView DataSource & Delegate
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    return 3;
+    return [self.dataSource count];
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
@@ -254,22 +302,16 @@ static NSString *avatorInfomationTableViewCellIdentifier = @"MBDetailUserInfomat
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    NSInteger numberOfRows = 0;
-    if (0 == section) {
-        numberOfRows = [self.accounts count];
-    } else if (1  == section) {
-        numberOfRows = 1;
-    } else if (2 == section) {
-        numberOfRows = 5;
-    }
+    NSArray *dataSourceAtSection = [self.dataSource objectAtIndex:section];
     
-    return numberOfRows;
+    return [dataSourceAtSection count];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     static NSString *accountsCellIdentifier = @"AccountsCell";
     static NSString *userDataCellIdentifier = @"UserDataCell";
+    static NSString *requestCellIdentifier = @"RequestCell";
     UITableViewCell *cell;
     
     if (0 == indexPath.section) {
@@ -278,10 +320,33 @@ static NSString *avatorInfomationTableViewCellIdentifier = @"MBDetailUserInfomat
             cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:accountsCellIdentifier];
         }
         [self updateCell:cell atIndexPath:indexPath];
+        
     } else if (1 == indexPath.section) {
         cell = [self.tableView dequeueReusableCellWithIdentifier:avatorInfomationTableViewCellIdentifier];
         [self updateAvatorInformationCell:(MBDetailUserInfomationTableViewCell *)cell atIndexPath:indexPath];
+        
     } else if (2 == indexPath.section) {
+        /*
+        if (self.currentUser.isSentRequestToProtectedUser) {
+            cell = [self.tableView dequeueReusableCellWithIdentifier:requestCellIdentifier];
+            if (!cell) {
+                cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:requestCellIdentifier];
+            }
+            [self updateFollowRequestCell:cell atIndexPath:indexPath];
+        } else {
+            cell = [self.tableView dequeueReusableCellWithIdentifier:userDataCellIdentifier];
+            if (!cell) {
+                cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:userDataCellIdentifier];
+            }
+            [self updateUserDataCell:cell atIndexPath:indexPath];
+        }*/
+        cell = [self.tableView dequeueReusableCellWithIdentifier:userDataCellIdentifier];
+        if (!cell) {
+            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:userDataCellIdentifier];
+        }
+        [self updateUserDataCell:cell atIndexPath:indexPath];
+        
+    } else if (3 == indexPath.section) {
         cell = [self.tableView dequeueReusableCellWithIdentifier:userDataCellIdentifier];
         if (!cell) {
             cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:userDataCellIdentifier];
@@ -328,34 +393,23 @@ static NSString *avatorInfomationTableViewCellIdentifier = @"MBDetailUserInfomat
     }
 }
 
+- (void)updateFollowRequestCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
+{
+    cell.textLabel.text = NSLocalizedString(@"Follow Request", nil);
+    
+}
+
 - (void)updateUserDataCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
 {
-    NSInteger numberOfRow = indexPath.row;
-    NSString *textLabel;
-    NSInteger detailInteger = 0;
-    
-    if (0 == numberOfRow) {
-        textLabel = NSLocalizedString(@"All Tweets", nil);
-        detailInteger = self.currentUser.tweetCount;
-    } else if (1 == numberOfRow) {
-        textLabel = NSLocalizedString(@"Following", nil);
-        detailInteger = self.currentUser.followsCount;
-    } else if (2 == numberOfRow) {
-        textLabel = NSLocalizedString(@"Follower", nil);
-        detailInteger = self.currentUser.followersCount;
-    } else if (3 == numberOfRow) {
-        textLabel = NSLocalizedString(@"Favorite", nil);
-        detailInteger = self.currentUser.favoritesCount;
-    } else if (4 == numberOfRow) {
-        textLabel = NSLocalizedString(@"List", nil);
-        detailInteger = self.currentUser.listedCount;
-    } else {
-        
-    }
+    NSArray *dataSourceAtSection = [self.dataSource objectAtIndex:indexPath.section];
+    NSDictionary *dataDict = [dataSourceAtSection objectAtIndex:indexPath.row];
+    NSString *textLabel = [dataDict objectForKey:titleKey];
+    NSNumber *countNumber = [dataDict objectForKey:countKey];
+    NSInteger detailInteger = [countNumber integerValue];
     
     cell.textLabel.text = textLabel;
     detailInteger = (0 <= detailInteger) ? detailInteger : 0;
-    if (4 != numberOfRow) {
+    if (4 != indexPath.row) {
         cell.detailTextLabel.text = [NSString stringWithFormat:@"%d", detailInteger];
     }
     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
@@ -378,38 +432,50 @@ static NSString *avatorInfomationTableViewCellIdentifier = @"MBDetailUserInfomat
     } else if (1 == indexPath.section) {
         return;
     } else if (2 == indexPath.section) {
-        NSInteger row = indexPath.row;
-        if (0 == row) {
-            MBUserTimelineViewController *userTimelineViewController = [[MBUserTimelineViewController alloc] initWithNibName:@"TimelineTableView" bundle:nil];
-            [userTimelineViewController setUser:self.currentUser];
-            [self.navigationController pushViewController:userTimelineViewController animated:YES];
-            
-        } else if (1 == row) {
-            MBFollowingViewController *followingViewController = [[MBFollowingViewController alloc] initWithNibName:@"MBUsersViewController" bundle:nil];
-            [followingViewController setUser:self.currentUser];
-            [self.navigationController pushViewController:followingViewController animated:YES];
-            
-        } else if (2 == row) {
-            MBFollowerViewController *followerViewController = [[MBFollowerViewController alloc] initWithNibName:@"MBUsersViewController" bundle:nil];
-            [followerViewController setUser:self.currentUser];
-            [self.navigationController pushViewController:followerViewController animated:YES];
-            
-        } else if (3 == row) {
-            MBFavoritesViewController *favoriteViewController = [[MBFavoritesViewController alloc] initWithNibName:@"TimelineTableView" bundle:nil];
-            [favoriteViewController setUser:self.currentUser];
-            [self.navigationController pushViewController:favoriteViewController animated:YES];
-            
-        } else if (4 == row) {
-            MBOtherUserListViewController *listViewController = [[MBOtherUserListViewController alloc] initWithNibName:@"MBListViewController" bundle:nil];
-            [listViewController setUser:self.currentUser];
-            [self.navigationController pushViewController:listViewController animated:YES];
-            
+        
+        if (self.currentUser.isSentRequestToProtectedUser || self.dataSource.count == 4) {
+            ;
+        } else {
+            [self didSelectUserDataCellAtIndexPath:indexPath];
         }
+        
+    } else if (3 == indexPath.section) {
+        [self didSelectUserDataCellAtIndexPath:indexPath];
     }
-    
 }
 
-#pragma mark - 
+- (void)didSelectUserDataCellAtIndexPath:(NSIndexPath *)indexPath
+{
+    NSInteger row = indexPath.row;
+    if (0 == row) {
+        MBUserTimelineViewController *userTimelineViewController = [[MBUserTimelineViewController alloc] initWithNibName:@"TimelineTableView" bundle:nil];
+        [userTimelineViewController setUser:self.currentUser];
+        [self.navigationController pushViewController:userTimelineViewController animated:YES];
+        
+    } else if (1 == row) {
+        MBFollowingViewController *followingViewController = [[MBFollowingViewController alloc] initWithNibName:@"MBUsersViewController" bundle:nil];
+        [followingViewController setUser:self.currentUser];
+        [self.navigationController pushViewController:followingViewController animated:YES];
+        
+    } else if (2 == row) {
+        MBFollowerViewController *followerViewController = [[MBFollowerViewController alloc] initWithNibName:@"MBUsersViewController" bundle:nil];
+        [followerViewController setUser:self.currentUser];
+        [self.navigationController pushViewController:followerViewController animated:YES];
+        
+    } else if (3 == row) {
+        MBFavoritesViewController *favoriteViewController = [[MBFavoritesViewController alloc] initWithNibName:@"TimelineTableView" bundle:nil];
+        [favoriteViewController setUser:self.currentUser];
+        [self.navigationController pushViewController:favoriteViewController animated:YES];
+        
+    } else if (4 == row) {
+        MBOtherUserListViewController *listViewController = [[MBOtherUserListViewController alloc] initWithNibName:@"MBListViewController" bundle:nil];
+        [listViewController setUser:self.currentUser];
+        [self.navigationController pushViewController:listViewController animated:YES];
+        
+    }
+}
+
+#pragma mark -
 #pragma mark AuthorizationViewController Delegate
 - (void)dismissAuthorizationViewController:(MBAuthorizationViewController *)controller animated:(BOOL)animated
 {
