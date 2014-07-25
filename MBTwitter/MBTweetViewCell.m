@@ -35,10 +35,12 @@
 - (void)common
 {
     self.avatorImageView.backgroundColor = [UIColor clearColor];
-    //self.avatorImageView.layer.backgroundColor = [UIColor colorWithRed:0.9f green:0.9f blue:0.9f alpha:1.0].CGColor;
     self.avatorImageView.layer.cornerRadius = 4.0f;
     self.avatorImageView.layer.masksToBounds = NO;
     self.avatorImageView.layer.shouldRasterize = YES;
+    
+    _favorited = NO;
+    _geod = NO;
     
     _longPressRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(didLongPress)];
     [self addGestureRecognizer:self.longPressRecognizer];
@@ -77,6 +79,24 @@
     [self.avatorImageView setUserID:userID];
 }
 
+- (void)setFavorited:(BOOL)favorited
+{
+    _favorited = favorited;
+    
+    if (favorited) {
+        self.favoriteView.favorited = YES;
+    }
+}
+
+- (void)setGeod:(BOOL)geod
+{
+    _geod = geod;
+    
+    if (geod) {
+        self.favoriteView.geod = YES;
+    }
+}
+
 #pragma mark -
 
 - (void)removeRetweetView
@@ -84,6 +104,22 @@
     if (self.retweetView.superview) {
         [self.retweetView removeFromSuperview];
         self.retweetView = nil;
+    }
+}
+
+- (void)removeFavoriteView
+{
+    if (self.favoriteView.superview) {
+        [self.favoriteView removeFromSuperview];
+        self.favoriteView = nil;
+    }
+}
+
+- (void)removeImageContainerView
+{
+    if (self.imageContainerView.superview) {
+        [self.imageContainerView removeFromSuperview];
+        self.imageContainerView = nil;
     }
 }
 
