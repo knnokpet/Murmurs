@@ -74,13 +74,15 @@
     [textLayout createLine];
     
     CGRect longestRect = CGRectZero;
+    CGRect resultRect = textLayout.frameRect;
     for (MBLineLayout *lineLayout in textLayout.lineLayouts) {
         if (lineLayout.drawingRect.size.width > longestRect.size.width) {
             longestRect = lineLayout.rect;
         }
     }
+    resultRect.size.width = longestRect.size.width;
     
-    return longestRect;
+    return resultRect;
 }
 
 #pragma mark -
