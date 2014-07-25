@@ -17,6 +17,9 @@
 #import "MBAccountManager.h"
 #import "MBAccount.h"
 #import "MBTweetTextComposer.h"
+#import "MBImageCacher.h"
+#import "MBImageDownloader.h"
+#import "MBImageApplyer.h"
 
 #import "MBMessageTableViewCell.h"
 #import "MBSendMessageTableViewCell.h"
@@ -45,6 +48,10 @@ static NSString *sendCellIdentifier = @"SendCellIdentifier";
 
 @property (nonatomic, readonly) MBAOuth_TwitterAPICenter *aoAPICenter;
 @property (nonatomic) NSMutableArray *dataSource;
+@property (nonatomic, readonly) NSMutableDictionary *cachedCellRects;
+
+@property (nonatomic) UIImage *partnerImage;
+@property (nonatomic) UIImage *myAccountImage;
 
 @property (nonatomic, readonly) UIToolbar *toolBar;
 @property (nonatomic, readonly) UITextView *textView;
@@ -185,6 +192,7 @@ static NSString *sendCellIdentifier = @"SendCellIdentifier";
     _aoAPICenter.delegate = self;
     _nonSendMessages = [NSMutableDictionary dictionary];
     self.dataSource = [NSMutableArray array];
+    _cachedCellRects = [NSMutableDictionary dictionary];
 }
 
 - (void)viewDidLoad
@@ -337,6 +345,62 @@ static NSString *sendCellIdentifier = @"SendCellIdentifier";
     return results;
 }
 
+- (CGRect)cellRectForMessage:(MBDirectMessage *)message constraintSize:(CGSize)size
+{
+    CGRect cellRect = CGRectZero;
+    NSString *keyX = @"x";
+    NSString *keyY = @"y";
+    NSString *keyWidth = @"width";
+    NSString *keyHeight = @"height";
+    
+    NSDictionary *cachedRectDict = [self.cachedCellRects objectForKey:message.tweetID];
+    if (cachedRectDict) {
+        CGFloat x, y, width, height;
+        
+        x = [(NSNumber *)[cachedRectDict objectForKey:keyX] floatValue];
+        y = [(NSNumber *)[cachedRectDict objectForKey:keyY] floatValue];
+        width = [(NSNumber *)[cachedRectDict objectForKey:keyWidth] floatValue];
+        height = [(NSNumber *)[cachedRectDict objectForKey:keyHeight] floatValue];
+        cellRect = CGRectMake(x, y, width, height);
+        return cellRect;
+    }
+    
+    CGRect longestRect = [MBTweetTextView rectForLongestDrawingTextWithAttributedString:[MBTweetTextComposer attributedStringForTweet:message tintColor:[self.navigationController.navigationBar tintColor]] constraintSize:size lineSpace:LINE_SPACING_MESSAGE paragraghSpace:PARAGRAPH_SPACING_MESSAGE font:[UIFont systemFontOfSize:FONT_SIZE_MESSAGE]];
+    NSNumber *x, *y, *width, *height;
+    x = [NSNumber numberWithFloat:longestRect.origin.x];
+    y = [NSNumber numberWithFloat:longestRect.origin.y];
+    width = [NSNumber numberWithFloat:longestRect.size.width];
+    height = [NSNumber numberWithFloat:longestRect.size.height];
+    NSDictionary *cachedDict = @{keyX: x, keyY : y, keyWidth: width, keyHeight: height};
+    [self.cachedCellRects setObject:cachedDict forKey:message.tweetID];
+    
+    return longestRect;
+}
+
+- (NSString *)dateStringWithMessage:(MBDirectMessage *)message
+{
+    NSCalendar *calendaar = [NSCalendar currentCalendar];
+    NSTimeZone *currentTimezone = calendaar.timeZone;
+    NSDateComponents *components = [calendaar components:NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit | NSHourCalendarUnit | NSMinuteCalendarUnit fromDate:message.createdDate];
+    
+    NSInteger second = [currentTimezone secondsFromGMT];
+    int hour = second / (60 * 60);
+    if (hour < 1) {
+        int minute = second / 60;
+        [components setMinute:components.minute - minute];
+    } else {
+        [components setHour:components.hour - hour];
+        if (components.hour < 0) {
+            [components setDay:components.day - 1];
+            [components setHour:24 + components.hour];
+        }
+    }
+    
+    NSString *dateString = [NSString stringWithFormat:@"%d/%02d/%02d %02d:%02d", components.year, components.month, components.day, components.hour, components.minute];
+    
+    return dateString;
+}
+
 #pragma mark Action
 
 - (IBAction)didPushSendButton:(id)sender {
@@ -346,7 +410,8 @@ static NSString *sendCellIdentifier = @"SendCellIdentifier";
     }
     
     NSString *sendMessage = self.textView.text;
-    [self.nonSendMessages setObject:[NSNumber numberWithInt:[self.dataSource count] - 1] forKey:sendMessage];
+    NSNumber *nonSendIndex = [NSNumber numberWithInteger:[self.dataSource count] - 1];
+    [self.nonSendMessages setObject:nonSendIndex forKey:sendMessage];
     if (self.isEditing) {
         self.isEditing = NO;
         [self configureMessageView];
@@ -420,17 +485,19 @@ static NSString *sendCellIdentifier = @"SendCellIdentifier";
     MBDirectMessage *message = [self.dataSource objectAtIndex:indexPath.row];
     NSAttributedString *attributedString = [MBTweetTextComposer attributedStringForTweet:message tintColor:[self.navigationController.navigationBar tintColor]];
     
-    CGFloat messageViewMargin = 4.0 + 4.0;
-    CGFloat textViewMargin = 4.0 + 4.0;
+    CGFloat messageViewVerticalMargin = 8.0;
+    CGFloat dateLabelHeight = 14.0f;
+    CGFloat dateLabelVerticalMargin = 2.0f + 8.0f;
+    CGFloat textViewMargin = 8.0 + 16.0;
     
     
     // calculate textView
-    NSInteger textViewWidthSpace = tableView.bounds.size.width - (42 + 54) - textViewMargin;
+    NSInteger textViewWidthSpace = tableView.bounds.size.width - (56 + 54) - textViewMargin;
     CGFloat lineSpace = LINE_SPACING_MESSAGE;
     CGFloat fontSize = FONT_SIZE_MESSAGE;
     CGRect textViewRect = [MBTweetTextView frameRectWithAttributedString:attributedString constraintSize:CGSizeMake(textViewWidthSpace, CGFLOAT_MAX) lineSpace:lineSpace font:[UIFont systemFontOfSize:fontSize]];
     
-    CGFloat cellHeight = textViewRect.size.height + messageViewMargin + textViewMargin;
+    CGFloat cellHeight = textViewRect.size.height + messageViewVerticalMargin + textViewMargin + dateLabelHeight + dateLabelVerticalMargin;
     CGFloat defaultHeight = 40;
     
     return MAX(defaultHeight, cellHeight);
@@ -457,19 +524,52 @@ static NSString *sendCellIdentifier = @"SendCellIdentifier";
 {
     MBDirectMessage *message = [self.dataSource objectAtIndex:indexPath.row];
     
+    cell.dateString = [self dateStringWithMessage:message];
+    
+    // MessageText
     cell.tweetTextView.font = [UIFont systemFontOfSize:FONT_SIZE_MESSAGE];
     cell.tweetTextView.lineSpace = LINE_SPACING_MESSAGE;
     cell.tweetTextView.lineHeight = LINE_HEIGHT_MESSAGE;
     cell.tweetTextView.paragraphSpace = PARAGRAPH_SPACING_MESSAGE;
     cell.tweetTextView.attributedString = [MBTweetTextComposer attributedStringForTweet:message tintColor:[self.navigationController.navigationBar tintColor]];
-    CGRect longestRect = [MBTweetTextView rectForLongestDrawingTextWithAttributedString:[MBTweetTextComposer attributedStringForTweet:message tintColor:[self.navigationController.navigationBar tintColor]] constraintSize:cell.tweetTextView.frame.size lineSpace:LINE_SPACING_MESSAGE paragraghSpace:PARAGRAPH_SPACING_MESSAGE font:[UIFont systemFontOfSize:FONT_SIZE_MESSAGE]];
+    CGRect longestRect = [self cellRectForMessage:message constraintSize:CGSizeMake(self.view.bounds.size.width - (cell.messageView.frame.origin.x + cell.messageViewRightSpaceConstraint.constant), CGFLOAT_MAX)];
+
     [cell setTweetViewRect:longestRect];
+    
+    UIImage *partnerImage = [[MBImageCacher sharedInstance] cachedProfileImageForUserID:message.sender.userIDStr];
+    if (partnerImage) {
+        CGSize avatorSize = CGSizeMake(cell.avatorImageView.frame.size.height, cell.avatorImageView.frame.size.width);
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+            UIImage *radiusImage = [MBImageApplyer imageForTwitter:partnerImage size:avatorSize radius:4];
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                cell.avatorImageView.image = radiusImage;
+            });
+        });
+    } else {
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+            [MBImageDownloader downloadOriginImageWithURL:message.sender.urlHTTPSAtProfileImage completionHandler:^(UIImage *image, NSData *imageData){
+                [[MBImageCacher sharedInstance] storeProfileImage:image data:imageData forUserID:message.sender.userIDStr];
+                CGSize avatorSize = CGSizeMake(cell.avatorImageView.frame.size.height, cell.avatorImageView.frame.size.width);
+                UIImage *radiusImage = [MBImageApplyer imageForTwitter:image size:avatorSize radius:4];
+                
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    cell.avatorImageView.image = radiusImage;
+                });
+            }failedHandler:^(NSURLResponse *response, NSError *error) {
+                
+            }];
+        });
+    }
 }
 
 - (void)updateSentCell:(MBSendMessageTableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
 {
     MBDirectMessage *message = [self.dataSource objectAtIndex:indexPath.row];
     
+    cell.dateString = [self dateStringWithMessage:message];
+    
+    // messageText
     cell.tweetTextView.font = [UIFont systemFontOfSize:FONT_SIZE_MESSAGE];
     cell.tweetTextView.lineSpace = LINE_SPACING_MESSAGE;
     cell.tweetTextView.lineHeight = LINE_HEIGHT_MESSAGE;
@@ -479,10 +579,36 @@ static NSString *sendCellIdentifier = @"SendCellIdentifier";
         cell.tweetTextView.textColor = [UIColor redColor];
     }
     cell.tweetTextView.attributedString = [MBTweetTextComposer attributedStringForTweet:message tintColor:[self.navigationController.navigationBar tintColor]];
-    CGRect longestRect = [MBTweetTextView rectForLongestDrawingTextWithAttributedString:[MBTweetTextComposer attributedStringForTweet:message tintColor:[self.navigationController.navigationBar tintColor]] constraintSize:cell.tweetTextView.frame.size lineSpace:LINE_SPACING_MESSAGE paragraghSpace:PARAGRAPH_SPACING_MESSAGE font:[UIFont systemFontOfSize:FONT_SIZE_MESSAGE]];
+    CGRect longestRect = [self cellRectForMessage:message constraintSize:CGSizeMake(self.view.bounds.size.width - (cell.messageView.frame.origin.x + cell.messageViewLeftSpaceConstraint.constant), CGFLOAT_MAX)];
     [cell setTweetViewRect:longestRect];
     
     [cell.messageView setPopsFromRight:YES];
+    
+    UIImage *partnerImage = [[MBImageCacher sharedInstance] cachedProfileImageForUserID:message.sender.userIDStr];
+    if (partnerImage) {
+        CGSize avatorSize = CGSizeMake(cell.avatorImageView.frame.size.height, cell.avatorImageView.frame.size.width);
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+            UIImage *radiusImage = [MBImageApplyer imageForTwitter:partnerImage size:avatorSize radius:4];
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                cell.avatorImageView.image = radiusImage;
+            });
+        });
+    } else {
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+            [MBImageDownloader downloadOriginImageWithURL:message.sender.urlHTTPSAtProfileImage completionHandler:^(UIImage *image, NSData *imageData){
+                [[MBImageCacher sharedInstance] storeProfileImage:image data:imageData forUserID:message.sender.userIDStr];
+                CGSize avatorSize = CGSizeMake(cell.avatorImageView.frame.size.height, cell.avatorImageView.frame.size.width);
+                UIImage *radiusImage = [MBImageApplyer imageForTwitter:image size:avatorSize radius:4];
+                
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    cell.avatorImageView.image = radiusImage;
+                });
+            }failedHandler:^(NSURLResponse *response, NSError *error) {
+                
+            }];
+        });
+    }
 }
 
 
