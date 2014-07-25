@@ -171,9 +171,13 @@
 
 - (void)showViews:(BOOL)shows animated:(BOOL)animated
 {
-    CGFloat duration = (animated) ? 0.1f : 0.0f;
+    CGFloat duration = (animated) ? 0.3f : 0.0f;
     
     if (shows) {
+        if (animated) {
+            duration = 0.1f;
+        }
+        
         [self calculateShowingPosition];
         [UIView animateWithDuration:duration animations:^{
             self.alpha = 1.0;
@@ -213,7 +217,6 @@
         [_delegate didPushReplyButtonOnActionView:self];
     }
     
-    [self showViews:NO animated:YES];
     [self sendDelegateMethodDismissing];
 }
 
