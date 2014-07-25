@@ -15,12 +15,15 @@
 @property (weak, nonatomic) IBOutlet MBTweetTextView *tweetTextView;
 @property (weak, nonatomic) IBOutlet MBAvatorImageView *avatorImageView;
 @property (weak, nonatomic) IBOutlet MBMessageView *messageView;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint *tweetTextViewWidthConstraint;
+@property (weak, nonatomic) IBOutlet UILabel *dateLabel;
+
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *tweetTextViewLeftSpaceConstraint;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *tweetTextViewRightSpaceConstraint;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *messageViewLeftSpaceConstraint;
 
+@property (nonatomic, readonly) NSString *dateString;
 @property (nonatomic, readonly) CGRect tweetViewRect;
+- (void)setDateString:(NSString *)dateString;
 - (void)setTweetViewRect:(CGRect)tweetViewRect;
 
 @end

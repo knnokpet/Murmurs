@@ -26,14 +26,26 @@
     // Configure the view for the selected state
 }
 
+- (void)setDateString:(NSString *)dateString
+{
+    _dateString = dateString;
+    self.dateLabel.text = dateString;
+}
+
 - (void)setTweetViewRect:(CGRect)tweetViewRect
 {
     _tweetViewRect = tweetViewRect;
     
     CGFloat tweetViewWidth = tweetViewRect.size.width + self.tweetTextViewLeftSpaceConstraint.constant + self.tweetTextViewRightSpaceConstraint.constant;
-    if (tweetViewWidth < self.tweetTextViewWidthConstraint.constant) {
+    
+    CGFloat defaultMessageViewLeftSpace = 54.0f;
+    CGFloat maxixmumMessageWidth = self.bounds.size.width - (self.messageView.frame.origin.x + defaultMessageViewLeftSpace);
+    if (tweetViewWidth < maxixmumMessageWidth) {
         self.messageViewLeftSpaceConstraint.constant = self.bounds.size.width - (self.messageView.frame.origin.x) - tweetViewWidth;
+    } else {
+        self.messageViewLeftSpaceConstraint.constant = defaultMessageViewLeftSpace;
     }
+    [self layoutIfNeeded];
 }
 
 @end
