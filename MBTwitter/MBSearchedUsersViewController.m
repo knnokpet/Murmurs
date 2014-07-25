@@ -41,7 +41,7 @@
     [self.users removeAllObjects];
     [self configureModel];
     [self.tableView reloadData];
-    [self backUsersAtCursor:0];
+    [self backUsersAtCursor:0];/* 検索は page で表されるので数字は適当 */
 }
 
 #pragma mark -
@@ -65,6 +65,7 @@
 {
     /* 検索結果は page で表現されるため、強引にメソッドを page 用に変更 */
     if (self.query.length > 0) {
+        self.enableAdding = NO;
         [self.aoAPICenter getSearchedUsersWithQuery:self.query page:page];
     }
 }
@@ -85,11 +86,18 @@
 - (void)twitterAPICenter:(MBAOuth_TwitterAPICenter *)center requestType:(MBRequestType)requestType parsedUsers:(NSArray *)users
 {
     if (users.count > 0) {
+        
         page++;
         
         [self updateTableViewDataSource:users];
+        if (users.count < 20) { /* this number is result seaching count. magic Number */
+            self.enableAdding = NO;
+            [self removeBackTimelineIndicatorView];
+        }
+        
     } else if (users.count == 0) {
         self.enableAdding = NO;
+        [self removeBackTimelineIndicatorView];
     }
 }
 
