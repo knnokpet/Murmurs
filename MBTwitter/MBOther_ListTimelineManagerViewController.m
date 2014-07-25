@@ -50,17 +50,12 @@
 {
     [self.aoAPICenter postSubscriveList:[self.list.listID unsignedLongLongValue] slug:self.list.slug ownerScreenName:self.list.user.screenName ownerID:[self.list.user.userID unsignedLongLongValue]];
     
-    UIBarButtonItem *unSubscriveButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"UnSubscrive", nil) style:UIBarButtonItemStylePlain target:self action:@selector(didPushUnSubscriveButton)];
-    
-    
     [self.navigationItem setRightBarButtonItem:[self animatingIndicatorButton] animated:YES];
 }
 
 - (void)didPushUnSubscriveButton
 {
     [self.aoAPICenter postDestroySubscrivedList:[self.list.listID unsignedLongLongValue] slug:self.list.slug ownerScreenName:self.list.user.screenName ownerID:[self.list.user.userID unsignedLongLongValue]];
-    
-    UIBarButtonItem *subscriveButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Subscrive", nil) style:UIBarButtonItemStylePlain target:self action:@selector(didPushSubscriveButton)];
     
     [self.navigationItem setRightBarButtonItem:[self animatingIndicatorButton] animated:YES];
 }
