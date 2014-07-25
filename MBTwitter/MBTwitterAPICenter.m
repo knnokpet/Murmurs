@@ -1355,10 +1355,10 @@
     NSMutableDictionary *parameters = [NSMutableDictionary dictionaryWithCapacity:0];
 
     if (0 < latitude) {
-        [parameters setObject:[NSString stringWithFormat:@"%6f", latitude] forKey:@"lat"];
+        [parameters setObject:[NSString stringWithFormat:@"%f", latitude] forKey:@"lat"];
     }
     if (0 < longitude) {
-        [parameters setObject:[NSString stringWithFormat:@"%6f", longitude] forKey:@"long"];
+        [parameters setObject:[NSString stringWithFormat:@"%f", longitude] forKey:@"long"];
     }
     
     return [self sendRequestMethod:HTTP_GET_METHOD resource:resource parameters:parameters requestType:MBTwitterGeoReverseGeoCodeRequest responseType:MBTwitterGeocodeResponse];
