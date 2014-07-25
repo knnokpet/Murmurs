@@ -96,11 +96,27 @@
     }];
 }
 
-- (void)hidingAnimateWithCompletion:(CompletionHandler)completion
+- (void)scallingAnimateDotWithCompletion:(CompletionHandler)completion
 {
+    [UIView animateWithDuration:0.1f animations:^{
+        self.dotView.transform = CGAffineTransformMakeScale(0.5, 2.0);
+        self.dotView.transform = CGAffineTransformMakeScale(0, 0);
+    }completion:^(BOOL finished) {
+        completion();
+    }];
+}
+
+- (void)contractView
+{
+    CGFloat endOriginY = self.hogeView.frame.origin.y + self.hogeView.frame.size.height;
+    
     CGRect dotEndRect = self.dotView.frame;
-    dotEndRect.origin.y = self.frame.size.height - dotEndRect.size.height;
+    dotEndRect.origin.y = endOriginY - dotEndRect.size.height;
     self.dotView.frame = dotEndRect;
+    
+    CGRect pinRect = self.hogeView.frame;
+    pinRect.origin.y = endOriginY;
+    self.hogeView.frame = pinRect;
 }
 
 @end

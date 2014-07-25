@@ -13,6 +13,7 @@ typedef void (^CompletionHandler)();
 @interface MBGeoPinView : UIView
 
 - (void)boundingAnimateDotWithCompletion:(CompletionHandler)completion;
-- (void)hidingAnimateWithCompletion:(CompletionHandler)completion;
+- (void)contractView;
+- (void)scallingAnimateDotWithCompletion:(CompletionHandler)completion;
 
 @end
