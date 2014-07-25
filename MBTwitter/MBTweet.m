@@ -54,7 +54,12 @@
     _createdDate = [NSDate parseDateUsingStrptime:dateStr];
     
     _entity = [[MBEntity alloc] initWithDictionary:[tweet dictionaryForKey:KEY_ENTITY]];
-    _place = [[MBPlace alloc] initWithDictionary:[tweet dictionaryForKey:KEY_PLACE]];
+    NSDictionary *placeDict = [tweet dictionaryForKey:KEY_PLACE];
+    if (placeDict) {
+        _place = [[MBPlace alloc] initWithDictionary:placeDict];
+    } else {
+        _place = nil;
+    }
     
     _favoritedCount = [tweet integerForKey:KEY_FAVORITE_COUNT];
     _retweetedCount = [tweet integerForKey:KEY_RETWEET_COUNT];
