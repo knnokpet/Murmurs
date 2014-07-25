@@ -25,10 +25,12 @@
 - (void)setUser:(MBUser *)user;
 
 - (void)configureModel;
+- (void)configureView;
 - (void)configureNavigationItem;
 
 - (void)backUsersAtCursor:(long long)cursor;
 - (NSArray *)decorateAddingArray:(NSArray *)addingArray;
 - (void)updateTableViewDataSource:(NSArray *)addingArray;
+- (void)removeBackTimelineIndicatorView;
 
 @end

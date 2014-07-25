@@ -59,6 +59,12 @@ static NSString *usersCellIdentifier = @"UsersCellIdentifier";
     [self configureModel];
 }
 
+- (void)configureView
+{
+    UINib *cellNib = [UINib nibWithNibName:@"MBUsersTableViewCell" bundle:nil];
+    [self.tableView registerNib:cellNib forCellReuseIdentifier:usersCellIdentifier];
+}
+
 - (void)commonConfigureView
 {
     [self commonConfigureNavigationItem];
@@ -66,8 +72,7 @@ static NSString *usersCellIdentifier = @"UsersCellIdentifier";
     self.tableView.dataSource = self;
     self.tableView.delegate = self;
     
-    UINib *cellNib = [UINib nibWithNibName:@"MBUsersTableViewCell" bundle:nil];
-    [self.tableView registerNib:cellNib forCellReuseIdentifier:usersCellIdentifier];
+    [self configureView];
     
     /* remove nonContent's separator */
     UIView *view = [[UIView alloc] init];
@@ -116,6 +121,11 @@ static NSString *usersCellIdentifier = @"UsersCellIdentifier";
     }
 }
 
+- (void)dealloc
+{
+    self.tableView.delegate = nil;/* for UIScrollView Delegate */
+}
+
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
@@ -144,9 +154,11 @@ static NSString *usersCellIdentifier = @"UsersCellIdentifier";
 
 - (void)removeBackTimelineIndicatorView
 {
-    UIView *view = [[UIView alloc] init];
-    view.backgroundColor = [UIColor clearColor];
-    self.tableView.tableFooterView = view;
+    if ([self.tableView.tableFooterView isKindOfClass:[UIActivityIndicatorView class]]) {
+        UIView *view = [[UIView alloc] init];
+        view.backgroundColor = [UIColor clearColor];
+        self.tableView.tableFooterView = view;
+    }
 }
 
 #pragma mark -
@@ -218,25 +230,14 @@ static NSString *usersCellIdentifier = @"UsersCellIdentifier";
 {
     NSArray *decoratedArray = [self decorateAddingArray:addingArray];
     NSInteger addingCount = [decoratedArray count];
-    NSLog(@"addingArray = %d", [decoratedArray count]);
+    
     if (0 == addingCount) {
         [self removeBackTimelineIndicatorView];
     } else {
-        NSInteger base = [self.users count];
         [self decorateAddingArray:decoratedArray];
         [self.users addObjectsFromArray:decoratedArray];
         
         [self.tableView reloadData];
-        /*
-        [self.tableView beginUpdates];
-        NSMutableArray *indexPaths = [NSMutableArray array];
-        for (NSInteger i = 0; i < addingCount; i ++) {
-            NSIndexPath *indexPath = [NSIndexPath indexPathForRow:base + i inSection:0];
-            [indexPaths addObject:indexPath];
-        }
-        [self.tableView insertRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationAutomatic];
-        
-        [self.tableView endUpdates];*/
     }
     self.enableAdding = YES;
 }
