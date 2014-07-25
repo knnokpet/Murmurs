@@ -431,7 +431,12 @@ static NSString *detailUserTableViewCellIdentifier = @"MBDetailUserTableViewCell
     [actionSheet addButtonWithTitle:NSLocalizedString(@"Chancel", nil)];
     actionSheet.cancelButtonIndex = self.otherActions.count;
     
-    [actionSheet showFromTabBar:self.tabBarController.tabBar];
+    if (self.tabBarController) {
+        [actionSheet showFromTabBar:self.tabBarController.tabBar];
+    } else {
+        [actionSheet showInView:self.view];
+    }
+    
 }
 
 #pragma mark -
