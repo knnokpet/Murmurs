@@ -8,9 +8,6 @@
 
 #import "MBImageApplyer.h"
 
-#import "UIImage+Resize.h"
-#import "UIImage+Radius.h"
-
 @implementation MBImageApplyer
 /* unused */
 + (UIImage *)imageForTwitter:(UIImage *)image byScallingToFillSize:(CGSize)size radius:(CGFloat)radius
@@ -31,6 +28,12 @@
     UIImage *resizedImage = [image imageForResizing:image ToSize:size];
     UIImage *radiusImage = [resizedImage imageWithRadius:radius];
     return radiusImage;
+}
+
++ (UIImage *)imageForMediaWithImage:(UIImage *)image size:(CGSize)size
+{
+    UIImage *centerCroppedImage = [UIImage centerCroppingImageWithImage:image atSize:size];
+    return centerCroppedImage;
 }
 
 /* unused */
