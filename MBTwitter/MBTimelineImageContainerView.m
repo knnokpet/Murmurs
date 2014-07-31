@@ -33,7 +33,7 @@
 - (void)configureImageView
 {
     CGSize boundsSize = self.bounds.size;
-    UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, boundsSize.width, boundsSize.height)];
+    MBMediaImageView *imageView = [[MBMediaImageView alloc] initWithFrame:CGRectMake(0, 0, boundsSize.width, boundsSize.height)];
     imageView.image = [UIImage imageNamed:@"DefaultImage"];
     [self addSubview:imageView];
     

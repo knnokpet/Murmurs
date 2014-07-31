@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "MBMediaImageView.h"
 
 @interface MBTimelineImageContainerView : UIView
 
