@@ -97,7 +97,7 @@
     
     
     [self.segmentedController setTitle:NSLocalizedString(@"Tweet", nil) forSegmentAtIndex:0];
-    [self.segmentedController setTitle:NSLocalizedString(@"Users", nil) forSegmentAtIndex:1];
+    [self.segmentedController setTitle:NSLocalizedString(@"Member", nil) forSegmentAtIndex:1];
     
     [self.view bringSubviewToFront:self.containerView];
 }
