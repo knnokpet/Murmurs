@@ -144,4 +144,12 @@
     
 }
 
+#pragma mark -
+- (void)popToRootViewControllerForAllTabbedController:(BOOL)animated
+{
+    for (UINavigationController *navigationController in self.tabBarController.viewControllers) {
+        [navigationController popToRootViewControllerAnimated:animated];
+    }
+}
+
 @end
