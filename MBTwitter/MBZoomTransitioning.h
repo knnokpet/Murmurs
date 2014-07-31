@@ -12,10 +12,11 @@
 
 @property (nonatomic, readonly, assign) BOOL isReverse;
 @property (nonatomic, assign) NSTimeInterval duration;
-
 @property (nonatomic, readonly) CGPoint animationPoint;
+@property (nonatomic, readonly) CGAffineTransform transformScale;
 
 - (instancetype)initWithPoint:(CGPoint)point;
 - (void)setIsReverse:(BOOL)isReverse;
+- (void)setTransformScale:(CGAffineTransform)transformScale;
 
 @end

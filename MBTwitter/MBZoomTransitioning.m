@@ -18,9 +18,16 @@ static const NSTimeInterval MBZoomTransitioningDuration = 0.3f;
     if (self) {
         _duration = MBZoomTransitioningDuration;
         _animationPoint = point;
+        [self commonInitialize];
     }
     
     return self;
+}
+
+- (void)commonInitialize
+{
+    _isReverse = NO;
+    _transformScale = CGAffineTransformMakeScale(0.01, 0.01);
 }
 
 - (void)setIsReverse:(BOOL)isReverse
@@ -33,6 +40,11 @@ static const NSTimeInterval MBZoomTransitioningDuration = 0.3f;
     _animationPoint = animationPoint;
 }
 
+- (void)setTransformScale:(CGAffineTransform)transformScale
+{
+    _transformScale = transformScale;
+}
+
 - (void)animateTransition:(id<UIViewControllerContextTransitioning>)transitionContext
 {
     UIViewController *fromViewController = [transitionContext viewControllerForKey:UITransitionContextFromViewControllerKey];
@@ -42,18 +54,27 @@ static const NSTimeInterval MBZoomTransitioningDuration = 0.3f;
     if (self.isReverse) {
         [containerView insertSubview:toViewController.view belowSubview:fromViewController.view];
     } else {
-        toViewController.view.transform = CGAffineTransformMakeScale(0, 0);
+        toViewController.view.transform = self.transformScale;
         [containerView addSubview:toViewController.view];
-        toViewController.view.center = self.animationPoint;
+        CGRect toRect = toViewController.view.frame;
+        toRect.origin = self.animationPoint;
+        toViewController.view.frame = toRect;
     }
     
     [UIView animateKeyframesWithDuration:self.duration delay:0 options:0 animations:^{
         if (self.isReverse) {
-            fromViewController.view.transform = CGAffineTransformMakeScale(0, 0);
-            fromViewController.view.center = self.animationPoint;
+            fromViewController.view.transform = self.transformScale;
+            CGRect fromRect = fromViewController.view.frame;
+            fromRect.origin = self.animationPoint;
+            fromViewController.view.frame = fromRect;
+            
+            
         } else {
             toViewController.view.transform = CGAffineTransformIdentity;
-            toViewController.view.center = fromViewController.view.center;
+            CGRect toRect = toViewController.view.frame;
+            toRect.origin = fromViewController.view.frame.origin;
+            toViewController.view.frame = toRect;
+            
         }
         
     }completion:^(BOOL finished) {
