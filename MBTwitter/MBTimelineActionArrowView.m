@@ -16,6 +16,7 @@
     if (self) {
         // Initialization code
         self.backgroundColor = [UIColor clearColor];
+        [self maskTransparent];
     }
     return self;
 }
@@ -52,6 +53,11 @@
     [super drawRect:rect];
     // Drawing code
     
+    [self drawBlackArrow];
+}
+
+- (void)drawBlurArrow
+{
     UIBezierPath *leftBezeirPath = [UIBezierPath bezierPath];
     UIBezierPath *rightBezierPath = [UIBezierPath bezierPath];
     CGSize size = self.frame.size;
@@ -79,5 +85,35 @@
     [rightBezierPath fill];
 }
 
+- (void)drawBlackArrow
+{
+    UIBezierPath *arrowPath = [UIBezierPath bezierPath];
+    CGSize size = self.frame.size;
+    
+    if (self.isUpper) {
+        [arrowPath moveToPoint:CGPointMake(0, size.height)];
+        [arrowPath addLineToPoint:CGPointMake(size.width / 2, 0)];
+        [arrowPath addLineToPoint:CGPointMake(size.width, size.height)];
+
+    } else {
+        [arrowPath moveToPoint:CGPointZero];
+        [arrowPath addLineToPoint:CGPointMake(size.width / 2, size.height)];
+        [arrowPath addLineToPoint:CGPointMake(size.width, 0)];
+    }
+    
+    [arrowPath closePath];
+    [self.color setFill];
+    [arrowPath fill];
+}
+
+- (void)maskTransparent
+{
+    CAGradientLayer *gradientLayer = [CAGradientLayer layer];
+    gradientLayer.frame = self.bounds;
+    gradientLayer.colors = [NSArray arrayWithObjects:(id)[UIColor blackColor].CGColor, (id)[UIColor clearColor].CGColor, nil];
+    gradientLayer.startPoint = CGPointMake(0, 0.5f);
+    gradientLayer.endPoint = CGPointMake(0, 1.0f);
+    self.layer.mask = gradientLayer;
+}
 
 @end

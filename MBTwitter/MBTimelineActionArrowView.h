@@ -8,7 +8,7 @@
 
 #import "MBBlurView.h"
 
-@interface MBTimelineActionArrowView : MBBlurView
+@interface MBTimelineActionArrowView : UIView
 
 @property (nonatomic, readonly, assign) BOOL isUpper;
 @property (nonatomic, readonly) UIColor *color;/*unused*/
