@@ -11,6 +11,7 @@
 
 @class MBTweet;
 @class MBAvatorImageView;
+@class MBSeparateLineView;
 @protocol MBImageViewControllerDelegate;
 @interface MBImageViewController : UIViewController <UIScrollViewDelegate, UIActionSheetDelegate, MBAOuth_TwitterAPICenterDelegate>
 
@@ -19,12 +20,11 @@
 @property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
 @property (strong, nonatomic) IBOutlet UITapGestureRecognizer *doubletapGestureRecognizer;
 @property (strong, nonatomic) IBOutlet UITapGestureRecognizer *tapGestureRecognizer;
-@property (weak, nonatomic) IBOutlet UIButton *closeButton;
 @property (weak, nonatomic) IBOutlet UIButton *actionButton;
+@property (weak, nonatomic) IBOutlet UIButton *closeButton;
 
 
-
-@property (weak, nonatomic) IBOutlet UIView *tweetContainerView;
+@property (weak, nonatomic) IBOutlet MBSeparateLineView *tweetContainerView;
 @property (weak, nonatomic) IBOutlet MBAvatorImageView *avatorImageView;
 @property (weak, nonatomic) IBOutlet UILabel *characterNameLabel;
 @property (weak, nonatomic) IBOutlet UILabel *screenNameLabel;
@@ -39,6 +39,7 @@
 - (void)setMediaIDStr:(NSString *)mediaIDStr;
 - (void)setImageURLString:(NSString *)imageURLString;
 - (void)setTweet:(MBTweet *)tweet;
+- (void)setMediaImage:(UIImage *)mediaImage;
 
 @end
 

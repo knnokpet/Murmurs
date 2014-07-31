@@ -7,6 +7,7 @@
 //
 
 #import "MBImageViewController.h"
+#import <QuartzCore/QuartzCore.h>
 
 #import "MBUser.h"
 #import "MBTweet.h"
@@ -14,6 +15,7 @@
 #import "MBImageDownloader.h"
 
 #import "MBAvatorImageView.h"
+#import "MBSeparateLineView.h"
 
 @interface MBImageViewController ()
 
@@ -51,11 +53,14 @@
     _tweet = tweet;
 }
 
+- (void)setMediaImage:(UIImage *)mediaImage
+{
+    _mediaImage = mediaImage;
+}
+
 #pragma mark - View
 - (void)configureNabigationItem
 {
-    //self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Back", nil) style:UIBarButtonItemStylePlain target:self action:@selector(didPushBackButton)];
-    
     [self.closeButton addTarget:self action:@selector(didPushBackButton) forControlEvents:UIControlEventTouchUpInside];
     [self.actionButton addTarget:self action:@selector(didPushActionButton) forControlEvents:UIControlEventTouchUpInside];
 }
@@ -69,7 +74,6 @@
 - (void)configureView
 {
     [self configureNabigationItem];
-    //[self configureImageView];
     [self configureTweetView];
     
     _imageView = [[UIImageView alloc] initWithFrame:CGRectZero];
@@ -84,28 +88,25 @@
     [self.doubletapGestureRecognizer addTarget:self action:@selector(didDoubleTapGesture)];
 }
 
-- (void)configureImageView
+- (void)downloadMediaImage
 {
-    UIImage *mediaImage = [[MBImageCacher sharedInstance] cachedMediaImageForMediaID:self.mediaIDStr];
-    _mediaImage = mediaImage;
-    if (!self.mediaImage) {
-        
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
-            [MBImageDownloader downloadMediaImageWithURL:self.imageURLString completionHandler:^(UIImage *image, NSData *imageData) {
-                [[MBImageCacher sharedInstance] storeMediaImage:image data:imageData forMediaID:self.mediaIDStr];
-                
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    _mediaImage = image;
-                    [self renewViews];
-                });
-                
-            }failedHandler:^(NSURLResponse *response, NSError *error) {
-                
-            }];
-        });
-    } else {
-        [self renewViews];
+    if (!self.imageURLString && !self.mediaIDStr) {
+        return;
     }
+    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
+        [MBImageDownloader downloadMediaImageWithURL:self.imageURLString completionHandler:^(UIImage *image, NSData *imageData) {
+            [[MBImageCacher sharedInstance] storeMediaImage:image data:imageData forMediaID:self.mediaIDStr];
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                _mediaImage = image;
+                [self renewViews];
+            });
+            
+        }failedHandler:^(NSURLResponse *response, NSError *error) {
+            
+        }];
+    });
 }
 
 - (void)configureTweetView
@@ -116,7 +117,6 @@
     
     // setting Tweet
     self.tweetTextView.text = self.tweet.tweetText;
-    self.tweetTextView.textColor = [UIColor whiteColor]; // IB ではなぜか設定が反映されない
     self.tweetTextView.font = [UIFont systemFontOfSize:15.0f];
     CGSize textViewSize = [self.tweetTextView sizeThatFits:CGSizeMake(self.tweetTextView.frame.size.width, CGFLOAT_MAX)];
     CGRect textViewRect = self.tweetTextView.frame;
@@ -124,8 +124,17 @@
     self.tweetTextView.frame = textViewRect;
     
     CGRect tweetContainerViewRect = self.tweetContainerView.frame;
-    tweetContainerViewRect.size.height = self.tweetTextView.frame.size.height + (54.0f + 8.0f);
+    tweetContainerViewRect.size.height = self.tweetTextView.frame.size.height + (44.0f + 49.0f);
     self.tweetContainerView.frame = tweetContainerViewRect;
+    // gradient mask
+    CAGradientLayer *gradientLayer = [CAGradientLayer layer];
+    gradientLayer.frame = self.tweetContainerView.bounds;
+    gradientLayer.colors = [NSArray arrayWithObjects:(id)[UIColor blackColor].CGColor, (id)[UIColor clearColor].CGColor, nil];
+    gradientLayer.startPoint = CGPointMake(0.0f, 0.2f);
+    gradientLayer.endPoint = CGPointMake(0.0f, 0.0f);
+    self.tweetContainerView.layer.mask = gradientLayer;
+    self.tweetContainerView.startPoint = CGPointMake(0, tweetContainerViewRect.size.height - 48);
+    self.tweetContainerView.endPoint = CGPointMake(tweetContainerViewRect.size.width, tweetContainerViewRect.size.height - 48);
     
     // setting or downloading Image
     UIImage *avatorImage = [[MBImageCacher sharedInstance] cachedTimelineImageForUser:user.userIDStr];
@@ -142,6 +151,7 @@
     // Do any additional setup after loading the view from its nib.
     [self configureModel];
     [self configureView];
+    [self renewViews];
     
     if (self.tweet.requireLoading || self.tweet.isRetweeted) {
         [self.aoAPICenter getTweet:[self.tweet.tweetID unsignedLongLongValue]];
@@ -152,9 +162,11 @@
 {
     [super viewDidAppear:animated];
     
-    [self configureImageView];
-    
     [[UIApplication sharedApplication] setStatusBarHidden:YES];
+    
+    if (!self.mediaImage) {
+        [self downloadMediaImage];
+    }
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -257,12 +269,11 @@
 - (void)didTapGesture
 {
     BOOL isHidden = (self.hiddenViews) ? NO : YES;
-    UIColor *changedScrollViewBackgroundColor = (self.hiddenViews) ? [UIColor whiteColor] : [UIColor blackColor];
+    CGFloat alpha = (self.hiddenViews) ? 1.0f : 0.0f;
     
     [UIView animateWithDuration:0.3f delay:0 options:0 animations:^{
-        [self.tweetContainerView setHidden:isHidden];
+        self.tweetContainerView.alpha = alpha;
         [self.navigationController setNavigationBarHidden:isHidden];
-        self.scrollView.backgroundColor = changedScrollViewBackgroundColor;
         
     }completion:^(BOOL finished){
         self.hiddenViews = isHidden;
@@ -271,12 +282,18 @@
 
 - (void)didDoubleTapGesture
 {
+    BOOL zooming = (self.scrollView.zoomScale == self.scrollView.minimumZoomScale) ? YES : NO;
     CGFloat zoomingScale = (self.scrollView.zoomScale == self.scrollView.minimumZoomScale) ? self.scrollView.maximumZoomScale : self.scrollView.minimumZoomScale;
     
-    [UIView animateWithDuration:0.3f animations:^{
-        self.scrollView.zoomScale = zoomingScale;
-    }];
-
+    if (zooming) {
+        UIView *zoomingView = [self viewForZoomingInScrollView:self.scrollView];
+        CGPoint tapPoint = [self.doubletapGestureRecognizer locationInView:zoomingView];
+        [self.scrollView zoomToRect:CGRectMake(tapPoint.x, tapPoint.y, self.view.bounds.size.width, self.view.bounds.size.height) animated:YES];
+    } else {
+        [UIView animateWithDuration:0.3f animations:^{
+            self.scrollView.zoomScale = zoomingScale;
+        }];
+    }
 }
 
 #pragma mark -
