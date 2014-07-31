@@ -57,6 +57,7 @@
         self.dataSource = self.timelineManager.tweets;
         self.aoAPICenter = [[MBAOuth_TwitterAPICenter alloc] init];
         self.aoAPICenter.delegate = self;
+        self.enableBacking = YES;
         [self.tableView reloadData];
         if (0 == self.dataSource.count) {
             [self goBacksAtIndex:0];
