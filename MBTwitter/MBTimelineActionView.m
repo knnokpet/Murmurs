@@ -11,6 +11,12 @@
 #import "MBTimelineActionArrowView.h"
 #import "MBTimelineActionButton.h"
 
+#import "MBTweet.h"
+#import "MBUserManager.h"
+#import "MBUser.h"
+#import "MBAccountManager.h"
+#import "MBAccount.h"
+
 @interface MBTimelineActionView()
 
 @property (nonatomic) MBTimelineActionContainerView *containerView;
@@ -40,8 +46,6 @@
         
         self.touchedPoint = point;
         self.selectedViewFrame = rect;
-        
-        [self createButtons];
     }
     
     return self;
@@ -59,6 +63,12 @@
 - (void)setSelectedIndexPath:(NSIndexPath *)selectedIndexPath
 {
     _selectedIndexPath = selectedIndexPath;
+}
+
+- (void)setSelectedTweet:(MBTweet *)selectedTweet
+{
+    _selectedTweet = selectedTweet;
+    [self createButtons];
 }
 
 #pragma mark Instance Methods
@@ -127,12 +137,32 @@
 
 - (void)createButtons
 {
-    MBTimelineActionButton *hoge1Button = [[MBTimelineActionButton alloc] initWithTitle:@"Reply" image:[UIImage imageNamed:@"Reply"]];
+    // reply
+    MBTimelineActionButton *hoge1Button = [[MBTimelineActionButton alloc] initWithTitle:@"Reply" image:[UIImage imageNamed:@"reply-Action-Boarder@2x"]];
     [hoge1Button addTarget:self action:@selector(didPushReplyButton) forControlEvents:UIControlEventTouchUpInside];
-    MBTimelineActionButton *hoge2Button = [[MBTimelineActionButton alloc] initWithTitle:@"Retweet" image:[UIImage imageNamed:@"Retweet"]];
+    
+    // retweet
+    MBTimelineActionButton *hoge2Button = [[MBTimelineActionButton alloc] initWithTitle:@"Retweet" image:[UIImage imageNamed:@"retweet-Action-Boarder@2x"]];
     [hoge2Button addTarget:self action:@selector(didPushRetweetButton) forControlEvents:UIControlEventTouchUpInside];
-    MBTimelineActionButton *hoge3Button = [[MBTimelineActionButton alloc] initWithTitle:@"Favorite" image:[UIImage imageNamed:@"Favorite"]];
+    
+    if (self.selectedTweet.isRetweeted) {
+        hoge2Button = [[MBTimelineActionButton alloc] initWithTitle:@"Cancel" image:[UIImage imageNamed:@"retweet-Action-Boarder@2x"]];
+        [hoge2Button addTarget:self action:@selector(didPushCancelRetweetButton) forControlEvents:UIControlEventTouchUpInside];
+    }
+    
+    MBAccount *selectedAccount = [[MBAccountManager sharedInstance] currentAccount];
+    MBUser *currentAccountUser = [[MBUserManager sharedInstance] storedUserForKey:selectedAccount.userID];
+    if ([self.selectedTweet.tweetUser.userID compare:currentAccountUser.userID] == NSOrderedSame || self.selectedTweet.tweetUser.isProtected) {
+        hoge2Button.enabled = NO;
+    }
+    
+    // favorite
+    MBTimelineActionButton *hoge3Button = [[MBTimelineActionButton alloc] initWithTitle:@"Favorite" image:[UIImage imageNamed:@"Star-Action-Boarder@2x"]];
     [hoge3Button addTarget:self action:@selector(didPushFavoriteButton) forControlEvents:UIControlEventTouchUpInside];
+    if (self.selectedTweet.isFavorited) {
+        hoge3Button = [[MBTimelineActionButton alloc] initWithTitle:@"Cancel" image:[UIImage imageNamed:@"Star-Action-Boarder@2x"]];
+        [hoge3Button addTarget:self action:@selector(didPushCancelFavoriteButton) forControlEvents:UIControlEventTouchUpInside];
+    }
     [self setButtonItems:@[hoge1Button, hoge2Button, hoge3Button]];
 }
 
@@ -164,8 +194,8 @@
 
 - (void)createArrowView
 {
-    self.arrowView = [[MBTimelineActionArrowView alloc] initWithFrame:CGRectMake(0, 0, 40, 20)];
-    self.arrowView.color = [UIColor blackColor];
+    self.arrowView = [[MBTimelineActionArrowView alloc] initWithFrame:CGRectMake(0, 0, 20, 10)];
+    self.arrowView.color = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.9];
     [self addSubview:self.arrowView];
 }
 
@@ -197,8 +227,9 @@
 {
     self.containerView.backgroundView = view;
     [self.containerView updateBlurView];
-    self.arrowView.backgroundView = view;
-    [self.arrowView updateBlurView];
+    /* Arrow のブラーをやめたのでコメントアウト */
+    //self.arrowView.backgroundView = view;
+    //[self.arrowView updateBlurView];
     [view addSubview:self];
     [self showViews:shows animated:animated];
 }
@@ -230,6 +261,11 @@
     [self sendDelegateMethodDismissing];
 }
 
+- (void)didPushCancelRetweetButton
+{
+    
+}
+
 - (void)didPushFavoriteButton
 {
     if ([_delegate respondsToSelector:@selector(didPushFavoriteButtonOnActionView:)]) {
@@ -238,6 +274,11 @@
     
     [self showViews:NO animated:YES];
     [self sendDelegateMethodDismissing];
+}
+
+- (void)didPushCancelFavoriteButton
+{
+    
 }
 
 /*

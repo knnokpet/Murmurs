@@ -9,17 +9,20 @@
 #import <UIKit/UIKit.h>
 
 @protocol MBTimelineActionViewDelegate;
+@class MBTweet;
 @interface MBTimelineActionView : UIView
 
 @property (nonatomic, weak) id <MBTimelineActionViewDelegate> delegate;
 // action が可能かどうかを判断するために tweet, user オブジェクトが必要。user が requireLoading だったらさらに面倒。
 @property (nonatomic, readonly) NSArray *buttonItems;
 @property (nonatomic, readonly) NSIndexPath *selectedIndexPath;
+@property (nonatomic, readonly) MBTweet *selectedTweet;
 
 - (instancetype)initWithRect:(CGRect)rect atPoint:(CGPoint)point;
 
 - (void)setButtonItems:(NSArray *)buttonItems;
 - (void)setSelectedIndexPath:(NSIndexPath *)selectedIndexPath;
+- (void)setSelectedTweet:(MBTweet *)selectedTweet;
 
 - (void)showViews:(BOOL)shows animated:(BOOL)animated;
 - (void)showViews:(BOOL)shows animated:(BOOL)animated inView:(UIView *)view;
