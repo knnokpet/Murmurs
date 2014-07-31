@@ -20,6 +20,7 @@
 #import "MBReplyTextView.h"
 #import "NSDictionary+Objects.h"
 #import "MBGeoPinView.h"
+#import "MBGradientMaskView.h"
 
 
 @interface MBPostTweetViewController () <UITextViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate>
@@ -34,6 +35,7 @@
 
 @property (nonatomic, readonly) NSString *tweetText;
 
+@property (nonatomic) MBGradientMaskView *geoPlaceView;
 @property (nonatomic) MBGeoPinView *geoPinView;
 @property (nonatomic) MBReplyTextView *replyTextView;
 @property (nonatomic) UIBarButtonItem *postBarButtonitem;
@@ -42,6 +44,7 @@
 @property (nonatomic) UIBarButtonItem *photoButton;
 @property (nonatomic) UIBarButtonItem *cameraButton;
 @property (nonatomic) UIBarButtonItem *geoButton;
+@property (nonatomic) UIBarButtonItem *suspendButton;
 
 @end
 
@@ -137,14 +140,50 @@
     self.photoButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemBookmarks target:self action:@selector(didPushPhotoButton)];
     self.cameraButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCamera target:self action:@selector(didPushCameraButton)];
     self.geoButton = [[UIBarButtonItem alloc] initWithTitle:@"Geo" style:UIBarButtonItemStylePlain target:self action:@selector(didPushGeoButton)];
+    self.suspendButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Suspend", nil) style:UIBarButtonItemStylePlain target:self action:@selector(didPushCancelGeoButton)];
     
-    UIBarButtonItem *sparcer = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
-    NSArray *buttons = [NSArray arrayWithObjects:self.photoButton, self.cameraButton, self.geoButton, sparcer, nil];
-    [self.toolbar setItems:buttons];
+    [self settingDefaultToolbarItemsWithAnimated:NO];
     
-    self.tweetTextView.inputAccessoryView =self.toolbar;
-    
+    self.tweetTextView.inputAccessoryView = self.toolbar;
 }
+
+
+- (void)settingDefaultToolbarItemsWithAnimated:(BOOL)animated
+{
+    UIBarButtonItem *sparcer = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+    NSArray *buttons = [NSArray arrayWithObjects:self.photoButton, sparcer, self.cameraButton, sparcer, self.geoButton, sparcer, sparcer, nil];
+    
+    [self.toolbar setItems:buttons animated:animated];
+}
+
+- (void)settingCancelableToolbarItemsWithAnimated:(BOOL)animated
+{
+    UIBarButtonItem *sparcer = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+    NSArray *buttons = [NSArray arrayWithObjects:self.photoButton, sparcer, self.cameraButton, sparcer, self.geoButton, sparcer, self.suspendButton, nil];
+    
+    [self.toolbar setItems:buttons animated:animated];
+}
+/*
+- (void)settingToolbarItems:(NSArray *)items animated:(BOOL)animated
+{
+    NSMutableArray *buttonItems = [NSMutableArray array];
+    
+    int i = 0;
+    for (UIBarButtonItem *button in items) {
+        if (i > 0) {
+            UIBarButtonItem *sparcer = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+            [buttonItems addObject:sparcer];
+        }
+        [buttonItems addObject:button];
+        
+        i ++;
+    }
+    UIBarButtonItem *sparcer = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+    [buttonItems addObject:sparcer];
+    [buttonItems addObject:self.suspendButton];
+    
+    [self.toolbar setItems:buttonItems animated:animated];
+}*/
 
 - (void)viewDidLoad
 {
@@ -205,6 +244,7 @@
     [self.replys addObject:replyID];
 }
 
+#pragma mark
 - (void)beEnableButtonForTextViewLength
 {
     if (0 == self.tweetTextView.text.length || 140 < self.tweetTextView.text.length) {
@@ -240,6 +280,7 @@
     return 0;
 }
 
+#pragma mark
 - (void)applyConstraint
 {
     if (self.showsImageView) {
@@ -267,11 +308,45 @@
     self.heightConstraint.constant = .0f;
 }
 
+#pragma mark
 - (void)configurePinView
 {
     CGRect initialRect = CGRectMake(0, 0, 32, 32);
     self.geoPinView = [[MBGeoPinView alloc] initWithFrame:initialRect];
     [self.view addSubview:self.geoPinView];
+}
+
+- (void)configureGeoPlaceViewWith:(MBPlace *)place
+{
+    CGSize geoPlaceViewSize = CGSizeMake(self.view.bounds.size.width, self.geoPinView.bounds.size.height + 8.0f);
+    CGRect geoPlaceViewRect = CGRectMake(0, self.tweetTextView.frame.origin.y + self.tweetTextView.bounds.size.height - self.tweetTextView.contentInset.bottom - geoPlaceViewSize.height, geoPlaceViewSize.width, geoPlaceViewSize.height);
+    self.geoPlaceView = [[MBGradientMaskView alloc] initWithFrame:geoPlaceViewRect];
+    self.geoPlaceView.backgroundColor = [UIColor colorWithRed:255 green:255 blue:255 alpha:0.9];
+    self.geoPlaceView.startGradientPoint = CGPointMake(0.0f, 0.1f);
+    self.geoPlaceView.endGradientPoint = CGPointMake(0.0f, 0.0f);
+    [self.geoPlaceView maskGradient];
+    [self.view insertSubview:self.geoPlaceView belowSubview:self.geoPinView];
+    
+    UILabel *geoPlaceLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.geoPinView.bounds.size.width, 0, self.view.bounds.size.width - self.geoPinView.bounds.size.width, self.geoPlaceView.bounds.size.height)];
+    NSString *fromPlace = NSLocalizedString(@"From %1$@, %2$@", nil);
+    geoPlaceLabel.text = [NSString stringWithFormat:fromPlace, place.countryName, place.countryFullName];
+    geoPlaceLabel.textColor = [UIColor darkGrayColor];
+    geoPlaceLabel.font = [UIFont systemFontOfSize:15.0f];
+    [self.geoPlaceView addSubview:geoPlaceLabel];
+}
+
+- (void)showGeoPlaceView:(BOOL)shows animated:(BOOL)animated
+{
+    CGFloat alpha = (shows) ? 1.0f : 0.0f;
+    CGFloat duration = (animated) ? 0.3f : 0.0f;
+    
+    [UIView animateWithDuration:duration animations:^{
+        self.geoPlaceView.alpha = alpha;
+    }completion:^(BOOL finished) {
+        if (!shows) {
+            [self.geoPlaceView removeFromSuperview];
+        }
+    }];
 }
 
 - (void)placePinView
@@ -281,6 +356,23 @@
     CGRect placedRect = initialRect;
     placedRect.origin.y = self.tweetTextView.frame.origin.y + self.tweetTextView.bounds.size.height - self.tweetTextView.contentInset.bottom - initialRect.size.height - pinMargin;
     self.geoPinView.frame = placedRect;
+}
+
+- (void)placePinViewWithBottomHeight:(CGFloat)BottomHeight
+{
+    CGFloat pinMargin = 4.0f;
+    CGRect initialRect = self.geoPinView.frame;
+    CGRect placedRect = initialRect;
+    placedRect.origin.y = self.view.bounds.size.height - BottomHeight - initialRect.size.height - pinMargin;
+    self.geoPinView.frame = placedRect;
+}
+
+/* unused */
+- (void)placeGeoPlaceView
+{
+    CGRect geoPlaceRect = self.geoPlaceView.frame;
+    geoPlaceRect.origin.y -= geoPlaceRect.size.height;
+    self.geoPlaceView.frame = geoPlaceRect;
 }
 
 - (void)showingAnimatePinView
@@ -298,7 +390,7 @@
         
     }completion:^(BOOL finished) {
         [self.geoPinView boundingAnimateDotWithCompletion:^(){
-            
+            [self showGeoPlaceView:YES animated:YES];
         }];
         
     }];
@@ -308,6 +400,8 @@
 {
     [UIView animateWithDuration:0.1f animations:^{
         [self.geoPinView contractView];
+        
+        
         CGFloat pinHeight = self.geoPinView.frame.size.height;
         UIEdgeInsets contentInsets = self.tweetTextView.contentInset;
         UIEdgeInsets scrollIndicatorInsets = self.tweetTextView.scrollIndicatorInsets;
@@ -319,6 +413,8 @@
     }completion:^ (BOOL finished) {
         [self.geoPinView scallingAnimateDotWithCompletion:^{
             [self.geoPinView removeFromSuperview];
+            
+            [self showGeoPlaceView:NO animated:YES];
         }];
     }];
 }
@@ -334,15 +430,20 @@
     
     UIEdgeInsets contentInsets = self.tweetTextView.contentInset;
     UIEdgeInsets scrollIndicatorInsets = self.tweetTextView.scrollIndicatorInsets;
-    contentInsets.bottom = size.height;
-    scrollIndicatorInsets.bottom = size.height;
+    CGFloat bottomInset = size.height;
+    if (self.geoPinView.superview || self.geoPlaceView.superview) {
+        bottomInset += self.geoPinView.bounds.size.height;
+    }
+    contentInsets.bottom = bottomInset;
+    scrollIndicatorInsets.bottom = bottomInset;
+    
     
     
     [UIView animateWithDuration:duration delay:0.0f options:curve animations:^{
         self.tweetTextView.contentInset = contentInsets;
         self.tweetTextView.scrollIndicatorInsets = scrollIndicatorInsets;
         
-        [self placePinView];
+        [self placePinViewWithBottomHeight:size.height];
         
     }completion:nil];
 }
@@ -388,6 +489,11 @@
     [self dismissMe];
 }
 
+- (void)didPushSuspendButton
+{
+    
+}
+
 - (void)didPushPhotoButton
 {
     UIImagePickerControllerSourceType sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
@@ -431,19 +537,17 @@
         return;
     }
     
-    if (self.geoPinView.superview) {
-        [self hidingAnimatePinView];
-        return;
-    }
     
     BOOL locationEnabled = [CLLocationManager locationServicesEnabled];
     if (YES == locationEnabled) {
         
         CLAuthorizationStatus status = [CLLocationManager authorizationStatus];
         if (status == kCLAuthorizationStatusNotDetermined) {
-            [self.locationManager startUpdatingLocation];
+            //[self setGeoIndicatorButton];
+            //[self.locationManager startUpdatingLocation];
             
         } else if (status == kCLAuthorizationStatusAuthorized) {
+            [self setGeoIndicatorButton];
             [self.locationManager startUpdatingLocation];
             
         } else if (status == kCLAuthorizationStatusRestricted) {
@@ -457,6 +561,43 @@
     } else {
         NSLog(@"プライバシー＞位置情報サービスをオンにしろ");
     }
+}
+
+- (void)didPushCancelGeoButton
+{
+    if (self.geoPinView.superview) {
+        [self hidingAnimatePinView];
+        [self setGeoButtonWithTappable:YES];
+        [self settingDefaultToolbarItemsWithAnimated:YES];
+        return;
+    }
+}
+
+- (void)setGeoIndicatorButton
+{
+    UIBarButtonItem *geoIndicatorButton = [self animatingIndicatorButton];
+    self.geoButton = geoIndicatorButton;
+    
+    [self settingDefaultToolbarItemsWithAnimated:NO];
+}
+
+- (void)setGeoButtonWithTappable:(BOOL)tappable
+{
+    UIBarButtonItem *geoButton = [[UIBarButtonItem alloc] initWithTitle:@"Geo" style:UIBarButtonItemStylePlain target:self action:@selector(didPushGeoButton)];
+    geoButton.enabled = tappable;
+    
+    self.geoButton = geoButton;
+}
+
+- (UIBarButtonItem *)animatingIndicatorButton
+{
+    UIActivityIndicatorView *indicatorView = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(0, 0, 20, 20)];
+    [indicatorView sizeToFit];
+    indicatorView.activityIndicatorViewStyle = UIActivityIndicatorViewStyleGray;
+    [indicatorView startAnimating];
+    UIBarButtonItem *indicatorButton = [[UIBarButtonItem alloc] initWithCustomView:indicatorView];
+    return indicatorButton;
+    
 }
 
 #pragma mark -
@@ -530,7 +671,8 @@
         UIImage *resizedImage = [MBImageApplyer imageForTwitter:selectedImage size:CGSizeMake(self.mediaImageView.frame.size.width, self.mediaImageView.frame.size.height) radius:0.0f];
         dispatch_async(dispatch_get_main_queue(), ^{
             self.mediaImageView.image = resizedImage;
-            self.postBarButtonitem.enabled = YES;
+            [self beEnableButtonForTextViewLength];
+            [self setCountOfBarButtonItem];
         });
     });
     
@@ -553,9 +695,15 @@
 {
     MBPlace *place = [places firstObject];
     if (place) {
-        NSLog(@"place name %@ full %@", place.countryName, place.countryFullName);
+        [self setGeoButtonWithTappable:NO];
+        [self settingCancelableToolbarItemsWithAnimated:YES];
         [self configurePinView];
+        [self configureGeoPlaceViewWith:place];
+        
         [self showingAnimatePinView];
+    } else {
+        [self setGeoButtonWithTappable:YES];
+        [self settingDefaultToolbarItemsWithAnimated:YES];
     }
 }
 
@@ -588,8 +736,6 @@
         CLLocation *latestLocation = [locations lastObject];
         float longitude = latestLocation.coordinate.longitude;
         float latitude = latestLocation.coordinate.latitude;
-        
-        NSLog(@"longi %f lati %f", longitude, latitude);
         
         NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init];
         formatter.minimumFractionDigits = 6;
