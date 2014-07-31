@@ -13,6 +13,8 @@
 #import "MBFavoritesViewController.h"
 #import "MBOtherUserListViewController.h"
 
+#import "MBAppDelegate.h"
+
 #import "MBDetailUserInfomationTableViewCell.h"
 #import "MBProfileAvatorView.h"
 #import "MBAvatorImageView.h"
@@ -420,9 +422,15 @@ static NSString *countKey = @"CountKey";
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (0 == indexPath.section) {
+        MBUser *previousUser = [[MBUserManager sharedInstance] storedUserForKey:[MBAccountManager sharedInstance].currentAccount.userID];
+        
         [[MBAccountManager sharedInstance] selectAccountAtIndex:indexPath.row];
         MBAccount *currentAccount = [[MBAccountManager sharedInstance] currentAccount];
         MBUser *currentUser = [[MBUserManager sharedInstance] storedUserForKey:currentAccount.userID];
+        if ([currentUser.userID compare:previousUser.userID] != NSOrderedSame) {
+            MBAppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
+            [appDelegate popToRootViewControllerForAllTabbedController:NO];
+        }
         if (currentUser) {
             [self setCurrentUser:currentUser];
         } else {
