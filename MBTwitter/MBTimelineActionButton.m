@@ -26,7 +26,7 @@
         _title = title;
         _image = [image imageWithMaskColor:[UIColor whiteColor]];
         self.frame = CGRectMake(0, 0, 80, 40);
-        self.backgroundColor = [UIColor blackColor];
+        self.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.8];
         self.titleLabel.textAlignment = NSTextAlignmentCenter;
         self.titleLabel.font = [UIFont systemFontOfSize:14.0f];
         
@@ -63,8 +63,9 @@
     self.titleLabel.frame = titleFrame;
     
     CGRect imageFrame = self.imageView.frame;
-    imageFrame.size = self.image.size;
-    imageFrame = CGRectMake(truncf((self.bounds.size.width - imageFrame.size.width) / 2), self.titleLabel.frame.origin.y - imageFrame.size.height, imageFrame.size.width, imageFrame.size.height);
+    CGFloat screenScale = [UIScreen mainScreen].scale;
+    CGSize imageSize = CGSizeMake(self.image.size.width / screenScale, self.image.size.height / screenScale);
+    imageFrame = CGRectMake(truncf((self.bounds.size.width - imageSize.width) / 2), self.titleLabel.frame.origin.y - imageSize.height, imageSize.width, imageSize.height);
     self.imageView.frame = imageFrame;
     
     
