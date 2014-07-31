@@ -55,6 +55,7 @@
         self.dataSource = self.timelineManager.tweets;
         self.aoAPICenter = [[MBAOuth_TwitterAPICenter alloc] init];
         self.aoAPICenter.delegate = self;
+        self.enableBacking = YES;
         [self.tableView reloadData];
         
         // アカウントを変更すると保存されていたものが再び読み込まれてしまうぞ
