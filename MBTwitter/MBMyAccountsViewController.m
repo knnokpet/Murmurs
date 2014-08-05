@@ -313,7 +313,7 @@ static NSString *countKey = @"CountKey";
 {
     static NSString *accountsCellIdentifier = @"AccountsCell";
     static NSString *userDataCellIdentifier = @"UserDataCell";
-    static NSString *requestCellIdentifier = @"RequestCell";
+    /*static NSString *requestCellIdentifier = @"RequestCell";  unused */
     UITableViewCell *cell;
     
     if (0 == indexPath.section) {
