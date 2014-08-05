@@ -60,6 +60,10 @@
     self.screenNameLabel.textAlignment = NSTextAlignmentCenter;
     self.screenNameLabel.layer.cornerRadius = 8.0f;
     [self addSubview:self.screenNameLabel];
+    
+    self.protectImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Lock-mini"]];
+    [self setIsProtected:NO];
+    [self addSubview:self.protectImageView];
 }
 
 - (void)setCharacterName:(NSString *)characterName
@@ -79,6 +83,16 @@
         [self setNeedsDisplay];
         [self setNeedsLayout];
     }
+}
+
+- (void)setIsProtected:(BOOL)isProtected
+{
+    _isProtected = isProtected;
+    
+    BOOL isHidden = (isProtected) ? NO : YES;
+    self.protectImageView.hidden = isHidden;
+    
+    [self setNeedsLayout];
 }
 
 /*
@@ -118,6 +132,11 @@
     screenLabelFrame.origin.y = self.characterNameLabel.frame.origin.y + self.characterNameLabel.frame.size.height;
     self.screenNameLabel.frame = screenLabelFrame;
 
+    // protectedImageView
+    CGRect protectedImageViewRect = self.protectImageView.frame;
+    protectedImageViewRect.origin.x = self.screenNameLabel.frame.origin.x + self.screenNameLabel.frame.size.width + horizontalMargin;
+    protectedImageViewRect.origin.y = (self.screenNameLabel.frame.origin.y + self.screenNameLabel.frame.size.height / 2) - (self.protectImageView.bounds.size.height / 2);
+    self.protectImageView.frame = protectedImageViewRect;
 }
 
 @end

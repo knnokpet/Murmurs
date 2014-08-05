@@ -15,10 +15,13 @@
 @property (nonatomic) MBAvatorImageView *avatorImageView;
 @property (nonatomic) MBShadowBlurLabel *characterNameLabel;
 @property (nonatomic) MBShadowBlurLabel *screenNameLabel;
+@property (nonatomic) UIImageView *protectImageView;
 
 @property (nonatomic) NSString *characterName;
 @property (nonatomic) NSString *screenName;
+@property (nonatomic, assign) BOOL isProtected;
 - (void)setCharacterName:(NSString *)characterName;
 - (void)setScreenName:(NSString *)screenName;
+- (void)setIsProtected:(BOOL)isProtected;
 
 @end
