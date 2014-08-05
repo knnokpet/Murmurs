@@ -7,24 +7,26 @@
 //
 
 #import "MBAvatorImageView.h"
+#import <QuartzCore/QuartzCore.h>
+
+@interface MBAvatorImageView()
+
+@property (nonatomic) UIView *selectingCoverView;
+
+@end
 
 @implementation MBAvatorImageView
-
+#pragma mark - Initialize
 - (id)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];
     if (self) {
         // Initialization code
-        
     }
     return self;
 }
 
-- (void)awakeFromNib
-{
-    [self setNeedsDisplay];
-}
-
+#pragma mark - Setter & Getter
 - (void)setUserID:(NSNumber *)userID
 {
     _userID = userID;
@@ -35,6 +37,37 @@
     _userIDStr = userIDStr;
 }
 
+- (void)setIsSelected:(BOOL)isSelected withAnimated:(BOOL)animated
+{
+    _isSelected = isSelected;
+    
+    [self changeViewStateForSelectingWithAnimated:animated];
+}
+
+#pragma mark - Instance Methods
+- (void)changeViewStateForSelectingWithAnimated:(BOOL)animated
+{
+    CGFloat duration = (animated) ? 0.5f : 0.0f;
+    [UIView animateWithDuration:duration animations:^{
+        /* layer のバックグラウンドを変更＆ opaque 調整で出来るらしいんだけど、出来ないから view を重ねる */
+        if (self.isSelected) {
+            self.selectingCoverView = [[UIView alloc] initWithFrame:self.bounds];
+            self.selectingCoverView.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.3f];
+            self.selectingCoverView.layer.cornerRadius = self.layer.cornerRadius;
+            [self addSubview:self.selectingCoverView];
+        } else {
+            self.selectingCoverView.backgroundColor = [UIColor clearColor];
+        }
+    }completion:^ (BOOL finished) {
+        if (self.selectingCoverView.superview && !self.isSelected) {
+            [self.selectingCoverView removeFromSuperview];
+        }
+    }];
+    
+    
+}
+
+#pragma mark - UIView
 - (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event
 {
     UIView *touchedView = [super hitTest:point withEvent:event];
@@ -55,6 +88,7 @@
     if ([_delegate respondsToSelector:@selector(imageViewDidClick:userID:userIDStr:)]) {
         [_delegate imageViewDidClick:self userID:self.userID userIDStr:self.userIDStr];
     }
+    
 }
 
 

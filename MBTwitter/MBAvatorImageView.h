@@ -12,10 +12,13 @@
 @interface MBAvatorImageView : UIImageView
 
 @property (nonatomic, weak) id <MBAvatorImageViewDelegate> delegate;
+
 @property (nonatomic, readonly) NSNumber *userID;
 @property (nonatomic, readonly) NSString *userIDStr;
+@property (nonatomic, readonly, assign) BOOL isSelected;
 - (void)setUserID:(NSNumber *)userID;
 - (void)setUserIDStr:(NSString *)userIDStr;
+- (void)setIsSelected:(BOOL)isSelected withAnimated:(BOOL)animated;
 
 @end
 
