@@ -8,13 +8,15 @@
 
 #import <UIKit/UIKit.h>
 #import "MBPostTweetViewController.h"
+#import "MBImageViewController.h"
 #import "MBAOuth_TwitterAPICenter.h"
 #import "MBWebBrowsViewController.h"
 #import "MBTweetTextView.h"
+#import "MBMediaImageView.h"
 
 @class MBTweet;
 @class MBUser;
-@interface MBDetailTweetViewController : UIViewController <MBPostTweetViewControllerDelegate, MBAOuth_TwitterAPICenterDelegate, MBTweetTextViewDelegate, MBWebBrowsViewControllerDelegate>
+@interface MBDetailTweetViewController : UIViewController <UIViewControllerTransitioningDelegate, MBPostTweetViewControllerDelegate, MBAOuth_TwitterAPICenterDelegate, MBTweetTextViewDelegate, MBWebBrowsViewControllerDelegate, MBMediaImageViewDelegate, MBImageViewControllerDelegate>
 
 @property (nonatomic, readonly) MBTweet *tweet;
 @property (nonatomic, readonly) MBUser *retweeter;

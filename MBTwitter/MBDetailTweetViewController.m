@@ -10,19 +10,28 @@
 #import "MBDetailUserViewController.h"
 
 
+
 #import "MBImageCacher.h"
 #import "MBImageDownloader.h"
 #import "MBImageApplyer.h"
+#import "MBZoomTransitioning.h"
 
 #import "MBTweetTextComposer.h"
 #import "MBTweetManager.h"
 #import "MBTweet.h"
 #import "MBUser.h"
 #import "MBEntity.h"
+#import "MBPlace.h"
 #import "MBMentionUserLink.h"
+#import "MBMediaLink.h"
+#import "MBURLLink.h"
+#import "MBMentionUserLink.h"
+#import "MBHashTagLink.h"
 
 #import "MBMagnifierView.h"
 #import "MBMagnifierRangeView.h"
+#import "MBTimelineImageContainerView.h"
+
 
 #import "MBDetailTweetUserTableViewCell.h"
 #import "MBDetailTweetTextTableViewCell.h"
@@ -36,6 +45,7 @@
 static NSString *countCellIdentifier = @"CountCellIdentifier";
 static NSString *userCellIdentifier = @"UserCellIdentifier";
 static NSString *tweetCellIdentifier = @"TweetCellIdentifier";
+static NSString *tweetWithImageCellIdentifier = @"TweetWithImageCellIdentifier";
 static NSString *actionsCellIdentifier = @"ActionsCellIdentifier";
 
 static NSString *countKey = @"CountKey";
@@ -53,6 +63,7 @@ static NSString *retweetStr = @"ret";
 @property (nonatomic, readonly) NSMutableArray *expandingDataSource;
 @property (nonatomic, readonly) NSMutableArray *replyedTweets;
 @property (nonatomic, assign) BOOL fetchsReplyedTweet;/* unused */
+@property (nonatomic) MBZoomTransitioning *zoomTransitoining;
 
 @property (nonatomic) MBMagnifierView *magnifierView;
 @property (nonatomic) MBMagnifierRangeView *magnifierRangeView;
@@ -124,6 +135,8 @@ static NSString *retweetStr = @"ret";
     [self.tableView registerNib:userCell forCellReuseIdentifier:userCellIdentifier];
     UINib *tweetCell = [UINib nibWithNibName:@"MBDetailTweetTextTableViewCell" bundle:nil];
     [self.tableView registerNib:tweetCell forCellReuseIdentifier:tweetCellIdentifier];
+    UINib *tweetWithImageCell = [UINib nibWithNibName:@"MBDetailTweetTextTableViewCell" bundle:nil];
+    [self.tableView registerNib:tweetWithImageCell forCellReuseIdentifier:tweetWithImageCellIdentifier];
     UINib *actionsCell = [UINib nibWithNibName:@"MBDetailTweetActionsTableViewCell" bundle:nil];
     [self.tableView registerNib:actionsCell forCellReuseIdentifier:actionsCellIdentifier];
     
@@ -270,6 +283,10 @@ static NSString *retweetStr = @"ret";
         } else {
             bottomHeifht = dateRetweetViewHeight + innnerVerticalMargin + verticalMargin;
         }
+        
+        if (self.tweet.entity.media.count > 0) {
+            bottomHeifht += 160;
+        }
 
         height = textRect.size.height + verticalMargin + bottomHeifht;
     } else {
@@ -305,7 +322,14 @@ static NSString *retweetStr = @"ret";
         [self updateUserCell:userCell];
         cell = userCell;
     } else if (1 == indexPath.row) {
-        MBDetailTweetTextTableViewCell *textCell = [self.tableView dequeueReusableCellWithIdentifier:tweetCellIdentifier];
+        
+        MBDetailTweetTextTableViewCell *textCell;
+        if (self.tweet.entity.media.count > 0) {
+            textCell = [self.tableView dequeueReusableCellWithIdentifier:tweetWithImageCellIdentifier];
+        } else {
+            textCell = [self.tableView dequeueReusableCellWithIdentifier:tweetCellIdentifier];
+            [textCell removeImageContainerView];
+        }
         [self updateTweetViewCell:textCell];
         cell = textCell;
     } else if (lastIndexPath.row == indexPath.row) {
@@ -406,15 +430,66 @@ static NSString *retweetStr = @"ret";
     NSString *dateString = [NSString stringWithFormat:@"%d/%02d/%02d %02d:%02d", components.year, components.month, components.day, components.hour, components.minute];
     
     cell.dateView.attributedString = [MBTweetTextComposer attributedStringForDetailTweetDate:dateString font:[UIFont systemFontOfSize:14.0f] screeName:self.tweet.tweetUser.screenName tweetID:[self.tweet.tweetID unsignedLongLongValue]];
+    cell.dateView.delegate = self;
     
+    if (self.tweet.place) {
+        NSString *placeName = [NSString stringWithFormat:@"From %@", self.tweet.place.countryFullName];
+        cell.geoLabel.text = placeName;
+    } else {
+        [cell.geoLabel removeFromSuperview];
+    }
     
     // retweet
     if (!self.retweeter) {
         [cell removeRetweetView];
     } else {
-        NSString *retweetText = NSLocalizedString(@"Retweeted by ", nil);
-        NSString *textWithUser = [NSString stringWithFormat:@"%@%@", retweetText, self.retweeter.characterName];
-        cell.retweetView.attributedString = [MBTweetTextComposer attributedStringForTimelineDate:textWithUser font:[UIFont systemFontOfSize:14.0f] screeName:self.retweeter.screenName tweetID:[self.tweet.tweetID unsignedLongLongValue]];
+        cell.retweetView.attributedString  = [MBTweetTextComposer attributedStringForTimelineRetweeter:self.retweeter font:[UIFont systemFontOfSize:14.0f]];
+        cell.retweetView.delegate = self;
+    }
+    
+    // mediaImage
+    NSInteger imageCounts = self.tweet.entity.media.count;
+    if (imageCounts > 0) {
+        cell.imageContainerView.imageCount = imageCounts;
+        
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+            
+            int i = 0;
+            for (MBMediaLink *mediaLink in self.tweet.entity.media) {
+                UIImage *mediaImage = [[MBImageCacher sharedInstance] cachedMediaImageForMediaID:mediaLink.mediaIDStr];
+                MBMediaImageView *mediaImageView = [cell.imageContainerView.imageViews objectAtIndex:i];
+                mediaImageView.delegate = self;
+                mediaImageView.mediaIDStr = mediaLink.mediaIDStr;
+                mediaImageView.mediaHTTPURLString = mediaLink.originalURLHttpsText;
+                
+                if (mediaImage) {
+                    CGSize mediaImageSize = CGSizeMake(mediaImageView.frame.size.width, mediaImageView.frame.size.height);
+                    UIImage *croppedImage = [MBImageApplyer imageForMediaWithImage:mediaImage size:mediaImageSize];
+                    
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        
+                        mediaImageView.image = croppedImage;
+                    });
+                    
+                } else {
+                    
+                    [MBImageDownloader downloadMediaImageWithURL:mediaLink.originalURLHttpsText completionHandler:^(UIImage *image, NSData *imageData) {
+                        if (image) {
+                            [[MBImageCacher sharedInstance] storeMediaImage:image data:imageData forMediaID:mediaLink.mediaIDStr];
+                            CGSize mediaImageSize = CGSizeMake(mediaImageView.frame.size.width, mediaImageView.frame.size.height);
+                            UIImage *croppedImage = [MBImageApplyer imageForMediaWithImage:image size:mediaImageSize];
+                            
+                            dispatch_async(dispatch_get_main_queue(), ^{
+                                [mediaImageView setImage:croppedImage];
+                            });
+                        }
+                        
+                    } failedHandler:^(NSURLResponse *response, NSError *error) {
+                        
+                    }];
+                }
+            }
+        });
     }
 }
 
@@ -504,10 +579,78 @@ static NSString *retweetStr = @"ret";
     }
 }
 
+#pragma mark MBMediaImageView Delegate
+- (void)didTapImageView:(MBMediaImageView *)imageView mediaIDStr:(NSString *)mediaIDStr urlString:(NSString *)urlString touchedPoint:(CGPoint)touchedPoint rect:(CGRect)rect
+{
+    CGPoint center = CGPointMake(rect.origin.x + rect.size.width / 2, rect.origin.y + rect.size.height / 2);
+    CGPoint convertedPointToSelfView = [self.view convertPoint:center fromView:imageView];
+    
+    MBTweet *selectedTweet = self.tweet;
+    
+    MBImageViewController *imageViewController = [[MBImageViewController alloc] init];
+    [imageViewController setTweet:selectedTweet];
+    imageViewController.delegate = self;
+    imageViewController.transitioningDelegate = self;
+    self.zoomTransitoining = [[MBZoomTransitioning alloc] initWithPoint:convertedPointToSelfView];
+    
+    UIImage *mediaImage = [[MBImageCacher sharedInstance] cachedMediaImageForMediaID:mediaIDStr];
+    imageViewController.mediaImage = mediaImage;
+    if (!mediaImage) {
+        [imageViewController setMediaIDStr:mediaIDStr];
+        [imageViewController setImageURLString:urlString];
+    }
+    
+    [self presentViewController:imageViewController animated:YES completion:nil];
+}
+
 #pragma mark TweetTextViewDelegate
 - (void)tweetTextView:(MBTweetTextView *)textView clickOnLink:(MBLinkText *)linktext point:(CGPoint)touchePoint
 {
+    CGPoint convertedPointToSelfView = [self.view convertPoint:touchePoint fromView:textView];
     
+    if ([linktext.obj isKindOfClass:[MBURLLink class]]) {
+        MBURLLink *URLLink = (MBURLLink *)linktext.obj;
+        NSString *expandedURLText = URLLink.expandedURLText;
+        if ([expandedURLText hasPrefix:@"http"]) {
+            NSURL *url = [NSURL URLWithString:expandedURLText];
+            NSURLRequest *request = [NSURLRequest requestWithURL:url];
+            MBWebBrowsViewController *browsViewController = [[MBWebBrowsViewController alloc] init];
+            [browsViewController setUrlRequest:request];
+            browsViewController.delegate = self;
+            UINavigationController *webNavigation = [[UINavigationController alloc] initWithRootViewController:browsViewController];
+            [self.navigationController presentViewController:webNavigation animated:YES completion:nil];
+        }
+    } else if ([linktext.obj isKindOfClass:[MBMentionUserLink class]]) {
+        MBMentionUserLink *mentionLink = (MBMentionUserLink *)linktext.obj;
+        NSString *userIDStr = mentionLink.userIDStr;
+        
+        MBUser *selectedUser = [[MBUserManager sharedInstance] storedUserForKey:userIDStr];
+        MBDetailUserViewController *userViewController = [[MBDetailUserViewController alloc] initWithNibName:@"MBUserDetailView" bundle:nil];
+        [userViewController setUser:selectedUser];
+        if (nil == selectedUser) {
+            NSNumber *userID = mentionLink.userID;
+            [userViewController setUserID:userID];
+        }
+        [self.navigationController pushViewController:userViewController animated:YES];
+    } else if ([linktext.obj isKindOfClass:[MBHashTagLink class]]) {
+        
+    } else if ([linktext.obj isKindOfClass:[MBMediaLink class]]) {
+        
+        MBMediaLink *link = linktext.obj;
+        
+        MBImageViewController *imageViewController = [[MBImageViewController alloc] init];
+        [imageViewController setImageURLString:link.originalURLHttpsText];
+        [imageViewController setMediaIDStr:link.mediaIDStr];
+        [imageViewController setTweet:self.tweet];
+        imageViewController.delegate = self;
+        UIImage *mediaImage = [[MBImageCacher sharedInstance] cachedMediaImageForMediaID:link.mediaIDStr];
+        imageViewController.mediaImage = mediaImage;
+        
+        imageViewController.transitioningDelegate = self;
+        
+        self.zoomTransitoining = [[MBZoomTransitioning alloc] initWithPoint:convertedPointToSelfView];
+        [self presentViewController:imageViewController animated:YES completion:nil];
+    }
 }
 
 - (void)tweetTextViewShowMagnifier:(MBTweetTextView *)textView point:(CGPoint)point
@@ -534,6 +677,24 @@ static NSString *retweetStr = @"ret";
 - (void)tweetTextViewHideMagnifierRange:(MBTweetTextView *)textView
 {
     [self.magnifierRangeView hideView];
+}
+
+#pragma mark ImageViewController Delegate
+- (void)dismissImageViewController:(MBImageViewController *)controller
+{
+    [controller dismissViewControllerAnimated:YES completion:nil];
+}
+
+#pragma mark Transitioning Delegate
+- (id<UIViewControllerAnimatedTransitioning>)animationControllerForPresentedController:(UIViewController *)presented presentingController:(UIViewController *)presenting sourceController:(UIViewController *)source
+{
+    return self.zoomTransitoining;
+}
+
+- (id<UIViewControllerAnimatedTransitioning>)animationControllerForDismissedController:(UIViewController *)dismissed
+{
+    self.zoomTransitoining.isReverse = YES;
+    return self.zoomTransitoining;
 }
 
 @end
