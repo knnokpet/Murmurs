@@ -119,6 +119,7 @@ static NSString *detailUserTableViewCellIdentifier = @"MBDetailUserTableViewCell
     self.profileAvatorView = [[MBProfileAvatorView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, tableHeaderHeight)];
     self.profileAvatorView.characterName = self.user.characterName;
     self.profileAvatorView.screenName = self.user.screenName;
+    self.profileAvatorView.isProtected = self.user.isProtected;
     [self.scrollView addSubview:self.profileAvatorView];
     
     
@@ -512,23 +513,23 @@ static NSString *detailUserTableViewCellIdentifier = @"MBDetailUserTableViewCell
     if (0 == numberOfRow) {
         textLabel = NSLocalizedString(@"Tweet", nil);
         detailInteger = self.user.tweetCount;
-        cellImage = [UIImage imageNamed:@"Tweet-Cell"];
+        cellImage = [UIImage imageNamed:@"Tweet-Cell-blue"];
     } else if (1 == numberOfRow) {
         textLabel = NSLocalizedString(@"Following", nil);
         detailInteger = self.user.followsCount;
-        cellImage = [UIImage imageNamed:@"Man-Cell"];
+        cellImage = [UIImage imageNamed:@"Man-Cell-blue"];
     } else if (2 == numberOfRow) {
         textLabel = NSLocalizedString(@"Follower", nil);
         detailInteger = self.user.followersCount;
-        cellImage = [UIImage imageNamed:@"Man-Cell"];
+        cellImage = [UIImage imageNamed:@"Man-Cell-blue"];
     } else if (3 == numberOfRow) {
         textLabel = NSLocalizedString(@"Favorite", nil);
         detailInteger = self.user.favoritesCount;
-        cellImage = [UIImage imageNamed:@"Favorite-Cell"];
+        cellImage = [UIImage imageNamed:@"Favorite-Cell-blue"];
     } else if (4 == numberOfRow) {
         textLabel = NSLocalizedString(@"List", nil);
         detailInteger = self.user.listedCount;
-        cellImage = [UIImage imageNamed:@"List-Cell"];
+        cellImage = [UIImage imageNamed:@"List-Cell-blue"];
     } else {
         
     }
