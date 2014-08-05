@@ -153,6 +153,8 @@
     } else if ([touchedView isKindOfClass:[MBAvatorImageView class]]) {
         self.longPressRecognizer.enabled = NO;
         return touchedView;
+    } else if ([touchedView isKindOfClass:[MBMediaImageView class]]) {
+        return touchedView;
     }
     
     return touchedView;
