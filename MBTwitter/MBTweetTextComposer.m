@@ -193,7 +193,7 @@
         }
         
         NSString *replaceString = mediaLink.displayText;
-#warning hoge
+
         [attributedString replaceCharactersInRange:NSMakeRange(begin, end - begin) withString:replaceString];
         [attributedString addAttributes:@{NSLinkAttributeName: mediaLink, (id)kCTForegroundColorAttributeName: (id)linkTextColor} range:NSMakeRange(index.begin, replaceString.length)];
     }
@@ -294,7 +294,7 @@
     }
     UIColor *textColor = [UIColor lightGrayColor];
     CTFontRef fontRef = CTFontCreateWithName((__bridge CFStringRef)font.fontName, font.pointSize, NULL);
-    NSString *screenName = retweeter.screenName;
+    NSString *screenName = retweeter.characterName;
     NSString *retweetString = [NSString stringWithFormat:@"Retweeted by %@", screenName];
     MBMentionUserLink *mentionLink = [[MBMentionUserLink alloc] initWithUserID:retweeter.userID IDStr:retweeter.userIDStr screenName:retweeter.screenName];
     
