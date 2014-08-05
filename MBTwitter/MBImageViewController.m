@@ -129,8 +129,8 @@
     // gradient mask
     CAGradientLayer *gradientLayer = [CAGradientLayer layer];
     gradientLayer.frame = self.tweetContainerView.bounds;
-    gradientLayer.colors = [NSArray arrayWithObjects:(id)[UIColor blackColor].CGColor, (id)[UIColor clearColor].CGColor, nil];
-    gradientLayer.startPoint = CGPointMake(0.0f, 0.2f);
+    gradientLayer.colors = [NSArray arrayWithObjects:(id)[UIColor blackColor].CGColor, (id)[UIColor colorWithRed:0 green:0 blue:0 alpha:0.5].CGColor, nil];
+    gradientLayer.startPoint = CGPointMake(0.0f, 0.1f);
     gradientLayer.endPoint = CGPointMake(0.0f, 0.0f);
     self.tweetContainerView.layer.mask = gradientLayer;
     self.tweetContainerView.startPoint = CGPointMake(0, tweetContainerViewRect.size.height - 48);
