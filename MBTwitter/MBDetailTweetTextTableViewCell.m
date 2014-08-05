@@ -8,6 +8,7 @@
 
 #import "MBDetailTweetTextTableViewCell.h"
 #import "MBTweetTextView.h"
+#import "MBTimelineImageContainerView.h"
 
 @implementation MBDetailTweetTextTableViewCell
 
@@ -31,6 +32,14 @@
     if (self.retweetView.superview) {
         [self.retweetView removeFromSuperview];
         self.retweetView = nil;
+    }
+}
+
+- (void)removeImageContainerView
+{
+    if (self.imageContainerView.superview) {
+        [self.imageContainerView removeFromSuperview];
+        self.imageContainerView = nil;
     }
 }
 
