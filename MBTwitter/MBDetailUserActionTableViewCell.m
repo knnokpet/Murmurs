@@ -29,12 +29,12 @@
 - (void)commonView
 {
     _replyButton = [UIButton buttonWithType:UIButtonTypeSystem];
-    [self.replyButton setTitle:NSLocalizedString(@"Reply", nil) forState:UIControlStateNormal];
+    [self.replyButton setTitle:NSLocalizedString(@"Tweet", nil) forState:UIControlStateNormal];
     [self.contentView addSubview:self.replyButton];
     _messageButton = [UIButton buttonWithType:UIButtonTypeSystem];
     [self.messageButton setTitle:NSLocalizedString(@"Message", nil) forState:UIControlStateNormal];
     _otherButton = [UIButton buttonWithType:UIButtonTypeSystem];
-    [self.otherButton setTitle:NSLocalizedString(@"Other", nil) forState:UIControlStateNormal];
+    [self.otherButton setTitle:NSLocalizedString(@"More", nil) forState:UIControlStateNormal];
     [self.contentView addSubview:self.otherButton];
     _followButton = [UIButton buttonWithType:UIButtonTypeSystem];
     [self.followButton setTitle:NSLocalizedString(@"Follow!", nil) forState:UIControlStateNormal];
@@ -80,7 +80,7 @@
     _canFollow = canFollow;
     if (canFollow) {
         self.followButton.enabled = YES;
-        [self.followButton setTitle:NSLocalizedString(@"Follow", nil) forState:UIControlStateNormal];
+        [self.followButton setTitle:NSLocalizedString(@"Follow!", nil) forState:UIControlStateNormal];
         self.followButton.titleLabel.font = [UIFont systemFontOfSize:15.0f];
         [self.followButton sizeToFit];
         
