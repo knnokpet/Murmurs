@@ -314,9 +314,6 @@
     // Photo Media
     if (0 < [media count]) {
         resource = [NSString stringWithFormat:@"statuses/update_with_media"];
-        /*UIImage *mediaImage = [media firstObject];
-        NSData *imageData = UIImagePNGRepresentation(mediaImage);
-        NSData *data64 = [imageData base64EncodedDataWithOptions:0];*/
         NSData *data64 = [media firstObject];
         [parameters setObject:data64 forKey:@"media[]"];
         
