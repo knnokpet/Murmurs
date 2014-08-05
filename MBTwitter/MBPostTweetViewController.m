@@ -34,6 +34,7 @@
 @property (nonatomic, assign) BOOL showsImageView;
 
 @property (nonatomic, readonly) NSString *tweetText;
+@property (nonatomic) UIImage *compressingImage;
 
 @property (nonatomic) MBGradientMaskView *geoPlaceView;
 @property (nonatomic) MBGeoPinView *geoPinView;
@@ -247,12 +248,12 @@
 #pragma mark
 - (void)beEnableButtonForTextViewLength
 {
-    if (0 == self.tweetTextView.text.length || 140 < self.tweetTextView.text.length) {
-        [self.postBarButtonitem setEnabled:NO];
-    }else if (0 < [self.photos count]) {
+    if (0 < self.tweetTextView.text.length || 140 >= self.tweetTextView.text.length) {
+        [self.postBarButtonitem setEnabled:YES];
+    } else if (0 < [self.photos count]) {
         [self.postBarButtonitem setEnabled:YES];
     }else {
-        [self.postBarButtonitem setEnabled:YES];
+        [self.postBarButtonitem setEnabled:NO];
     }
 }
 
@@ -260,7 +261,9 @@
 {
     NSInteger textCount = self.tweetTextView.text.length;
     NSInteger tweetMax = 140;
-    NSInteger margin = tweetMax - textCount;
+    NSInteger mediaTextCount = self.photos.count * 23;
+    
+    NSInteger margin = tweetMax - textCount - mediaTextCount;
     if (0 <= margin) {
         self.countBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:[NSString stringWithFormat:@"%ld", (long)margin] style:UIBarButtonItemStylePlain target:nil action:nil];
         self.countBarButtonItem.enabled = NO;
@@ -306,6 +309,26 @@
     self.horizontalConstraint.constant = 0.0f;
     self.widthConstraint.constant = .0f;
     self.heightConstraint.constant = .0f;
+}
+
+- (NSData *)compressedData64WithLimitLength:(NSUInteger)sizeLimit
+{
+    CGFloat compression = 1.0f;
+    CGFloat maxCompression = 0.1f;
+    NSData *imageData = UIImageJPEGRepresentation(self.compressingImage, compression);
+    NSData *data64 = [imageData base64EncodedDataWithOptions:0];
+    
+    while (data64.length > sizeLimit && compression > maxCompression) {
+        compression -=1;
+        imageData = UIImageJPEGRepresentation(self.compressingImage, compression);
+        data64 = [imageData base64EncodedDataWithOptions:0];
+    }
+    
+    if (data64.length > sizeLimit) {
+        return nil;
+    }
+    
+    return data64;
 }
 
 #pragma mark
@@ -478,7 +501,6 @@
 - (void)didPushPostButton
 {
     if (self.tweetTextView.hasText) {
-        [self.aoAPICenter getHelpConfiguration];
         
         [self.aoAPICenter postTweet:self.tweetTextView.text inReplyTo:self.replys place:self.place media:self.photos];
     }
@@ -660,23 +682,12 @@
     if (nil == selectedImage) {
         return;
     }
-    
+    self.compressingImage = selectedImage;
     self.showsImageView = YES;
     [self applyConstraint];
     self.postBarButtonitem.enabled = NO;
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
-        NSData *imageData = UIImagePNGRepresentation(selectedImage);
-        NSData *data64 = [imageData base64EncodedDataWithOptions:0];
-        [self.photos addObject:data64];
-        UIImage *resizedImage = [MBImageApplyer imageForTwitter:selectedImage size:CGSizeMake(self.mediaImageView.frame.size.width, self.mediaImageView.frame.size.height) radius:0.0f];
-        dispatch_async(dispatch_get_main_queue(), ^{
-            self.mediaImageView.image = resizedImage;
-            [self beEnableButtonForTextViewLength];
-            [self setCountOfBarButtonItem];
-        });
-    });
     
-    
+    [self.aoAPICenter getHelpConfiguration];
 }
 
 /*
@@ -723,10 +734,40 @@
             [_delegate sendTweetPostTweetViewController:self];
         }
         
+        
         if ([_delegate respondsToSelector:@selector(dismissPostTweetViewController:animated:)]) {
             [_delegate dismissPostTweetViewController:self animated:YES];
         }
     }
+}
+
+- (void)twitterAPICenter:(MBAOuth_TwitterAPICenter *)center maxMedias:(NSNumber *)medias photoSizeLimit:(NSNumber *)photoSizeLimit shortURLLength:(NSNumber *)number
+{
+    if (!medias || !photoSizeLimit || !self.compressingImage) {
+        self.compressingImage = nil;
+        self.showsImageView = NO;
+        [self removeImageViewConstraint];
+        self.postBarButtonitem.enabled = YES;
+        return;
+    }
+    
+    __weak MBPostTweetViewController *weakSelf = self;
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
+        
+        NSData *imageData64 = [self compressedData64WithLimitLength:[photoSizeLimit unsignedIntegerValue]];
+        if (!imageData64) {
+            return ;
+        }
+
+        [weakSelf.photos addObject:imageData64];
+        UIImage *resizedImage = [MBImageApplyer imageForTwitter:self.compressingImage size:CGSizeMake(weakSelf.mediaImageView.frame.size.width, weakSelf.mediaImageView.frame.size.height) radius:0.0f];
+        self.compressingImage = nil;
+        dispatch_async(dispatch_get_main_queue(), ^{
+            weakSelf.mediaImageView.image = resizedImage;
+            [weakSelf beEnableButtonForTextViewLength];
+            [weakSelf setCountOfBarButtonItem];
+        });
+    });
 }
 
 #pragma mark CLLocationManager Delegate
