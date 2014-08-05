@@ -9,5 +9,14 @@
 #import <UIKit/UIKit.h>
 
 @interface MBListsTableViewCell : UITableViewCell
+@property (weak, nonatomic) IBOutlet UIImageView *avatorImageView;
+@property (weak, nonatomic) IBOutlet UILabel *listNameLabel;
+@property (weak, nonatomic) IBOutlet UILabel *screenNameLabel;
+@property (weak, nonatomic) IBOutlet UITextView *descriptionTextView;
+@property (weak, nonatomic) IBOutlet UIView *protectedImageView;
+
+
+@property (nonatomic, assign) BOOL isPublic;
+- (void)setIsPublic:(BOOL)isPublic;
 
 @end
