@@ -9,6 +9,10 @@
 #import "MBListViewController.h"
 #import "MBListTimelineManagementViewController.h"
 
+#import "MBListsTableViewCell.h"
+
+static NSString *listsCellIdentifier = @"ListsCellIdentifier";
+
 @interface MBListViewController ()
 
 
@@ -55,6 +59,9 @@
     
     self.tableView.dataSource = self;
     self.tableView.delegate = self;
+    
+    UINib *listsNib = [UINib nibWithNibName:@"MBListsTableViewCell" bundle:nil];
+    [self.tableView registerNib:listsNib forCellReuseIdentifier:listsCellIdentifier];
     
     /* remove nonContent's separator */
     UIView *view = [[UIView alloc] init];
@@ -184,7 +191,7 @@
         if (0 == section) {
             headername = NSLocalizedString(@"Your List" , nil);
         } else {
-            headername = NSLocalizedString(@"Your Subscriving List", nil);
+            headername = NSLocalizedString(@"Subscriving List", nil);
         }
         
     } else {
@@ -204,25 +211,76 @@
     return headername;
 }
 
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    CGFloat verticalMargin = 8.0f;
+    CGFloat verticalTextViewMargin = 50.0f;
+    CGFloat horizontalLeftMargin = 68.0f;
+    CGFloat horizontalRightMargin = 16.0f;
+    CGFloat defaultHeight = 36.0f + verticalMargin * 2;
+    
+    NSArray *listsAtSection = [self.listManager.lists objectAtIndex:indexPath.section];
+    MBList *listAtIndex = [listsAtSection objectAtIndex:indexPath.row];
+    UITextView *sizingTextView = [[UITextView alloc] init];
+    sizingTextView.text = listAtIndex.description;
+    CGSize fitSizt = [sizingTextView sizeThatFits:CGSizeMake(tableView.frame.size.width - (horizontalLeftMargin + horizontalRightMargin), CGFLOAT_MAX)];
+    CGFloat heightWithTextView = fitSizt.height + verticalTextViewMargin + verticalMargin;
+    if (listAtIndex.description.length == 0) {
+        heightWithTextView = 0.0f;
+    }
+        
+    return MAX(defaultHeight, heightWithTextView);
+}
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    static NSString *CellIdentifier = @"CellIdentifier";
-    
-    UITableViewCell *cell = [self.tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    if (!cell) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
-    }
+    MBListsTableViewCell *cell = [self.tableView dequeueReusableCellWithIdentifier:listsCellIdentifier];
     
     [self updateCell:cell atIndexPath:indexPath];
     
     return cell;
 }
 
-- (void)updateCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
+- (void)updateCell:(MBListsTableViewCell
+                    *)cell atIndexPath:(NSIndexPath *)indexPath
 {
     NSArray *listsAtSection = [self.listManager.lists objectAtIndex:indexPath.section];
     MBList *listAtIndex = [listsAtSection objectAtIndex:indexPath.row];
-    cell.textLabel.text = listAtIndex.name;
+    MBUser *userAtList = listAtIndex.user;
+    
+    cell.listNameLabel.text = listAtIndex.name;
+    cell.screenNameLabel.text = userAtList.screenName;
+    cell.descriptionTextView.text = listAtIndex.description;
+    cell.isPublic = listAtIndex.isPublic;
+    
+    UIImage *avatorImage = [[MBImageCacher sharedInstance] cachedProfileImageForUserID:userAtList.userIDStr];
+    if (!avatorImage) {
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+            [MBImageDownloader downloadOriginImageWithURL:userAtList.urlHTTPSAtProfileImage completionHandler:^(UIImage *image, NSData *imageData){
+                if (image) {
+                    [[MBImageCacher sharedInstance] storeProfileImage:image data:imageData forUserID:userAtList.userIDStr];
+                    CGSize imageSize = CGSizeMake(cell.avatorImageView.frame.size.width, cell.avatorImageView.frame.size.height);
+                    UIImage *radiusImage = [MBImageApplyer imageForTwitter:image size:imageSize radius:cell.avatorImageView.layer.cornerRadius];
+                    [[MBImageCacher sharedInstance] storeTimelineImage:radiusImage forUserID:userAtList.userIDStr];
+                    
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        cell.avatorImageView.image = radiusImage;
+                    });
+                }
+                
+            }failedHandler:^(NSURLResponse *response, NSError *error){
+                
+            }];
+        });
+    } else {
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+            CGSize imageSize = CGSizeMake(cell.avatorImageView.frame.size.width, cell.avatorImageView.frame.size.height);
+            UIImage *radiusImage = [MBImageApplyer imageForTwitter:avatorImage size:imageSize radius:cell.avatorImageView.layer.cornerRadius];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                cell.avatorImageView.image = radiusImage;
+            });
+        });
+    }
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
