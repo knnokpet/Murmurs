@@ -42,16 +42,16 @@
 #define FONT_SIZE 15.0f
 
 @class MBTimeLineManager;
-@interface MBTimelineViewController : UIViewController <UIScrollViewDelegate, UITableViewDataSource, UITableViewDelegate, UIViewControllerTransitioningDelegate, MBTwitterAccesserDelegate,MBAOuth_TwitterAPICenterDelegate, MBPostTweetViewControllerDelegate, MBWebBrowsViewControllerDelegate, MBAvatorImageViewDelegate, MBTweetTextViewDelegate, MBtweetViewCellLongPressDelegate, MBImageViewControllerDelegate, MBTimelineActionViewDelegate>
+@interface MBTimelineViewController : UIViewController <UIScrollViewDelegate, UITableViewDataSource, UITableViewDelegate, UIViewControllerTransitioningDelegate, MBTwitterAccesserDelegate,MBAOuth_TwitterAPICenterDelegate, MBPostTweetViewControllerDelegate, MBWebBrowsViewControllerDelegate, MBAvatorImageViewDelegate, MBMediaImageViewDelegate, MBTweetTextViewDelegate, MBtweetViewCellLongPressDelegate, MBImageViewControllerDelegate, MBTimelineActionViewDelegate>
 
 @property (nonatomic) MBAOuth_TwitterAPICenter *aoAPICenter;
 @property (nonatomic) MBTimeLineManager *timelineManager;
 
 @property (nonatomic) NSArray *dataSource;
+@property (nonatomic, assign) BOOL enableBacking;
 
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 @property (nonatomic, readonly) MBLoadingView *loadingView;
-
 @property (nonatomic) UIRefreshControl *refreshControl;
 
 - (void)configureTimelineManager;

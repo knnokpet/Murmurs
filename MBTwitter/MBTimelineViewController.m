@@ -26,7 +26,6 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
 @property (nonatomic) MBZoomTransitioning *zoomTransitioning;
 
 @property (nonatomic) NSInteger saveIndex;
-@property (nonatomic, assign) BOOL enableBacking;
 @property (nonatomic, assign) BOOL backsTimeline;
 
 @end
@@ -177,6 +176,16 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
     NSIndexPath *selectedPath = [self.tableView indexPathForSelectedRow];
     if (selectedPath) {
         [self.tableView deselectRowAtIndexPath:selectedPath animated:animated];
+    } else {
+        for (MBTweetViewCell *cell in [self.tableView visibleCells]) {
+            if ([cell isKindOfClass:[MBGapedTweetViewCell class]]) {
+                continue;
+            }
+            
+            if (cell.avatorImageView.isSelected) {
+                [cell.avatorImageView setIsSelected:NO  withAnimated:YES];
+            }
+        }
     }
 }
 
@@ -375,7 +384,7 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
     }
 #warning 高さの算出は適当
     if (containsImage) {
-        bottomHeight += 64;
+        bottomHeight += 128;
     }
     
     CGFloat customCellHeight = textRect.size.height + tweetViewSpace + bottomHeight;
@@ -454,14 +463,7 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
         if (identifier == retweetCellIdentifier || identifier == favoriteRetweetCellIdentifier) {
             [cell removeImageContainerView];
         }
-        
-        /*
-        if (retweetedTweet.isFavorited || retweetedTweet.place) {
-            cell = [self.tableView dequeueReusableCellWithIdentifier:favoriteRetweetCellIdentifier];
-        } else {
-            cell = [self.tableView dequeueReusableCellWithIdentifier:retweetCellIdentifier];
-            [cell removeFavoriteView];
-        }*/
+
         /* retweetView が必ずある状態で、という考えでここに */
         /* retweetTweet の代入もあるのでここに */
         cell.retweetView.attributedString = [MBTweetTextComposer attributedStringForTimelineRetweeter:tweetAtIndex.tweetUser font:[UIFont systemFontOfSize:15.0f]];
@@ -470,7 +472,7 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
         tweetAtIndex = retweetedTweet;
         
     } else {
-        NSInteger imageCount = [tweetAtIndex.entity.media count];
+        NSInteger imageCount = tweetAtIndex.entity.media.count;
         NSString *identifier;
         if (tweetAtIndex.isFavorited || tweetAtIndex.place) {
             identifier = favoriteCellIdentifier;
@@ -488,19 +490,9 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
         if (identifier == tweetCellIdentifier || identifier == tweetWithImageCellIdentifier) {
             [cell removeFavoriteView];
         }
-        if (identifier == tweetCellIdentifier || favoriteCellIdentifier) {
+        if (identifier == tweetCellIdentifier || identifier == favoriteCellIdentifier) {
             [cell removeImageContainerView];
         }
-        
-        
-        /*
-        if (tweetAtIndex.isFavorited || tweetAtIndex.place) {
-            cell = [self.tableView dequeueReusableCellWithIdentifier:favoriteCellIdentifier];
-        } else {
-            cell = [self.tableView dequeueReusableCellWithIdentifier:tweetCellIdentifier];
-            [cell removeFavoriteView];
-        }
-        [cell removeRetweetView];*/
     }
     
     [self updateCell:cell tweet:tweetAtIndex AtIndexPath:indexPath];
@@ -513,7 +505,7 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
     cell.delegate = self;
     
     MBTweet *tweetAtIndexPath = tweet;
-    if (tweetAtIndexPath == nil) { /* nil チェックは必要ないかも */
+    if (tweetAtIndexPath == nil) { /* nil チェック. 必要ないかも */
         NSString *key = [self.dataSource objectAtIndex:indexPath.row];
         tweetAtIndexPath = [[MBTweetManager sharedInstance] storedTweetForKey:key];
         if (tweetAtIndexPath.tweetOfOriginInRetweet) {
@@ -528,7 +520,7 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
     
     MBUser *userAtIndexPath = tweetAtIndexPath.tweetUser;
     
-    NSLog(@"pic.twit = %d", tweetAtIndexPath.entity.media.count);
+    
     // favorite & geo
     cell.favorited = tweetAtIndexPath.isFavorited;
     cell.geod = (tweetAtIndexPath.place != nil) ? YES : NO;
@@ -555,6 +547,7 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
     cell.avatorImageView.delegate = self;
     UIImage *avatorImage = [[MBImageCacher sharedInstance] cachedTimelineImageForUser:userAtIndexPath.userIDStr];
     if (!avatorImage) {
+        /* 大量に呼び出されるとリサイズ処理が走って重くなるんじゃない？ */
         cell.avatorImageView.image = [UIImage imageNamed:@"DefaultImage"];
         if (NO == tweetAtIndexPath.tweetUser.isDefaultProfileImage) {
             
@@ -589,9 +582,47 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
     NSInteger imageCounts = tweetAtIndexPath.entity.media.count;
     if (imageCounts > 0) {
         cell.imageContainerView.imageCount = imageCounts;
+        
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+
+            int i = 0;
+            for (MBMediaLink *mediaLink in tweetAtIndexPath.entity.media) {
+                UIImage *mediaImage = [[MBImageCacher sharedInstance] cachedMediaImageForMediaID:mediaLink.mediaIDStr];
+                MBMediaImageView *mediaImageView = [cell.imageContainerView.imageViews objectAtIndex:i];
+                mediaImageView.delegate = self;
+                mediaImageView.mediaIDStr = mediaLink.mediaIDStr;
+                mediaImageView.mediaHTTPURLString = mediaLink.originalURLHttpsText;
+                
+                if (mediaImage) {
+                    
+                    CGSize mediaImageSize = CGSizeMake(mediaImageView.frame.size.width, mediaImageView.frame.size.height);
+                    UIImage *croppedImage = [MBImageApplyer imageForMediaWithImage:mediaImage size:mediaImageSize];
+
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        mediaImageView.image = croppedImage;
+                    });
+                    
+                } else {
+                    
+                    [MBImageDownloader downloadMediaImageWithURL:mediaLink.originalURLHttpsText completionHandler:^(UIImage *image, NSData *imageData) {
+                        if (image) {
+                            [[MBImageCacher sharedInstance] storeMediaImage:image data:imageData forMediaID:mediaLink.mediaIDStr];
+                            
+                            CGSize mediaImageSize = CGSizeMake(mediaImageView.frame.size.width, mediaImageView.frame.size.height);
+                            UIImage *croppedImage = [MBImageApplyer imageForMediaWithImage:image size:mediaImageSize];
+                            
+                            dispatch_async(dispatch_get_main_queue(), ^{
+                                [mediaImageView setImage:croppedImage];
+                            });
+                        }
+                        
+                    } failedHandler:^(NSURLResponse *response, NSError *error) {
+                        
+                    }];
+                }
+            }
+        });
     }
-    
-    
 }
 
 - (void)updateTableViewDataSource:(NSArray *)addingData
@@ -602,22 +633,36 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
             NSNumber *requiredGap = [update objectForKey:@"gaps"];
             NSNumber *requiredUpdateHeight = [update objectForKey:@"update"];
             
+            /*場所を下に。売らすレッドでビューが更新されているのはここなのでは
             NSArray *visibleCells = [self.tableView visibleCells];
             NSIndexPath *topVisibleIndexPath = [self.tableView indexPathForCell:[visibleCells firstObject]];
             
             CGFloat rowsHeight = 0;
             CGFloat currentDataSourceCount = [self.dataSource count];
             
-            // tableView が一番上に有る時だけ高さを足すようにしてみる。
+            // tableView が一番上に有る時だけ高さを足すようにしてみる。 やめてみる
             if (0 != currentDataSourceCount && 0 == topVisibleIndexPath.row) {
                 if (YES == [requiredUpdateHeight boolValue]) {
                     rowsHeight = [self rowHeightForAddingData:addingData isGap:[requiredGap boolValue]];
                 }
-            }
+            }*/
             NSArray *addedArray = self.timelineManager.tweets;
             
             dispatch_async(dispatch_get_main_queue(), ^{
                 self.dataSource = addedArray;
+                
+                NSArray *visibleCells = [self.tableView visibleCells];
+                NSIndexPath *topVisibleIndexPath = [self.tableView indexPathForCell:[visibleCells firstObject]];
+                
+                CGFloat rowsHeight = 0;
+                CGFloat currentDataSourceCount = [self.dataSource count];
+                
+                // tableView が一番上に有る時だけ高さを足すようにしてみる。 やめてみる
+                if (0 != currentDataSourceCount && 0 == topVisibleIndexPath.row) {
+                    if (YES == [requiredUpdateHeight boolValue]) {
+                        rowsHeight = [self rowHeightForAddingData:addingData isGap:[requiredGap boolValue]];
+                    }
+                }
                 
                 CGPoint currentOffset = self.tableView.contentOffset;
                 [self.tableView reloadData];
@@ -750,6 +795,9 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
 #pragma mark MBAvatorImageView Delegate
 - (void)imageViewDidClick:(MBAvatorImageView *)imageView userID:(NSNumber *)userID userIDStr:(NSString *)userIDStr
 {
+    //imageView.selected = YES;
+    [imageView setIsSelected:YES withAnimated:NO];
+    
     MBUser *selectedUser = [[MBUserManager sharedInstance] storedUserForKey:userIDStr];
     MBDetailUserViewController *userViewController = [[MBDetailUserViewController alloc] initWithNibName:@"MBUserDetailView" bundle:nil];
     [userViewController setUser:selectedUser];
@@ -759,6 +807,37 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
         [userViewController setUserID:nil];
     }
     [self.navigationController pushViewController:userViewController animated:YES];
+}
+
+#pragma mark MBMediaImageView Delegate
+- (void)didTapImageView:(MBMediaImageView *)imageView mediaIDStr:(NSString *)mediaIDStr urlString:(NSString *)urlString touchedPoint:(CGPoint)touchedPoint rect:(CGRect)rect
+{
+    CGPoint convertedPointToTableView = [self.tableView convertPoint:touchedPoint fromView:imageView];
+    CGPoint center = CGPointMake(rect.origin.x + rect.size.width / 2, rect.origin.y + rect.size.height / 2);
+    CGPoint convertedPointToSelfView = [self.view convertPoint:center fromView:imageView];
+    
+    NSIndexPath *selectedIndexpath = [self.tableView indexPathForRowAtPoint:convertedPointToTableView];
+    NSString *selectedID = self.dataSource[selectedIndexpath.row];
+    MBTweet *selectedTweet = [[MBTweetManager sharedInstance] storedTweetForKey:selectedID];
+    if (nil != selectedTweet.tweetOfOriginInRetweet) {
+        MBTweet *retweetedTweet = selectedTweet.tweetOfOriginInRetweet;
+        selectedTweet = retweetedTweet;
+    }
+    
+    MBImageViewController *imageViewController = [[MBImageViewController alloc] init];
+    [imageViewController setTweet:selectedTweet];
+    imageViewController.delegate = self;
+    imageViewController.transitioningDelegate = self;
+    self.zoomTransitioning = [[MBZoomTransitioning alloc] initWithPoint:convertedPointToSelfView];
+    
+    UIImage *mediaImage = [[MBImageCacher sharedInstance] cachedMediaImageForMediaID:mediaIDStr];
+    imageViewController.mediaImage = mediaImage;
+    if (!mediaImage) {
+        [imageViewController setMediaIDStr:mediaIDStr];
+        [imageViewController setImageURLString:urlString];
+    }
+    
+    [self presentViewController:imageViewController animated:YES completion:nil];
 }
 
 #pragma mark TweetTextViewCell Delegate
@@ -784,9 +863,18 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
     touchPoint = [self.view convertPoint:touchPoint toView:self.tableView];
     MBTimelineActionView *actionView = [[MBTimelineActionView alloc] initWithRect:cellFrame atPoint:touchPoint];
     actionView.delegate = self;
-    [actionView setSelectedIndexPath:[self.tableView indexPathForCell:cell]];
     
-    [actionView showViews:YES animated:YES inView:self.tabBarController.view];
+    NSIndexPath *selectedIndexPath = [self.tableView indexPathForCell:cell];
+    [actionView setSelectedIndexPath: selectedIndexPath];
+    NSString *tweetKey = [self.dataSource objectAtIndex:selectedIndexPath.row];
+    MBTweet *selectedTweet = [[MBTweetManager sharedInstance] storedTweetForKey:tweetKey];
+    if (nil != selectedTweet.tweetOfOriginInRetweet) {
+        MBTweet *retweetedTweet = selectedTweet.tweetOfOriginInRetweet;
+        selectedTweet = retweetedTweet;
+    }
+    [actionView setSelectedTweet:selectedTweet];
+    
+    [actionView showViews:YES animated:YES inView:self.navigationController.view];
     
 }
 
@@ -896,10 +984,10 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
         [imageViewController setMediaIDStr:link.mediaIDStr];
         [imageViewController setTweet:selectedTweet];
         imageViewController.delegate = self;
-        imageViewController.transitioningDelegate = self;
-        //UINavigationController *imageNavigationController = [[UINavigationController alloc] initWithRootViewController:imageViewController];
-        //imageNavigationController.transitioningDelegate = self;
+        UIImage *mediaImage = [[MBImageCacher sharedInstance] cachedMediaImageForMediaID:link.mediaIDStr];
+        imageViewController.mediaImage = mediaImage;
         
+        imageViewController.transitioningDelegate = self;
         
         self.zoomTransitioning = [[MBZoomTransitioning alloc] initWithPoint:convertedPointToSelfView];
         [self presentViewController:imageViewController animated:YES completion:nil];
