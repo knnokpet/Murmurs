@@ -30,14 +30,18 @@
         self.titleLabel.textAlignment = NSTextAlignmentCenter;
         self.titleLabel.font = [UIFont systemFontOfSize:14.0f];
         
+        // normal state
         [self setTitle:self.title forState:UIControlStateNormal];
-        //[self setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
         [self setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         [self setImage:self.image forState:UIControlStateNormal];
         
+        // highlighte state
         [self setTitle:self.title forState:UIControlStateHighlighted];
-        [self setTitleColor:[UIColor whiteColor] forState:UIControlStateHighlighted];
+        [self setTitleColor:[UIColor lightGrayColor] forState:UIControlStateHighlighted];
         [self setImage:self.image forState:UIControlStateHighlighted];
+        
+        // disabled state
+        [self setTitleColor:[UIColor blackColor] forState:UIControlStateDisabled];
         
     }
     return self;
@@ -50,7 +54,7 @@
     if (highlighted) {
         self.backgroundColor = [UIColor clearColor];
     } else {
-        
+        self.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.8];
     }
 }
 
@@ -58,13 +62,15 @@
 {
     [super layoutSubviews];
     
+    CGFloat verticalMargin = 2.0f;
+    
     CGRect titleFrame = self.titleLabel.frame;
-    titleFrame = CGRectMake(0, self.bounds.size.height - titleFrame.size.height, self.bounds.size.width, titleFrame.size.height);
+    titleFrame = CGRectMake(0, self.bounds.size.height - titleFrame.size.height - verticalMargin, self.bounds.size.width, titleFrame.size.height);
     self.titleLabel.frame = titleFrame;
     
     CGRect imageFrame = self.imageView.frame;
     CGFloat screenScale = [UIScreen mainScreen].scale;
-    CGSize imageSize = CGSizeMake(self.image.size.width / screenScale, self.image.size.height / screenScale);
+    CGSize imageSize = CGSizeMake(self.image.size.width / screenScale, self.image.size.height / screenScale - verticalMargin);
     imageFrame = CGRectMake(truncf((self.bounds.size.width - imageSize.width) / 2), self.titleLabel.frame.origin.y - imageSize.height, imageSize.width, imageSize.height);
     self.imageView.frame = imageFrame;
     
@@ -89,7 +95,7 @@
     [bezierPath stroke];
     [bezierPath fill];
 }*/
-/* ボタン内で弄るとボタン特有の動きがなくなる
+/* ボタン内で弄るとボタン特有の動きがなくなる*
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
     UITouch *touch = [touches anyObject];
@@ -104,7 +110,7 @@
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
 {
-    self.backgroundColor = [UIColor greenColor];
+    self.highlighted = YES;
 }*/
 
 @end

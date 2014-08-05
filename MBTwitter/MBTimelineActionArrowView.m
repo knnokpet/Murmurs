@@ -16,7 +16,6 @@
     if (self) {
         // Initialization code
         self.backgroundColor = [UIColor clearColor];
-        [self maskTransparent];
     }
     return self;
 }
@@ -54,6 +53,7 @@
     // Drawing code
     
     [self drawBlackArrow];
+    [self maskTransparent];
 }
 
 - (void)drawBlurArrow
@@ -110,9 +110,19 @@
 {
     CAGradientLayer *gradientLayer = [CAGradientLayer layer];
     gradientLayer.frame = self.bounds;
-    gradientLayer.colors = [NSArray arrayWithObjects:(id)[UIColor blackColor].CGColor, (id)[UIColor clearColor].CGColor, nil];
-    gradientLayer.startPoint = CGPointMake(0, 0.5f);
+    gradientLayer.colors = [NSArray arrayWithObjects:(id)[UIColor colorWithRed:0 green:0 blue:0 alpha:0.9f].CGColor, (id)[UIColor colorWithRed:0 green:0 blue:0 alpha:0.7].CGColor, nil];
+    
+    CGPoint startPoint = CGPointMake(0, 0.0f);
+    CGPoint endPoint = CGPointMake(0, 1.0f);
+    gradientLayer.startPoint = CGPointMake(0, 0.0f);
     gradientLayer.endPoint = CGPointMake(0, 1.0f);
+    if (self.isUpper) {
+        gradientLayer.startPoint = endPoint;
+        gradientLayer.endPoint = startPoint;
+    }
+    
+    
+    
     self.layer.mask = gradientLayer;
 }
 
