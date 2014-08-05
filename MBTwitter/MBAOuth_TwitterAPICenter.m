@@ -85,9 +85,13 @@
     id __weak weakSelf = self;
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         [NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
+            if (error) {
+                NSLog(@"code %d error = %@", error.code, error.localizedDescription);
+            }
             if (nil == data) {
                 return ;
             }
+            
             
             [weakSelf parseJSONData:data responseType:responseType requestType:requestType];
         }];
@@ -234,7 +238,17 @@
         }];
         
     } else if (responseType == MBTwitterHelpResponse) {
-        jsonParser = [[MBHelp_JSONParser alloc] initWithJSONData:jsonData completionHandler:nil];
+        jsonParser = [[MBHelp_JSONParser alloc] initWithJSONData:jsonData completionHandler:^(NSArray *parsedObj) {
+            
+            NSNumber *medias = [parsedObj firstObject];
+            NSNumber *shortURLLength = [parsedObj objectAtIndex:1];
+            NSNumber *photoLimit = [parsedObj lastObject];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if ([_delegate respondsToSelector:@selector(twitterAPICenter:maxMedias:photoSizeLimit:shortURLLength:)]) {
+                    [_delegate twitterAPICenter:weakSelf maxMedias:medias photoSizeLimit:photoLimit shortURLLength:shortURLLength];
+                }
+            });
+        }];
         
     }
     

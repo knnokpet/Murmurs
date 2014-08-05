@@ -30,6 +30,7 @@
 - (void)twitterAPICenter:(MBAOuth_TwitterAPICenter *)center parsedDirectMessages:(NSArray *)messages;
 - (void)twitterAPICenter:(MBAOuth_TwitterAPICenter *)center parsedPlaces:(NSArray *)places;
 
+- (void)twitterAPICenter:(MBAOuth_TwitterAPICenter *)center maxMedias:(NSNumber *)medias photoSizeLimit:(NSNumber *)photoSizeLimit shortURLLength:(NSNumber *)number;
 - (void)twitterAPICenter:(MBAOuth_TwitterAPICenter *)center error:(NSError *)error;
 
 @end
