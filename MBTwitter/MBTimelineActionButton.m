@@ -24,7 +24,7 @@
     self = [super init];
     if (self) {
         _title = title;
-        _image = [image imageWithMaskColor:[UIColor whiteColor]];
+        _image = image;
         self.frame = CGRectMake(0, 0, 80, 40);
         self.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.8];
         self.titleLabel.textAlignment = NSTextAlignmentCenter;
@@ -62,19 +62,19 @@
 {
     [super layoutSubviews];
     
-    CGFloat verticalMargin = 2.0f;
+    CGFloat verticalMargin = 4.0f;
     
-    CGRect titleFrame = self.titleLabel.frame;
-    titleFrame = CGRectMake(0, self.bounds.size.height - titleFrame.size.height - verticalMargin, self.bounds.size.width, titleFrame.size.height);
-    self.titleLabel.frame = titleFrame;
+    CGRect bounds = self.bounds;
+    CGPoint center = CGPointMake(bounds.size.width / 2, bounds.size.height / 2);
     
     CGRect imageFrame = self.imageView.frame;
-    CGFloat screenScale = [UIScreen mainScreen].scale;
-    CGSize imageSize = CGSizeMake(self.image.size.width / screenScale, self.image.size.height / screenScale - verticalMargin);
-    imageFrame = CGRectMake(truncf((self.bounds.size.width - imageSize.width) / 2), self.titleLabel.frame.origin.y - imageSize.height, imageSize.width, imageSize.height);
+    imageFrame.origin = CGPointMake(center.x - imageFrame.size.width / 2, center.y - imageFrame.size.height);
     self.imageView.frame = imageFrame;
     
-    
+    CGRect titleFrame = self.titleLabel.frame;
+    titleFrame.origin = CGPointMake(center.x - titleFrame.size.width / 2, center.y);
+    self.titleLabel.frame = titleFrame;
+
 }
 
 /*

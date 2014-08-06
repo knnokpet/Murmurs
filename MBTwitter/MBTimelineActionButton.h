@@ -7,7 +7,6 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "UIImage+MaskColor.h"
 
 @interface MBTimelineActionButton : UIButton
 
