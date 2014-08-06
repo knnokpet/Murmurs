@@ -58,7 +58,7 @@
     
     CGRect bouds = self.bounds;
     CGFloat spaceWidth = 8.0f;
-    CGFloat radius = 16.0f;
+    CGFloat radius = 12.0f;
     
     
     
