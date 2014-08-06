@@ -138,32 +138,38 @@
 - (void)createButtons
 {
     // reply
-    MBTimelineActionButton *hoge1Button = [[MBTimelineActionButton alloc] initWithTitle:@"Reply" image:[UIImage imageNamed:@"reply-Action-Boarder@2x"]];
-    [hoge1Button addTarget:self action:@selector(didPushReplyButton) forControlEvents:UIControlEventTouchUpInside];
+    MBTimelineActionButton *replyButton = [[MBTimelineActionButton alloc] initWithTitle:@"Reply" image:[UIImage imageNamed:@"reply-BoarderWhite"]];
+    [replyButton addTarget:self action:@selector(didPushReplyButton) forControlEvents:UIControlEventTouchUpInside];
+    
+    
+    // favorite
+    MBTimelineActionButton *favoriteButton = [[MBTimelineActionButton alloc] initWithTitle:@"Favorite" image:[UIImage imageNamed:@"Star-BoarderWhite"]];
+    [favoriteButton addTarget:self action:@selector(didPushFavoriteButton) forControlEvents:UIControlEventTouchUpInside];
+    if (self.selectedTweet.isFavorited) {
+        favoriteButton = [[MBTimelineActionButton alloc] initWithTitle:@"Cancel" image:[UIImage imageNamed:@"Star-DashWhite"]];
+        [favoriteButton addTarget:self action:@selector(didPushCancelFavoriteButton) forControlEvents:UIControlEventTouchUpInside];
+    }
+    
     
     // retweet
-    MBTimelineActionButton *hoge2Button = [[MBTimelineActionButton alloc] initWithTitle:@"Retweet" image:[UIImage imageNamed:@"retweet-Action-Boarder@2x"]];
-    [hoge2Button addTarget:self action:@selector(didPushRetweetButton) forControlEvents:UIControlEventTouchUpInside];
+    MBTimelineActionButton *retweetButton = [[MBTimelineActionButton alloc] initWithTitle:@"Retweet" image:[UIImage imageNamed:@"retweet-BoarderWhite"]];
+    [retweetButton addTarget:self action:@selector(didPushRetweetButton) forControlEvents:UIControlEventTouchUpInside];
     
     if (self.selectedTweet.isRetweeted) {
-        hoge2Button = [[MBTimelineActionButton alloc] initWithTitle:@"Cancel" image:[UIImage imageNamed:@"retweet-Action-Boarder@2x"]];
-        [hoge2Button addTarget:self action:@selector(didPushCancelRetweetButton) forControlEvents:UIControlEventTouchUpInside];
+        retweetButton = [[MBTimelineActionButton alloc] initWithTitle:@"Cancel" image:[UIImage imageNamed:@"retweet-DashWhite"]];
+        [retweetButton addTarget:self action:@selector(didPushCancelRetweetButton) forControlEvents:UIControlEventTouchUpInside];
     }
     
     MBAccount *selectedAccount = [[MBAccountManager sharedInstance] currentAccount];
     MBUser *currentAccountUser = [[MBUserManager sharedInstance] storedUserForKey:selectedAccount.userID];
     if ([self.selectedTweet.tweetUser.userID compare:currentAccountUser.userID] == NSOrderedSame || self.selectedTweet.tweetUser.isProtected) {
-        hoge2Button.enabled = NO;
+        [self setButtonItems:@[replyButton, favoriteButton]];
+        return;
     }
     
-    // favorite
-    MBTimelineActionButton *hoge3Button = [[MBTimelineActionButton alloc] initWithTitle:@"Favorite" image:[UIImage imageNamed:@"Star-Action-Boarder@2x"]];
-    [hoge3Button addTarget:self action:@selector(didPushFavoriteButton) forControlEvents:UIControlEventTouchUpInside];
-    if (self.selectedTweet.isFavorited) {
-        hoge3Button = [[MBTimelineActionButton alloc] initWithTitle:@"Cancel" image:[UIImage imageNamed:@"Star-Action-Boarder@2x"]];
-        [hoge3Button addTarget:self action:@selector(didPushCancelFavoriteButton) forControlEvents:UIControlEventTouchUpInside];
-    }
-    [self setButtonItems:@[hoge1Button, hoge2Button, hoge3Button]];
+    
+    
+    [self setButtonItems:@[replyButton, retweetButton, favoriteButton]];
 }
 
 - (void)createContainerView
@@ -263,7 +269,12 @@
 
 - (void)didPushCancelRetweetButton
 {
+    if ([_delegate respondsToSelector:@selector(didPushCancelRetweetButtonOnActionView:)]) {
+        [_delegate didPushCancelRetweetButtonOnActionView:self];
+    }
     
+    [self showViews:NO animated:YES];
+    [self sendDelegateMethodDismissing];
 }
 
 - (void)didPushFavoriteButton
@@ -278,7 +289,12 @@
 
 - (void)didPushCancelFavoriteButton
 {
+    if ([_delegate respondsToSelector:@selector(didPushCancelFavoriteButtonOnActionView:)]) {
+        [_delegate didPushCancelFavoriteButtonOnActionView:self];
+    }
     
+    [self showViews:NO animated:YES];
+    [self sendDelegateMethodDismissing];
 }
 
 /*

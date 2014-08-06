@@ -35,5 +35,7 @@
 - (void)didPushReplyButtonOnActionView:(MBTimelineActionView *)view;
 - (void)didPushRetweetButtonOnActionView:(MBTimelineActionView *)view;
 - (void)didPushFavoriteButtonOnActionView:(MBTimelineActionView *)view;
+- (void)didPushCancelRetweetButtonOnActionView:(MBTimelineActionView *)view;
+- (void)didPushCancelFavoriteButtonOnActionView:(MBTimelineActionView *)view;
 
 @end
