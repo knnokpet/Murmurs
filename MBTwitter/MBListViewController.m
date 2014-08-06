@@ -214,9 +214,9 @@ static NSString *listsCellIdentifier = @"ListsCellIdentifier";
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     CGFloat verticalMargin = 8.0f;
-    CGFloat verticalTextViewMargin = 50.0f;
-    CGFloat horizontalLeftMargin = 68.0f;
-    CGFloat horizontalRightMargin = 16.0f;
+    CGFloat verticalTextViewMargin = 48.0f;
+    CGFloat horizontalLeftMargin = 64.0f;
+    CGFloat horizontalRightMargin = 8.0f;
     CGFloat defaultHeight = 36.0f + verticalMargin * 2;
     
     NSArray *listsAtSection = [self.listManager.lists objectAtIndex:indexPath.section];
@@ -249,7 +249,7 @@ static NSString *listsCellIdentifier = @"ListsCellIdentifier";
     MBUser *userAtList = listAtIndex.user;
     
     cell.listNameLabel.text = listAtIndex.name;
-    cell.screenNameLabel.text = userAtList.screenName;
+    cell.screenNameLabel.text = [NSString stringWithFormat:@"@%@", userAtList.screenName];
     cell.descriptionTextView.text = listAtIndex.description;
     cell.isPublic = listAtIndex.isPublic;
     
