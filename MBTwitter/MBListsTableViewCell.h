@@ -13,7 +13,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *listNameLabel;
 @property (weak, nonatomic) IBOutlet UILabel *screenNameLabel;
 @property (weak, nonatomic) IBOutlet UITextView *descriptionTextView;
-@property (weak, nonatomic) IBOutlet UIView *protectedImageView;
+@property (weak, nonatomic) IBOutlet UIImageView *protectedImageView;
 
 
 @property (nonatomic, assign) BOOL isPublic;
