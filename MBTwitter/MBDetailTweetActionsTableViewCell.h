@@ -8,9 +8,12 @@
 
 #import <UIKit/UIKit.h>
 
+@class MBTitleWithImageButton;
 @interface MBDetailTweetActionsTableViewCell : UITableViewCell
-@property (weak, nonatomic) IBOutlet UIButton *replyButton;
-@property (weak, nonatomic) IBOutlet UIButton *retweetButton;
-@property (weak, nonatomic) IBOutlet UIButton *retweetWithComentButton;
+
+@property (weak, nonatomic) IBOutlet MBTitleWithImageButton *replyButton;
+@property (weak, nonatomic) IBOutlet MBTitleWithImageButton *retweetButton;
+@property (weak, nonatomic) IBOutlet MBTitleWithImageButton *favoriteButton;
+
 
 @end
