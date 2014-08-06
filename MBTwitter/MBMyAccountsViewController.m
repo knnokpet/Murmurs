@@ -33,6 +33,7 @@ static NSString *avatorInfomationTableViewCellIdentifier = @"MBDetailUserInfomat
 
 static NSString *titleKey = @"TitleKey";
 static NSString *countKey = @"CountKey";
+static NSString *imageKey = @"ImageKey";
 
 @interface MBMyAccountsViewController () <UITableViewDataSource, UITableViewDelegate>
 
@@ -106,21 +107,21 @@ static NSString *countKey = @"CountKey";
 
 - (NSArray *)currentUserData
 {
-    NSDictionary *tweetDict = [self concreateUserDictWithTitle:NSLocalizedString(@"All Tweets", nil) count:self.currentUser.tweetCount];
-    NSDictionary *followingDict = [self concreateUserDictWithTitle:NSLocalizedString(@"Following", nil) count:self.currentUser.followsCount];
-    NSDictionary *followerDict = [self concreateUserDictWithTitle:NSLocalizedString(@"Follower", nil) count:self.currentUser.followersCount];
-    NSDictionary *favoDict = [self concreateUserDictWithTitle:NSLocalizedString(@"Favorite", nil) count:self.currentUser.favoritesCount];
-    NSDictionary *listDict = [self concreateUserDictWithTitle:NSLocalizedString(@"List", nil) count:self.currentUser.listedCount];
+    NSDictionary *tweetDict = [self concreateUserDictWithTitle:NSLocalizedString(@"Tweets", nil) count:self.currentUser.tweetCount image:[UIImage imageNamed:@"Tweet-Cell-blue"]];
+    NSDictionary *followingDict = [self concreateUserDictWithTitle:NSLocalizedString(@"Following", nil) count:self.currentUser.followsCount image:[UIImage imageNamed:@"Man-Cell-blue"]];
+    NSDictionary *followerDict = [self concreateUserDictWithTitle:NSLocalizedString(@"Follower", nil) count:self.currentUser.followersCount image:[UIImage imageNamed:@"Man-Cell-blue"]];
+    NSDictionary *favoDict = [self concreateUserDictWithTitle:NSLocalizedString(@"Favorite", nil) count:self.currentUser.favoritesCount image:[UIImage imageNamed:@"Favorite-Cell-blue"]];
+    NSDictionary *listDict = [self concreateUserDictWithTitle:NSLocalizedString(@"List", nil) count:self.currentUser.listedCount image:[UIImage imageNamed:@"List-Cell-blue"]];
     
     NSArray *userData = @[tweetDict, followingDict, followerDict, favoDict, listDict];
     return userData;
 }
 
-- (NSDictionary *)concreateUserDictWithTitle:(NSString *)title count:(NSInteger)count
+- (NSDictionary *)concreateUserDictWithTitle:(NSString *)title count:(NSInteger)count image:(UIImage *)image
 {
     NSNumber *countNumber = [NSNumber numberWithInteger:count];
     
-    NSDictionary *infoDict = [NSDictionary dictionaryWithObjects:@[title, countNumber] forKeys:@[titleKey, countKey]];
+    NSDictionary *infoDict = [NSDictionary dictionaryWithObjects:@[title, countNumber, image] forKeys:@[titleKey, countKey, imageKey]];
     return infoDict;
 }
 
@@ -244,6 +245,7 @@ static NSString *countKey = @"CountKey";
     return radiusImage;
 }
 
+
 #pragma mark -
 #pragma mark Button Action
 
@@ -364,6 +366,7 @@ static NSString *countKey = @"CountKey";
 {
     MBAccount *currentAccount = [[MBAccountManager sharedInstance] currentAccount];
     MBAccount *account = [self.accounts objectAtIndex:indexPath.row];
+    MBUser *user = [[MBUserManager sharedInstance] storedUserForKey:account.userID];
     cell.textLabel.text = account.screenName;
     if ([currentAccount.userID isEqualToString:account.userID]) {
         cell.accessoryType = UITableViewCellAccessoryCheckmark;
@@ -403,10 +406,13 @@ static NSString *countKey = @"CountKey";
 
 - (void)updateUserDataCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
 {
+    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+    
     NSArray *dataSourceAtSection = [self.dataSource objectAtIndex:indexPath.section];
     NSDictionary *dataDict = [dataSourceAtSection objectAtIndex:indexPath.row];
     NSString *textLabel = [dataDict objectForKey:titleKey];
     NSNumber *countNumber = [dataDict objectForKey:countKey];
+    UIImage *cellImage = [dataDict objectForKey:imageKey];
     NSInteger detailInteger = [countNumber integerValue];
     
     cell.textLabel.text = textLabel;
@@ -414,7 +420,8 @@ static NSString *countKey = @"CountKey";
     if (4 != indexPath.row) {
         cell.detailTextLabel.text = [NSString stringWithFormat:@"%d", detailInteger];
     }
-    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+    
+    cell.imageView.image = cellImage;
 }
 
 #pragma mark - Navigation
