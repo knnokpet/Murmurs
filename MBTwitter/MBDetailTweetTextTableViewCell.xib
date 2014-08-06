@@ -27,7 +27,7 @@
                         </constraints>
                     </view>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="xww-mZ-dhf" customClass="MBTweetTextView">
-                        <rect key="frame" x="16" y="387" width="288" height="20"/>
+                        <rect key="frame" x="16" y="387" width="128" height="20"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
@@ -43,10 +43,10 @@
                         </constraints>
                     </view>
                     <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="751" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="RUx-mq-6wE">
-                        <rect key="frame" x="306" y="387" width="42" height="20"/>
+                        <rect key="frame" x="146" y="387" width="36" height="20"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                        <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                        <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                         <nil key="highlightedColor"/>
                     </label>
                 </subviews>
@@ -59,7 +59,7 @@
                     <constraint firstItem="xww-mZ-dhf" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="16" id="HTc-6b-vci"/>
                     <constraint firstItem="xww-mZ-dhf" firstAttribute="top" secondItem="fmC-Cf-28O" secondAttribute="bottom" constant="8" id="HaH-5f-qof"/>
                     <constraint firstItem="RUx-mq-6wE" firstAttribute="top" secondItem="fmC-Cf-28O" secondAttribute="bottom" constant="8" id="Jc1-Do-Z63"/>
-                    <constraint firstAttribute="trailing" secondItem="xww-mZ-dhf" secondAttribute="trailing" priority="750" constant="16" id="N2f-jD-iYl"/>
+                    <constraint firstAttribute="trailing" secondItem="xww-mZ-dhf" secondAttribute="trailing" priority="750" constant="176" id="N2f-jD-iYl"/>
                     <constraint firstAttribute="bottom" secondItem="iag-ax-DYD" secondAttribute="bottom" constant="4" id="NzD-8L-uJ0"/>
                     <constraint firstItem="iag-ax-DYD" firstAttribute="top" secondItem="xww-mZ-dhf" secondAttribute="bottom" constant="2" id="Sr2-TK-kBY"/>
                     <constraint firstItem="RUx-mq-6wE" firstAttribute="top" secondItem="r6M-6n-16l" secondAttribute="bottom" priority="250" constant="8" id="V5w-dr-eBC"/>

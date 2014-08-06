@@ -64,9 +64,6 @@
 		8623B91A19892D27004380FF /* List-Cell-blue@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8623B91619892D27004380FF /* List-Cell-blue@2x.png */; };
 		8623B91B19892D27004380FF /* Man-Cell-blue@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8623B91719892D27004380FF /* Man-Cell-blue@2x.png */; };
 		8623B91C19892D27004380FF /* Tweet-Cell-blue@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8623B91819892D27004380FF /* Tweet-Cell-blue@2x.png */; };
-		8623B920198A1EFC004380FF /* reply-Action-Boarder@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8623B91D198A1EFC004380FF /* reply-Action-Boarder@2x.png */; };
-		8623B921198A1EFC004380FF /* retweet-Action-Boarder@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8623B91E198A1EFC004380FF /* retweet-Action-Boarder@2x.png */; };
-		8623B922198A1EFC004380FF /* Star-Action-Boarder@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8623B91F198A1EFC004380FF /* Star-Action-Boarder@2x.png */; };
 		8623B925198B5826004380FF /* Lock-mini@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8623B923198B5826004380FF /* Lock-mini@2x.png */; };
 		8623B926198B5826004380FF /* Lock-Large@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8623B924198B5826004380FF /* Lock-Large@2x.png */; };
 		862B25E618D08A69004FC786 /* OAMutableRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 862B25E518D08A69004FC786 /* OAMutableRequest.m */; };
@@ -81,6 +78,22 @@
 		862B261118D31C22004FC786 /* MBTwitterAccesser.m in Sources */ = {isa = PBXBuildFile; fileRef = 862B261018D31C22004FC786 /* MBTwitterAccesser.m */; };
 		862B261C18D5C506004FC786 /* OAAuthFetcher.m in Sources */ = {isa = PBXBuildFile; fileRef = 862B261B18D5C506004FC786 /* OAAuthFetcher.m */; };
 		862B261F18D6CAF6004FC786 /* MBAuthorizationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 862B261E18D6CAF6004FC786 /* MBAuthorizationViewController.m */; };
+		862C4DE9199116D4009ECA57 /* Star-BoarderWhite@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 862C4DE4199116D4009ECA57 /* Star-BoarderWhite@2x.png */; };
+		862C4DEA199116D4009ECA57 /* retweet-DashWhite@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 862C4DE5199116D4009ECA57 /* retweet-DashWhite@2x.png */; };
+		862C4DEB199116D4009ECA57 /* Star-DashWhite@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 862C4DE6199116D4009ECA57 /* Star-DashWhite@2x.png */; };
+		862C4DEC199116D4009ECA57 /* reply-BoarderWhite@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 862C4DE7199116D4009ECA57 /* reply-BoarderWhite@2x.png */; };
+		862C4DED199116D4009ECA57 /* retweet-BoarderWhite@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 862C4DE8199116D4009ECA57 /* retweet-BoarderWhite@2x.png */; };
+		862C4DF01991189D009ECA57 /* Hoge@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 862C4DEE1991189D009ECA57 /* Hoge@2x.png */; };
+		862C4DF11991189D009ECA57 /* reply-Boarder-Tint@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 862C4DEF1991189D009ECA57 /* reply-Boarder-Tint@2x.png */; };
+		862C4DF719911C27009ECA57 /* MBTitleWithImageButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 862C4DF619911C27009ECA57 /* MBTitleWithImageButton.m */; };
+		862C4DF9199127EF009ECA57 /* reply-Cell-Boarder-Tint@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 862C4DF8199127EF009ECA57 /* reply-Cell-Boarder-Tint@2x.png */; };
+		862C4DFB1991CE61009ECA57 /* reply-Cell-Boarder-Tint.png in Resources */ = {isa = PBXBuildFile; fileRef = 862C4DFA1991CE61009ECA57 /* reply-Cell-Boarder-Tint.png */; };
+		862C4E001992015D009ECA57 /* Hoge.png in Resources */ = {isa = PBXBuildFile; fileRef = 862C4DFF1992015D009ECA57 /* Hoge.png */; };
+		862C4E061992047B009ECA57 /* Star-DashWhite.png in Resources */ = {isa = PBXBuildFile; fileRef = 862C4E011992047B009ECA57 /* Star-DashWhite.png */; };
+		862C4E071992047B009ECA57 /* Star-BoarderWhite.png in Resources */ = {isa = PBXBuildFile; fileRef = 862C4E021992047B009ECA57 /* Star-BoarderWhite.png */; };
+		862C4E081992047B009ECA57 /* reply-BoarderWhite.png in Resources */ = {isa = PBXBuildFile; fileRef = 862C4E031992047B009ECA57 /* reply-BoarderWhite.png */; };
+		862C4E091992047B009ECA57 /* retweet-DashWhite.png in Resources */ = {isa = PBXBuildFile; fileRef = 862C4E041992047B009ECA57 /* retweet-DashWhite.png */; };
+		862C4E0A1992047B009ECA57 /* retweet-BoarderWhite.png in Resources */ = {isa = PBXBuildFile; fileRef = 862C4E051992047B009ECA57 /* retweet-BoarderWhite.png */; };
 		863969AD191B550A00A7D0AD /* MBListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 863969AB191B550A00A7D0AD /* MBListViewController.m */; };
 		863969AE191B550A00A7D0AD /* MBListViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 863969AC191B550A00A7D0AD /* MBListViewController.xib */; };
 		863969B1191B67AB00A7D0AD /* MBList.m in Sources */ = {isa = PBXBuildFile; fileRef = 863969B0191B67AB00A7D0AD /* MBList.m */; };
@@ -346,9 +359,6 @@
 		8623B91619892D27004380FF /* List-Cell-blue@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "List-Cell-blue@2x.png"; sourceTree = "<group>"; };
 		8623B91719892D27004380FF /* Man-Cell-blue@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Man-Cell-blue@2x.png"; sourceTree = "<group>"; };
 		8623B91819892D27004380FF /* Tweet-Cell-blue@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Tweet-Cell-blue@2x.png"; sourceTree = "<group>"; };
-		8623B91D198A1EFC004380FF /* reply-Action-Boarder@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "reply-Action-Boarder@2x.png"; sourceTree = "<group>"; };
-		8623B91E198A1EFC004380FF /* retweet-Action-Boarder@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "retweet-Action-Boarder@2x.png"; sourceTree = "<group>"; };
-		8623B91F198A1EFC004380FF /* Star-Action-Boarder@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Star-Action-Boarder@2x.png"; sourceTree = "<group>"; };
 		8623B923198B5826004380FF /* Lock-mini@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Lock-mini@2x.png"; sourceTree = "<group>"; };
 		8623B924198B5826004380FF /* Lock-Large@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Lock-Large@2x.png"; sourceTree = "<group>"; };
 		862B25E418D08A69004FC786 /* OAMutableRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OAMutableRequest.h; sourceTree = "<group>"; };
@@ -377,6 +387,23 @@
 		862B261B18D5C506004FC786 /* OAAuthFetcher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OAAuthFetcher.m; sourceTree = "<group>"; };
 		862B261D18D6CAF6004FC786 /* MBAuthorizationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBAuthorizationViewController.h; sourceTree = "<group>"; };
 		862B261E18D6CAF6004FC786 /* MBAuthorizationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBAuthorizationViewController.m; sourceTree = "<group>"; };
+		862C4DE4199116D4009ECA57 /* Star-BoarderWhite@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Star-BoarderWhite@2x.png"; sourceTree = "<group>"; };
+		862C4DE5199116D4009ECA57 /* retweet-DashWhite@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "retweet-DashWhite@2x.png"; sourceTree = "<group>"; };
+		862C4DE6199116D4009ECA57 /* Star-DashWhite@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Star-DashWhite@2x.png"; sourceTree = "<group>"; };
+		862C4DE7199116D4009ECA57 /* reply-BoarderWhite@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "reply-BoarderWhite@2x.png"; sourceTree = "<group>"; };
+		862C4DE8199116D4009ECA57 /* retweet-BoarderWhite@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "retweet-BoarderWhite@2x.png"; sourceTree = "<group>"; };
+		862C4DEE1991189D009ECA57 /* Hoge@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Hoge@2x.png"; sourceTree = "<group>"; };
+		862C4DEF1991189D009ECA57 /* reply-Boarder-Tint@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "reply-Boarder-Tint@2x.png"; sourceTree = "<group>"; };
+		862C4DF519911C27009ECA57 /* MBTitleWithImageButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBTitleWithImageButton.h; sourceTree = "<group>"; };
+		862C4DF619911C27009ECA57 /* MBTitleWithImageButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBTitleWithImageButton.m; sourceTree = "<group>"; };
+		862C4DF8199127EF009ECA57 /* reply-Cell-Boarder-Tint@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "reply-Cell-Boarder-Tint@2x.png"; sourceTree = "<group>"; };
+		862C4DFA1991CE61009ECA57 /* reply-Cell-Boarder-Tint.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "reply-Cell-Boarder-Tint.png"; sourceTree = "<group>"; };
+		862C4DFF1992015D009ECA57 /* Hoge.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Hoge.png; sourceTree = "<group>"; };
+		862C4E011992047B009ECA57 /* Star-DashWhite.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Star-DashWhite.png"; sourceTree = "<group>"; };
+		862C4E021992047B009ECA57 /* Star-BoarderWhite.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Star-BoarderWhite.png"; sourceTree = "<group>"; };
+		862C4E031992047B009ECA57 /* reply-BoarderWhite.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "reply-BoarderWhite.png"; sourceTree = "<group>"; };
+		862C4E041992047B009ECA57 /* retweet-DashWhite.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "retweet-DashWhite.png"; sourceTree = "<group>"; };
+		862C4E051992047B009ECA57 /* retweet-BoarderWhite.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "retweet-BoarderWhite.png"; sourceTree = "<group>"; };
 		863969AA191B550A00A7D0AD /* MBListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBListViewController.h; sourceTree = "<group>"; };
 		863969AB191B550A00A7D0AD /* MBListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBListViewController.m; sourceTree = "<group>"; };
 		863969AC191B550A00A7D0AD /* MBListViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MBListViewController.xib; sourceTree = "<group>"; };
@@ -741,6 +768,8 @@
 				8623B90D1987AA59004380FF /* MBSeparateLineView.m */,
 				8623B90919879D8D004380FF /* MBRoundButton.h */,
 				8623B90A19879D8D004380FF /* MBRoundButton.m */,
+				862C4DF519911C27009ECA57 /* MBTitleWithImageButton.h */,
+				862C4DF619911C27009ECA57 /* MBTitleWithImageButton.m */,
 				868203941963DEF100B336AC /* TimelineActionView */,
 			);
 			name = View;
@@ -749,9 +778,13 @@
 		8623B8C8197A3F45004380FF /* ActionButton */ = {
 			isa = PBXGroup;
 			children = (
-				8623B91D198A1EFC004380FF /* reply-Action-Boarder@2x.png */,
-				8623B91E198A1EFC004380FF /* retweet-Action-Boarder@2x.png */,
-				8623B91F198A1EFC004380FF /* Star-Action-Boarder@2x.png */,
+				862C4DE4199116D4009ECA57 /* Star-BoarderWhite@2x.png */,
+				862C4DE5199116D4009ECA57 /* retweet-DashWhite@2x.png */,
+				862C4DE6199116D4009ECA57 /* Star-DashWhite@2x.png */,
+				862C4DE7199116D4009ECA57 /* reply-BoarderWhite@2x.png */,
+				862C4DE8199116D4009ECA57 /* retweet-BoarderWhite@2x.png */,
+				862C4DEE1991189D009ECA57 /* Hoge@2x.png */,
+				862C4DEF1991189D009ECA57 /* reply-Boarder-Tint@2x.png */,
 			);
 			name = ActionButton;
 			sourceTree = "<group>";
@@ -803,6 +836,7 @@
 				8623B91619892D27004380FF /* List-Cell-blue@2x.png */,
 				8623B91719892D27004380FF /* Man-Cell-blue@2x.png */,
 				8623B91819892D27004380FF /* Tweet-Cell-blue@2x.png */,
+				862C4DF8199127EF009ECA57 /* reply-Cell-Boarder-Tint@2x.png */,
 			);
 			name = Cell;
 			sourceTree = "<group>";
@@ -881,6 +915,55 @@
 			name = Cyptro;
 			sourceTree = "<group>";
 		};
+		862C4DFC1991CEBE009ECA57 /* @2x */ = {
+			isa = PBXGroup;
+			children = (
+				8623B923198B5826004380FF /* Lock-mini@2x.png */,
+				8623B924198B5826004380FF /* Lock-Large@2x.png */,
+				8623B8D4197A3F81004380FF /* Cell */,
+				8623B8CB197A3F63004380FF /* Tabbar */,
+				8623B8CA197A3F58004380FF /* Magnifier */,
+				86AF51D819331D4600646D28 /* DefaultImage@2x.png */,
+				8623B8C9197A3F4E004380FF /* Bird */,
+				8623B8C8197A3F45004380FF /* ActionButton */,
+			);
+			name = "@2x";
+			sourceTree = "<group>";
+		};
+		862C4DFD1991CEFC009ECA57 /* @1x */ = {
+			isa = PBXGroup;
+			children = (
+				862C4E0B1992047F009ECA57 /* 要変更 */,
+			);
+			name = "@1x";
+			sourceTree = "<group>";
+		};
+		862C4DFE1991EEA7009ECA57 /* DetailUser */ = {
+			isa = PBXGroup;
+			children = (
+				86BFD24C19741D2700269D34 /* MBDetailUserActionTableViewCell.h */,
+				86BFD24D19741D2700269D34 /* MBDetailUserActionTableViewCell.m */,
+				869F58C6195EEE8D00927700 /* MBDetailUserInfomationTableViewCell.h */,
+				869F58C7195EEE8D00927700 /* MBDetailUserInfomationTableViewCell.m */,
+				869F58C8195EEE8D00927700 /* MBDetailUserInfomationTableViewCell.xib */,
+			);
+			name = DetailUser;
+			sourceTree = "<group>";
+		};
+		862C4E0B1992047F009ECA57 /* 要変更 */ = {
+			isa = PBXGroup;
+			children = (
+				862C4DFA1991CE61009ECA57 /* reply-Cell-Boarder-Tint.png */,
+				862C4DFF1992015D009ECA57 /* Hoge.png */,
+				862C4E011992047B009ECA57 /* Star-DashWhite.png */,
+				862C4E021992047B009ECA57 /* Star-BoarderWhite.png */,
+				862C4E031992047B009ECA57 /* reply-BoarderWhite.png */,
+				862C4E041992047B009ECA57 /* retweet-DashWhite.png */,
+				862C4E051992047B009ECA57 /* retweet-BoarderWhite.png */,
+			);
+			name = "要変更";
+			sourceTree = "<group>";
+		};
 		86396A131924FC3900A7D0AD /* List */ = {
 			isa = PBXGroup;
 			children = (
@@ -928,14 +1011,8 @@
 		863B3826192F7A9700063C83 /* Resource */ = {
 			isa = PBXGroup;
 			children = (
-				8623B923198B5826004380FF /* Lock-mini@2x.png */,
-				8623B924198B5826004380FF /* Lock-Large@2x.png */,
-				8623B8D4197A3F81004380FF /* Cell */,
-				8623B8CB197A3F63004380FF /* Tabbar */,
-				8623B8CA197A3F58004380FF /* Magnifier */,
-				86AF51D819331D4600646D28 /* DefaultImage@2x.png */,
-				8623B8C9197A3F4E004380FF /* Bird */,
-				8623B8C8197A3F45004380FF /* ActionButton */,
+				862C4DFD1991CEFC009ECA57 /* @1x */,
+				862C4DFC1991CEBE009ECA57 /* @2x */,
 			);
 			name = Resource;
 			sourceTree = "<group>";
@@ -1332,11 +1409,7 @@
 				867A09831941AD6500741C2F /* DetailTweet */,
 				867A09811941AD4000741C2F /* List */,
 				867A09841941AD8500741C2F /* DirectMessage */,
-				86BFD24C19741D2700269D34 /* MBDetailUserActionTableViewCell.h */,
-				86BFD24D19741D2700269D34 /* MBDetailUserActionTableViewCell.m */,
-				869F58C6195EEE8D00927700 /* MBDetailUserInfomationTableViewCell.h */,
-				869F58C7195EEE8D00927700 /* MBDetailUserInfomationTableViewCell.m */,
-				869F58C8195EEE8D00927700 /* MBDetailUserInfomationTableViewCell.xib */,
+				862C4DFE1991EEA7009ECA57 /* DetailUser */,
 				8690B56D197029A6003DB47B /* MBUsersTableViewCell.h */,
 				8690B56E197029A6003DB47B /* MBUsersTableViewCell.m */,
 				8690B56F197029A6003DB47B /* MBUsersTableViewCell.xib */,
@@ -1480,29 +1553,37 @@
 				86396A121924CE3E00A7D0AD /* MBSwitchTableViewCell.xib in Resources */,
 				86BC61F2191382DB00600EAD /* AuthorizationView.xib in Resources */,
 				8623B91C19892D27004380FF /* Tweet-Cell-blue@2x.png in Resources */,
+				862C4DF11991189D009ECA57 /* reply-Boarder-Tint@2x.png in Resources */,
+				862C4DF01991189D009ECA57 /* Hoge@2x.png in Resources */,
+				862C4DEC199116D4009ECA57 /* reply-BoarderWhite@2x.png in Resources */,
 				86533C2419506E8500AF37EA /* MBMessageReceiverViewController.xib in Resources */,
 				8690B571197029A6003DB47B /* MBUsersTableViewCell.xib in Resources */,
 				8605928619397AE900559C33 /* MagnifierMask@2x.png in Resources */,
 				861AEF391931E3B400C02A38 /* Magnifier-low@2x.png in Resources */,
+				862C4E001992015D009ECA57 /* Hoge.png in Resources */,
 				86BC62051916289E00600EAD /* MBIndividualDirectMessagesViewController.xib in Resources */,
 				8639E1FC196A6A3D0078266B /* MBSendMessageTableViewCell.xib in Resources */,
 				8623B91A19892D27004380FF /* List-Cell-blue@2x.png in Resources */,
 				86BC61FD191514E800600EAD /* SeparatedDirectMessagesView.xib in Resources */,
-				8623B920198A1EFC004380FF /* reply-Action-Boarder@2x.png in Resources */,
 				863969AE191B550A00A7D0AD /* MBListViewController.xib in Resources */,
+				862C4E081992047B009ECA57 /* reply-BoarderWhite.png in Resources */,
 				861AEF3A1931E3B400C02A38 /* Magnifier-high@2x.png in Resources */,
 				8623B8E919800397004380FF /* MBFollowRequestTableViewCell.xib in Resources */,
 				861AEF3C1931E74300C02A38 /* Mask2@2x.png in Resources */,
+				862C4E071992047B009ECA57 /* Star-BoarderWhite.png in Resources */,
 				86BC61F019137F4800600EAD /* MyAccountView.xib in Resources */,
 				86BFD2591974F8C100269D34 /* bird_blue_32@2x.png in Resources */,
 				86BFD2551974F7F800269D34 /* bird_blue_16.png in Resources */,
+				862C4DE9199116D4009ECA57 /* Star-BoarderWhite@2x.png in Resources */,
 				869F589E1959E2D200927700 /* Message-Fukidashi@2x.png in Resources */,
 				8623B91B19892D27004380FF /* Man-Cell-blue@2x.png in Resources */,
 				863969FE1924AA9900A7D0AD /* MBCreateListViewController.xib in Resources */,
 				86AF51D919331D4600646D28 /* DefaultImage@2x.png in Resources */,
 				86BC619A191284F000600EAD /* TimelineTableView.xib in Resources */,
 				861AFAA2192649F6006B736A /* MBDetailTweetUserTableViewCell.xib in Resources */,
+				862C4E061992047B009ECA57 /* Star-DashWhite.png in Resources */,
 				86BC61F41913880300600EAD /* PostTweetView.xib in Resources */,
+				862C4DEB199116D4009ECA57 /* Star-DashWhite@2x.png in Resources */,
 				86CB53E61908EA3E0016A7F2 /* TweetTavbleViewCell.xib in Resources */,
 				8623B926198B5826004380FF /* Lock-Large@2x.png in Resources */,
 				863C1F3619307AAB00DA6371 /* MagnifierRangeMask@2x.png in Resources */,
@@ -1518,13 +1599,15 @@
 				8605928C1939C17400559C33 /* UserDerail.xib in Resources */,
 				86BC61F81914AA5800600EAD /* MBUserDetailView.xib in Resources */,
 				8623B8D7197A3F8C004380FF /* Timeline-Selected@2x.png in Resources */,
+				862C4DED199116D4009ECA57 /* retweet-BoarderWhite@2x.png in Resources */,
 				86BC61F6191391B600600EAD /* TweetDetailView.xib in Resources */,
 				8605928A1939B56D00559C33 /* DetailUserView.xib in Resources */,
 				86CB5408190FD33D0016A7F2 /* SeparatedDirectMessageTableViewCell.xib in Resources */,
 				86BFD2571974F7F800269D34 /* bird_blue_48.png in Resources */,
+				862C4DFB1991CE61009ECA57 /* reply-Cell-Boarder-Tint.png in Resources */,
 				8639E20A196CDBC10078266B /* Message-Fukidashi-Line@2x.png in Resources */,
 				861AFAA719264A16006B736A /* MBDetailTweetTextTableViewCell.xib in Resources */,
-				8623B922198A1EFC004380FF /* Star-Action-Boarder@2x.png in Resources */,
+				862C4DEA199116D4009ECA57 /* retweet-DashWhite@2x.png in Resources */,
 				869F58CA195EEE8E00927700 /* MBDetailUserInfomationTableViewCell.xib in Resources */,
 				86162C4119500F9B00EC836C /* List-Selected-2@2x.png in Resources */,
 				861AFAC21929048B006B736A /* MBWebBrowsViewController.xib in Resources */,
@@ -1532,10 +1615,13 @@
 				861AFA9D19264942006B736A /* MBTweetDetailView.xib in Resources */,
 				867A0993194342A500741C2F /* atmark@2x.png in Resources */,
 				861AFAAC19264A30006B736A /* MBDetailTweetActionsTableViewCell.xib in Resources */,
+				862C4DF9199127EF009ECA57 /* reply-Cell-Boarder-Tint@2x.png in Resources */,
 				86162C3F19500F9B00EC836C /* Message-Selected-2@2x.png in Resources */,
 				8623B8D8197A3F8C004380FF /* Timeline@2x.png in Resources */,
+				862C4E0A1992047B009ECA57 /* retweet-BoarderWhite.png in Resources */,
 				863969C1191B97CA00A7D0AD /* MBListTimelineManagementViewController.xib in Resources */,
 				867A09891941BC9B00741C2F /* MBImageViewController.xib in Resources */,
+				862C4E091992047B009ECA57 /* retweet-DashWhite.png in Resources */,
 				8684FEA818CB43BA00ECDD91 /* Images.xcassets in Resources */,
 				8623B91919892D27004380FF /* Favorite-Cell-blue@2x.png in Resources */,
 				867A09BF1948856500741C2F /* MBDetailUserTableViewCell.xib in Resources */,
@@ -1543,7 +1629,6 @@
 				8639E1FA196A6A370078266B /* MBMessageTableViewCell.xib in Resources */,
 				8684FEA018CB43BA00ECDD91 /* Main_iPhone.storyboard in Resources */,
 				86162C4019500F9B00EC836C /* Message-2@2x.png in Resources */,
-				8623B921198A1EFC004380FF /* retweet-Action-Boarder@2x.png in Resources */,
 				867A0994194342A500741C2F /* home-2@2x.png in Resources */,
 				8684FE9718CB43BA00ECDD91 /* InfoPlist.strings in Resources */,
 			);
@@ -1569,6 +1654,7 @@
 				86705E1C1907AFC2002A23DD /* MBLinkText.m in Sources */,
 				862B260318D179C4004FC786 /* hmac.c in Sources */,
 				86BC62041916289E00600EAD /* MBIndividualDirectMessagesViewController.m in Sources */,
+				862C4DF719911C27009ECA57 /* MBTitleWithImageButton.m in Sources */,
 				862B25E618D08A69004FC786 /* OAMutableRequest.m in Sources */,
 				8639E1FE196A6A500078266B /* MBMessageTableViewCell.m in Sources */,
 				86B5C5AE18E836200035CDC3 /* MBAOuth_TwitterAPICenter.m in Sources */,

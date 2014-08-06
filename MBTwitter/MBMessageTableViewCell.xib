@@ -18,18 +18,18 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Ec2-ig-GIK" customClass="MBTweetTextView">
-                                <rect key="frame" x="16" y="8" width="186" height="105"/>
+                                <rect key="frame" x="16" y="12" width="182" height="97"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstAttribute="bottom" secondItem="Ec2-ig-GIK" secondAttribute="bottom" constant="8" id="8PF-es-sQR"/>
+                            <constraint firstAttribute="bottom" secondItem="Ec2-ig-GIK" secondAttribute="bottom" constant="12" id="8PF-es-sQR"/>
                             <constraint firstItem="Ec2-ig-GIK" firstAttribute="leading" secondItem="ZDG-No-67v" secondAttribute="leading" constant="16" id="ZG0-oL-8sz"/>
                             <constraint firstAttribute="width" relation="lessThanOrEqual" constant="210" id="iQI-yD-Wyb"/>
-                            <constraint firstItem="Ec2-ig-GIK" firstAttribute="top" secondItem="ZDG-No-67v" secondAttribute="top" priority="750" constant="8" id="w5T-gb-3Mq"/>
-                            <constraint firstAttribute="trailing" secondItem="Ec2-ig-GIK" secondAttribute="trailing" constant="8" id="x1w-QX-BSk"/>
+                            <constraint firstItem="Ec2-ig-GIK" firstAttribute="top" secondItem="ZDG-No-67v" secondAttribute="top" priority="750" constant="12" id="w5T-gb-3Mq"/>
+                            <constraint firstAttribute="trailing" secondItem="Ec2-ig-GIK" secondAttribute="trailing" constant="12" id="x1w-QX-BSk"/>
                         </constraints>
                     </view>
                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="iKQ-NT-lZg" customClass="MBAvatorImageView">
@@ -54,7 +54,7 @@
                 <constraints>
                     <constraint firstItem="ZDG-No-67v" firstAttribute="leading" secondItem="iKQ-NT-lZg" secondAttribute="trailing" constant="10" id="CkF-hj-SUQ"/>
                     <constraint firstItem="iKQ-NT-lZg" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="10" id="JOa-bf-ccH"/>
-                    <constraint firstAttribute="trailing" secondItem="ZDG-No-67v" secondAttribute="trailing" priority="250" constant="54" id="JdC-hS-QJn"/>
+                    <constraint firstAttribute="trailing" secondItem="ZDG-No-67v" secondAttribute="trailing" priority="250" constant="60" id="JdC-hS-QJn"/>
                     <constraint firstItem="ZDG-No-67v" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="8" id="bWV-80-jV3"/>
                     <constraint firstItem="SXZ-4v-LoS" firstAttribute="top" secondItem="ZDG-No-67v" secondAttribute="bottom" constant="2" id="cJz-e3-Do7"/>
                     <constraint firstItem="SXZ-4v-LoS" firstAttribute="leading" secondItem="iKQ-NT-lZg" secondAttribute="trailing" constant="18" id="cW0-8g-z3y"/>

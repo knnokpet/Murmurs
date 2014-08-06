@@ -22,11 +22,11 @@
                         </constraints>
                     </imageView>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="qpo-5L-41c" customClass="MBMessageView">
-                        <rect key="frame" x="60" y="4" width="210" height="158"/>
+                        <rect key="frame" x="60" y="8" width="210" height="154"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="6OD-NU-tXR" customClass="MBTweetTextView">
-                                <rect key="frame" x="8" y="8" width="186" height="142"/>
+                                <rect key="frame" x="12" y="12" width="182" height="130"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             </view>
@@ -34,10 +34,10 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstAttribute="width" relation="lessThanOrEqual" constant="210" id="Gvs-tj-dJB"/>
-                            <constraint firstItem="6OD-NU-tXR" firstAttribute="leading" secondItem="qpo-5L-41c" secondAttribute="leading" constant="8" id="MAE-Cm-Hh0"/>
+                            <constraint firstItem="6OD-NU-tXR" firstAttribute="leading" secondItem="qpo-5L-41c" secondAttribute="leading" constant="12" id="MAE-Cm-Hh0"/>
                             <constraint firstAttribute="trailing" secondItem="6OD-NU-tXR" secondAttribute="trailing" constant="16" id="NAm-q8-Mvf"/>
-                            <constraint firstAttribute="bottom" secondItem="6OD-NU-tXR" secondAttribute="bottom" constant="8" id="Oe8-sA-yRb"/>
-                            <constraint firstItem="6OD-NU-tXR" firstAttribute="top" secondItem="qpo-5L-41c" secondAttribute="top" constant="8" id="udN-66-uc1"/>
+                            <constraint firstAttribute="bottom" secondItem="6OD-NU-tXR" secondAttribute="bottom" constant="12" id="Oe8-sA-yRb"/>
+                            <constraint firstItem="6OD-NU-tXR" firstAttribute="top" secondItem="qpo-5L-41c" secondAttribute="top" constant="12" id="udN-66-uc1"/>
                         </constraints>
                     </view>
                     <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="g5a-Gh-J5Q">
@@ -52,13 +52,13 @@
                     </label>
                 </subviews>
                 <constraints>
-                    <constraint firstItem="qpo-5L-41c" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" priority="250" constant="54" id="BbE-5w-dQD"/>
+                    <constraint firstItem="qpo-5L-41c" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" priority="250" constant="60" id="BbE-5w-dQD"/>
                     <constraint firstAttribute="bottom" secondItem="qpo-5L-41c" secondAttribute="bottom" priority="250" constant="8" id="CQN-bn-fcX"/>
                     <constraint firstItem="g5a-Gh-J5Q" firstAttribute="top" secondItem="qpo-5L-41c" secondAttribute="bottom" constant="2" id="Hht-qD-FZJ"/>
                     <constraint firstAttribute="bottom" secondItem="MxK-5h-oja" secondAttribute="bottom" constant="10" id="SOY-E9-24Y"/>
                     <constraint firstAttribute="bottom" secondItem="g5a-Gh-J5Q" secondAttribute="bottom" constant="8" id="T0g-oV-yyn"/>
                     <constraint firstItem="MxK-5h-oja" firstAttribute="leading" secondItem="qpo-5L-41c" secondAttribute="trailing" constant="10" id="Xgc-WY-nlb"/>
-                    <constraint firstItem="qpo-5L-41c" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="4" id="e0V-Zx-7I9"/>
+                    <constraint firstItem="qpo-5L-41c" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="8" id="e0V-Zx-7I9"/>
                     <constraint firstItem="g5a-Gh-J5Q" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="54" id="lVr-AS-uhO"/>
                     <constraint firstAttribute="trailing" secondItem="MxK-5h-oja" secondAttribute="trailing" constant="10" id="sLX-36-lS4"/>
                     <constraint firstItem="MxK-5h-oja" firstAttribute="leading" secondItem="g5a-Gh-J5Q" secondAttribute="trailing" constant="18" id="u0d-FZ-dc3"/>
