@@ -31,6 +31,7 @@
 #import "MBMagnifierView.h"
 #import "MBMagnifierRangeView.h"
 #import "MBTimelineImageContainerView.h"
+#import "MBTitleWithImageButton.h"
 
 
 #import "MBDetailTweetUserTableViewCell.h"
@@ -266,7 +267,10 @@ static NSString *retweetStr = @"ret";
     CGFloat verticalMargin = 10.0f;
     CGFloat horizontalMargin = 16.0f;
     CGFloat innnerVerticalMargin = 4.0f;
+    CGFloat imageMargin = 8.0f;
+    CGFloat dateMargin = 8.0f;
     CGFloat dateRetweetViewHeight = 20.0f;
+    
     
     if (0 == indexPath.row) {
         height = 48.0f + (verticalMargin * 2);
@@ -276,21 +280,22 @@ static NSString *retweetStr = @"ret";
         
         NSInteger viewWidth = self.tableView.bounds.size.width - (horizontalMargin * 2);
         CGRect textRect = [MBTweetTextView frameRectWithAttributedString:attributedString constraintSize:CGSizeMake(viewWidth, CGFLOAT_MAX) lineSpace:LINE_SPACING font:[UIFont systemFontOfSize:FONT_SIZE]];
+        height = textRect.size.height + dateRetweetViewHeight + verticalMargin;
         
-        CGFloat bottomHeifht;
-        if (self.retweeter) {
-            bottomHeifht = dateRetweetViewHeight * 2 + innnerVerticalMargin * 3;
+        CGFloat addingHeight = 0.0f;
+        if (self.retweeter && self.tweet.entity.media.count > 0) {
+            addingHeight = 160.0f + imageMargin * 2 + dateRetweetViewHeight + innnerVerticalMargin + 2.0f;
+        } else if (self.tweet.entity.media.count > 0) {
+            addingHeight = 160.0f + imageMargin * 2 + verticalMargin;
+        } else if (self.retweeter) {
+            addingHeight = dateMargin + dateRetweetViewHeight + innnerVerticalMargin + 2.0f;
         } else {
-            bottomHeifht = dateRetweetViewHeight + innnerVerticalMargin + verticalMargin;
-        }
-        
-        if (self.tweet.entity.media.count > 0) {
-            bottomHeifht += 160;
+            addingHeight = dateMargin + verticalMargin;
         }
 
-        height = textRect.size.height + verticalMargin + bottomHeifht;
+        height += addingHeight;
     } else {
-        height = 48.0f;
+        ;
     }
     
     
@@ -510,9 +515,14 @@ static NSString *retweetStr = @"ret";
 
 - (void)updateActionsCell:(MBDetailTweetActionsTableViewCell *)cell
 {
-    
+    [cell.replyButton setButtonTitle:NSLocalizedString(@"Reply", nil)];
+    [cell.replyButton setButtonImage:[UIImage imageNamed:@"reply-Cell-Boarder-Tint"]];
     [cell.replyButton addTarget:self action:@selector(didPushReplyButton:) forControlEvents:UIControlEventTouchUpInside];
-    [cell.retweetWithComentButton addTarget:self action:@selector(didPushRetweetWithComentButton:) forControlEvents:UIControlEventTouchUpInside];
+    
+    [cell.retweetButton setButtonTitle:NSLocalizedString(@"Retweet", nil)];
+    [cell.retweetButton setButtonImage:[UIImage imageNamed:@""]];
+    [cell.retweetButton addTarget:self action:@selector(didPushRetweetButton:) forControlEvents:UIControlEventTouchUpInside];
+    
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
