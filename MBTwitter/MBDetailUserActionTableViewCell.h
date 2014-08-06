@@ -7,13 +7,14 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "MBTitleWithImageButton.h"
 
 @interface MBDetailUserActionTableViewCell : UITableViewCell
 
-@property (nonatomic, readonly) UIButton *replyButton;
-@property (nonatomic, readonly) UIButton *otherButton;
+@property (nonatomic, readonly) MBTitleWithImageButton *tweetButton;
+@property (nonatomic, readonly) MBTitleWithImageButton *otherButton;
 @property (nonatomic, readonly) UIButton *followButton;
-@property (nonatomic) UIButton *messageButton;
+@property (nonatomic) MBTitleWithImageButton *messageButton;
 
 @property (nonatomic, assign) BOOL canMessage;
 @property (nonatomic, assign) BOOL canFollow;

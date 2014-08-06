@@ -8,6 +8,7 @@
 
 #import "MBDetailUserActionTableViewCell.h"
 
+
 @implementation MBDetailUserActionTableViewCell
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
@@ -28,21 +29,22 @@
 
 - (void)commonView
 {
-    _replyButton = [UIButton buttonWithType:UIButtonTypeSystem];
-    [self.replyButton setTitle:NSLocalizedString(@"Tweet", nil) forState:UIControlStateNormal];
-    [self.contentView addSubview:self.replyButton];
-    _messageButton = [UIButton buttonWithType:UIButtonTypeSystem];
-    [self.messageButton setTitle:NSLocalizedString(@"Message", nil) forState:UIControlStateNormal];
-    _otherButton = [UIButton buttonWithType:UIButtonTypeSystem];
-    [self.otherButton setTitle:NSLocalizedString(@"More", nil) forState:UIControlStateNormal];
+    _tweetButton = [[MBTitleWithImageButton alloc] initWithFrame:CGRectMake(0, 0, 48, 48) title:NSLocalizedString(@"Tweet", nil) image:[UIImage imageNamed:@"Hoge"]];
+    [self.tweetButton.titleLabel setFont:[UIFont systemFontOfSize:15.0f]];
+    [self.contentView addSubview:self.tweetButton];
+    
+    _messageButton = [[MBTitleWithImageButton alloc] initWithFrame:CGRectMake(0, 0, 48, 48) title:NSLocalizedString(@"Message", nil) image:[UIImage imageNamed:@"Hoge"]];
+    [self.messageButton.titleLabel setFont:[UIFont systemFontOfSize:15.0f]];
+    
+    _otherButton = [[MBTitleWithImageButton alloc] initWithFrame:CGRectMake(0, 0, 48, 48) title:NSLocalizedString(@"More", nil) image:[UIImage imageNamed:@"Hoge"]];
+    [self.otherButton.titleLabel setFont:[UIFont systemFontOfSize:15.0f]];
     [self.contentView addSubview:self.otherButton];
+    
     _followButton = [UIButton buttonWithType:UIButtonTypeSystem];
     [self.followButton setTitle:NSLocalizedString(@"Follow!", nil) forState:UIControlStateNormal];
     [self.contentView addSubview:self.followButton];
     
-    [self.replyButton sizeToFit];
-    [self.messageButton sizeToFit];
-    [self.otherButton sizeToFit];
+    
     [self.followButton sizeToFit];
 }
 
@@ -147,19 +149,19 @@
     CGFloat edgheMargin = 20.0f;
     CGFloat buttonMargin = 8.0f;
     
-    CGRect replyRect = self.replyButton.frame;
-    replyRect.origin = CGPointMake(edgheMargin, centerOriginY - replyRect.size.height / 2);
-    self.replyButton.frame = replyRect;
+    CGRect tweetRect = self.tweetButton.frame;
+    tweetRect.origin = CGPointMake(edgheMargin, centerOriginY - tweetRect.size.height / 2);
+    self.tweetButton.frame = tweetRect;
     
     CGRect messageRect = self.messageButton.frame;
-    messageRect.origin = CGPointMake(self.replyButton.frame.origin.x + self.replyButton.frame.size.width + buttonMargin, centerOriginY - messageRect.size.height / 2);
+    messageRect.origin = CGPointMake(self.tweetButton.frame.origin.x + self.tweetButton.frame.size.width + buttonMargin, centerOriginY - messageRect.size.height / 2);
     self.messageButton.frame = messageRect;
     
     CGRect otherRect = self.otherButton.frame;
     if (self.messageButton.superview) {
         otherRect.origin = CGPointMake(self.messageButton.frame.origin.x + self.messageButton.frame.size.width + buttonMargin, centerOriginY - messageRect.size.height / 2);
     } else {
-        otherRect.origin = CGPointMake(self.replyButton.frame.origin.x + self.replyButton.frame.size.width + buttonMargin, centerOriginY - messageRect.size.height / 2);
+        otherRect.origin = CGPointMake(self.tweetButton.frame.origin.x + self.tweetButton.frame.size.width + buttonMargin, centerOriginY - messageRect.size.height / 2);
     }
     self.otherButton.frame = otherRect;
     
