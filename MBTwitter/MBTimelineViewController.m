@@ -373,23 +373,26 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
     NSInteger textViewWidth = tableViewForCalculate.bounds.size.width - (64.0f + 8.0f);
     CGRect textRect = [MBTweetTextView frameRectWithAttributedString:attributedString constraintSize:CGSizeMake(textViewWidth, CGFLOAT_MAX) lineSpace:LINE_SPACING font:[UIFont systemFontOfSize:FONT_SIZE]];
     
-    CGFloat tweetViewSpace = 30.0f;
+    CGFloat tweetViewSpace = 32.0f;
     CGFloat verticalMargin = 10.0f;
     
     CGFloat bottomHeight = 0.0f;
     if (isRetweet) {
-        bottomHeight = 16.0f + 4.0f + 4.0f;
+        CGFloat retweetMargin = 4.0f;
+        bottomHeight = 16.0f + retweetMargin * 2;
     } else {
         bottomHeight = verticalMargin;
     }
-#warning 高さの算出は適当
+
     if (containsImage) {
-        bottomHeight += 128;
+        CGFloat imageMargin = 8.0f;
+        bottomHeight += 128 + imageMargin;
     }
     
     CGFloat customCellHeight = textRect.size.height + tweetViewSpace + bottomHeight;
     
-    CGFloat defaultHeight = 48 + verticalMargin * 2;
+    CGFloat avatorMargin = 12.0f;
+    CGFloat defaultHeight = 48 + avatorMargin * 2;
         
     return MAX(defaultHeight, customCellHeight);
 }
@@ -926,6 +929,30 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
     }
     
     [self.aoAPICenter postFavoriteForTweetID:[tweet.tweetID unsignedLongLongValue]];
+}
+
+- (void)didPushCancelRetweetButtonOnActionView:(MBTimelineActionView *)view
+{
+    NSIndexPath *selectedIndexPath = view.selectedIndexPath;
+    NSString *tweetKey = [self.dataSource objectAtIndex:selectedIndexPath.row];
+    MBTweet *tweet = [[MBTweetManager sharedInstance] storedTweetForKey:tweetKey];
+    if (tweet.tweetOfOriginInRetweet) {
+        tweet = tweet.tweetOfOriginInRetweet;
+    }
+    
+    [self.aoAPICenter postDestroyTweetForTweetID:[tweet.tweetID unsignedLongLongValue]];
+}
+
+- (void)didPushCancelFavoriteButtonOnActionView:(MBTimelineActionView *)view
+{
+    NSIndexPath *selectedIndexPath = view.selectedIndexPath;
+    NSString *tweetKey = [self.dataSource objectAtIndex:selectedIndexPath.row];
+    MBTweet *tweet = [[MBTweetManager sharedInstance] storedTweetForKey:tweetKey];
+    if (tweet.tweetOfOriginInRetweet) {
+        tweet = tweet.tweetOfOriginInRetweet;
+    }
+    
+    [self.aoAPICenter postDestroyFavoriteForTweetID:[tweet.tweetID unsignedLongLongValue]];
 }
 
 #pragma mark WebBrowsViewController Delegate
