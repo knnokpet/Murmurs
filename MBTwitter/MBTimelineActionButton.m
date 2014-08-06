@@ -25,7 +25,7 @@
     if (self) {
         _title = title;
         _image = image;
-        self.frame = CGRectMake(0, 0, 80, 40);
+        self.frame = CGRectMake(0, 0, 80, 44);
         self.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.8];
         self.titleLabel.textAlignment = NSTextAlignmentCenter;
         self.titleLabel.font = [UIFont systemFontOfSize:14.0f];
