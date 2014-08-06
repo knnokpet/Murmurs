@@ -488,19 +488,19 @@ static NSString *sendCellIdentifier = @"SendCellIdentifier";
     CGFloat messageViewVerticalMargin = 8.0;
     CGFloat dateLabelHeight = 14.0f;
     CGFloat dateLabelVerticalMargin = 2.0f + 8.0f;
-    CGFloat textViewMargin = 8.0 + 16.0;
+    CGFloat textViewSideMargin = 12.0 + 16.0;
+    CGFloat textViewUpMargin = 12.0f + 12.0f;
     
     
     // calculate textView
-    NSInteger textViewWidthSpace = tableView.bounds.size.width - (56 + 54) - textViewMargin;
+    NSInteger textViewWidthSpace = tableView.bounds.size.width - (50 + 60) - textViewSideMargin;
     CGFloat lineSpace = LINE_SPACING_MESSAGE;
     CGFloat fontSize = FONT_SIZE_MESSAGE;
     CGRect textViewRect = [MBTweetTextView frameRectWithAttributedString:attributedString constraintSize:CGSizeMake(textViewWidthSpace, CGFLOAT_MAX) lineSpace:lineSpace font:[UIFont systemFontOfSize:fontSize]];
     
-    CGFloat cellHeight = textViewRect.size.height + messageViewVerticalMargin + textViewMargin + dateLabelHeight + dateLabelVerticalMargin;
-    CGFloat defaultHeight = 40;
+    CGFloat cellHeight = textViewRect.size.height + messageViewVerticalMargin + textViewUpMargin + dateLabelHeight + dateLabelVerticalMargin;
     
-    return MAX(defaultHeight, cellHeight);
+    return cellHeight;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
