@@ -52,7 +52,7 @@
     [super setHighlighted:highlighted];
     
     if (highlighted) {
-        self.backgroundColor = [UIColor clearColor];
+        self.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
     } else {
         self.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.8];
     }

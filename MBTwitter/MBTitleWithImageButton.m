@@ -44,8 +44,10 @@
     
     [self setTitle:buttonTitle forState:UIControlStateNormal];
     [self setTitleColor:self.tintColor forState:UIControlStateNormal];
+    [self setTitleColor:[UIColor lightGrayColor] forState:UIControlStateDisabled];
     [self setNeedsLayout];
 }
+
 
 - (void)layoutSubviews
 {

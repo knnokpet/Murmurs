@@ -239,10 +239,15 @@ static NSString *retweetStr = @"ret";
     [self.navigationController presentViewController:navigationController animated:YES completion:nil];
 }
 
+- (void)didPushCancelRetweetButton
+{
+#warning cancel の失敗。
+}
+
 - (IBAction)didPushFavoriteButton:(id)sender {
     [self.aoAPICenter postFavoriteForTweetID:[self.tweet.tweetID unsignedLongLongValue]];
 }
-- (IBAction)didPushUnFavoriteButton:(id)sender {
+- (IBAction)didPushCancelFavoriteButton:(id)sender {
     [self.aoAPICenter postDestroyFavoriteForTweetID:[self.tweet.tweetID unsignedLongLongValue]];
 }
 
@@ -263,7 +268,7 @@ static NSString *retweetStr = @"ret";
 #pragma mark TableView Delegate Datasource
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    CGFloat height = 48.0f;
+    CGFloat height = 44.0f;
     CGFloat verticalMargin = 10.0f;
     CGFloat horizontalMargin = 16.0f;
     CGFloat innnerVerticalMargin = 4.0f;
@@ -271,7 +276,7 @@ static NSString *retweetStr = @"ret";
     CGFloat dateMargin = 8.0f;
     CGFloat dateRetweetViewHeight = 20.0f;
     
-    
+    NSInteger actionsRow = 2 + self.expandingDataSource.count;
     if (0 == indexPath.row) {
         height = 48.0f + (verticalMargin * 2);
     } else if (1 == indexPath.row) {
@@ -294,7 +299,9 @@ static NSString *retweetStr = @"ret";
         }
 
         height += addingHeight;
-    } else {
+    } else if (indexPath.row == actionsRow) {
+        height = 56.0f;
+    }else {
         ;
     }
     
@@ -519,10 +526,29 @@ static NSString *retweetStr = @"ret";
     [cell.replyButton setButtonImage:[UIImage imageNamed:@"reply-Cell-Boarder-Tint"]];
     [cell.replyButton addTarget:self action:@selector(didPushReplyButton:) forControlEvents:UIControlEventTouchUpInside];
     
-    [cell.retweetButton setButtonTitle:NSLocalizedString(@"Retweet", nil)];
-    [cell.retweetButton setButtonImage:[UIImage imageNamed:@""]];
-    [cell.retweetButton addTarget:self action:@selector(didPushRetweetButton:) forControlEvents:UIControlEventTouchUpInside];
     
+    // retweet
+    if (self.tweet.isRetweeted) {
+        [cell.retweetButton setButtonTitle:NSLocalizedString(@"Cancel", nil)];
+        [cell.retweetButton setButtonImage:[UIImage imageNamed:@"retweet-Boarder-Tint"]];
+        [cell.retweetButton addTarget:self action:@selector(didPushun) forControlEvents:UIControlEventTouchUpInside];
+    } else {
+        [cell.retweetButton setButtonTitle:NSLocalizedString(@"Retweet", nil)];
+        [cell.retweetButton setButtonImage:[UIImage imageNamed:@"retweet-Boarder-Tint"]];
+        [cell.retweetButton addTarget:self action:@selector(didPushRetweetButton:) forControlEvents:UIControlEventTouchUpInside];
+    }
+    
+    
+    // favorite
+    if (self.tweet.isFavorited) {
+        [cell.favoriteButton setButtonTitle:NSLocalizedString(@"Cancel", nil)];
+        [cell.favoriteButton setButtonImage:[UIImage imageNamed:@"Star-Boarder-Tint"]];
+        [cell.favoriteButton addTarget:self action:@selector(didPushUnFavoriteButton:) forControlEvents:UIControlEventTouchUpInside];
+    } else {
+        [cell.favoriteButton setButtonTitle:NSLocalizedString(@"Favorite", nil)];
+        [cell.favoriteButton setButtonImage:[UIImage imageNamed:@"Star-Boarder-Tint"]];
+        [cell.favoriteButton addTarget:self action:@selector(didPushFavoriteButton:) forControlEvents:UIControlEventTouchUpInside];
+    }
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
@@ -580,7 +606,7 @@ static NSString *retweetStr = @"ret";
 }
 
 #pragma mark AOuth_APICenterDelegate
-- (void)twitterAPICenter:(MBAOuth_TwitterAPICenter *)center parsedTweets:(NSArray *)tweets
+- (void)twitterAPICenter:(MBAOuth_TwitterAPICenter *)center requestType:(MBRequestType)requestType parsedTweets:(NSArray *)tweets
 {
     MBTweet *tweet = [tweets firstObject];
     if (tweet) {
