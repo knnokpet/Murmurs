@@ -25,27 +25,28 @@
 - (void)commonInit
 {
     self.selectionStyle = UITableViewCellSelectionStyleNone;
+    
+    self.isMyAccount = NO;
 }
 
 - (void)commonView
 {
-    _tweetButton = [[MBTitleWithImageButton alloc] initWithFrame:CGRectMake(0, 0, 48, 48) title:NSLocalizedString(@"Tweet", nil) image:[UIImage imageNamed:@"Hoge"]];
+    _tweetButton = [[MBTitleWithImageButton alloc] initWithFrame:CGRectMake(0, 0, 48, 48) title:NSLocalizedString(@"Tweet", nil) image:[UIImage imageNamed:@"Pen-ActionCell"]];
     [self.tweetButton.titleLabel setFont:[UIFont systemFontOfSize:15.0f]];
     [self.contentView addSubview:self.tweetButton];
     
-    _messageButton = [[MBTitleWithImageButton alloc] initWithFrame:CGRectMake(0, 0, 48, 48) title:NSLocalizedString(@"Message", nil) image:[UIImage imageNamed:@"Hoge"]];
+    _messageButton = [[MBTitleWithImageButton alloc] initWithFrame:CGRectMake(0, 0, 48, 48) title:NSLocalizedString(@"Message", nil) image:[UIImage imageNamed:@"Message-ActionCell"]];
     [self.messageButton.titleLabel setFont:[UIFont systemFontOfSize:15.0f]];
     
-    _otherButton = [[MBTitleWithImageButton alloc] initWithFrame:CGRectMake(0, 0, 48, 48) title:NSLocalizedString(@"More", nil) image:[UIImage imageNamed:@"Hoge"]];
+    
+    _otherButton = [[MBTitleWithImageButton alloc] initWithFrame:CGRectMake(0, 0, 48, 48) title:NSLocalizedString(@"More", nil) image:[UIImage imageNamed:@"More-ActionCell"]];
     [self.otherButton.titleLabel setFont:[UIFont systemFontOfSize:15.0f]];
     [self.contentView addSubview:self.otherButton];
     
-    _followButton = [UIButton buttonWithType:UIButtonTypeSystem];
-    [self.followButton setTitle:NSLocalizedString(@"Follow!", nil) forState:UIControlStateNormal];
+    _followButton = [[MBTitleWithImageButton alloc] initWithFrame:CGRectMake(0, 0, 48, 48) title:NSLocalizedString(@"Follow!", nil) image:[UIImage imageNamed:@"man-Plus-ActionCell"]];
+    [self.followButton.titleLabel setFont:[UIFont systemFontOfSize:15.0f]];
     [self.contentView addSubview:self.followButton];
     
-    
-    [self.followButton sizeToFit];
 }
 
 - (void)awakeFromNib
@@ -83,14 +84,15 @@
     if (canFollow) {
         self.followButton.enabled = YES;
         [self.followButton setTitle:NSLocalizedString(@"Follow!", nil) forState:UIControlStateNormal];
-        self.followButton.titleLabel.font = [UIFont systemFontOfSize:15.0f];
-        [self.followButton sizeToFit];
+        [self.followButton setButtonTitle:NSLocalizedString(@"Follow!", nil)];
+        [self.followButton.titleLabel setFont:[UIFont systemFontOfSize:15.0f]];
         
     } else {
         self.followButton.enabled = NO;
-        [self.followButton setTitle:NSLocalizedString(@"Now Following!", nil) forState:UIControlStateNormal];
-        self.followButton.titleLabel.font = [UIFont systemFontOfSize:14.0f];
-        [self.followButton sizeToFit];
+        [self.followButton setTitle:NSLocalizedString(@"Following!", nil) forState:UIControlStateNormal];
+        [self.followButton setButtonTitle:NSLocalizedString(@"Following!", nil)];
+        [self.followButton setButtonImage:[UIImage imageNamed:@"man-Check-ActionCell"]];
+        [self.followButton.titleLabel setFont:[UIFont systemFontOfSize:14.0f]];
     }
     [self setNeedsLayout];
 }
@@ -104,8 +106,7 @@
         }
     } else {
     }
-    self.followButton.titleLabel.font = [UIFont systemFontOfSize:15.0f];
-    [self.followButton sizeToFit];
+    [self.followButton.titleLabel setFont:[UIFont systemFontOfSize:15.0f]];
     
     [self setNeedsLayout];
 }
@@ -120,8 +121,7 @@
         
     }
     
-    self.followButton.titleLabel.font = [UIFont systemFontOfSize:15.0f];
-    [self.followButton sizeToFit];
+    [self.followButton.titleLabel setFont:[UIFont systemFontOfSize:15.0f]];
     
     [self setNeedsLayout];
 }
@@ -134,10 +134,22 @@
         self.followButton.enabled = NO;
     }
     
-    self.followButton.titleLabel.font = [UIFont systemFontOfSize:15.0f];
+    [self.followButton.titleLabel setFont:[UIFont systemFontOfSize:15.0f]];
     [self.followButton sizeToFit];
     
     [self setNeedsLayout];
+}
+
+- (void)setIsMyAccount:(BOOL)isMyAccount
+{
+    _isMyAccount = isMyAccount;
+    
+    if (isMyAccount == YES) {
+        [self.messageButton removeFromSuperview];
+        [self.otherButton removeFromSuperview];
+        [self.followButton removeFromSuperview];
+        [self setNeedsLayout];
+    }
 }
 
 - (void)layoutSubviews
@@ -147,7 +159,7 @@
     
     CGFloat centerOriginY = self.contentView.bounds.size.height / 2;
     CGFloat edgheMargin = 20.0f;
-    CGFloat buttonMargin = 8.0f;
+    CGFloat buttonMargin = 16.0f;
     
     CGRect tweetRect = self.tweetButton.frame;
     tweetRect.origin = CGPointMake(edgheMargin, centerOriginY - tweetRect.size.height / 2);
