@@ -90,7 +90,7 @@
 
 #pragma mark -
 #pragma mark TwitterAPICenter Delegate
-- (void)twitterAPICenter:(MBAOuth_TwitterAPICenter *)center parsedTweets:(NSArray *)tweets
+- (void)twitterAPICenter:(MBAOuth_TwitterAPICenter *)center requestType:(MBRequestType)requestType parsedTweets:(NSArray *)tweets
 {
     [self updateTableViewDataSource:tweets];
 }
