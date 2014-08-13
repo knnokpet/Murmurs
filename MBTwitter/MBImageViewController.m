@@ -129,12 +129,12 @@
     // gradient mask
     CAGradientLayer *gradientLayer = [CAGradientLayer layer];
     gradientLayer.frame = self.tweetContainerView.bounds;
-    gradientLayer.colors = [NSArray arrayWithObjects:(id)[UIColor blackColor].CGColor, (id)[UIColor colorWithRed:0 green:0 blue:0 alpha:0.5].CGColor, nil];
-    gradientLayer.startPoint = CGPointMake(0.0f, 0.1f);
+    gradientLayer.colors = [NSArray arrayWithObjects:(id)[UIColor blackColor].CGColor, (id)[UIColor colorWithRed:0 green:0 blue:0 alpha:0.9].CGColor, nil];
+    gradientLayer.startPoint = CGPointMake(0.0f, 0.2f);
     gradientLayer.endPoint = CGPointMake(0.0f, 0.0f);
     self.tweetContainerView.layer.mask = gradientLayer;
-    self.tweetContainerView.startPoint = CGPointMake(0, tweetContainerViewRect.size.height - 48);
-    self.tweetContainerView.endPoint = CGPointMake(tweetContainerViewRect.size.width, tweetContainerViewRect.size.height - 48);
+    self.tweetContainerView.startPoint = CGPointMake(self.avatorImageView.frame.origin.x, tweetContainerViewRect.size.height - 48);
+    self.tweetContainerView.endPoint = CGPointMake(tweetContainerViewRect.size.width - self.avatorImageView.frame.origin.x, tweetContainerViewRect.size.height - 48);
     
     // setting or downloading Image
     UIImage *avatorImage = [[MBImageCacher sharedInstance] cachedTimelineImageForUser:user.userIDStr];
@@ -298,7 +298,7 @@
 
 #pragma mark -
 #pragma mark AOuthAPICenter Delegate
-- (void)twitterAPICenter:(MBAOuth_TwitterAPICenter *)center parsedTweets:(NSArray *)tweets
+- (void)twitterAPICenter:(MBAOuth_TwitterAPICenter *)center requestType:(MBRequestType)requestType parsedTweets:(NSArray *)tweets
 {
     MBTweet *parsedTweet = [tweets firstObject];
     if (parsedTweet) {

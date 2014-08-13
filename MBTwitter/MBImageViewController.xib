@@ -75,9 +75,8 @@
                             <state key="normal" title="Close"/>
                         </button>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="324-7W-W2F">
-                            <rect key="frame" x="248" y="355" width="52" height="33"/>
+                            <rect key="frame" x="254" y="358" width="46" height="30"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
                             <state key="normal" title="Button"/>
                         </button>
                     </subviews>
