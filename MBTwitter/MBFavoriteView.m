@@ -58,18 +58,18 @@
     }
     
     if (self.geod == YES) {
-        [self drawPinInContext:context inRect:drawRect];
+        [self drawGeoArrowInContext:context InRect:drawRect];
     }
 }
 
 - (void)drawFavostarInContext:(CGContextRef)context inRect:(CGRect)rect
 {
-    CGContextSetRGBStrokeColor(context, 0, 0, 0.5, 1.0);
-    CGContextSetRGBFillColor(context, 0.0f, 0.0f, 0.5f, 1.0f);
+    CGContextSetRGBStrokeColor(context, 1.0, 0.8, 0, 1.0);
+    CGContextSetRGBFillColor(context, 1.0f, 0.8, 0.f, 1.0f);
     CGContextSetLineWidth(context, 1.0f);
     
     CGRect bound = self.bounds;
-    CGFloat starRadius = 4.0f;
+    CGFloat starRadius = 6.0f;
     CGPoint center = CGPointMake(rect.origin.x + starRadius / 2, bound.size.height / 2);
     CGContextMoveToPoint(context, center.x, center.y - starRadius);
     for (int i = 1; i < 5; ++i) {
@@ -98,6 +98,22 @@
     CGContextClosePath(context);
     CGContextStrokePath(context);
     
+}
+
+- (void)drawGeoArrowInContext:(CGContextRef)context InRect:(CGRect)rect
+{
+    CGContextSetRGBStrokeColor(context, 0.0, 0.4, 0.9, 1.0f);
+    CGContextSetRGBFillColor(context, 0.0, 0.4, 0.9, 1.0);
+    CGContextSetLineWidth(context, 1.0f);
+    
+    CGPoint center = CGPointMake(rect.size.width / 2, rect.size.height / 2);
+    CGFloat rectWidth = rect.size.width / 2;
+    CGContextMoveToPoint(context, center.x, center.y);
+    CGContextAddLineToPoint(context, 0, center.y);
+    CGContextAddLineToPoint(context, center.x + rectWidth, center.y - rectWidth);
+    CGContextAddLineToPoint(context, center.x, center.y + rectWidth);
+    CGContextClosePath(context);
+    CGContextDrawPath(context, kCGPathFillStroke);
 }
 
 @end
