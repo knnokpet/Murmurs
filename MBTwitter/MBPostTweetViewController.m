@@ -80,7 +80,7 @@
         NSString *screenNameAt = [NSString stringWithFormat:@"@%@ ", screenName];
         [self setText:screenNameAt];
         
-        NSString *title = NSLocalizedString(@"Reply to ", nil);
+        NSString *title = NSLocalizedString(@"Send to ", nil);
         self.title = [NSString stringWithFormat:@"%@%@", title, screenName];
     }
 }
@@ -334,6 +334,10 @@
 #pragma mark
 - (void)configurePinView
 {
+    if (self.geoPinView.superview) {
+        [self.geoPinView removeFromSuperview];
+    }
+    
     CGRect initialRect = CGRectMake(0, 0, 32, 32);
     self.geoPinView = [[MBGeoPinView alloc] initWithFrame:initialRect];
     [self.view addSubview:self.geoPinView];
@@ -341,6 +345,10 @@
 
 - (void)configureGeoPlaceViewWith:(MBPlace *)place
 {
+    if (self.geoPlaceView.superview) {
+        [self.geoPlaceView removeFromSuperview];
+    }
+    
     CGSize geoPlaceViewSize = CGSizeMake(self.view.bounds.size.width, self.geoPinView.bounds.size.height + 8.0f);
     CGRect geoPlaceViewRect = CGRectMake(0, self.tweetTextView.frame.origin.y + self.tweetTextView.bounds.size.height - self.tweetTextView.contentInset.bottom - geoPlaceViewSize.height, geoPlaceViewSize.width, geoPlaceViewSize.height);
     self.geoPlaceView = [[MBGradientMaskView alloc] initWithFrame:geoPlaceViewRect];
@@ -726,7 +734,7 @@
     }
 }
 
-- (void)twitterAPICenter:(MBAOuth_TwitterAPICenter *)center parsedTweets:(NSArray *)tweets
+- (void)twitterAPICenter:(MBAOuth_TwitterAPICenter *)center requestType:(MBRequestType)requestType parsedTweets:(NSArray *)tweets
 {
     MBTweet *postedTweet = [tweets firstObject];
     if (postedTweet) {
