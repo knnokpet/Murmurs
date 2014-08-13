@@ -30,7 +30,7 @@
 
 @property (nonatomic, readonly) MBAOuth_TwitterAPICenter *aoAPICenter;
 @property (nonatomic) MBUserIDManager *followerIDManager;
-@property (nonatomic) NSMutableArray *dataSource;
+@property (nonatomic) NSArray *dataSource;
 
 @property (nonatomic, readonly) MBLoadingView *loadingView;
 
@@ -57,7 +57,7 @@
     self.followerIDManager = [[[MBAccountManager sharedInstance] currentAccount] followerIDManager];
     
     self.aoAPICenter.delegate = self;
-    self.dataSource = [[MBDirectMessageManager sharedInstance] separatedMessages].mutableCopy;
+    self.dataSource = [[MBDirectMessageManager sharedInstance] separatedMessages];
     
     [self fetchFollowerIDs];
 }
@@ -113,6 +113,11 @@
     NSIndexPath *selectedPath = [self.tableView indexPathForSelectedRow];
     if (selectedPath) {
         [self.tableView deselectRowAtIndexPath:selectedPath animated:animated];
+    }
+    
+    for (MBSeparatedDirectMessageUserTableViewCell *cell in [self.tableView visibleCells]) {
+        NSIndexPath *updatingIndexPath = [self.tableView indexPathForCell:cell];
+        [self updateCell:cell AtIndexPath:updatingIndexPath];
     }
 }
 
@@ -300,12 +305,14 @@
         [self.refreshControl endRefreshing];
         [self removeLoadingView];
     } else {
+        
+        __weak MBSeparatedDirectMessageUserViewController *weakSelf = self;
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
-            self.dataSource = [[MBDirectMessageManager sharedInstance] separatedMessages].mutableCopy;
+            weakSelf.dataSource = [[MBDirectMessageManager sharedInstance] separatedMessages];
             dispatch_async(dispatch_get_main_queue(), ^{
-                [self.tableView reloadData];
-                [self.refreshControl endRefreshing];
-                [self removeLoadingView];
+                [weakSelf.tableView reloadData];
+                [weakSelf.refreshControl endRefreshing];
+                [weakSelf removeLoadingView];
             });
         });
     }
@@ -330,7 +337,7 @@
 {
     if (UITableViewCellEditingStyleDelete == editingStyle) {
         
-        [self.dataSource removeObjectAtIndex:indexPath.row];
+        //[self.dataSource removeObjectAtIndex:indexPath.row];
         
         NSDictionary *selectedMessagesDict = [self.dataSource objectAtIndex:indexPath.row];
         NSString *userKey = [selectedMessagesDict stringForKey:@"user"];
@@ -340,8 +347,11 @@
             [self.aoAPICenter postDestroyDirectMessagesRequireID:[[message tweetID] unsignedLongLongValue]];
         }
         [[MBDirectMessageManager sharedInstance] removeSeparatedMessagesForKey:userKey];
+        self.dataSource = [[MBDirectMessageManager sharedInstance] separatedMessages];
         
+        [tableView beginUpdates];
         [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+        [tableView endUpdates];
     }
 }
 
