@@ -66,6 +66,7 @@
     
     _isFavorited = [tweet boolForKey:KEY_FAVORITED];
     _isRetweeted = [tweet boolForKey:KEY_RETWEETED];
+    _currentUserRetweetedTweet = nil;
     if (YES == _isRetweeted) {
         _currentUserRetweetedTweet = [tweet dictionaryForKey:KEY_CURRENT_USER_RETWEETED_TWEET];
     }
