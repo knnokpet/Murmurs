@@ -123,8 +123,8 @@
     if (responseType == MBTwitterStatuseResponse) {
         jsonParser = [[MBTweet_JSONParser alloc] initWithJSONData:jsonData completionHandler:^(NSArray *parsedObj) {
             dispatch_async(dispatch_get_main_queue(), ^{
-                if ([_delegate respondsToSelector:@selector(twitterAPICenter:parsedTweets:)]) {
-                    [_delegate twitterAPICenter:weakSelf parsedTweets:parsedObj];
+                if ([_delegate respondsToSelector:@selector(twitterAPICenter:requestType:parsedTweets:)]) {
+                    [_delegate twitterAPICenter:weakSelf requestType:(MBRequestType)requestType parsedTweets:parsedObj];
                 }
             });
         }];
@@ -132,8 +132,8 @@
     } else if (responseType == MBTwitterStatusesResponse) {
         jsonParser = [[MBTweets_JSONParser alloc] initWithJSONData:jsonData completionHandler:^(NSArray *parsedObj) {
             dispatch_async(dispatch_get_main_queue(), ^{
-                if ([_delegate respondsToSelector:@selector(twitterAPICenter:parsedTweets:)]) {
-                    [_delegate twitterAPICenter:weakSelf parsedTweets:parsedObj];
+                if ([_delegate respondsToSelector:@selector(twitterAPICenter:requestType:parsedTweets:)]) {
+                    [_delegate twitterAPICenter:weakSelf requestType:(MBRequestType)requestType parsedTweets:parsedObj];
                 }
             });
         }];
@@ -141,8 +141,8 @@
     } else if (responseType == MBTwitterSearchedStatusesResponse) {
         jsonParser = [[MBSearchedTweets_JSONParser alloc] initWithJSONData:jsonData completionHandler:^(NSArray *parsedObj) {
             dispatch_async(dispatch_get_main_queue(), ^{
-                if ([_delegate respondsToSelector:@selector(twitterAPICenter:parsedTweets:)]) {
-                    [_delegate twitterAPICenter:weakSelf parsedTweets:parsedObj];
+                if ([_delegate respondsToSelector:@selector(twitterAPICenter:requestType:parsedTweets:)]) {
+                    [_delegate twitterAPICenter:weakSelf requestType:(MBRequestType)requestType parsedTweets:parsedObj];
                 }
             });
         }];
