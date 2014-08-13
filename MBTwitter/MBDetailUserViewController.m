@@ -12,6 +12,7 @@
 #import "MBFollowerViewController.h"
 #import "MBFavoritesViewController.h"
 #import "MBOtherUserListViewController.h"
+#import "MBIndividualDirectMessagesViewController.h"
 
 #import "MBRelationshipManager.h"
 #import "MBUser.h"
@@ -21,6 +22,7 @@
 #import "MBImageDownloader.h"
 #import "MBImageApplyer.h"
 #import "MBTweetTextComposer.h"
+#import "MBDirectMessageManager.h"
 
 #import "MBProfileAvatorView.h"
 #import "MBProfileDesciptionView.h"
@@ -413,12 +415,25 @@ static NSString *detailUserTableViewCellIdentifier = @"MBDetailUserTableViewCell
 
 - (void)didPushReplyButton
 {
-    
+    MBPostTweetViewController *postViewController = [[MBPostTweetViewController alloc] initWithNibName:@"PostTweetView" bundle:nil];
+    postViewController.delegate = self;
+    [postViewController setScreenName:self.user.screenName];
+    UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:postViewController];
+    [self.navigationController presentViewController:navigationController animated:YES completion:nil];
 }
 
 - (void)didPushMessageButton
 {
+    if ([[MBDirectMessageManager sharedInstance] separatedMessages].count == 0) {
+        [self.aoAPICenter getDeliveredDirectMessagesSinceID:0 maxID:0];
+        [self.aoAPICenter getSentDirectMessagesSinceID:0 maxID:0];
+    }
     
+    NSMutableArray *messages = [[MBDirectMessageManager sharedInstance] separatedMessagesForKey:self.user.userIDStr];
+    MBIndividualDirectMessagesViewController *messageViewController = [[MBIndividualDirectMessagesViewController alloc] init];
+    [messageViewController setPartner:self.user];
+    [messageViewController setConversation:messages];
+    [self.navigationController pushViewController:messageViewController animated:YES];
 }
 
 
@@ -429,7 +444,7 @@ static NSString *detailUserTableViewCellIdentifier = @"MBDetailUserTableViewCell
     for (NSString *buttonTitle in self.otherActions) {
         [actionSheet addButtonWithTitle:buttonTitle];
     }
-    [actionSheet addButtonWithTitle:NSLocalizedString(@"Chancel", nil)];
+    [actionSheet addButtonWithTitle:NSLocalizedString(@"Cancel", nil)];
     actionSheet.cancelButtonIndex = self.otherActions.count;
     
     if (self.tabBarController) {
@@ -480,6 +495,7 @@ static NSString *detailUserTableViewCellIdentifier = @"MBDetailUserTableViewCell
 
 - (void)updateActionCell:(MBDetailUserActionTableViewCell *)cell
 {
+    
     if (self.user.relationship) {
         MBRelationship *relationship = self.user.relationship;
         
@@ -494,13 +510,19 @@ static NSString *detailUserTableViewCellIdentifier = @"MBDetailUserTableViewCell
         cell.sentFollowRequest = relationship.sentFollowRequest;
         
         cell.isBlocking = relationship.isBlocking;
-        
-        
     }
     
     // add Target
+    [cell.tweetButton addTarget:self action:@selector(didPushReplyButton) forControlEvents:UIControlEventTouchUpInside];
+    [cell.messageButton addTarget:self action:@selector(didPushMessageButton) forControlEvents:UIControlEventTouchUpInside];
     [cell.followButton addTarget:self action:@selector(didPushFollowButton) forControlEvents:UIControlEventTouchUpInside];
     [cell.otherButton addTarget:self action:@selector(didPushOtherButton) forControlEvents:UIControlEventTouchUpInside];
+    
+    MBAccount *currentAccount = [MBAccountManager sharedInstance].currentAccount;
+    if ([currentAccount.userID isEqualToString:self.user.userIDStr]) {
+        cell.isMyAccount = YES;
+    }
+    
 }
 
 - (void)updateCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
@@ -713,6 +735,12 @@ static NSString *detailUserTableViewCellIdentifier = @"MBDetailUserTableViewCell
     } else if (buttonIndex == actionSheet.cancelButtonIndex) {
         
     }
+}
+
+#pragma mark MBPostTweetViewController Delegate
+- (void)dismissPostTweetViewController:(MBPostTweetViewController *)controller animated:(BOOL)animated
+{
+    [controller dismissViewControllerAnimated:YES completion:nil];
 }
 
 @end
