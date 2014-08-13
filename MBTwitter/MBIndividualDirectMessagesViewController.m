@@ -125,7 +125,8 @@ static NSString *sendCellIdentifier = @"SendCellIdentifier";
     [self.tableView registerNib:sendCell forCellReuseIdentifier:sendCellIdentifier];
     
     
-    _cameraButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCamera target:self action:@selector(didPushCameraButton:)];
+    _cameraButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCamera target:self action:@selector(didPushCameraButton:)]; /* unused */
+    _cameraButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
     _sendButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Send", nil) style:UIBarButtonItemStyleDone target:self action:@selector(didPushSendButton:)];
     
     defaultTextViewSize = CGSizeMake(210, 32);
@@ -136,7 +137,7 @@ static NSString *sendCellIdentifier = @"SendCellIdentifier";
     
 
     defaultToolBarSize = CGSizeMake(self.view.bounds.size.width, 44.0f);
-    defaultToolBarPoint = CGPointMake(0, self.tabBarController.tabBar.frame.origin.y - defaultToolBarSize.height);
+    defaultToolBarPoint = CGPointMake(0,self.view.bounds.size.height - self.tabBarController.tabBar.bounds.size.height - defaultToolBarSize.height);
     _toolBar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, defaultToolBarPoint.y, defaultToolBarSize.width, defaultToolBarSize.height)];
     [self.toolBar setItems:@[self.cameraButton, textBarItem, self.sendButton]];
     self.textView.delegate = self;
@@ -171,7 +172,8 @@ static NSString *sendCellIdentifier = @"SendCellIdentifier";
         [self.tableView setHidden:YES];
         
         [self.receiverTextField addTarget:self action:@selector(didChangeTextField) forControlEvents:UIControlEventEditingChanged];
-        
+        __weak UIView *toolBar = self.toolBar;
+        self.receiverTextField.inputAccessoryView = toolBar;
         
     } else {
         
@@ -202,7 +204,11 @@ static NSString *sendCellIdentifier = @"SendCellIdentifier";
     [self commonConfigureModel];
     [self commonConfigureView];
     
+    
     [self configureMessageView];
+    
+    [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:[self.dataSource count] - 1 inSection:0] atScrollPosition:UITableViewScrollPositionMiddle animated:NO];
+    [self.tableView setContentOffset:CGPointMake(0, CGFLOAT_MAX)];
 }
 
 
@@ -274,6 +280,8 @@ static NSString *sendCellIdentifier = @"SendCellIdentifier";
         self.currentReceiverViewController.tableView.contentInset = contentInsets;
         self.currentReceiverViewController.tableView.scrollIndicatorInsets = scrollInsets;
         
+        [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:[self.dataSource count] - 1 inSection:0] atScrollPosition:UITableViewScrollPositionMiddle animated:NO];
+        
     }completion:^(BOOL stop) {
         
     }];
@@ -315,7 +323,7 @@ static NSString *sendCellIdentifier = @"SendCellIdentifier";
     unsigned int curve = [[userInfo objectForKey:UIKeyboardAnimationCurveUserInfoKey] unsignedIntValue];
 
     [UIView animateWithDuration:duration delay:0 options:curve animations:^{
-        CGFloat toolBarOriginY = self.tabBarController.tabBar.frame.origin.y - self.toolBar.frame.size.height;
+        CGFloat toolBarOriginY = self.view.bounds.size.height - self.tabBarController.tabBar.bounds.size.height - self.toolBar.frame.size.height;
         CGRect toolBarRect = CGRectMake(0, toolBarOriginY, defaultToolBarSize.width, self.toolBar.frame.size.height);
         self.toolBar.frame = toolBarRect;
         [self.view addSubview:self.toolBar];
@@ -410,7 +418,9 @@ static NSString *sendCellIdentifier = @"SendCellIdentifier";
     }
     
     NSString *sendMessage = self.textView.text;
-    NSNumber *nonSendIndex = [NSNumber numberWithInteger:[self.dataSource count] - 1];
+    
+    NSUInteger nonSentIndexRow = [self.dataSource count];
+    NSNumber *nonSendIndex = [NSNumber numberWithUnsignedInteger:nonSentIndexRow];
     [self.nonSendMessages setObject:nonSendIndex forKey:sendMessage];
     if (self.isEditing) {
         self.isEditing = NO;
@@ -418,7 +428,11 @@ static NSString *sendCellIdentifier = @"SendCellIdentifier";
         
     }
     
-    [self.tableView reloadData];
+    
+    NSIndexPath *sendingIndexPath = [NSIndexPath indexPathForRow:[self.dataSource count] - 1 inSection:0];
+    [self.tableView beginUpdates];
+    [self.tableView insertRowsAtIndexPaths:@[sendingIndexPath] withRowAnimation:UITableViewRowAnimationFade];
+    [self.tableView endUpdates];
     
     [self.aoAPICenter postDirectMessage:sendMessage screenName:self.partner.screenName userID:[self.partner.userID unsignedLongLongValue]];
     
@@ -448,9 +462,7 @@ static NSString *sendCellIdentifier = @"SendCellIdentifier";
         self.currentReceiverViewController.view.frame = self.view.bounds;
         UIEdgeInsets tableViewInset = self.tableView.contentInset;
         UIEdgeInsets scrollInset = self.tableView.scrollIndicatorInsets;
-        tableViewInset.top = self.receiverToolbar.bounds.size.height;
         tableViewInset.bottom = self.tabBarController.tabBar.frame.size.height;
-        scrollInset.top = self.receiverToolbar.bounds.size.height;
         scrollInset.bottom = self.tabBarController.tabBar.frame.size.height;
         self.currentReceiverViewController.tableView.contentInset = tableViewInset;
         self.currentReceiverViewController.tableView.scrollIndicatorInsets = scrollInset;
@@ -470,7 +482,6 @@ static NSString *sendCellIdentifier = @"SendCellIdentifier";
         [self.view insertSubview:self.receiverToolbar aboveSubview:self.tableView];
     }
     
-    [self.view insertSubview:self.toolBar aboveSubview:self.receiverToolbar];
 }
 
 #pragma mark -
@@ -581,7 +592,6 @@ static NSString *sendCellIdentifier = @"SendCellIdentifier";
     cell.tweetTextView.attributedString = [MBTweetTextComposer attributedStringForTweet:message tintColor:[self.navigationController.navigationBar tintColor]];
     CGRect longestRect = [self cellRectForMessage:message constraintSize:CGSizeMake(self.view.bounds.size.width - (cell.messageView.frame.origin.x + cell.messageViewLeftSpaceConstraint.constant), CGFLOAT_MAX)];
     [cell setTweetViewRect:longestRect];
-    
     [cell.messageView setPopsFromRight:YES];
     
     UIImage *partnerImage = [[MBImageCacher sharedInstance] cachedProfileImageForUserID:message.sender.userIDStr];
