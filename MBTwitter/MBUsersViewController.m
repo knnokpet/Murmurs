@@ -154,11 +154,9 @@ static NSString *usersCellIdentifier = @"UsersCellIdentifier";
 
 - (void)removeBackTimelineIndicatorView
 {
-    if ([self.tableView.tableFooterView isKindOfClass:[UIActivityIndicatorView class]]) {
-        UIView *view = [[UIView alloc] init];
-        view.backgroundColor = [UIColor clearColor];
-        self.tableView.tableFooterView = view;
-    }
+    UIView *view = [[UIView alloc] init];
+    view.backgroundColor = [UIColor clearColor];
+    self.tableView.tableFooterView = view;
 }
 
 #pragma mark -
@@ -231,14 +229,15 @@ static NSString *usersCellIdentifier = @"UsersCellIdentifier";
     NSArray *decoratedArray = [self decorateAddingArray:addingArray];
     NSInteger addingCount = [decoratedArray count];
     
-    if (0 == addingCount) {
-        [self removeBackTimelineIndicatorView];
-    } else {
+    if (addingCount > 0) {
         [self decorateAddingArray:decoratedArray];
         [self.users addObjectsFromArray:decoratedArray];
         
         [self.tableView reloadData];
+    } else if (addingCount == 0) {
+        [self removeBackTimelineIndicatorView];
     }
+    
     self.enableAdding = YES;
 }
 
@@ -270,6 +269,10 @@ static NSString *usersCellIdentifier = @"UsersCellIdentifier";
 {
     self.nextCursor = next;
     self.previousCursor = previous;
+    
+    if (self.nextCursor.longLongValue == 0) {
+        [self removeBackTimelineIndicatorView];
+    }
     
     [self updateTableViewDataSource:users];
 }
