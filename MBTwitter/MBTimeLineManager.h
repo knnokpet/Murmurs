@@ -14,5 +14,6 @@
 @property (nonatomic, readonly) NSMutableArray *gaps;
 
 - (NSDictionary *)addTweets:(NSArray *)tweets;
+- (void)removeTweetAtIndex:(NSUInteger)index;
 
 @end

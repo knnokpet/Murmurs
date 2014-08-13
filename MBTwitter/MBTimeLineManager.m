@@ -43,7 +43,7 @@
 #pragma mark Setter & Getter
 - (NSArray *)tweets
 {
-    NSMutableArray *tweets = self.sourceTweets.mutableCopy;
+    NSMutableArray *tweets = [NSMutableArray arrayWithArray:self.sourceTweets];
     for (MBGapedTweet *gap in self.gaps) {
         NSInteger index = gap.index;
         [tweets insertObject:gap atIndex:index];
@@ -233,6 +233,25 @@
     }
     
     return NO;
+}
+
+- (void)removeTweetAtIndex:(NSUInteger)index
+{
+    
+    NSInteger countOfEarlyGaps = 0;
+    for (MBGapedTweet *gap in self.gaps) {
+        if (gap.index == index) { /* ありえない */
+            return;
+        }
+        if (gap.index > index) {
+            break;
+        }
+        
+        countOfEarlyGaps ++;
+    }
+    NSUInteger removeIndex = index - countOfEarlyGaps;
+    [self.sourceTweets removeObjectAtIndex:removeIndex];
+    
 }
 
 @end
