@@ -13,10 +13,11 @@
 #import "MBWebBrowsViewController.h"
 #import "MBTweetTextView.h"
 #import "MBMediaImageView.h"
+#import "MBRetweetView.h"
 
 @class MBTweet;
 @class MBUser;
-@interface MBDetailTweetViewController : UIViewController <UIViewControllerTransitioningDelegate, MBPostTweetViewControllerDelegate, MBAOuth_TwitterAPICenterDelegate, MBTweetTextViewDelegate, MBWebBrowsViewControllerDelegate, MBMediaImageViewDelegate, MBImageViewControllerDelegate>
+@interface MBDetailTweetViewController : UIViewController <UIViewControllerTransitioningDelegate, MBPostTweetViewControllerDelegate, MBAOuth_TwitterAPICenterDelegate, MBTweetTextViewDelegate, MBWebBrowsViewControllerDelegate, MBMediaImageViewDelegate, MBImageViewControllerDelegate, MBRetweetViewDelegate>
 
 @property (nonatomic, readonly) MBTweet *tweet;
 @property (nonatomic, readonly) MBUser *retweeter;
