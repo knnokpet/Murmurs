@@ -34,7 +34,7 @@
 {
     CGSize boundsSize = self.bounds.size;
     MBMediaImageView *imageView = [[MBMediaImageView alloc] initWithFrame:CGRectMake(0, 0, boundsSize.width, boundsSize.height)];
-    imageView.image = [UIImage imageNamed:@"DefaultImage"];
+    imageView.image = [UIImage imageNamed:@"TimelineMediaImageDefault"];
     [self addSubview:imageView];
     
     _imageViews = @[imageView];
