@@ -13,10 +13,22 @@ static NSString *tweetCellIdentifier = @"TweetTableViewCellIdentifier";
 static NSString *tweetWithImageCellIdentifier = @"TweetWithImageTableViewCellIdentifier";
 static NSString *favoriteCellIdentifier = @"FavoriteTableViewCellIdentifier";
 static NSString *favoriteWithImageCellIdentifier = @"FavoriteWithImageTableViewCellIdentifier";
+
+static NSString *placeCellIdentifier = @"PlaceTableViewCellIdentifier";
+static NSString *placeWithImageCellIdentifier = @"PlaceWithImageTableViewCellIdentifier";
+static NSString *placeFavoriteCellIdentifier = @"PlaceFavoriteTableViewCellIdentifier";
+static NSString *placeFavoriteWithImageCellIdentifier = @"PlaceFavoriteWithImageTableViewCellIdentifier";
+
 static NSString *retweetCellIdentifier = @"RetweetTableViewCellIdentifier";
 static NSString *retweetWithImageCellIdentifier = @"RetweetWithImageTableViewCellIdentifier";
 static NSString *favoriteRetweetCellIdentifier = @"FavoriteRetweetTableViewCellIdentifier";
 static NSString *favoriteRetweetWithImageCellIdentifier = @"FavoriteRetweetWithImageTableViewCellIdentifier";
+
+static NSString *retweetPlaceCellIdentifier = @"RetweetPlaceTableViewCellIdentifier";
+static NSString *retweetPlaceWithImageCellIdentifier = @"RetweePlacetWithImageTableViewCellIdentifier";
+static NSString *favoriteRetweetPlaceCellIdentifier = @"FavoriteRetweetPlaceTableViewCellIdentifier";
+static NSString *favoriteRetweetPlaceWithImageCellIdentifier = @"FavoriteRetweetPlaceWithImageTableViewCellIdentifier";
+
 static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
 
 @interface MBTimelineViewController ()
@@ -71,6 +83,7 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
     
+    // cell
     UINib *cellNib = [UINib nibWithNibName:@"TweetTavbleViewCell" bundle:nil];
     [self.tableView registerNib:cellNib forCellReuseIdentifier:tweetCellIdentifier];
     UINib *retweetCel = [UINib nibWithNibName:@"TweetTavbleViewCell" bundle:nil];
@@ -80,6 +93,18 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
     UINib *favoriteRetweetCell = [UINib nibWithNibName:@"TweetTavbleViewCell" bundle:nil];
     [self.tableView registerNib:favoriteRetweetCell forCellReuseIdentifier:favoriteRetweetCellIdentifier];
     
+        // place
+    UINib *placeCellNib = [UINib nibWithNibName:@"TweetTavbleViewCell" bundle:nil];
+    [self.tableView registerNib:placeCellNib forCellReuseIdentifier:placeCellIdentifier];
+    UINib *retweetPlaceCel = [UINib nibWithNibName:@"TweetTavbleViewCell" bundle:nil];
+    [self.tableView registerNib:retweetPlaceCel forCellReuseIdentifier:retweetPlaceCellIdentifier];
+    UINib *favoritePlaceCell = [UINib nibWithNibName:@"TweetTavbleViewCell" bundle:nil];
+    [self.tableView registerNib:favoritePlaceCell forCellReuseIdentifier:placeFavoriteCellIdentifier];
+    UINib *favoriteRetweetPlaceCell = [UINib nibWithNibName:@"TweetTavbleViewCell" bundle:nil];
+    [self.tableView registerNib:favoriteRetweetPlaceCell forCellReuseIdentifier:favoriteRetweetPlaceCellIdentifier];
+    
+    
+    // imageCell
     UINib *cellWithImageNib = [UINib nibWithNibName:@"TweetTavbleViewCell" bundle:nil];
     [self.tableView registerNib:cellWithImageNib forCellReuseIdentifier:tweetWithImageCellIdentifier];
     UINib *retweetWithImageCell = [UINib nibWithNibName:@"TweetTavbleViewCell" bundle:nil];
@@ -89,6 +114,15 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
     UINib *favoriteRetweetWithImageCell = [UINib nibWithNibName:@"TweetTavbleViewCell" bundle:nil];
     [self.tableView registerNib:favoriteRetweetWithImageCell forCellReuseIdentifier:favoriteRetweetWithImageCellIdentifier];
     
+        // place
+    UINib *placeCellWithImageNib = [UINib nibWithNibName:@"TweetTavbleViewCell" bundle:nil];
+    [self.tableView registerNib:placeCellWithImageNib forCellReuseIdentifier:placeWithImageCellIdentifier];
+    UINib *retweetPlaceWithImageCell = [UINib nibWithNibName:@"TweetTavbleViewCell" bundle:nil];
+    [self.tableView registerNib:retweetPlaceWithImageCell forCellReuseIdentifier:retweetPlaceWithImageCellIdentifier];
+    UINib *placeFavoriteWithImageCell = [UINib nibWithNibName:@"TweetTavbleViewCell" bundle:nil];
+    [self.tableView registerNib:placeFavoriteWithImageCell forCellReuseIdentifier:placeFavoriteWithImageCellIdentifier];
+    UINib *placeFavoriteRetweetWithImageCell = [UINib nibWithNibName:@"TweetTavbleViewCell" bundle:nil];
+    [self.tableView registerNib:placeFavoriteRetweetWithImageCell forCellReuseIdentifier:favoriteRetweetPlaceWithImageCellIdentifier];
     
     
     UINib *gapedCellNib = [UINib nibWithNibName:@"GapedTweetTableViewCell" bundle:nil];
@@ -363,14 +397,30 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
     }
     
     if ([tweet isKindOfClass:[MBGapedTweet class]]) {
-        return 120;
+        return 48.0;
     }
+    
+    CGFloat avatorMargin = 12.0f;
+    CGFloat avatorHeight = 48.0f;
+    CGFloat defaultHeight = avatorHeight + avatorMargin * 2;
     
     BOOL isRetweet = NO;
     MBTweet *calcuTweet = tweet;
     if (tweet.tweetOfOriginInRetweet) {
         isRetweet = YES;
         calcuTweet = tweet.tweetOfOriginInRetweet;
+        
+        defaultHeight = avatorHeight + avatorMargin + 18.0f + 4 * 2;
+    } else if (tweet.isRetweeted) {
+        isRetweet = YES;
+        defaultHeight = avatorHeight + avatorMargin + 18.0f + 4 * 2;
+    }
+    
+    BOOL isPlace = NO;
+    if (calcuTweet.place) {
+        isPlace = YES;
+        
+        defaultHeight = avatorHeight + avatorMargin + 18.0f + 4 * 2;
     }
     
     BOOL containsImage = NO;
@@ -389,10 +439,17 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
     CGFloat verticalMargin = 10.0f;
     
     CGFloat bottomHeight = 0.0f;
-    if (isRetweet) {
+    if (isRetweet && isPlace) {
+        CGFloat retweetMargin = 4.0f;
+        bottomHeight = 18.0f * 2 + retweetMargin * 3;
+    } else if (isRetweet) {
         CGFloat retweetMargin = 4.0f;
         bottomHeight = 18.0f + retweetMargin * 2;
-    } else {
+    } else if (isPlace) {
+        CGFloat retweetMargin = 4.0f;
+        bottomHeight = 18.0f + retweetMargin * 2;
+    }
+    else {
         bottomHeight = verticalMargin;
     }
 
@@ -403,9 +460,6 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
     
     CGFloat customCellHeight = textRect.size.height + tweetViewSpace + bottomHeight;
     
-    CGFloat avatorMargin = 12.0f;
-    CGFloat defaultHeight = 48 + avatorMargin * 2;
-        
     return MAX(defaultHeight, customCellHeight);
 }
 
@@ -453,63 +507,118 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
     MBTweetViewCell *cell;
     NSString *key = [self.dataSource objectAtIndex:indexPath.row];
     MBTweet *tweetAtIndex = [[MBTweetManager sharedInstance] storedTweetForKey:key];
+    MBTweet *tweetForUpdating = tweetAtIndex;
+    BOOL requireRetweet = NO;
+    BOOL requireImage = NO;
+    BOOL requirePlace = NO;
+    BOOL requireFavorite = NO;
+    
     // check retweet
-    if (tweetAtIndex.tweetOfOriginInRetweet) {
-        MBTweet *retweetedTweet = tweetAtIndex.tweetOfOriginInRetweet;
-        NSInteger imageCount = [retweetedTweet.entity.media count];
+    if (tweetAtIndex.tweetOfOriginInRetweet || tweetAtIndex.isRetweeted) {
+        tweetForUpdating = tweetAtIndex.tweetOfOriginInRetweet;
+        NSInteger imageCount = [tweetForUpdating.entity.media count];
+        requireRetweet = YES;
         
         NSString *identifier;
-        if (retweetedTweet.isFavorited || retweetedTweet.place) {
+        if (tweetForUpdating.isFavorited && tweetForUpdating.place) {
+            identifier = favoriteRetweetPlaceCellIdentifier;
+            requirePlace = YES;
+            requireFavorite = YES;
+            
+            if (imageCount > 0) {
+                identifier = favoriteRetweetPlaceWithImageCellIdentifier;
+                requireImage = YES;
+            }
+            
+        } else if (tweetForUpdating.isFavorited) {
             identifier = favoriteRetweetCellIdentifier;
+            requireFavorite = YES;
+            
             if (imageCount > 0) {
                 identifier = favoriteRetweetWithImageCellIdentifier;
+                requireImage = YES;
+            }
+            
+        } else if (tweetForUpdating.place) {
+            identifier = retweetPlaceCellIdentifier;
+            requirePlace = YES;
+            if (imageCount > 0) {
+                identifier = retweetPlaceWithImageCellIdentifier;
+                requireImage = YES;
             }
         } else {
             identifier = retweetCellIdentifier;
             if (imageCount > 0) {
                 identifier = retweetWithImageCellIdentifier;
+                requireImage = YES;
             }
         }
         cell = [self.tableView dequeueReusableCellWithIdentifier:identifier];
-        if (identifier == retweetCellIdentifier || identifier == retweetWithImageCellIdentifier) {
-            [cell removeFavoriteView];
-        }
-        if (identifier == retweetCellIdentifier || identifier == favoriteRetweetCellIdentifier) {
-            [cell removeImageContainerView];
-        }
 
         /* retweetView が必ずある状態で、という考えでここに */
         /* retweetTweet の代入もあるのでここに */
-        cell.retweetView.attributedString = [MBTweetTextComposer attributedStringForTimelineRetweeter:tweetAtIndex.tweetUser font:[UIFont systemFontOfSize:15.0f]];
-        cell.retweetView.delegate = self;
-        
-        tweetAtIndex = retweetedTweet;
+        //cell.retweetView.attributedString = [MBTweetTextComposer attributedStringForTimelineRetweeter:tweetAtIndex.tweetUser font:[UIFont systemFontOfSize:15.0f]];
+        //cell.retweetView.delegate = self;
+        NSAttributedString *retweeterName = [MBTweetTextComposer attributedStringForTimelineRetweeter:tweetAtIndex.tweetUser font:[UIFont systemFontOfSize:15.0f]];
+        if ([[MBAccountManager sharedInstance].currentAccount.userID isEqualToString:tweetAtIndex.tweetUser.userIDStr]) {
+            retweeterName = [MBTweetTextComposer attributedStringByRetweetedMeForTimelineWithfont:[UIFont systemFontOfSize:15.0f]];
+        }
+        [cell.retweeterView setRetweeterString:retweeterName];
+        [cell.retweeterView setUserLink:[[MBMentionUserLink alloc]initWithUserID:tweetAtIndex.tweetUser.userID IDStr:tweetAtIndex.tweetUser.userIDStr screenName:tweetAtIndex.tweetUser.screenName]];
+        cell.retweeterView.delegate = self;
         
     } else {
         NSInteger imageCount = tweetAtIndex.entity.media.count;
         NSString *identifier;
-        if (tweetAtIndex.isFavorited || tweetAtIndex.place) {
+        if (tweetForUpdating.isFavorited && tweetForUpdating.place) {
+            identifier = placeFavoriteCellIdentifier;
+            requireFavorite = YES;
+            requirePlace  = YES;
+            
+            if (imageCount > 0) {
+                identifier = placeFavoriteWithImageCellIdentifier;
+                requireImage = YES;
+            }
+        } else if (tweetForUpdating.isFavorited) {
             identifier = favoriteCellIdentifier;
+            requireFavorite = YES;
+            
             if (imageCount > 0) {
                 identifier = favoriteWithImageCellIdentifier;
+                requireImage = YES;
             }
-        } else {
+        } else if (tweetForUpdating.place) {
+            identifier = placeCellIdentifier;
+            requirePlace = YES;
+            if (imageCount > 0) {
+                identifier = placeWithImageCellIdentifier;
+                requireImage = YES;
+            }
+            
+        }else {
             identifier = tweetCellIdentifier;
             if (imageCount > 0) {
                 identifier = tweetWithImageCellIdentifier;
+                requireImage = YES;
             }
         }
         cell = [self.tableView dequeueReusableCellWithIdentifier:identifier];
-        [cell removeRetweetView];
-        if (identifier == tweetCellIdentifier || identifier == tweetWithImageCellIdentifier) {
-            [cell removeFavoriteView];
-        }
-        if (identifier == tweetCellIdentifier || identifier == favoriteCellIdentifier) {
-            [cell removeImageContainerView];
-        }
     }
     
-    [self updateCell:cell tweet:tweetAtIndex AtIndexPath:indexPath];
+    if (requireRetweet == NO) {
+        [cell removeRetweetView];
+    }
+    if (requireFavorite == NO) {
+        [cell removeFavoriteView];
+    }
+    if (requirePlace == NO) {
+        [cell removePlaceNameView];
+    }
+    if (requireImage == NO) {
+        [cell removeImageContainerView];
+    }
+    
+    [self updateCell:cell tweet:tweetForUpdating AtIndexPath:indexPath];
     
     return cell;
 }
@@ -523,7 +632,7 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
         NSString *key = [self.dataSource objectAtIndex:indexPath.row];
         tweetAtIndexPath = [[MBTweetManager sharedInstance] storedTweetForKey:key];
         if (tweetAtIndexPath.tweetOfOriginInRetweet) {
-            MBTweet *retweetedTweet = tweetAtIndexPath.tweetOfOriginInRetweet;
+            MBTweet *retweetedTweet = tweet.tweetOfOriginInRetweet;
             tweetAtIndexPath = retweetedTweet;
             if (cell.retweetView.superview) {
                 cell.retweetView.attributedString = [MBTweetTextComposer attributedStringForTimelineRetweeter:tweet.tweetUser font:[UIFont systemFontOfSize:15.0f]];
@@ -536,8 +645,7 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
     
     
     // favorite & geo
-    cell.favorited = tweetAtIndexPath.isFavorited;
-    cell.geod = (tweetAtIndexPath.place != nil) ? YES : NO;
+    cell.placeNameView.placeString = [MBTweetTextComposer attributedStringForTimelinePlace:tweetAtIndexPath.place font:[UIFont systemFontOfSize:15.0f]];
     
     // timeView
     NSString *timeIntervalString = [NSString timeMarginWithDate:tweetAtIndexPath.createdDate];
@@ -561,8 +669,7 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
     cell.avatorImageView.delegate = self;
     UIImage *avatorImage = [[MBImageCacher sharedInstance] cachedTimelineImageForUser:userAtIndexPath.userIDStr];
     if (!avatorImage) {
-        /* 大量に呼び出されるとリサイズ処理が走って重くなるんじゃない？ */
-        cell.avatorImageView.image = [UIImage imageNamed:@"DefaultImage"];
+        cell.avatorImageView.image = [UIImage imageNamed:@"TimelineDefaultImage"];
         if (NO == tweetAtIndexPath.tweetUser.isDefaultProfileImage) {
             
             dispatch_queue_t globalQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0);
@@ -601,19 +708,15 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
 
             int i = 0;
             for (MBMediaLink *mediaLink in tweetAtIndexPath.entity.media) {
-                UIImage *mediaImage = [[MBImageCacher sharedInstance] cachedMediaImageForMediaID:mediaLink.mediaIDStr];
+                UIImage *mediaImage = [[MBImageCacher sharedInstance] cachedCroppedMediaImageForMediaID:mediaLink.mediaIDStr];
                 MBMediaImageView *mediaImageView = [cell.imageContainerView.imageViews objectAtIndex:i];
                 mediaImageView.delegate = self;
                 mediaImageView.mediaIDStr = mediaLink.mediaIDStr;
                 mediaImageView.mediaHTTPURLString = mediaLink.originalURLHttpsText;
                 
                 if (mediaImage) {
-                    
-                    CGSize mediaImageSize = CGSizeMake(mediaImageView.frame.size.width, mediaImageView.frame.size.height);
-                    UIImage *croppedImage = [MBImageApplyer imageForMediaWithImage:mediaImage size:mediaImageSize];
-
                     dispatch_async(dispatch_get_main_queue(), ^{
-                        mediaImageView.image = croppedImage;
+                        mediaImageView.image = mediaImage;
                     });
                     
                 } else {
@@ -624,6 +727,7 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
                             
                             CGSize mediaImageSize = CGSizeMake(mediaImageView.frame.size.width, mediaImageView.frame.size.height);
                             UIImage *croppedImage = [MBImageApplyer imageForMediaWithImage:image size:mediaImageSize];
+                            [[MBImageCacher sharedInstance] storeCroppedMediaImage:croppedImage forMediaID:mediaLink.mediaIDStr];
                             dispatch_async(dispatch_get_main_queue(), ^{
                                 [mediaImageView setImage:croppedImage];
                             });
@@ -702,7 +806,7 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
     }
     
     if (isGap) {
-        height += 120;
+        height += 48;
     }
 
     return height;
@@ -739,7 +843,11 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
         
         MBTweet *retweetedTweet = selectedTweet.tweetOfOriginInRetweet;
         selectedTweet = retweetedTweet;
+    } else if (selectedTweet.isRetweeted) {
+        MBUser *myUser = [[MBUserManager sharedInstance] storedUserForKey:[MBAccountManager sharedInstance].currentAccount.userID];
+        [detailTweetViewController setRetweeter:myUser];
     }
+    
     [detailTweetViewController setTweet:selectedTweet];
     [self.navigationController pushViewController:detailTweetViewController animated:YES];
 }
@@ -1049,6 +1157,19 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
         [self presentViewController:imageViewController animated:YES completion:nil];
     }
     
+}
+
+#pragma mark retweetView Delegate
+- (void)retweetView:(MBRetweetView *)retweetView userLink:(MBMentionUserLink *)userLink
+{
+    MBUser *selectedUser = [[MBUserManager sharedInstance] storedUserForKey:userLink.userIDStr];
+    MBDetailUserViewController *userViewController = [[MBDetailUserViewController alloc] initWithNibName:@"MBUserDetailView" bundle:nil];
+    [userViewController setUser:selectedUser];
+    if (nil == selectedUser) {
+        NSNumber *userID = userLink.userID;
+        [userViewController setUserID:userID];
+    }
+    [self.navigationController pushViewController:userViewController animated:YES];
 }
 
 #pragma mark ImageViewController Delegate
