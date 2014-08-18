@@ -38,7 +38,7 @@
 {
     // searchBar
     _searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 300, 44)];
-    self.searchBar.barStyle = UISearchBarStyleDefault;
+    [self.searchBar setSearchFieldBackgroundImage:[UIImage imageNamed:@"searchBarBackgroundImage"] forState:UIControlStateNormal];
     NSString *searchBarPlaceHolder = NSLocalizedString(@"Search for Tweet or User", nil);
     [self.searchBar setPlaceholder:searchBarPlaceHolder];
     self.searchBar.delegate = self;
@@ -122,6 +122,22 @@
     [self receiveChengedAccountNotification];
 }
 
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillAppear:) name:UIKeyboardWillShowNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillDisappear:) name:UIKeyboardWillHideNotification object:nil];
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [self.searchBar resignFirstResponder];
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillShowNotification object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillHideNotification object:nil];
+}
+
 - (void)receiveChengedAccountNotification
 {
     [[NSNotificationCenter defaultCenter] addObserverForName:@"ChangeMyAccount" object:nil queue:nil usingBlock:^(NSNotification *notification) {
@@ -155,6 +171,29 @@
 - (void)changeNavigationItemtoNonWithAnimated:(BOOL)animated
 {
     [self.navigationItem setRightBarButtonItem:nil animated:animated];
+}
+
+#pragma mark Keyboard
+- (void)keyboardWillAppear:(NSNotification *)notification
+{
+    NSDictionary *userInfo = [notification userInfo];
+    double duration = [[userInfo objectForKey:UIKeyboardAnimationDurationUserInfoKey] doubleValue];
+    unsigned int curve = [[userInfo objectForKey:UIKeyboardAnimationCurveUserInfoKey] unsignedIntValue];
+    
+    [UIView animateWithDuration:duration delay:0.0f options:curve animations:^{
+        self.view.backgroundColor = [UIColor grayColor];
+    }completion:nil];
+}
+
+- (void)keyboardWillDisappear:(NSNotification *)notification
+{
+    NSDictionary *userInfo = [notification userInfo];
+    double duration = [[userInfo objectForKey:UIKeyboardAnimationDurationUserInfoKey] doubleValue];
+    unsigned int curve = [[userInfo objectForKey:UIKeyboardAnimationCurveUserInfoKey] unsignedIntValue];
+    
+    [UIView animateWithDuration:duration delay:0.0f options:curve animations:^{
+        self.view.backgroundColor = [UIColor whiteColor];
+    }completion:nil];
 }
 
 #pragma mark View Action
@@ -224,6 +263,19 @@
     [self changeNavigationItemtoNonWithAnimated:YES];
     [searchBar setShowsCancelButton:YES animated:YES];
     return YES;
+}
+
+- (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText
+{
+    if (searchText.length == 0) {
+        if (self.tweetViewController.view.superview) {
+            [self.tweetViewController.view removeFromSuperview];
+        }
+        if (self.usersViewController.view.superview) {
+            [self.usersViewController.view removeFromSuperview];
+        }
+        [self updateContainerView];
+    }
 }
 
 #pragma mark SearchedTweetsViewController Delegate
