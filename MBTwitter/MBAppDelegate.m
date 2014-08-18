@@ -43,15 +43,16 @@
     MBReplyTimelineViewController *replyTimelineViewController = [[MBReplyTimelineViewController alloc] initWithNibName:@"TimelineTableView" bundle:nil];
     UINavigationController *replyNavigation = [[UINavigationController alloc] initWithRootViewController:replyTimelineViewController];
     [viewControllers addObject:replyNavigation];
-    UIImage *replyImage = [[UIImage alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"atmark@2x" ofType:@"png"]];
-    UITabBarItem *replyBarItem = [[UITabBarItem alloc] initWithTitle:NSLocalizedString(@"Reply", nil) image:replyImage tag:1];
+    UIImage *replyImage = [[UIImage alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"atMark-Line@2x" ofType:@"png"]];
+    UIImage *selectedReplyImage = [[UIImage alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"atMark-Line-Selected@2x" ofType:@"png"]];
+    UITabBarItem *replyBarItem = [[UITabBarItem alloc] initWithTitle:NSLocalizedString(@"Reply", nil) image:replyImage selectedImage:selectedReplyImage];
     replyTimelineViewController.tabBarItem = replyBarItem;
     
     MBSeparatedDirectMessageUserViewController *separatedDMUserViewController = [[MBSeparatedDirectMessageUserViewController alloc] initWithNibName:@"SeparatedDirectMessagesView" bundle:nil];
     UINavigationController *dmUserNavigation = [[UINavigationController alloc] initWithRootViewController:separatedDMUserViewController];
     [viewControllers addObject:dmUserNavigation];
-    UIImage *messageImage = [[UIImage alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"Message-2@2x" ofType:@"png"]];
-    UIImage *messageSelectedImage = [[UIImage alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"Message-Selected-2@2x" ofType:@"png"]];
+    UIImage *messageImage = [[UIImage alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"Message@2x" ofType:@"png"]];
+    UIImage *messageSelectedImage = [[UIImage alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"Message-Selected@2x" ofType:@"png"]];
     UITabBarItem *messageBarItem = [[UITabBarItem alloc] initWithTitle:NSLocalizedString(@"Message", nil) image:messageImage selectedImage:messageSelectedImage];
     separatedDMUserViewController.tabBarItem = messageBarItem;
     
@@ -87,17 +88,14 @@
 {
     // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later. 
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
-    MBHomeTimelineViewController *homeViewController = nil;
-    id obj = [self.tabBarController.viewControllers firstObject];
-    if ([obj isKindOfClass:[UINavigationController class]]) {
-        UINavigationController *navigationController = obj;
-        id objInNavigation = [navigationController.viewControllers firstObject];
-        if ([objInNavigation isKindOfClass:[MBHomeTimelineViewController class]]) {
-            homeViewController = objInNavigation;
+    
+    for (MBAccount *account in [MBAccountManager sharedInstance].accounts) {
+        MBTimeLineManager *timelineManager = account.timelineManager;
+        if (timelineManager.tweets.count > 0) {
+            [[MBTweetManager sharedInstance] deleteAllSavedTweetsForAccount:account];
+            [[MBTweetManager sharedInstance] saveTimeline:timelineManager.tweets withAccount:account];
         }
     }
-    [[MBTweetManager sharedInstance] deleteAllSavedTweetsOfCurrentAccount];
-    [homeViewController saveTimeline];
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application
@@ -115,9 +113,11 @@
             [replyViewController refreshAction];
         } else if ([rootViewController isKindOfClass:[MBSeparatedDirectMessageUserViewController class]]) {
             MBSeparatedDirectMessageUserViewController *messageViewController = rootViewController;
+            [messageViewController fetchCurrentMessage];
             
         } else if ([rootViewController isKindOfClass:[MBMyListViewController class]]) {
             MBMyListViewController *listViewController = rootViewController;
+            [listViewController goBacksLists];
         }
     }
 }
