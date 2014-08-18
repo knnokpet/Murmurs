@@ -14,10 +14,12 @@
 
 - (UIImage *)cachedProfileImageForUserID:(NSString *)userID;
 - (UIImage *)cachedProfileImageForUserID:(NSString *)userID defaultImage:(UIImage *)defaultImage;
-- (UIImage *)cachedMediaImageForMediaID:(NSString *)mediaID;
-
 - (void)storeProfileImage:(UIImage *)image data:(NSData *)data forUserID:(NSString *)userID;
+
+- (UIImage *)cachedMediaImageForMediaID:(NSString *)mediaID;
+- (UIImage *)cachedCroppedMediaImageForMediaID:(NSString *)mediaID;
 - (void)storeMediaImage:(UIImage *)image data:(NSData *)data  forMediaID:(NSString *)mediaID;
+- (void)storeCroppedMediaImage:(UIImage *)image forMediaID:(NSString *)mediaID;
 
 - (UIImage *)cachedTimelineImageForUser:(NSString *)userID;
 - (void)storeTimelineImage:(UIImage *)image forUserID:(NSString *)userID;
