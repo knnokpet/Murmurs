@@ -8,6 +8,7 @@
 
 #import "MBDetailTweetTextTableViewCell.h"
 #import "MBTweetTextView.h"
+#import "MBFavoriteView.h"
 #import "MBTimelineImageContainerView.h"
 
 @implementation MBDetailTweetTextTableViewCell
@@ -32,6 +33,14 @@
     if (self.retweetView.superview) {
         [self.retweetView removeFromSuperview];
         self.retweetView = nil;
+    }
+}
+
+- (void)removeFavoriteView
+{
+    if (self.favoriteView.superview) {
+        [self.favoriteView removeFromSuperview];
+        self.favoriteView = nil;
     }
 }
 
