@@ -15,6 +15,7 @@
 
 #import "MBAppDelegate.h"
 
+#import "MBMyAccountsTableViewCell.h"
 #import "MBDetailUserInfomationTableViewCell.h"
 #import "MBProfileAvatorView.h"
 #import "MBAvatorImageView.h"
@@ -29,6 +30,7 @@
 #import "MBImageApplyer.h"
 
 
+static NSString *accountsTableViewCellIdentifier = @"MyAccountsTableViewCellIdentifier";
 static NSString *avatorInfomationTableViewCellIdentifier = @"MBDetailUserInfomationTableViewCellIdentifier";
 
 static NSString *titleKey = @"TitleKey";
@@ -133,6 +135,8 @@ static NSString *imageKey = @"ImageKey";
     self.tableView.dataSource = self;
     UINib *avatorInfomationNib = [UINib nibWithNibName:@"MBDetailUserInfomationTableViewCell" bundle:nil];
     [self.tableView registerNib:avatorInfomationNib forCellReuseIdentifier:avatorInfomationTableViewCellIdentifier];
+    UINib *accountsCellNib = [UINib nibWithNibName:@"MBMyAccountsTableViewCell" bundle:nil];
+    [self.tableView registerNib:accountsCellNib forCellReuseIdentifier:accountsTableViewCellIdentifier];
     
 }
 
@@ -152,6 +156,8 @@ static NSString *imageKey = @"ImageKey";
     [self.twitterAccessor isAuthorized];
     
     [self configureDataSource];
+    
+    self.title = NSLocalizedString(@"Account", nil);
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -216,7 +222,29 @@ static NSString *imageKey = @"ImageKey";
     }
 }
 
-- (void)downloadAvatorImaeForCell:(MBDetailUserInfomationTableViewCell *)cell
+- (void)downloadAvatorImageForAccountsCell:(MBMyAccountsTableViewCell *)cell withUser:(MBUser *)user
+{
+    if (user.urlHTTPSAtProfileImage) {
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+            
+            [MBImageDownloader downloadOriginImageWithURL:user.urlHTTPSAtProfileImage completionHandler:^ (UIImage *image, NSData *imageData) {
+                if (image) {
+                    [[MBImageCacher sharedInstance] storeProfileImage:image data:imageData forUserID:user.userIDStr];
+                    CGSize imageSize = CGSizeMake(cell.avatorImageView.frame.size.width, cell.avatorImageView.frame.size.height);
+                    CGFloat radius = cell.avatorImageView.layer.cornerRadius;
+                    UIImage *radiusImage = [self applyedImage:image forViewSize:imageSize radius:radius];
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        cell.avatorImageView.image = radiusImage;
+                    });
+                }
+            }failedHandler:^ (NSURLResponse *response, NSError *error) {
+                
+            }];
+        });
+    }
+}
+
+- (void)downloadAvatorImaeForInformationCell:(MBDetailUserInfomationTableViewCell *)cell
 {
     if (self.currentUser.urlHTTPSAtProfileImage) {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
@@ -224,7 +252,9 @@ static NSString *imageKey = @"ImageKey";
             [MBImageDownloader downloadOriginImageWithURL:self.currentUser.urlHTTPSAtProfileImage completionHandler:^ (UIImage *image, NSData *imageData) {
                 if (image) {
                     [[MBImageCacher sharedInstance] storeProfileImage:image data:imageData forUserID:self.currentUser.userIDStr];
-                    UIImage *radiusImage = [self applyImage:image ForAvatorViewInCell:cell];
+                    CGSize imageSize = CGSizeMake(cell.profileAvatorView.avatorImageView.bounds.size.width, cell.profileAvatorView.avatorImageView.bounds.size.height);
+                    CGFloat radius = cell.profileAvatorView.avatorImageView.layer.cornerRadius;
+                    UIImage *radiusImage = [self applyedImage:image forViewSize:imageSize radius:radius];
                     
                     dispatch_async(dispatch_get_main_queue(), ^{
                         cell.profileAvatorView.avatorImageView.image = radiusImage;
@@ -235,6 +265,12 @@ static NSString *imageKey = @"ImageKey";
             }];
         });
     }
+}
+
+- (UIImage *)applyedImage:(UIImage *)image forViewSize:(CGSize)imageSize radius:(CGFloat)imageRadius
+{
+    UIImage *radiusImage = [MBImageApplyer imageForTwitter:image size:imageSize radius:imageRadius];
+    return radiusImage;
 }
 
 - (UIImage *)applyImage:(UIImage *)image ForAvatorViewInCell:(MBDetailUserInfomationTableViewCell *)cell
@@ -287,7 +323,8 @@ static NSString *imageKey = @"ImageKey";
     if (0 == section) {
         titleForHeader = NSLocalizedString(@"Accounts", nil);
     } else if (1 == section) {
-        titleForHeader = NSLocalizedString(@"Selected Account", nil);
+        MBAccount *currentAccount = [[MBAccountManager sharedInstance] currentAccount];
+        titleForHeader = currentAccount.screenName;
     }
     
     return titleForHeader;
@@ -297,7 +334,9 @@ static NSString *imageKey = @"ImageKey";
 {
     CGFloat defaultHeifht = 44.0f;
     CGFloat heightForRow = defaultHeifht;
-    if (1 == indexPath.section) {
+    if (indexPath.section == 0) {
+        heightForRow = 36.0f + 8.0f * 2;
+    }else if (1 == indexPath.section) {
         heightForRow = 160.0f;
     }
     
@@ -313,17 +352,14 @@ static NSString *imageKey = @"ImageKey";
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    static NSString *accountsCellIdentifier = @"AccountsCell";
+    //static NSString *accountsCellIdentifier = @"AccountsCell";
     static NSString *userDataCellIdentifier = @"UserDataCell";
     /*static NSString *requestCellIdentifier = @"RequestCell";  unused */
     UITableViewCell *cell;
     
     if (0 == indexPath.section) {
-        cell = [self.tableView dequeueReusableCellWithIdentifier:accountsCellIdentifier];
-        if (!cell) {
-            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:accountsCellIdentifier];
-        }
-        [self updateCell:cell atIndexPath:indexPath];
+        cell = [self.tableView dequeueReusableCellWithIdentifier:accountsTableViewCellIdentifier];
+        [self updateCell:(MBMyAccountsTableViewCell *)cell atIndexPath:indexPath];
         
     } else if (1 == indexPath.section) {
         cell = [self.tableView dequeueReusableCellWithIdentifier:avatorInfomationTableViewCellIdentifier];
@@ -362,18 +398,32 @@ static NSString *imageKey = @"ImageKey";
     return cell;
 }
 
-- (void)updateCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
+- (void)updateCell:(MBMyAccountsTableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
 {
     MBAccount *currentAccount = [[MBAccountManager sharedInstance] currentAccount];
     MBAccount *account = [self.accounts objectAtIndex:indexPath.row];
     MBUser *user = [[MBUserManager sharedInstance] storedUserForKey:account.userID];
-    cell.textLabel.text = account.screenName;
+    cell.characterNameLabel.text = account.screenName;
     if ([currentAccount.userID isEqualToString:account.userID]) {
         cell.accessoryType = UITableViewCellAccessoryCheckmark;
     } else {
         cell.accessoryType = UITableViewCellAccessoryNone;
     }
     
+    UIImage *cachedImage = [[MBImageCacher sharedInstance] cachedProfileImageForUserID:user.userIDStr defaultImage:nil];
+    if (!cachedImage) {
+        [self downloadAvatorImageForAccountsCell:cell withUser:user];
+    } else {
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+            CGSize imageSize = CGSizeMake(cell.avatorImageView.frame.size.width, cell.avatorImageView.frame.size.height);
+            CGFloat radius = cell.avatorImageView.layer.cornerRadius;
+            UIImage *radiusImage = [self applyedImage:cachedImage forViewSize:imageSize radius:radius];
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                cell.avatorImageView.image = radiusImage;
+            });
+        });
+    }
 }
 
 - (void)updateAvatorInformationCell:(MBDetailUserInfomationTableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
@@ -386,7 +436,7 @@ static NSString *imageKey = @"ImageKey";
     UIImage *cachedImage = [[MBImageCacher sharedInstance] cachedProfileImageForUserID:self.currentUser.userIDStr defaultImage:nil];
     cell.profileAvatorView.avatorImageView.image = cachedImage;
     if (!cachedImage) {
-        [self downloadAvatorImaeForCell:cell];
+        [self downloadAvatorImaeForInformationCell:cell];
     } else {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
             UIImage *avatorImage = [self applyImage:cachedImage ForAvatorViewInCell:cell];
