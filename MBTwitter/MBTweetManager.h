@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 
 @class MBTweet;
+@class MBAccount;
 @interface MBTweetManager : NSObject
 
 + (MBTweetManager *)sharedInstance;
@@ -17,11 +18,13 @@
 - (void)storeTweet:(MBTweet *)tweet;
 
 - (void)saveTimeline:(NSArray *)tweets;
+- (void)saveTimeline:(NSArray *)tweets withAccount:(MBAccount *)account;
 - (void)saveReply:(NSArray *)tweets;
 - (NSArray *)savedTimelineAtIndex:(NSInteger)index;
 - (NSArray *)savedReplyAtIndex:(NSInteger)index;
 
 - (void)deleteAllSavedTweets;
+- (void)deleteAllSavedTweetsForAccount:(MBAccount *)account;
 - (void)deleteAllSavedTweetsOfCurrentAccount;
 
 @end

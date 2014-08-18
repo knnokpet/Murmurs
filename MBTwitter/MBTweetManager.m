@@ -13,7 +13,7 @@
 #import "MBPlace.h"
 
 #define SAVE_TWEET_MAX 1000
-#define SAVE_TWEET_PER 50
+#define SAVE_TWEET_PER 10
 
 #define SAVE_TIMELINE_PATH @"Timeline"
 #define SAVE_REPLY_PATH @"Reply"
@@ -104,24 +104,40 @@
     return accountDirectoryPath;
 }
 
+- (NSString *)pathForAccount:(MBAccount *)account
+{
+    NSString *accountDirectoryPath = [self.tweetDirectory stringByAppendingPathComponent:account.userID];
+    return accountDirectoryPath;
+}
+
+- (NSString *)pathForTimeLineWithAccountPath:(NSString *)path
+{
+    return [path stringByAppendingPathComponent:SAVE_TIMELINE_PATH];
+}
+
+#pragma mark
 - (void)createDirectories
 {
     [self createDirectoryAtPath:self.tweetDirectory];
     NSArray *accounts = [MBAccountManager sharedInstance].accounts;
     for (MBAccount *account in accounts) {
-        NSString *accountID = account.userID;
-        NSString *accountDirectoryPath = [self.tweetDirectory stringByAppendingPathComponent:accountID];
-        [self createDirectoryAtPath:accountDirectoryPath];
-        
-        NSString *timelinePath = [accountDirectoryPath stringByAppendingPathComponent:SAVE_TIMELINE_PATH];
-        [self createDirectoryAtPath:timelinePath];
-        [self createSubPathAtPath:timelinePath];
-        
-        NSString *replyPath = [accountDirectoryPath stringByAppendingPathComponent:SAVE_REPLY_PATH];
-        [self createDirectoryAtPath:replyPath];
-        [self createSubPathAtPath:replyPath];
-        
+        [self createDirectoryForAccount:account];
     }
+}
+
+- (void)createDirectoryForAccount:(MBAccount *)account
+{
+    NSString *accountID = account.userID;
+    NSString *accountDirectoryPath = [self.tweetDirectory stringByAppendingPathComponent:accountID];
+    [self createDirectoryAtPath:accountDirectoryPath];
+    
+    NSString *timelinePath = [accountDirectoryPath stringByAppendingPathComponent:SAVE_TIMELINE_PATH];
+    [self createDirectoryAtPath:timelinePath];
+    [self createSubPathAtPath:timelinePath];
+    
+    NSString *replyPath = [accountDirectoryPath stringByAppendingPathComponent:SAVE_REPLY_PATH];
+    [self createDirectoryAtPath:replyPath];
+    [self createSubPathAtPath:replyPath];
 }
 
 - (void)createSubPathAtPath:(NSString *)path
@@ -146,7 +162,14 @@
 - (void)saveTimeline:(NSArray *)tweets
 {
     NSString *accountDirectoryPath = [self pathForCurrentAccount];
-    NSString *timelinePath = [accountDirectoryPath stringByAppendingPathComponent:SAVE_TIMELINE_PATH];
+    NSString *timelinePath = [self pathForTimeLineWithAccountPath:accountDirectoryPath];
+    [self saveTweets:tweets atPath:timelinePath];
+}
+
+- (void)saveTimeline:(NSArray *)tweets withAccount:(MBAccount *)account
+{
+    NSString *accountDirectoryPath = [self pathForAccount:account];
+    NSString *timelinePath = [self pathForTimeLineWithAccountPath:accountDirectoryPath];
     [self saveTweets:tweets atPath:timelinePath];
 }
 
@@ -238,6 +261,19 @@
         if ([fileManager removeItemAtPath:self.tweetDirectory error:nil]) {
             [self createDirectories];
         }
+    }
+}
+
+- (void)deleteAllSavedTweetsForAccount:(MBAccount *)account
+{
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    NSString *accountPath = [self pathForAccount:account];
+    if ([fileManager fileExistsAtPath:accountPath]) {
+        if ([fileManager removeItemAtPath:accountPath error:nil]) {
+            [self createDirectoryAtPath:self.tweetDirectory];
+            [self createDirectoryForAccount:account];
+        }
+        
     }
 }
 
