@@ -11,6 +11,8 @@
 #import "MBTweetTextView.h"
 #import "MBCharacterScreenNameView.h"
 #import "MBFavoriteView.h"
+#import "MBRetweetView.h"
+#import "MBPlaceWithGeoIconView.h"
 #import "MBTimelineImageContainerView.h"
 
 @protocol MBtweetViewCellLongPressDelegate;
@@ -22,6 +24,8 @@
 
 @property (weak, nonatomic) IBOutlet MBTweetTextView *retweetView;
 @property (weak, nonatomic) IBOutlet MBCharacterScreenNameView *characterScreenNameView;
+@property (weak, nonatomic) IBOutlet MBRetweetView *retweeterView;
+@property (weak, nonatomic) IBOutlet MBPlaceWithGeoIconView *placeNameView;
 
 @property (weak, nonatomic) IBOutlet MBTweetTextView *dateView;
 @property (weak, nonatomic) IBOutlet MBTweetTextView *tweetTextView;
@@ -35,17 +39,14 @@
 @property (nonatomic) NSString *userIDStr;
 @property (nonatomic, readonly) NSAttributedString *dateString;
 @property (nonatomic, readonly) NSAttributedString *charaScreenString;
-@property (nonatomic, readonly) BOOL favorited;
-@property (nonatomic, readonly) BOOL geod;
 
 - (void)removeRetweetView;
+- (void)removePlaceNameView;
 - (void)removeFavoriteView;
 - (void)removeImageContainerView;
 
 - (void)setDateString:(NSAttributedString *)dateString;
 - (void)setCharaScreenString:(NSAttributedString *)charaScreenString;
-- (void)setFavorited:(BOOL)favorited;
-- (void)setGeod:(BOOL)geod;
 
 @end
 

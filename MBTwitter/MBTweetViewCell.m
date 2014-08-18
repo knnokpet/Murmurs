@@ -39,9 +39,6 @@
     self.avatorImageView.layer.masksToBounds = NO;
     self.avatorImageView.layer.shouldRasterize = YES;
     
-    _favorited = NO;
-    _geod = NO;
-    
     _longPressRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(didLongPress)];
     [self addGestureRecognizer:self.longPressRecognizer];
 }
@@ -79,31 +76,21 @@
     [self.avatorImageView setUserID:userID];
 }
 
-- (void)setFavorited:(BOOL)favorited
-{
-    _favorited = favorited;
-    
-    if (favorited) {
-        self.favoriteView.favorited = YES;
-    }
-}
-
-- (void)setGeod:(BOOL)geod
-{
-    _geod = geod;
-    
-    if (geod) {
-        self.favoriteView.geod = YES;
-    }
-}
-
 #pragma mark -
 
 - (void)removeRetweetView
 {
-    if (self.retweetView.superview) {
-        [self.retweetView removeFromSuperview];
-        self.retweetView = nil;
+    if (self.retweeterView.superview) {
+        [self.retweeterView removeFromSuperview];
+        self.retweeterView = nil;
+    }
+}
+
+- (void)removePlaceNameView
+{
+    if (self.placeNameView.superview) {
+        [self.placeNameView removeFromSuperview];
+        self.placeNameView = nil;
     }
 }
 
