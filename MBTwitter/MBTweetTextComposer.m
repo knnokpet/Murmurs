@@ -292,15 +292,45 @@
     if (!retweeter.screenName) {
         return [[NSAttributedString alloc] init];
     }
+    
+    MBTweetTextComposer *composer = [[MBTweetTextComposer alloc] init];
+    
+    return [composer attributedStringForTimelineRetweeter:retweeter font:font];
+}
+
++ (NSAttributedString *)attributedStringByRetweetedMeForTimelineWithfont:(UIFont *)font
+{
+    UIFont *textFont = font;
+    if (!textFont) {
+        textFont = [UIFont systemFontOfSize:15.0f];
+    }
+    
+    MBTweetTextComposer *composer = [[MBTweetTextComposer alloc] init];
+    return [composer attributedStringForTimelineRetweeter:nil font:font];
+}
+
++ (NSAttributedString *)attributedStringForTimelinePlace:(MBPlace *)place font:(UIFont *)font
+{
+    if (!place) {
+        return [[NSAttributedString alloc] init];
+    }
+    NSString *placeName = place.countryShortName;
+    if (!placeName) {
+        placeName = place.countryName;
+        if (!placeName) {
+            return [[NSAttributedString alloc] init];
+        }
+    }
+    
+    UIFont *attributedFont = font;
+    if (!attributedFont) {
+        attributedFont = [UIFont systemFontOfSize:15.0f];
+    }
+    
     UIColor *textColor = [UIColor lightGrayColor];
-    CTFontRef fontRef = CTFontCreateWithName((__bridge CFStringRef)font.fontName, font.pointSize, NULL);
-    NSString *screenName = retweeter.characterName;
-    NSString *retweetString = [NSString stringWithFormat:@"Retweeted by %@", screenName];
-    MBMentionUserLink *mentionLink = [[MBMentionUserLink alloc] initWithUserID:retweeter.userID IDStr:retweeter.userIDStr screenName:retweeter.screenName];
+    NSString *placeString = [NSString stringWithFormat:@"From %@", place.countryShortName];
     
-    NSAttributedString *attributedString = [[NSAttributedString alloc] initWithString:retweetString attributes:@{(id)kCTForegroundColorAttributeName : textColor ,(id)kCTFontAttributeName: (__bridge id)fontRef, NSLinkAttributeName: mentionLink}];
-    CFRelease(fontRef);
-    
+    NSAttributedString *attributedString = [[NSAttributedString alloc] initWithString:placeString attributes:@{NSForegroundColorAttributeName : textColor, NSFontAttributeName : attributedFont}];
     return attributedString;
 }
 
@@ -331,6 +361,20 @@
     MBURLLink *urlLink = [[MBURLLink alloc] initWithURLString:tweetURL];
     NSAttributedString *attributedString = [[NSAttributedString alloc] initWithString:dateString attributes:@{(id)kCTForegroundColorAttributeName: textColor, (id)kCTFontAttributeName: (__bridge id)fontRef, NSLinkAttributeName: urlLink}];
     CFRelease(fontRef);
+    
+    return attributedString;
+}
+
+- (NSAttributedString *)attributedStringForTimelineRetweeter:(MBUser *)retweeter font:(UIFont *)font
+{
+    UIColor *textColor = [UIColor lightGrayColor];
+    NSString *screenName = retweeter.characterName;
+    if (!screenName) {
+        screenName = NSLocalizedString(@"You", nil);
+    }
+    NSString *retweetString = [NSString stringWithFormat:@"Retweeted by %@", screenName];
+    
+    NSAttributedString *attributedString = [[NSAttributedString alloc] initWithString:retweetString attributes:@{NSForegroundColorAttributeName : textColor, NSFontAttributeName : font}];
     
     return attributedString;
 }
