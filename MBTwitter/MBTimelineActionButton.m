@@ -61,9 +61,7 @@
 - (void)layoutSubviews
 {
     [super layoutSubviews];
-    
-    CGFloat verticalMargin = 4.0f;
-    
+        
     CGRect bounds = self.bounds;
     CGPoint center = CGPointMake(bounds.size.width / 2, bounds.size.height / 2);
     
