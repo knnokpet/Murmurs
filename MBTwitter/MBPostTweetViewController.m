@@ -138,9 +138,9 @@
     
     CGFloat barHeight = 44.0f; // 横向きには対応させないのでマジックナンバー
     self.toolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, barHeight)];
-    self.photoButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemBookmarks target:self action:@selector(didPushPhotoButton)];
-    self.cameraButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCamera target:self action:@selector(didPushCameraButton)];
-    self.geoButton = [[UIBarButtonItem alloc] initWithTitle:@"Geo" style:UIBarButtonItemStylePlain target:self action:@selector(didPushGeoButton)];
+    self.photoButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Photo-Tool"] style:UIBarButtonItemStylePlain target:self action:@selector(didPushPhotoButton)];
+    self.cameraButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Camera-Tool"] style:UIBarButtonItemStylePlain target:self action:@selector(didPushCameraButton)];
+    self.geoButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Geo-Line-Tool"] style:UIBarButtonItemStylePlain target:self action:@selector(didPushGeoButton)];
     self.suspendButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Suspend", nil) style:UIBarButtonItemStylePlain target:self action:@selector(didPushCancelGeoButton)];
     
     [self settingDefaultToolbarItemsWithAnimated:NO];
@@ -279,7 +279,7 @@
 - (NSInteger)countOfTweetText
 {
     NSRange httpsRange = [self.tweetTextView.text rangeOfString:@"https"];
-    NSLog(@"location %ld length %ld", httpsRange.location, httpsRange.length);
+    NSLog(@"location %ld length %ld", (unsigned long)httpsRange.location, (unsigned long)httpsRange.length);
     return 0;
 }
 
@@ -613,7 +613,7 @@
 
 - (void)setGeoButtonWithTappable:(BOOL)tappable
 {
-    UIBarButtonItem *geoButton = [[UIBarButtonItem alloc] initWithTitle:@"Geo" style:UIBarButtonItemStylePlain target:self action:@selector(didPushGeoButton)];
+    UIBarButtonItem *geoButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Geo-Tool"] style:UIBarButtonItemStylePlain target:self action:@selector(didPushGeoButton)];
     geoButton.enabled = tappable;
     
     self.geoButton = geoButton;
@@ -806,7 +806,6 @@
 - (void)locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error
 {
     if (error) {
-        NSString *message = nil;
         NSInteger errorCode = [error code];
         if (errorCode == kCLErrorDenied) {
             NSLog(@"位置情報サービスがオンになってない");
