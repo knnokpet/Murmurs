@@ -207,7 +207,10 @@ static NSString *sendCellIdentifier = @"SendCellIdentifier";
     
     [self configureMessageView];
     
-    [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:[self.dataSource count] - 1 inSection:0] atScrollPosition:UITableViewScrollPositionMiddle animated:NO];
+    if (self.dataSource.count > 0) {
+        [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:[self.dataSource count] - 1 inSection:0] atScrollPosition:UITableViewScrollPositionMiddle animated:NO];
+    }
+    
     [self.tableView setContentOffset:CGPointMake(0, CGFLOAT_MAX)];
 }
 
@@ -250,6 +253,7 @@ static NSString *sendCellIdentifier = @"SendCellIdentifier";
     NSNotificationCenter *nCenter = [NSNotificationCenter defaultCenter];
     [nCenter removeObserver:self name:UIKeyboardWillShowNotification object:nil];
     [nCenter removeObserver:self name:UIKeyboardWillHideNotification object:nil];
+    [nCenter removeObserver:self name:UIKeyboardDidHideNotification object:nil];
 }
 
 - (void)didReceiveMemoryWarning
