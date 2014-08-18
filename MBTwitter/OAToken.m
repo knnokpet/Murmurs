@@ -42,11 +42,11 @@
             NSArray *parameters = [pair componentsSeparatedByString:@"="];
             NSString *httpKey = [parameters objectAtIndex:0];
             NSString *httpValue = [parameters objectAtIndex:1];
-            if (YES == [httpKey isEqualToString:@"oauth_token"]) {
+            if ([httpKey isEqualToString:@"oauth_token"]) {
                 _key = httpValue;
-            } else if (YES == [httpKey isEqualToString:@"oauth_token_secret"]) {
+            } else if ([httpKey isEqualToString:@"oauth_token_secret"]) {
                 _secret = httpValue;
-            } else if (YES == [httpKey isEqualToString:@"oauth_verifier"]) {
+            } else if ([httpKey isEqualToString:@"oauth_verifier"]) {
                 _pin = httpValue;
             }
         }
