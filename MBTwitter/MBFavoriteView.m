@@ -22,44 +22,17 @@
 - (void)awakeFromNib
 {
     self.backgroundColor = [UIColor clearColor];
-    _favorited = NO;
-    _geod = NO;
-}
-
-- (void)setFavorited:(BOOL)favorited
-{
-    _favorited = favorited;
-    [self setNeedsDisplay];
-}
-
-- (void)setGeod:(BOOL)geod
-{
-    _geod = geod;
-    [self setNeedsDisplay];
 }
 
 // Only override drawRect: if you perform custom drawing.
 // An empty implementation adversely affects performance during animation.
 - (void)drawRect:(CGRect)rect
 {
-    [super drawRect:rect];
     // Drawing code
     
     CGContextRef context = UIGraphicsGetCurrentContext();
     CGRect bounds = self.bounds;
-    CGFloat division3Width = self.bounds.size.width / 3;
-    
-    CGRect drawRect = bounds;
-    drawRect.origin.x = drawRect.size.width - division3Width;
-    drawRect.size.width = division3Width;
-    if (self.favorited == YES) {
-        [self drawFavostarInContext:context inRect:drawRect];
-        drawRect.origin.x = drawRect.origin.x - division3Width;
-    }
-    
-    if (self.geod == YES) {
-        [self drawGeoArrowInContext:context InRect:drawRect];
-    }
+    [self drawFavostarInContext:context inRect:bounds];
 }
 
 - (void)drawFavostarInContext:(CGContextRef)context inRect:(CGRect)rect
@@ -70,7 +43,7 @@
     
     CGRect bound = self.bounds;
     CGFloat starRadius = 6.0f;
-    CGPoint center = CGPointMake(rect.origin.x + starRadius / 2, bound.size.height / 2);
+    CGPoint center = CGPointMake(rect.origin.x / 2 + bound.size.width / 2, bound.size.height / 2);
     CGContextMoveToPoint(context, center.x, center.y - starRadius);
     for (int i = 1; i < 5; ++i) {
         CGFloat x = starRadius * sinf(i * 4.0 * M_PI / 5.0);
@@ -81,6 +54,7 @@
     CGContextDrawPath(context, kCGPathFillStroke);
 }
 
+/* unused*/
 - (void)drawPinInContext:(CGContextRef)context inRect:(CGRect)rect
 {
     CGContextSetRGBStrokeColor(context, 0, 0, 0.5, 1.0);
@@ -100,6 +74,7 @@
     
 }
 
+/* unused*/
 - (void)drawGeoArrowInContext:(CGContextRef)context InRect:(CGRect)rect
 {
     CGContextSetRGBStrokeColor(context, 0.0, 0.4, 0.9, 1.0f);
@@ -109,7 +84,7 @@
     CGPoint center = CGPointMake(rect.size.width / 2, rect.size.height / 2);
     CGFloat rectWidth = rect.size.width / 2;
     CGContextMoveToPoint(context, center.x, center.y);
-    CGContextAddLineToPoint(context, 0, center.y);
+    CGContextAddLineToPoint(context, center.x - rectWidth, center.y);
     CGContextAddLineToPoint(context, center.x + rectWidth, center.y - rectWidth);
     CGContextAddLineToPoint(context, center.x, center.y + rectWidth);
     CGContextClosePath(context);

@@ -10,9 +10,4 @@
 
 @interface MBFavoriteView : UIView
 
-@property (nonatomic, readonly, assign) BOOL favorited;
-@property (nonatomic, readonly, assign) BOOL geod;
-- (void)setFavorited:(BOOL)favorited;
-- (void)setGeod:(BOOL)geod;
-
 @end
