@@ -49,6 +49,8 @@ static NSString *deleteListCellIdentifier = @"DeleteListCellIdentifier";
     
     UINib *userCell = [UINib nibWithNibName:@"MBEditListUserTableViewCell" bundle:nil];
     [self.tableView registerNib:userCell forCellReuseIdentifier:editListUserCellIdentifier];
+    
+    self.tableView.keyboardDismissMode = UIScrollViewKeyboardDismissModeOnDrag;
 }
 
 - (void)didReceiveMemoryWarning
@@ -136,7 +138,7 @@ static NSString *deleteListCellIdentifier = @"DeleteListCellIdentifier";
         [self updateCell:cell atIndexpath:indexPath];
     } else if (1 == indexPath.section) {
         cell = [self.tableView dequeueReusableCellWithIdentifier:editListUserCellIdentifier];
-        cell.textLabel.text = NSLocalizedString(@"Subscripted Users", nil);
+        cell.textLabel.text = NSLocalizedString(@"Member", nil);
     } else if (2 == indexPath.section) {
         cell = [self.tableView dequeueReusableCellWithIdentifier:deleteListCellIdentifier];
         if (!cell) {
@@ -163,6 +165,7 @@ static NSString *deleteListCellIdentifier = @"DeleteListCellIdentifier";
     } else if (2 == indexPath.section) {
         UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) destructiveButtonTitle:NSLocalizedString(@"Delete List", nil) otherButtonTitles:nil, nil];
         [actionSheet showInView:self.view];
+        [tableView deselectRowAtIndexPath:indexPath animated:YES];
     }
 }
 
