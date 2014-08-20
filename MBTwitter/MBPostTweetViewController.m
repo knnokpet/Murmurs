@@ -138,7 +138,7 @@
     
     CGFloat barHeight = 44.0f; // 横向きには対応させないのでマジックナンバー
     self.toolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, barHeight)];
-    self.photoButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Photo-Tool"] style:UIBarButtonItemStylePlain target:self action:@selector(didPushPhotoButton)];
+    self.photoButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Photo-Tool-1"] style:UIBarButtonItemStylePlain target:self action:@selector(didPushPhotoButton)];
     self.cameraButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Camera-Tool"] style:UIBarButtonItemStylePlain target:self action:@selector(didPushCameraButton)];
     self.geoButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Geo-Line-Tool"] style:UIBarButtonItemStylePlain target:self action:@selector(didPushGeoButton)];
     self.suspendButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Suspend", nil) style:UIBarButtonItemStylePlain target:self action:@selector(didPushCancelGeoButton)];
@@ -352,7 +352,7 @@
     CGSize geoPlaceViewSize = CGSizeMake(self.view.bounds.size.width, self.geoPinView.bounds.size.height + 8.0f);
     CGRect geoPlaceViewRect = CGRectMake(0, self.tweetTextView.frame.origin.y + self.tweetTextView.bounds.size.height - self.tweetTextView.contentInset.bottom - geoPlaceViewSize.height, geoPlaceViewSize.width, geoPlaceViewSize.height);
     self.geoPlaceView = [[MBGradientMaskView alloc] initWithFrame:geoPlaceViewRect];
-    self.geoPlaceView.backgroundColor = [UIColor colorWithRed:255 green:255 blue:255 alpha:0.9];
+    self.geoPlaceView.backgroundColor = [UIColor colorWithRed:1.0 green:1.0 blue:0.99 alpha:0.9];
     self.geoPlaceView.startGradientPoint = CGPointMake(0.0f, 0.1f);
     self.geoPlaceView.endGradientPoint = CGPointMake(0.0f, 0.0f);
     [self.geoPlaceView maskGradient];

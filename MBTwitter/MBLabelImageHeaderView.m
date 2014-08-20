@@ -35,7 +35,7 @@
     CGFloat r, g, b, a;
     r = 0.98;
     g = 0.98;
-    b = 1.0;
+    b = 0.99;
     a = 1.0;
     self.backgroundColor = [UIColor colorWithRed:r green:g blue:b alpha:a];
 }
