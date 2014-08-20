@@ -284,7 +284,9 @@ static NSString *sendCellIdentifier = @"SendCellIdentifier";
         self.currentReceiverViewController.tableView.contentInset = contentInsets;
         self.currentReceiverViewController.tableView.scrollIndicatorInsets = scrollInsets;
         
-        [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:[self.dataSource count] - 1 inSection:0] atScrollPosition:UITableViewScrollPositionMiddle animated:NO];
+        if (self.dataSource.count > 0) {
+            [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:[self.dataSource count] - 1 inSection:0] atScrollPosition:UITableViewScrollPositionMiddle animated:NO];
+        }
         
     }completion:^(BOOL stop) {
         
