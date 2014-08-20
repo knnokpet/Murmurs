@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="5056" systemVersion="13E28" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES">
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3733"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell contentMode="scaleToFill" selectionStyle="default" accessoryType="checkmark" indentationWidth="10" rowHeight="186" id="KGk-i7-Jjw" customClass="MBSelectingListTableViewCell">
+            <rect key="frame" x="0.0" y="0.0" width="320" height="186"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
+                <rect key="frame" x="0.0" y="0.0" width="281" height="185"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Sqo-83-Dpw">
+                        <rect key="frame" x="16" y="16" width="44" height="21"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
+                        <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Lock-mini.png" translatesAutoresizingMaskIntoConstraints="NO" id="obM-C1-RY0">
+                        <rect key="frame" x="68" y="20" width="9" height="14"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    </imageView>
+                    <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5zk-eT-lUg">
+                        <rect key="frame" x="16" y="37" width="257" height="142"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                        <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.</string>
+                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                        <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                    </textView>
+                </subviews>
+                <constraints>
+                    <constraint firstItem="obM-C1-RY0" firstAttribute="leading" secondItem="Sqo-83-Dpw" secondAttribute="trailing" constant="8" id="31h-e3-c7h"/>
+                    <constraint firstItem="obM-C1-RY0" firstAttribute="centerY" secondItem="Sqo-83-Dpw" secondAttribute="centerY" id="Bfh-K1-UI5"/>
+                    <constraint firstAttribute="trailing" secondItem="Sqo-83-Dpw" secondAttribute="trailing" priority="250" constant="8" id="EoU-gy-iQs"/>
+                    <constraint firstItem="Sqo-83-Dpw" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" priority="250" constant="16" id="NvE-k7-hEb"/>
+                    <constraint firstItem="5zk-eT-lUg" firstAttribute="top" secondItem="Sqo-83-Dpw" secondAttribute="bottom" id="O87-I6-2Lr"/>
+                    <constraint firstAttribute="trailing" secondItem="5zk-eT-lUg" secondAttribute="trailing" constant="8" id="VAL-ch-jZX"/>
+                    <constraint firstAttribute="bottom" secondItem="5zk-eT-lUg" secondAttribute="bottom" priority="750" constant="6" id="Wim-uj-Fo0"/>
+                    <constraint firstItem="Sqo-83-Dpw" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="16" id="bX4-1E-4Qf"/>
+                    <constraint firstItem="5zk-eT-lUg" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="16" id="pSu-c2-ewH"/>
+                </constraints>
+            </tableViewCellContentView>
+            <connections>
+                <outlet property="descriptionTextView" destination="5zk-eT-lUg" id="n8b-Ui-kUC"/>
+                <outlet property="listNameLabel" destination="Sqo-83-Dpw" id="JTp-gs-kLr"/>
+            </connections>
+        </tableViewCell>
+    </objects>
+    <resources>
+        <image name="Lock-mini.png" width="9" height="14"/>
+    </resources>
+</document>
