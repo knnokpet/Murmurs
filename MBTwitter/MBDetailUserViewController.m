@@ -31,6 +31,17 @@
 
 static NSString *detailUserTableViewCellIdentifier = @"MBDetailUserTableViewCellIdentifier";
 
+typedef enum ActionSheetTag {
+    PushMoreButtonTag = 0,
+    PushUnfollowButtonTag,
+    PushMuteButtonTag,
+    PushBlockingButtonTag,
+    PushSpamButtonTag,
+    PushCancelBlockingButtonTag,
+    PushCancelMuteButtonTag
+    
+} ActionSheetTag;
+
 @interface MBDetailUserViewController () <UITableViewDataSource, UITableViewDelegate>
 {
     CGFloat _headerImageOffSet;
@@ -370,6 +381,15 @@ static NSString *detailUserTableViewCellIdentifier = @"MBDetailUserTableViewCell
     }
 }
 
+- (void)showActionSheet:(UIActionSheet *)actionSheet
+{
+    if (self.tabBarController) {
+        [actionSheet showFromTabBar:self.tabBarController.tabBar];
+    } else {
+        [actionSheet showInView:self.view];
+    }
+}
+
 #pragma mark Button Action
 - (IBAction)didPushFollowButton:(id)sender {
     [self.aoAPICenter postFollowForUserID:[self.user.userID unsignedLongLongValue] screenName:self.user.screenName];
@@ -385,32 +405,49 @@ static NSString *detailUserTableViewCellIdentifier = @"MBDetailUserTableViewCell
 
 - (void)didPushUnFollowButton
 {
-    [self.aoAPICenter postUnfollowForUserID:[self.user.userID unsignedLongLongValue] screenName:self.user.screenName];
+    NSString *title = NSLocalizedString(@"UnFollow User ?", nil);
+    if (self.user.relationship.sentFollowRequest) {
+        title = NSLocalizedString(@"Cancel Request ?", nil);
+    }
+    
+    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:title delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) destructiveButtonTitle:NSLocalizedString(@"Unfollow", nil) otherButtonTitles:nil, nil];
+    actionSheet.tag = PushUnfollowButtonTag;
+    [self showActionSheet:actionSheet];
 }
 
 - (void)didPushCancelBlockingButton
 {
-    [self.aoAPICenter postDestroyBlockForUserID:[self.user.userID unsignedLongLongValue] screenName:self.user.screenName];
+    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"Cancel Blocking ?", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) destructiveButtonTitle:NSLocalizedString(@"Cancel Blocking", nil) otherButtonTitles:nil, nil];
+    actionSheet.tag = PushCancelBlockingButtonTag;
+    [self showActionSheet:actionSheet];
 }
 
 - (void)didPushBlockButton
 {
-    [self.aoAPICenter postBlockForUserID:[self.user.userID unsignedLongLongValue] screenName:self.user.screenName];
+    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"Block User ?", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) destructiveButtonTitle:NSLocalizedString(@"Block", nil) otherButtonTitles:nil, nil];
+    actionSheet.tag = PushBlockingButtonTag;
+    [self showActionSheet:actionSheet];
 }
 
 - (void)didPushCancelMuteButton
 {
-    [self.aoAPICenter postDestroyMuteForUserID:[self.user.userID unsignedLongLongValue] screenName:self.user.screenName];
+    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"Cancel Mute ?", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) destructiveButtonTitle:NSLocalizedString(@"Cancel Mute", nil) otherButtonTitles:nil, nil];
+    actionSheet.tag = PushCancelMuteButtonTag;
+    [self showActionSheet:actionSheet];
 }
 
 - (void)didPushMuteButton
 {
-    [self.aoAPICenter postMuteForUserID:[self.user.userID unsignedLongLongValue] screenName:self.user.screenName];
+    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"Mute this User ?", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) destructiveButtonTitle:NSLocalizedString(@"Mute", nil) otherButtonTitles:nil, nil];
+    actionSheet.tag = PushMuteButtonTag;
+    [self showActionSheet:actionSheet];
 }
 
 - (void)didPushSpamButton
 {
-    [self.aoAPICenter postSpamForUserID:[self.user.userID unsignedLongLongValue] screenName:self.user.screenName];
+    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"Send Spam Request ?", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) destructiveButtonTitle:NSLocalizedString(@"Send Spam Request", nil) otherButtonTitles:nil, nil];
+    actionSheet.tag = PushSpamButtonTag;
+    [self showActionSheet:actionSheet];
 }
 
 - (void)didPushReplyButton
@@ -440,6 +477,7 @@ static NSString *detailUserTableViewCellIdentifier = @"MBDetailUserTableViewCell
 - (void)didPushOtherButton
 {
     UIActionSheet *actionSheet = [[UIActionSheet alloc] init];
+    actionSheet.tag = PushMoreButtonTag;
     actionSheet.delegate = self;
     for (NSString *buttonTitle in self.otherActions) {
         [actionSheet addButtonWithTitle:buttonTitle];
@@ -447,12 +485,7 @@ static NSString *detailUserTableViewCellIdentifier = @"MBDetailUserTableViewCell
     [actionSheet addButtonWithTitle:NSLocalizedString(@"Cancel", nil)];
     actionSheet.cancelButtonIndex = self.otherActions.count;
     
-    if (self.tabBarController) {
-        [actionSheet showFromTabBar:self.tabBarController.tabBar];
-    } else {
-        [actionSheet showInView:self.view];
-    }
-    
+    [self showActionSheet:actionSheet];
 }
 
 #pragma mark -
@@ -710,31 +743,60 @@ static NSString *detailUserTableViewCellIdentifier = @"MBDetailUserTableViewCell
 #pragma mark UIActionsheetView Delegate
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
 {
-    NSString *buttonTitle = [actionSheet buttonTitleAtIndex:buttonIndex];
-    if ([buttonTitle isEqualToString:NSLocalizedString(@"Add / Remove List", nil)]) {
-        MBSelecting_ListViewController *selectingListViewController = [[MBSelecting_ListViewController alloc] initWithNibName:@"MBListViewController" bundle:nil];
-        selectingListViewController.delegate = self;
-        [selectingListViewController setSelectingUser:self.user];
-        UINavigationController *listNavigationController = [[UINavigationController alloc] initWithRootViewController:selectingListViewController];
-        [self.navigationController presentViewController:listNavigationController animated:YES completion:nil];
+    NSInteger tag = actionSheet.tag;
+    if (tag == PushMoreButtonTag) {
+        NSString *buttonTitle = [actionSheet buttonTitleAtIndex:buttonIndex];
+        if ([buttonTitle isEqualToString:NSLocalizedString(@"Add / Remove List", nil)]) {
+            MBSelecting_ListViewController *selectingListViewController = [[MBSelecting_ListViewController alloc] initWithNibName:@"MBListViewController" bundle:nil];
+            selectingListViewController.delegate = self;
+            [selectingListViewController setSelectingUser:self.user];
+            UINavigationController *listNavigationController = [[UINavigationController alloc] initWithRootViewController:selectingListViewController];
+            [self.navigationController presentViewController:listNavigationController animated:YES completion:nil];
+            
+        } else if ([buttonTitle isEqualToString:NSLocalizedString(@"UnFollow", nil)]) {
+            [self didPushUnFollowButton];
+        } else if ([buttonTitle isEqualToString:NSLocalizedString(@"Cancel Request", nil)]) {
+            [self didPushUnFollowButton];
+        } else if ([buttonTitle isEqualToString:NSLocalizedString(@"Cancel Blocking", nil)]) {
+            [self didPushCancelBlockingButton];
+        } else if ([buttonTitle isEqualToString:NSLocalizedString(@"Block User", nil)]) {
+            [self didPushBlockButton];
+        } else if ([buttonTitle isEqualToString:NSLocalizedString(@"Cancel Mute", nil)]) {
+            
+        } else if ([buttonTitle isEqualToString:NSLocalizedString(@"Mute", nil)]) {
+            
+        } else if ([buttonTitle isEqualToString:NSLocalizedString(@"Spam Report", nil)]) {
+            [self didPushSpamButton];
+        } else if (buttonIndex == actionSheet.cancelButtonIndex) {
+            
+        }
+    } else if (tag == PushUnfollowButtonTag) {
+        if (buttonIndex == actionSheet.destructiveButtonIndex) {
+            [self.aoAPICenter postUnfollowForUserID:[self.user.userID unsignedLongLongValue] screenName:self.user.screenName];
+        }
         
-    } else if ([buttonTitle isEqualToString:NSLocalizedString(@"UnFollow", nil)]) {
-        [self didPushUnFollowButton];
-    } else if ([buttonTitle isEqualToString:NSLocalizedString(@"Cancel Request", nil)]) {
-        [self didPushUnFollowButton];
-    } else if ([buttonTitle isEqualToString:NSLocalizedString(@"Cancel Blocking", nil)]) {
-        [self didPushCancelBlockingButton];
-    } else if ([buttonTitle isEqualToString:NSLocalizedString(@"Block User", nil)]) {
-        [self didPushBlockButton];
-    } else if ([buttonTitle isEqualToString:NSLocalizedString(@"Cancel Mute", nil)]) {
+    } else if (tag == PushMuteButtonTag) {
+        if (buttonIndex == actionSheet.destructiveButtonIndex) {
+            [self.aoAPICenter postMuteForUserID:[self.user.userID unsignedLongLongValue] screenName:self.user.screenName];
+        }
         
-    } else if ([buttonTitle isEqualToString:NSLocalizedString(@"Mute", nil)]) {
+    } else if (tag == PushBlockingButtonTag) {
+        if (buttonIndex == actionSheet.destructiveButtonIndex) {
+            [self.aoAPICenter postBlockForUserID:[self.user.userID unsignedLongLongValue] screenName:self.user.screenName];
+        }
         
-    } else if ([buttonTitle isEqualToString:NSLocalizedString(@"Spam Report", nil)]) {
-        [self didPushSpamButton];
-    } else if (buttonIndex == actionSheet.cancelButtonIndex) {
+    } else if (tag == PushSpamButtonTag) {
+        if (buttonIndex == actionSheet.destructiveButtonIndex) {
+            [self.aoAPICenter postSpamForUserID:[self.user.userID unsignedLongLongValue] screenName:self.user.screenName];
+        }
         
+    } else if (tag == PushCancelMuteButtonTag) {
+        [self.aoAPICenter postDestroyMuteForUserID:[self.user.userID unsignedLongLongValue] screenName:self.user.screenName];
+        
+    } else if (tag == PushCancelBlockingButtonTag) {
+        [self.aoAPICenter postDestroyBlockForUserID:[self.user.userID unsignedLongLongValue] screenName:self.user.screenName];
     }
+    
 }
 
 #pragma mark MBPostTweetViewController Delegate
