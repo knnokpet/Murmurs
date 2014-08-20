@@ -34,6 +34,7 @@
 - (void)configureListManager;
 - (void)commonConfigureModel;
 - (void)commonConfigureView;
+- (void)configureCell;
 - (void)configureNavigationitem;
 - (void)didPushRefreshButton;
 - (void)didPushAddListButton;

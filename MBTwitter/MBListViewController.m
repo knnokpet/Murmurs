@@ -60,8 +60,7 @@ static NSString *listsCellIdentifier = @"ListsCellIdentifier";
     self.tableView.dataSource = self;
     self.tableView.delegate = self;
     
-    UINib *listsNib = [UINib nibWithNibName:@"MBListsTableViewCell" bundle:nil];
-    [self.tableView registerNib:listsNib forCellReuseIdentifier:listsCellIdentifier];
+    [self configureCell];
     
     /* remove nonContent's separator */
     UIView *view = [[UIView alloc] init];
@@ -76,6 +75,12 @@ static NSString *listsCellIdentifier = @"ListsCellIdentifier";
     
     
     self.enableAdding = NO;
+}
+
+- (void)configureCell
+{
+    UINib *listsNib = [UINib nibWithNibName:@"MBListsTableViewCell" bundle:nil];
+    [self.tableView registerNib:listsNib forCellReuseIdentifier:listsCellIdentifier];
 }
 
 - (void)configureNavigationitem
