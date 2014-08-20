@@ -8,7 +8,19 @@
 
 #import "MBSelecting_ListViewController.h"
 
+#import "MBImageCacher.h"
+#import "MBImageDownloader.h"
+#import "MBImageApplyer.h"
+
+#import "MBSelectingListTableViewCell.h"
+#import "MBLabelImageHeaderView.h"
+
+static NSString *selectingListCellIdentifier = @"SelectingListCellIdentifier";
+
 @interface MBSelecting_ListViewController ()
+{
+    CGFloat headerViewHeight;
+}
 
 @property (nonatomic, assign) NSInteger listIndex;
 @property (nonatomic, readonly) NSMutableDictionary *editedLists;
@@ -49,6 +61,12 @@
 {
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Cancel", nil) style:UIBarButtonItemStylePlain target:self action:@selector(didPushCancelButton)];
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(didPushDoneButton)];
+}
+
+- (void)configureCell
+{
+    UINib *selectingListCellNib = [UINib nibWithNibName:@"MBSelectingListTableViewCell" bundle:nil];
+    [self.tableView registerNib:selectingListCellNib forCellReuseIdentifier:selectingListCellIdentifier];
 }
 
 - (void)viewDidLoad
@@ -157,11 +175,65 @@
     return nil;
 }
 
-- (void)updateCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+{
+    headerViewHeight = 40;
+    return headerViewHeight;
+}
+
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
+{
+    NSArray *listsAtSection = [self.listManager.lists objectAtIndex:section];
+    MBList *list = [listsAtSection firstObject];
+    MBLabelImageHeaderView *headerView = [[MBLabelImageHeaderView alloc] initWithFrame:CGRectMake(0, 0, tableView.frame.size.width, headerViewHeight)];
+    headerView.labelString = NSLocalizedString(@"Your List" , nil);
+    
+    UIImage *avatorImage = [[MBImageCacher sharedInstance] cachedProfileImageForUserID:list.user.userIDStr];
+    if (!avatorImage) {
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+            [MBImageDownloader downloadOriginImageWithURL:list.user.urlHTTPSAtProfileImage completionHandler:^(UIImage *image, NSData *imageData){
+                if (image) {
+                    [[MBImageCacher sharedInstance] storeProfileImage:image data:imageData forUserID:list.user.userIDStr];
+                    CGSize imageSize = CGSizeMake(headerView.imageView.frame.size.width, headerView.imageView.frame.size.height);
+                    UIImage *radiusImage = [MBImageApplyer imageForTwitter:image size:imageSize radius:headerView.imageView.layer.cornerRadius];
+                    
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        headerView.image = radiusImage;
+                    });
+                }
+                
+            }failedHandler:^(NSURLResponse *response, NSError *error){
+                
+            }];
+        });
+    } else {
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+            CGSize imageSize = CGSizeMake(headerView.imageView.frame.size.width, headerView.imageView.frame.size.height);
+            UIImage *radiusImage = [MBImageApplyer imageForTwitter:avatorImage size:imageSize radius:headerView.imageView.layer.cornerRadius];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                headerView.image = radiusImage;
+            });
+        });
+    }
+    
+    return headerView;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    MBSelectingListTableViewCell *selectingCell = [self.tableView dequeueReusableCellWithIdentifier:selectingListCellIdentifier];
+    [self updateCell:selectingCell atIndexPath:indexPath];
+    return selectingCell;
+}
+
+- (void)updateCell:(MBSelectingListTableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
 {
     NSArray *listsAtSection = [self.listManager.lists objectAtIndex:indexPath.section];
     MBList *listAtIndex = [listsAtSection objectAtIndex:indexPath.row];
-    cell.textLabel.text = listAtIndex.name;
+    cell.listNameLabel.text = listAtIndex.name;
+    cell.descriptionTextView.text = listAtIndex.description;
+    
+    cell.accessoryType = UITableViewCellAccessoryNone;
     if ([listAtIndex.memberIDs objectForKey:self.selectingUser.userID]) {
         cell.accessoryType = UITableViewCellAccessoryCheckmark;
     }
