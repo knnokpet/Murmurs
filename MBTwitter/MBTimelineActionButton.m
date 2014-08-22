@@ -37,7 +37,7 @@
         
         // highlighte state
         [self setTitle:self.title forState:UIControlStateHighlighted];
-        [self setTitleColor:[UIColor lightGrayColor] forState:UIControlStateHighlighted];
+        [self setTitleColor:[UIColor whiteColor] forState:UIControlStateHighlighted];
         [self setImage:self.image forState:UIControlStateHighlighted];
         
         // disabled state
