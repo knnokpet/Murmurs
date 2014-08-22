@@ -191,6 +191,8 @@ typedef NS_ENUM(NSUInteger, MBToucheState) {
 {
     _attributedString = attributedString.copy;
     
+    [self resetHighlighClickedText];
+    
     [self setNeedsDisplayInRect:self.bounds];
 }
 
@@ -426,6 +428,11 @@ typedef NS_ENUM(NSUInteger, MBToucheState) {
     return [UIBezierPath bezierPathWithRoundedRect:rect cornerRadius:radius];
 }
 
+- (void)resetHighlighClickedText
+{
+    self.toucheState = MBToucheStateNone;
+}
+
 - (void)clickedOnLink:(MBLinkText *)link
 {
     if ([_delegate respondsToSelector:@selector(tweetTextView:clickOnLink:point:)]) {
@@ -590,9 +597,9 @@ typedef NS_ENUM(NSUInteger, MBToucheState) {
     
     self.touchedPoint = [gestureRecognizer locationInView:self];
     self.toucheState = MBToucheStateNone;
-    
+    /* unused
     MBSelectionGrabber *startGrabber = self.selectionView.startGrabber;
-    MBSelectionGrabber *endGrabber = self.selectionView.endGrabber;
+    MBSelectionGrabber *endGrabber = self.selectionView.endGrabber;*/
     
     UIGestureRecognizerState currentState = gestureRecognizer.state;
     if (currentState == UIGestureRecognizerStateBegan || currentState == UIGestureRecognizerStateChanged) {
