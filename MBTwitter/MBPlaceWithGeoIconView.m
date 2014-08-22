@@ -48,7 +48,7 @@
     CGRect geoIconRect = CGRectMake(0, 0, 24.0f, bounds.size.height);
     [self drawGeoIconInContext:context rect:geoIconRect];
     
-    CGFloat margin = 8.0f;
+    CGFloat margin = 2.0f;
     CGFloat placeXOrigin = geoIconRect.size.width + margin;
     placeNameRect = CGRectMake(placeXOrigin, 0, bounds.size.width - placeXOrigin, bounds.size.height);
     [self drawGeoPlaceInContext:context rect:placeNameRect];
@@ -56,12 +56,12 @@
 
 - (void)drawGeoIconInContext:(CGContextRef)context rect:(CGRect)rect
 {
-    CGContextSetRGBStrokeColor(context, 0.0, 0.4, 0.9, 1.0f);
-    CGContextSetRGBFillColor(context, 0.0, 0.4, 0.9, 1.0);
+    CGContextSetRGBStrokeColor(context, 0.87, 0.92, 0.99, 0.5f);
+    CGContextSetRGBFillColor(context, 0.87, 0.92, 0.99, 1.0);
     CGContextSetLineWidth(context, 1.0f);
     
     CGPoint center = CGPointMake(rect.size.width / 2, rect.size.height / 2);
-    CGFloat rectWidth = rect.size.width / 2  - 6;
+    CGFloat rectWidth = rect.size.width / 2  - 4;
     CGContextMoveToPoint(context, center.x, center.y);
     CGContextAddLineToPoint(context, center.x - rectWidth, center.y);
     CGContextAddLineToPoint(context, center.x + rectWidth, center.y - rectWidth);
