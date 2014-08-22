@@ -22,6 +22,18 @@
 #import "MBGeoPinView.h"
 #import "MBGradientMaskView.h"
 
+@interface UIActionSheet(NonBecomeFirstResponder)
+@end
+@implementation UIActionSheet(NonBecomeFirstResponder)
+
+- (BOOL)canBecomeFirstResponder
+{
+    return NO;
+}
+
+@end
+
+
 
 @interface MBPostTweetViewController () <UITextViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate>
 
@@ -140,14 +152,22 @@
     self.toolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, barHeight)];
     self.photoButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Photo-Tool-1"] style:UIBarButtonItemStylePlain target:self action:@selector(didPushPhotoButton)];
     self.cameraButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Camera-Tool"] style:UIBarButtonItemStylePlain target:self action:@selector(didPushCameraButton)];
-    self.geoButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Geo-Line-Tool"] style:UIBarButtonItemStylePlain target:self action:@selector(didPushGeoButton)];
-    self.suspendButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Suspend", nil) style:UIBarButtonItemStylePlain target:self action:@selector(didPushCancelGeoButton)];
+    self.geoButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Geo-Line-Tool-1"] style:UIBarButtonItemStylePlain target:self action:@selector(didPushGeoButton)];
+    self.suspendButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Suspend", nil) style:UIBarButtonItemStylePlain target:self action:@selector(didPushSuspendButton)];
     
     [self settingDefaultToolbarItemsWithAnimated:NO];
     
     self.tweetTextView.inputAccessoryView = self.toolbar;
 }
 
+- (void)settingToolBarItemWithAnimated:(BOOL)animated
+{
+    if (self.photos.count > 0 || self.place.allValues.count > 0) {
+        [self settingCancelableToolbarItemsWithAnimated:animated];
+    } else {
+        [self settingDefaultToolbarItemsWithAnimated:animated];
+    }
+}
 
 - (void)settingDefaultToolbarItemsWithAnimated:(BOOL)animated
 {
@@ -358,12 +378,15 @@
     [self.geoPlaceView maskGradient];
     [self.view insertSubview:self.geoPlaceView belowSubview:self.geoPinView];
     
-    UILabel *geoPlaceLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.geoPinView.bounds.size.width, 0, self.view.bounds.size.width - self.geoPinView.bounds.size.width, self.geoPlaceView.bounds.size.height)];
+    UILabel *geoPlaceLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.geoPinView.bounds.size.width, 6.0, self.view.bounds.size.width - self.geoPinView.bounds.size.width, self.geoPlaceView.bounds.size.height)];
     NSString *fromPlace = NSLocalizedString(@"From %1$@, %2$@", nil);
     geoPlaceLabel.text = [NSString stringWithFormat:fromPlace, place.countryName, place.countryFullName];
     geoPlaceLabel.textColor = [UIColor darkGrayColor];
     geoPlaceLabel.font = [UIFont systemFontOfSize:15.0f];
+    
+    self.geoPlaceView.alpha = 0.0f;
     [self.geoPlaceView addSubview:geoPlaceLabel];
+    
 }
 
 - (void)showGeoPlaceView:(BOOL)shows animated:(BOOL)animated
@@ -429,6 +452,8 @@
 
 - (void)hidingAnimatePinView
 {
+    [self showGeoPlaceView:NO animated:YES];
+    
     [UIView animateWithDuration:0.1f animations:^{
         [self.geoPinView contractView];
         
@@ -445,7 +470,6 @@
         [self.geoPinView scallingAnimateDotWithCompletion:^{
             [self.geoPinView removeFromSuperview];
             
-            [self showGeoPlaceView:NO animated:YES];
         }];
     }];
 }
@@ -521,7 +545,16 @@
 
 - (void)didPushSuspendButton
 {
+    NSString *firstTitle = NSLocalizedString(@"Cancellation of Image", nil);
+    NSString *secondTitle = nil;
+    if (self.photos.count > 0 && self.place.allValues.count > 0) {
+        secondTitle = NSLocalizedString(@"Cancellation of Location", nil);
+    } else if (self.photos.count == 0 && self.place.allValues.count > 0) {
+        firstTitle = NSLocalizedString(@"Cancellation of Location", nil);
+    }
     
+    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"Cancellation", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) destructiveButtonTitle:nil otherButtonTitles:firstTitle, secondTitle, nil];
+    [actionSheet showInView:self.view];
 }
 
 - (void)didPushPhotoButton
@@ -535,8 +568,6 @@
     } else {
         
     }
-    
-    
 }
 
 - (void)didPushCameraButton
@@ -550,6 +581,15 @@
     } else {
         
     }
+}
+
+- (void)cancelAttachedImage
+{
+    [self.photos removeAllObjects];
+    self.showsImageView = NO;
+    [self applyConstraint];
+    [self setCountOfBarButtonItem];
+    [self settingToolBarItemWithAnimated:YES];
 }
 
 - (void)didPushGeoButton
@@ -595,11 +635,12 @@
 
 - (void)didPushCancelGeoButton
 {
+    [self.place removeAllObjects];
+    
     if (self.geoPinView.superview) {
         [self hidingAnimatePinView];
         [self setGeoButtonWithTappable:YES];
-        [self settingDefaultToolbarItemsWithAnimated:YES];
-        return;
+        [self settingToolBarItemWithAnimated:YES];
     }
 }
 
@@ -613,10 +654,22 @@
 
 - (void)setGeoButtonWithTappable:(BOOL)tappable
 {
-    UIBarButtonItem *geoButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Geo-Tool"] style:UIBarButtonItemStylePlain target:self action:@selector(didPushGeoButton)];
+    UIBarButtonItem *geoButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Geo-Line-Tool"] style:UIBarButtonItemStylePlain target:self action:@selector(didPushGeoButton)];
     geoButton.enabled = tappable;
     
     self.geoButton = geoButton;
+}
+
+/* unused */
+- (void)setCameraAndPhotoButton
+{
+    BOOL enabled = YES;
+    if (self.photos.count > 0) {
+        enabled = NO;
+    }
+    
+    self.cameraButton.enabled = enabled;
+    self.photoButton.enabled = enabled;
 }
 
 - (UIBarButtonItem *)animatingIndicatorButton
@@ -690,6 +743,8 @@
     if (nil == selectedImage) {
         return;
     }
+    self.mediaImageView.image = nil;
+    [self settingCancelableToolbarItemsWithAnimated:YES];
     self.compressingImage = selectedImage;
     self.showsImageView = YES;
     [self applyConstraint];
@@ -754,6 +809,7 @@
     if (!medias || !photoSizeLimit || !self.compressingImage) {
         self.compressingImage = nil;
         self.showsImageView = NO;
+        [self applyConstraint];
         [self removeImageViewConstraint];
         self.postBarButtonitem.enabled = YES;
         return;
@@ -767,6 +823,10 @@
             return ;
         }
 
+        /* current media limit is 1... */
+        if (weakSelf.photos.count > 0) {
+            [weakSelf.photos removeAllObjects];
+        }
         [weakSelf.photos addObject:imageData64];
         UIImage *resizedImage = [MBImageApplyer imageForTwitter:self.compressingImage size:CGSizeMake(weakSelf.mediaImageView.frame.size.width, weakSelf.mediaImageView.frame.size.height) radius:0.0f];
         self.compressingImage = nil;
@@ -814,6 +874,23 @@
             NSLog(@"ネットワークエラー");
             
         }
+    }
+}
+
+#pragma mark UIActionsheet Delegate
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if (buttonIndex == actionSheet.cancelButtonIndex) {
+        ;
+    } else if (buttonIndex == 0) {
+        if (self.photos.count > 0) {
+            [self cancelAttachedImage];
+        } else {
+            [self didPushCancelGeoButton];
+        }
+        
+    } else if (buttonIndex == 1) {
+        [self didPushCancelGeoButton];
     }
 }
 

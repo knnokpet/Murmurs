@@ -13,7 +13,7 @@
 
 @protocol MBPostTweetViewControllerDelegate;
 @class MBTweet;
-@interface MBPostTweetViewController : UIViewController <CLLocationManagerDelegate, UIScrollViewDelegate, MBAOuth_TwitterAPICenterDelegate>
+@interface MBPostTweetViewController : UIViewController <CLLocationManagerDelegate, UIScrollViewDelegate, UIActionSheetDelegate, MBAOuth_TwitterAPICenterDelegate>
 
 @property (nonatomic, weak) id <MBPostTweetViewControllerDelegate> delegate;
 @property (nonatomic, readonly) MBAOuth_TwitterAPICenter *aoAPICenter;
