@@ -10,12 +10,14 @@
 
 #import "MBSearchedTweetViewController.h"
 #import "MBSearchedUsersViewController.h"
+#import "MBPostTweetViewController.h"
 #import "MBAOuth_TwitterAPICenter.h"
 #import "MBSegmentedContainerView.h"
 
-@interface MBSearchViewController : UIViewController <UISearchBarDelegate, MBAOuth_TwitterAPICenterDelegate, MBSearchedTweetViewControllerDelegate, MBSearchedUsersViewControllerDelegate>
+@interface MBSearchViewController : UIViewController <UISearchBarDelegate, MBAOuth_TwitterAPICenterDelegate, MBSearchedTweetViewControllerDelegate, MBSearchedUsersViewControllerDelegate, MBPostTweetViewControllerDelegate>
 
 @property (nonatomic, readonly) MBAOuth_TwitterAPICenter *aoAPICenter;
+@property (nonatomic, readonly) NSString *searchingTweetQuery;
 
 @property (nonatomic, readonly) NSArray *viewControllers;
 @property (nonatomic) UIViewController *currentController;
@@ -23,5 +25,7 @@
 @property (nonatomic, readonly) MBSearchedUsersViewController *usersViewController;
 @property (nonatomic, readonly) MBSegmentedContainerView *segmentedContainerView;
 @property (nonatomic, readonly) UISegmentedControl *segmentedControl;
+
+- (void)setSearchingTweetQuery:(NSString *)searchingTweetQuery;
 
 @end

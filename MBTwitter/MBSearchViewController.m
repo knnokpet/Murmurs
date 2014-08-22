@@ -27,6 +27,12 @@
     return self;
 }
 
+#pragma mark Setter & Getter
+- (void)setSearchingTweetQuery:(NSString *)searchingTweetQuery
+{
+    _searchingTweetQuery = searchingTweetQuery;
+}
+
 #pragma mark -View
 - (void)configureModel
 {
@@ -46,8 +52,6 @@
     
     // segmentedControlContainerView
     _segmentedContainerView = [[MBSegmentedContainerView alloc] initWithFrame:CGRectMake(0, self.navigationController.navigationBar.frame.origin.y + self.navigationController.navigationBar.frame.size.height, self.view.bounds.size.width, 45)];
-    [self.view addSubview:self.segmentedContainerView];
-    [self updateContainerView];
     
     // segmentedControl
     /* アイコンもアリだ */
@@ -79,45 +83,24 @@
     [self configureModel];
     [self configureView];
     
-    CGFloat containerOriginY = self.segmentedContainerView.frame.origin.y;
-    CGFloat containeHeight = self.segmentedContainerView.frame.size.height;
-    //CGFloat navigationStatusBarHeight = self.navigationController.navigationBar.frame.size.height + [UIApplication sharedApplication].statusBarFrame.size.height;
-    CGFloat tabBarHeight = self.tabBarController.tabBar.frame.size.height;
-    
     _tweetViewController = [[MBSearchedTweetViewController alloc] initWithNibName:@"TimelineTableView" bundle:nil];
     self.tweetViewController.delegate = self;
     self.tweetViewController.view.frame = self.view.bounds;/* bounds であることが重要 */
     [self addChildViewController:self.tweetViewController];
     self.currentController = self.tweetViewController;
-    // insets
-    UIEdgeInsets contentInsets = self.tweetViewController.tableView.contentInset;
-    contentInsets.top = containeHeight + containerOriginY;
-    contentInsets.bottom = tabBarHeight;
-    self.tweetViewController.tableView.contentInset = contentInsets;
-    UIEdgeInsets indicatorInsets = self.tweetViewController.tableView.scrollIndicatorInsets;
-    indicatorInsets.top = containeHeight+ containerOriginY;
-    indicatorInsets.bottom = tabBarHeight;
-    self.tweetViewController.tableView.scrollIndicatorInsets = indicatorInsets;
     
     _usersViewController = [[MBSearchedUsersViewController alloc] initWithNibName:@"MBUsersViewController" bundle:nil];
     self.usersViewController.delegate = self;
     self.usersViewController.view.frame = self.view.bounds;
     [self addChildViewController:self.usersViewController];
-    // inset
-    
-    UIEdgeInsets contInset = self.usersViewController.tableView.contentInset;
-    contInset.top = containeHeight; //+ containerOriginY;
-    //contInset.bottom = tabBarHeight;
-    self.usersViewController.tableView.contentInset = contInset;
-    UIEdgeInsets scrollInsets = self.usersViewController.tableView.scrollIndicatorInsets;
-    scrollInsets.top = containeHeight; //+ containerOriginY;
-    //scrollInsets.bottom = tabBarHeight;NSLog(@"tabbarhei = %f", tabBarHeight);
-    self.usersViewController.tableView.scrollIndicatorInsets = scrollInsets;
     
     
     _viewControllers = @[self.tweetViewController, self.usersViewController];
     
     self.segmentedControl.selectedSegmentIndex = 0;
+    
+    
+    [self searchTweet];
     
     [self receiveChengedAccountNotification];
 }
@@ -156,9 +139,62 @@
 {
     if (self.tweetViewController.view.superview || self.usersViewController.view.superview) {
         [self.view addSubview:self.segmentedContainerView];
+        [self applySegmentedInset];
     } else {
         [self.segmentedContainerView removeFromSuperview];
     }
+}
+
+- (void)applySegmentedInset
+{
+    CGFloat containerOriginY = self.segmentedContainerView.frame.origin.y;
+    CGFloat containeHeight = self.segmentedContainerView.bounds.size.height;
+    CGFloat bottomHeight = 0;
+    if (self.tabBarController) {
+        bottomHeight = self.tabBarController.tabBar.frame.size.height;
+    }
+    
+    // insets
+    UIEdgeInsets contentInsets = self.tweetViewController.tableView.contentInset;
+    contentInsets.top = containeHeight + containerOriginY;
+    contentInsets.bottom = bottomHeight;
+    self.tweetViewController.tableView.contentInset = contentInsets;
+    UIEdgeInsets indicatorInsets = self.tweetViewController.tableView.scrollIndicatorInsets;
+    indicatorInsets.top = containeHeight; //+ containerOriginY;
+    indicatorInsets.bottom = bottomHeight;
+    self.tweetViewController.tableView.scrollIndicatorInsets = indicatorInsets;
+    
+    UIEdgeInsets contInset = self.usersViewController.tableView.contentInset;
+    contInset.top = containeHeight + self.navigationController.navigationBar.frame.origin.y + self.navigationController.navigationBar.bounds.size.height;
+    self.usersViewController.tableView.contentInset = contInset;
+    UIEdgeInsets scrollInsets = self.usersViewController.tableView.scrollIndicatorInsets;
+    scrollInsets.top = containeHeight + self.navigationController.navigationBar.frame.origin.y + self.navigationController.navigationBar.bounds.size.height;
+    self.usersViewController.tableView.scrollIndicatorInsets = scrollInsets;
+}
+
+- (void)searchTweet
+{
+    if (!self.searchingTweetQuery || self.searchingTweetQuery.length == 0) {
+        return;
+    }
+    self.searchBar.text = self.searchingTweetQuery;
+    [self.searchBar setShowsCancelButton:NO animated:NO];
+    [self.searchBar resignFirstResponder];
+    [self changeNavigationItemToTweetButtonWithAnimated:NO];
+    
+    UIEdgeInsets contentInsets = self.tweetViewController.tableView.contentInset;
+    contentInsets.top = 0;
+    contentInsets.bottom = 0;
+    self.tweetViewController.tableView.contentInset = contentInsets;
+    UIEdgeInsets indicatorInsets = self.tweetViewController.tableView.scrollIndicatorInsets;
+    indicatorInsets.top  = 0;
+    indicatorInsets.bottom = 0;
+    self.tweetViewController.tableView.scrollIndicatorInsets = indicatorInsets;
+    
+    self.tweetViewController.query = self.searchBar.text;
+    [self.view addSubview:self.tweetViewController.view];
+    
+    self.searchingTweetQuery = nil;
 }
 
 #pragma mark NavigationItem
@@ -199,7 +235,10 @@
 #pragma mark View Action
 - (void)didPushTweetButton
 {
-    
+    MBPostTweetViewController *postViewController = [[MBPostTweetViewController alloc] initWithNibName:@"PostTweetView" bundle:nil];
+    postViewController.delegate = self;
+    UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:postViewController];
+    [self.navigationController presentViewController:navigationController animated:YES completion:nil];
 }
 
 - (void)didChangeSegmentedControlValue
@@ -210,6 +249,7 @@
     nextViewController.view.frame = self.view.bounds;
     
     [self transitionFromViewController:self.currentController toViewController:nextViewController duration:0.0f options:UIViewAnimationOptionTransitionNone animations:^{
+        [self applySegmentedInset];
         
     }completion:^(BOOL finished) {
         [self.currentController removeFromParentViewController];
@@ -239,7 +279,6 @@
 {
     [searchBar setShowsCancelButton:NO animated:YES];
     [searchBar resignFirstResponder];
-    [self.navigationItem setRightBarButtonItem:self.tweetButton animated:YES];
     [self changeNavigationItemToTweetButtonWithAnimated:YES];
     
     self.tweetViewController.query = searchBar.text;
@@ -255,7 +294,6 @@
     }
     
     [self updateContainerView];
-    //[self.view bringSubviewToFront:self.segmentedContainerView];
 }
 
 - (BOOL)searchBarShouldBeginEditing:(UISearchBar *)searchBar
@@ -292,6 +330,19 @@
     [self.searchBar resignFirstResponder];
     [self.searchBar setShowsCancelButton:NO animated:YES];
     [self changeNavigationItemToTweetButtonWithAnimated:YES];
+}
+
+#pragma mark MBPostTweetViewController Delegate
+- (void)dismissPostTweetViewController:(MBPostTweetViewController *)controller animated:(BOOL)animated
+{
+    [controller dismissViewControllerAnimated:animated completion:^{
+        
+    }];
+}
+
+- (void)sendTweetPostTweetViewController:(MBPostTweetViewController *)controller
+{
+    [self.tweetViewController refreshAction];
 }
 
 @end
