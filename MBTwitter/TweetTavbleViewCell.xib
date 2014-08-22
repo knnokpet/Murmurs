@@ -60,7 +60,7 @@
                         </constraints>
                     </view>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="vcG-hN-cwB" customClass="MBRetweetView">
-                        <rect key="frame" x="32" y="327" width="280" height="18"/>
+                        <rect key="frame" x="40" y="327" width="272" height="18"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
@@ -68,7 +68,7 @@
                         </constraints>
                     </view>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="wrX-qj-KVl" customClass="MBPlaceWithGeoIconView">
-                        <rect key="frame" x="32" y="305" width="280" height="18"/>
+                        <rect key="frame" x="40" y="305" width="272" height="18"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
@@ -100,8 +100,8 @@
                     <constraint firstItem="yHN-54-aDN" firstAttribute="leading" secondItem="OoA-Oc-RDj" secondAttribute="trailing" constant="8" id="jeg-1N-ndB"/>
                     <constraint firstItem="Kdl-qO-9E7" firstAttribute="top" secondItem="bed-xa-aaB" secondAttribute="bottom" constant="4" id="kkC-cz-iiA"/>
                     <constraint firstItem="vcG-hN-cwB" firstAttribute="top" secondItem="wrX-qj-KVl" secondAttribute="bottom" constant="4" id="la8-l2-La6"/>
-                    <constraint firstItem="wrX-qj-KVl" firstAttribute="leading" secondItem="Pnn-36-8ML" secondAttribute="leading" constant="32" id="liM-4X-1y9"/>
-                    <constraint firstItem="vcG-hN-cwB" firstAttribute="leading" secondItem="Pnn-36-8ML" secondAttribute="leading" constant="32" id="mQC-Dp-lxf"/>
+                    <constraint firstItem="wrX-qj-KVl" firstAttribute="leading" secondItem="Pnn-36-8ML" secondAttribute="leading" constant="40" id="liM-4X-1y9"/>
+                    <constraint firstItem="vcG-hN-cwB" firstAttribute="leading" secondItem="Pnn-36-8ML" secondAttribute="leading" constant="40" id="mQC-Dp-lxf"/>
                     <constraint firstAttribute="trailing" secondItem="wrX-qj-KVl" secondAttribute="trailing" constant="8" id="mhW-eh-Yf6"/>
                     <constraint firstAttribute="bottom" secondItem="vcG-hN-cwB" secondAttribute="bottom" constant="4" id="rCS-o6-W55"/>
                     <constraint firstAttribute="trailing" secondItem="vcG-hN-cwB" secondAttribute="trailing" constant="8" id="rSh-sE-mxh"/>
