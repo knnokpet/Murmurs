@@ -161,8 +161,7 @@
     }
     
     MBAccount *selectedAccount = [[MBAccountManager sharedInstance] currentAccount];
-    MBUser *currentAccountUser = [[MBUserManager sharedInstance] storedUserForKey:selectedAccount.userID];
-    if ([self.selectedTweet.tweetUser.userID compare:currentAccountUser.userID] == NSOrderedSame || self.selectedTweet.tweetUser.isProtected) {
+    if ([self.selectedTweet.tweetUser.userIDStr isEqualToString:selectedAccount.userID] || self.selectedTweet.tweetUser.isProtected) {
         [self setButtonItems:@[replyButton, favoriteButton]];
         return;
     }
