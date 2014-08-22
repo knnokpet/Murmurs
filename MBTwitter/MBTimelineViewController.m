@@ -8,6 +8,8 @@
 
 #import "MBTimelineViewController.h"
 
+#import "MBSearchViewController.h"
+
 
 static NSString *tweetCellIdentifier = @"TweetTableViewCellIdentifier";
 static NSString *tweetWithImageCellIdentifier = @"TweetWithImageTableViewCellIdentifier";
@@ -1129,7 +1131,12 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
             [userViewController setUserID:userID];
         }
         [self.navigationController pushViewController:userViewController animated:YES];
+        
     } else if ([linktext.obj isKindOfClass:[MBHashTagLink class]]) {
+        MBHashTagLink *hashtagLink = (MBHashTagLink *)linktext.obj;
+        MBSearchViewController *searchViewController = [[MBSearchViewController alloc] init];
+        [searchViewController setSearchingTweetQuery:[NSString stringWithFormat:@"#%@", hashtagLink.displayText]];
+        [self.navigationController pushViewController:searchViewController animated:YES];
         
     } else if ([linktext.obj isKindOfClass:[MBMediaLink class]]) {
         
