@@ -30,17 +30,9 @@
 #pragma mark Instance Methods
 - (void)removeRetweetView
 {
-    if (self.retweetView.superview) {
-        [self.retweetView removeFromSuperview];
-        self.retweetView = nil;
-    }
-}
-
-- (void)removeFavoriteView
-{
-    if (self.favoriteView.superview) {
-        [self.favoriteView removeFromSuperview];
-        self.favoriteView = nil;
+    if (self.retweeterView.superview) {
+        [self.retweeterView removeFromSuperview];
+        self.retweeterView = nil;
     }
 }
 
