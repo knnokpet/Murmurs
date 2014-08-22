@@ -161,7 +161,7 @@
 #pragma mark PostTweetViewController
 - (void)dismissPostTweetViewController:(MBPostTweetViewController *)controller animated:(BOOL)animated
 {
-    [controller dismissViewControllerAnimated:YES completion:^{
+    [controller dismissViewControllerAnimated:animated completion:^{
         
     }];
 }
