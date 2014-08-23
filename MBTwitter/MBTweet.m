@@ -21,6 +21,8 @@
 #define KEY_TRUNCATED @"truncated"
 #define KEY_POSSIBLY_SENSITIVE @"possibly_sensitive"
 #define KEY_RETWEETED_ORIGINAL_TWEET @"retweeted_status"
+#define KEY_CURRENT_USER_RETWEETED_TWEET @"current_user_retweet"
+
 #define KEY_IN_REPLY_TO_SCREEN_NAME @"in_reply_to_screen_name"
 #define KEY_ID_REPLY_TO_TWEET_ID @"in_reply_to_status_id"
 #define KEY_ID_REPLY_TO_TWEET_ID_STR @"in_reply_to_status_id_str"
@@ -52,17 +54,31 @@
     _createdDate = [NSDate parseDateUsingStrptime:dateStr];
     
     _entity = [[MBEntity alloc] initWithDictionary:[tweet dictionaryForKey:KEY_ENTITY]];
-    _place = [[MBPlace alloc] initWithDictionary:[tweet dictionaryForKey:KEY_PLACE]];
+    NSDictionary *placeDict = [tweet dictionaryForKey:KEY_PLACE];
+    if (placeDict) {
+        _place = [[MBPlace alloc] initWithDictionary:placeDict];
+    } else {
+        _place = nil;
+    }
     
     _favoritedCount = [tweet integerForKey:KEY_FAVORITE_COUNT];
     _retweetedCount = [tweet integerForKey:KEY_RETWEET_COUNT];
     
     _isFavorited = [tweet boolForKey:KEY_FAVORITED];
     _isRetweeted = [tweet boolForKey:KEY_RETWEETED];
+    _currentUserRetweetedTweet = nil;
+    if (YES == _isRetweeted) {
+        _currentUserRetweetedTweet = [tweet dictionaryForKey:KEY_CURRENT_USER_RETWEETED_TWEET];
+    }
     _isTruncated = [tweet boolForKey:KEY_TRUNCATED];
     _isContainedTweetLink = [tweet boolForKey:KEY_POSSIBLY_SENSITIVE];
     
-    //_tweetOfOriginInRetweet = [[MBTweet alloc] initWithDictionary:[tweet dictionaryForKey:KEY_RETWEETED_ORIGINAL_TWEET]];
+    if (nil != [tweet dictionaryForKey:KEY_RETWEETED_ORIGINAL_TWEET]) {
+        _tweetOfOriginInRetweet = [[MBTweet alloc] initWithDictionary:[tweet dictionaryForKey:KEY_RETWEETED_ORIGINAL_TWEET]];
+    } else {
+        _tweetOfOriginInRetweet = nil;
+    }
+    
     
     _screenNameOfOriginInReply = [tweet stringForKey:KEY_IN_REPLY_TO_SCREEN_NAME];
     _tweetIDOfOriginInReply = [tweet numberForKey:KEY_ID_REPLY_TO_TWEET_ID];
@@ -124,6 +140,7 @@
     [aCoder encodeObject:_tweetID forKey:KEY_TWEET_ID];
     [aCoder encodeObject:_tweetIDStr forKey:KEY_TWEET_ID_STR];
     [aCoder encodeObject:_tweetUser forKey:KEY_TWEET_USER];
+    [aCoder encodeObject:_createdDate forKey:KEY_CREATED_AT_TIME];
     [aCoder encodeObject:_entity forKey:KEY_ENTITY];
     [aCoder encodeObject:_place forKey:KEY_PLACE];
     
@@ -141,7 +158,10 @@
     NSNumber *isContainedLink = [NSNumber numberWithBool:_isContainedTweetLink];
     [aCoder encodeObject:isContainedLink forKey:KEY_POSSIBLY_SENSITIVE];
     
-    [aCoder encodeObject:_tweetOfOriginInRetweet forKey:KEY_RETWEETED_ORIGINAL_TWEET];
+    if (nil != _tweetOfOriginInRetweet) {
+        [aCoder encodeObject:_tweetOfOriginInRetweet forKey:KEY_RETWEETED_ORIGINAL_TWEET];
+    }
+    
     
     [aCoder encodeObject:_screenNameOfOriginInReply forKey:KEY_IN_REPLY_TO_SCREEN_NAME];
     [aCoder encodeObject:_tweetIDOfOriginInReply forKey:KEY_ID_REPLY_TO_TWEET_ID];

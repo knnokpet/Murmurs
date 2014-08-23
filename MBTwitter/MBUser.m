@@ -39,6 +39,7 @@
 #define KEY_SHOW_INLINE_MEDIA @"show_all_inline_media"
 #define KEY_PROFILE_BACKGROUND_TILE @"profile_background_tile"
 #define KEY_PROFILE_IMAGE_URL_HTTPS @"profile_image_url_https"
+#define KEY_PROFILE_IMAGE_BANNER_URL_HTTPS @"profile_banner_url"
 
 @implementation MBUser
 - (id)initWithDictionary:(NSDictionary *)user
@@ -46,6 +47,7 @@
     self = [super init];
     if (self) {
         [self initializeWithDictionary:user];
+        self.relationship = nil;
     }
     
     return self;
@@ -88,6 +90,7 @@
     
         
     _urlHTTPSAtProfileImage = [user stringForKey:KEY_PROFILE_IMAGE_URL_HTTPS];
+    _urlAtProfileBanner = [user stringForKey:KEY_PROFILE_IMAGE_BANNER_URL_HTTPS];
 }
 
 - (id)initWithCoder:(NSCoder *)aDecoder
@@ -98,8 +101,11 @@
         _userID = [aDecoder decodeObjectForKey:KEY_USER_ID];
         _userIDStr = [aDecoder decodeObjectForKey:KEY_USER_ID_STR];
         _characterName = [aDecoder decodeObjectForKey:KEY_CHARACTER_NAME];
+        NSNumber *protectedNumber = [aDecoder decodeObjectForKey:KEY_PROTECTED];
+        _isProtected  = [protectedNumber boolValue];
         _urlHTTPSAtProfileImage = [aDecoder decodeObjectForKey:KEY_PROFILE_IMAGE_URL_HTTPS];
         _requireLoading = YES;
+        _relationship = nil;
     }
     
     return self;
@@ -111,6 +117,8 @@
     [aCoder encodeObject:_userID forKey:KEY_USER_ID];
     [aCoder encodeObject:_userIDStr forKey:KEY_USER_ID_STR];
     [aCoder encodeObject:_characterName forKey:KEY_CHARACTER_NAME];
+    
+    [aCoder encodeObject:[NSNumber numberWithBool:_isProtected] forKey:KEY_PROTECTED];
     [aCoder encodeObject:_urlHTTPSAtProfileImage forKey:KEY_PROFILE_IMAGE_URL_HTTPS];
 }
 

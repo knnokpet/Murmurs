@@ -15,7 +15,11 @@
     if ([parsedObj isKindOfClass:[NSDictionary class]]) {
         NSDictionary *parsedHelp = (NSDictionary *)parsedObj;
         NSNumber *maxMediaPerUpload = [parsedHelp numberForKey:@"max_media_per_upload"];
-        NSLog(@"maxmedia = %llu", [maxMediaPerUpload unsignedLongLongValue]);
+        NSNumber *photoSizeLimit = [parsedHelp numberForKey:@"photo_size_limit"];
+        NSNumber *shortURLLength = [parsedHelp numberForKey:@"short_url_length_https"];
+        NSLog(@"maxmedia = %llu photoSizeLimit %llu", [maxMediaPerUpload unsignedLongLongValue], [photoSizeLimit unsignedLongLongValue]);
+        NSArray *helpArray = @[maxMediaPerUpload, shortURLLength, photoSizeLimit];
+        self.completion(helpArray);
     }
 }
 

@@ -13,6 +13,8 @@
 #import "MBTextSelection.h"
 
 #import "MBSelectionView.h"
+#import "MBMagnifierView.h"
+#import "MBMagnifierRangeView.h"
 
 typedef NS_ENUM(NSUInteger, MBToucheState) {
     MBToucheStateNone       = 0,
@@ -32,6 +34,8 @@ typedef NS_ENUM(NSUInteger, MBToucheState) {
 @property (nonatomic) MBToucheState toucheState;
 
 @property (nonatomic) MBSelectionView *selectionView;
+@property (nonatomic) MBMagnifierView *magnifierView;
+@property (nonatomic) MBMagnifierRangeView *magnifierRangeView;
 
 @end
 
@@ -44,16 +48,28 @@ typedef NS_ENUM(NSUInteger, MBToucheState) {
     [self initialize];
 }
 
+- (id)initWithFrame:(CGRect)frame
+{
+    self = [super initWithFrame:frame];
+    if (self) {
+        [self initialize];
+    }
+    
+    return self;
+}
+
 - (void)initialize
 {
     _textLayout = [[MBTextLayout alloc] init];
     _textLayout.bound = self.bounds;
     
-    self.linkHighlightColor = [UIColor blueColor];
-    
+    self.linkHighlightColor = [UIColor colorWithRed:0.5 green:0.5 blue:0.5 alpha:0.5];
+        
     [self setIsSelectable:NO];
     
     [self configureTextSelections];
+    self.magnifierView = [[MBMagnifierView alloc] init];
+    self.magnifierRangeView = [[MBMagnifierRangeView alloc] init];
 }
 
 - (void)configureTextSelections
@@ -130,11 +146,52 @@ typedef NS_ENUM(NSUInteger, MBToucheState) {
     return [MBTextLayout frameRectWithAttributedString:attributedString constraintSize:constraintSize];
 }
 
++ (CGRect)rectForLongestDrawingTextWithAttributedString:(NSAttributedString *)attributedString constraintSize:(CGSize)constraintSize lineSpace:(CGFloat)lineSpace paragraghSpace:(CGFloat)paragraghSpace font:(UIFont *)font
+{
+    NSInteger length = attributedString.length;
+    NSRange textRange = NSMakeRange(0, length);
+    NSMutableAttributedString *mutableAttributedString = attributedString.mutableCopy;
+    
+    CTTextAlignment textAlignment = kCTTextAlignmentNatural;
+    CGFloat lineSpacing = roundf(lineSpace);
+    CGFloat lineHeight = 0.0f;
+    CGFloat paragraphSpacing = roundf(paragraghSpace);
+    
+    CTParagraphStyleSetting setting[] = {
+        {kCTParagraphStyleSpecifierAlignment, sizeof(textAlignment), &textAlignment},
+        {kCTParagraphStyleSpecifierMinimumLineHeight, sizeof(lineHeight), &lineHeight},
+        {kCTParagraphStyleSpecifierMaximumLineHeight, sizeof(lineHeight), &lineHeight},
+        {kCTParagraphStyleSpecifierLineSpacing, sizeof(lineSpacing), &lineSpacing},
+        {kCTParagraphStyleSpecifierMinimumLineSpacing, sizeof(lineSpacing), &lineSpacing},
+        {kCTParagraphStyleSpecifierMaximumLineSpacing, sizeof(lineSpacing), &lineSpacing},
+        {kCTParagraphStyleSpecifierParagraphSpacing, sizeof(paragraphSpacing), &paragraphSpacing},
+    };
+    
+    CTParagraphStyleRef paragraphStyleRef = CTParagraphStyleCreate(setting, sizeof(setting) / sizeof(CTParagraphStyleSetting));
+    [mutableAttributedString addAttributes:@{(id)kCTParagraphStyleAttributeName: (__bridge id) paragraphStyleRef} range:textRange];
+    CFRelease(paragraphStyleRef);
+    
+    attributedString = mutableAttributedString;
+    
+    if (font) {
+        CFStringRef fontName = (__bridge CFStringRef)font.fontName;
+        CGFloat fontSize = font.pointSize;
+        CTFontRef fontRef = CTFontCreateWithName(fontName, fontSize, NULL);
+        [mutableAttributedString addAttributes:@{(id)kCTFontAttributeName: (__bridge id)fontRef} range:textRange];
+        CFRelease(fontRef);
+        attributedString = mutableAttributedString;
+    }
+    
+    return [MBTextLayout rectForLongestDrawingWithAttributedString:attributedString constraintSize:constraintSize];
+}
+
 #pragma mark -
 #pragma mark Setter & Getter
 - (void)setAttributedString:(NSAttributedString *)attributedString
 {
     _attributedString = attributedString.copy;
+    
+    [self resetHighlighClickedText];
     
     [self setNeedsDisplayInRect:self.bounds];
 }
@@ -168,12 +225,19 @@ typedef NS_ENUM(NSUInteger, MBToucheState) {
     
     CGColorRef colorRef = self.textColor.CGColor;
     [self setAttributes:@{(id)kCTForegroundColorAttributeName: (__bridge id)colorRef}];
-    CFRelease(colorRef);
 }
 
 - (void)setParagraphStyleAttribute
 {
-    CTTextAlignment alignment = (CTTextAlignment)self.alignment;
+    CTTextAlignment alignment;
+    if (NSTextAlignmentCenter == self.alignment) {
+        alignment = kCTTextAlignmentCenter;
+    } else if (NSTextAlignmentRight == self.alignment) {
+        alignment = kCTTextAlignmentRight;
+    } else {
+        alignment = (CTTextAlignment)self.alignment;
+    }
+    
     CTLineBreakMode lineBreakMode = (CTLineBreakMode)self.lineBreakMode;
     CGFloat lineSpacing = roundf(self.lineSpace);
     CGFloat paragraphSpacing = roundf(self.paragraphSpace);
@@ -192,6 +256,8 @@ typedef NS_ENUM(NSUInteger, MBToucheState) {
     CTParagraphStyleRef paragraphStyleRef = CTParagraphStyleCreate(setting, sizeof(setting) / sizeof(CTParagraphStyleSetting));
     [self setAttributes:@{(id)kCTParagraphStyleAttributeName: (__bridge id)paragraphStyleRef}];
     CFRelease(paragraphStyleRef);
+    
+    self.textLayout.textAlignment = alignment;
 }
 
 
@@ -203,12 +269,12 @@ typedef NS_ENUM(NSUInteger, MBToucheState) {
         [mutableAttributedString addAttributes:attributes range:NSMakeRange(0, length)];
     }
     
-    self.attributedString = mutableAttributedString;
+    _attributedString = mutableAttributedString;
 }
 
+#pragma mark -
 - (MBLinkText *)linkAtPoint:(CGPoint)point
 {
-    NSLog(@"hitPoint %f %f", point.x, point.y);
     for (MBLineLayout *lineLayout in self.textLayout.lineLayouts) {
         MBLinkText *linkText = [lineLayout linkAtPoint:point];
         if (nil != linkText) {
@@ -347,7 +413,11 @@ typedef NS_ENUM(NSUInteger, MBToucheState) {
             CGRect geoRect = geo.rect;
             
             [self.linkHighlightColor set];
-            UIBezierPath *bezierPath = [self bezierPathWithRect:geoRect cornerRadius:4.0f];
+            geoRect.origin.y -= 2;
+            geoRect.size.height += 4;
+            // 上下端の行だと切れます。
+            /* 描画範囲がビュー端から始まってるからだなこりゃ */
+            UIBezierPath *bezierPath = [self bezierPathWithRect:geoRect cornerRadius:2.0f];
             [bezierPath fill];
         }
     }
@@ -358,10 +428,15 @@ typedef NS_ENUM(NSUInteger, MBToucheState) {
     return [UIBezierPath bezierPathWithRoundedRect:rect cornerRadius:radius];
 }
 
+- (void)resetHighlighClickedText
+{
+    self.toucheState = MBToucheStateNone;
+}
+
 - (void)clickedOnLink:(MBLinkText *)link
 {
-    if ([_delegate respondsToSelector:@selector(tweetTextView:clickOnLink:)]) {
-        [_delegate tweetTextView:self clickOnLink:link];
+    if ([_delegate respondsToSelector:@selector(tweetTextView:clickOnLink:point:)]) {
+        [_delegate tweetTextView:self clickOnLink:link point:self.touchedPoint];
     }
 }
 
@@ -410,6 +485,87 @@ typedef NS_ENUM(NSUInteger, MBToucheState) {
     [self.selectionView hideViews];
 }
 
+- (void)moveMagnifierToPoint:(CGPoint)point
+{
+    if ([_delegate respondsToSelector:@selector(tweetTextViewShowMagnifier:point:)]) {
+        [_delegate tweetTextViewShowMagnifier:self point:point];
+    }
+}
+
+- (void)hideMagnifierView
+{
+    if ([_delegate respondsToSelector:@selector(tweetTextViewHideMagnifier:)]) {
+        [_delegate tweetTextViewHideMagnifier:self];
+    }
+}
+
+- (void)moveMagnifierRangeVIewToPoint:(CGPoint)point
+{
+    if ([_delegate respondsToSelector:@selector(tweetTextViewShowMagnifierRange:point:)]) {
+        [_delegate tweetTextViewShowMagnifierRange:self point:point];
+    }
+}
+
+- (void)hideMagnifierRangeView
+{
+    if ([_delegate respondsToSelector:@selector(tweetTextViewHideMagnifierRange:)]) {
+        [_delegate tweetTextViewHideMagnifierRange:self];
+    }
+}
+
+- (void)showEditMenu
+{
+    if (!self.isFirstResponder && !self.selectionView.isFirstResponder) {
+        [self.selectionView becomeFirstResponder];
+    }
+    
+    UIMenuController *menuController = [UIMenuController sharedMenuController];
+    menuController.arrowDirection = UIMenuControllerArrowDefault;
+    
+    CGRect targetRect = [self rectForEditMenu];
+    targetRect.origin.x = 100;
+    NSLog(@"origin x = %f %f", targetRect.origin.x, targetRect.origin.y);
+    UIView *responderView = (self.isFirstResponder) ? self : self.selectionView;
+    [menuController setTargetRect:targetRect inView:responderView];
+    [menuController setMenuVisible:YES animated:YES];
+    
+}
+
+- (CGRect)rectForEditMenu
+{
+    MBTextSelection *selection = self.textLayout.textSelection;
+    CGRect topRect = CGRectNull;
+    CGFloat minX = CGFLOAT_MAX;
+    CGFloat maxX = CGFLOAT_MIN;
+    
+    for (MBLineLayout *lineLayout in self.textLayout.lineLayouts) {
+        CGRect selectionRect = [lineLayout rectOfStringWithRange:selection.selectedRange];
+        if (!CGRectIsEmpty(selectionRect)) {
+            CGFloat lineSpace = self.lineSpace;
+            selectionRect.origin.y -= lineSpace;
+            selectionRect.size.height += lineSpace;
+            
+            if (CGRectIsNull(topRect)) {
+                topRect = selectionRect;
+            }
+            
+            minX = MIN(CGRectGetMinX(selectionRect), minX);
+            maxX = MAX(CGRectGetMaxX(selectionRect), maxX);
+            
+            topRect.origin.x = minX;
+            topRect.size.width = maxX - minX;
+        }
+    }
+    
+    return topRect;
+}
+
+- (void)hideEditMenu
+{
+    UIMenuController *menuController = [UIMenuController sharedMenuController];
+    [menuController setMenuVisible:NO animated:YES];
+}
+
 #pragma mark -
 - (void)selectionGestureStateChanged:(UILongPressGestureRecognizer *)gestureRecognizer
 {
@@ -419,9 +575,14 @@ typedef NS_ENUM(NSUInteger, MBToucheState) {
     if (currentState == UIGestureRecognizerStateBegan || currentState == UIGestureRecognizerStateChanged) {
         self.toucheState = MBToucheStateMoved;
         
+        [self moveMagnifierToPoint:self.touchedPoint];
+        
         [self.textLayout setSelectionWithPoint:self.touchedPoint];
     } else if (currentState == UIGestureRecognizerStateEnded || currentState == UIGestureRecognizerStateCancelled || currentState == UIGestureRecognizerStateFailed) {
         self.toucheState = MBToucheStateNone;
+        
+        [self hideMagnifierView];
+        
     }
     
     [self selectionChanged];
@@ -436,22 +597,27 @@ typedef NS_ENUM(NSUInteger, MBToucheState) {
     
     self.touchedPoint = [gestureRecognizer locationInView:self];
     self.toucheState = MBToucheStateNone;
-    
+    /* unused
     MBSelectionGrabber *startGrabber = self.selectionView.startGrabber;
-    MBSelectionGrabber *endGrabber = self.selectionView.endGrabber;
+    MBSelectionGrabber *endGrabber = self.selectionView.endGrabber;*/
     
     UIGestureRecognizerState currentState = gestureRecognizer.state;
     if (currentState == UIGestureRecognizerStateBegan || currentState == UIGestureRecognizerStateChanged) {
         if (gestureRecognizer == self.selectionView.startGrabberGestureRecognizer) {
             
+            [self hideEditMenu];
+            [self moveMagnifierRangeVIewToPoint:self.touchedPoint];
             [self.textLayout setSelectionStartWithFirstPoint:self.touchedPoint];
         } else { // endGrabberGesture
             
+            [self hideEditMenu];
+            [self moveMagnifierRangeVIewToPoint:self.touchedPoint];
             [self.textLayout setSelectionEndWithPoint:self.touchedPoint];
         }
     } else if (currentState == UIGestureRecognizerStateEnded || currentState == UIGestureRecognizerStateCancelled || currentState == UIGestureRecognizerStateFailed) {
         
-        
+        [self hideMagnifierRangeView];
+        [self showEditMenu];
     }
     
     [self selectionChanged];

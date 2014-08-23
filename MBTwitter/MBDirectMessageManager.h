@@ -17,6 +17,10 @@
 
 - (NSArray *)separatedMessages;
 - (void)storeMessage:(MBDirectMessage *)message;
+- (MBDirectMessage *)currentSentMessage;
+- (MBDirectMessage *)currentDeliverdMessage;
+- (void)setLatestMessageWithMessages:(NSArray *)messages;
+
 - (NSMutableArray *)separatedMessagesForKey:(NSString *)key;
 - (void)removeSeparatedMessagesForKey:(NSString *)key;
 

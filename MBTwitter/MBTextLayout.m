@@ -34,6 +34,17 @@
     return self;
 }
 
+- (void)dealloc
+{
+    if (framesetterRef) {
+        CFRelease(framesetterRef);
+    }
+    
+    if (frameRef) {
+        CFRelease(frameRef);
+    }
+}
+
 #pragma mark -
 #pragma mark Frame
 + (CGRect)frameRectWithAttributedString:(NSAttributedString *)attributedString constraintSize:(CGSize)constraintSize
@@ -42,14 +53,36 @@
     CGRect bound = CGRectZero;
     bound.size = constraintSize;
     textLayout.bound = bound;
-    
-    
+
     [textLayout createFramesetter];
     [textLayout createFrame];
     
     CGRect textLayoutFrame = textLayout.frameRect;
     
     return textLayoutFrame;
+}
+
++ (CGRect)rectForLongestDrawingWithAttributedString:(NSAttributedString *)attributedString constraintSize:(CGSize)constraintSize
+{
+    MBTextLayout *textLayout = [[MBTextLayout alloc] initWithAttributedString:attributedString];
+    CGRect bounds = CGRectZero;
+    bounds.size = constraintSize;
+    textLayout.bound = bounds;
+    
+    [textLayout createFramesetter];
+    [textLayout createFrame];
+    [textLayout createLine];
+    
+    CGRect longestRect = CGRectZero;
+    CGRect resultRect = textLayout.frameRect;
+    for (MBLineLayout *lineLayout in textLayout.lineLayouts) {
+        if (lineLayout.drawingRect.size.width > longestRect.size.width) {
+            longestRect = lineLayout.rect;
+        }
+    }
+    resultRect.size.width = longestRect.size.width;
+    
+    return resultRect;
 }
 
 #pragma mark -
@@ -285,11 +318,13 @@
 {
     CFIndex start = [self stringIndexForClosePosition:point];
     CFIndex end = NSMaxRange(self.textSelection.selectedRange);
-    
+
     if (start != kCFNotFound) {
-        self.textSelection = [[MBTextSelection alloc] initWithIndex:start];
-    } else {
-        end = start;
+        if (start < end) {
+            self.textSelection = [[MBTextSelection alloc] initWithIndex:start];
+        } else {
+            end = start;
+        }
     }
     
     [self.textSelection setSelectionAtEndIndex:end];

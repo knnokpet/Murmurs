@@ -1,0 +1,22 @@
+0 info it worked if it ends with ok
+1 verbose cli [ 'node', '/usr/local/bin/npm', 'uninstall', 'cordova', '-g' ]
+2 info using npm@1.4.14
+3 info using node@v0.10.29
+4 info /usr/local/lib/node_modules/cordova unbuild
+5 info preuninstall cordova@3.5.0-0.2.4
+6 info uninstall cordova@3.5.0-0.2.4
+7 verbose true,/usr/local/lib/node_modules,/usr/local/lib/node_modules unbuild cordova@3.5.0-0.2.4
+8 verbose /usr/local/bin,[object Object] binRoot
+9 error Error: EACCES, unlink '/usr/local/bin/cordova'
+9 error  { [Error: EACCES, unlink '/usr/local/bin/cordova'] errno: 3, code: 'EACCES', path: '/usr/local/bin/cordova' }
+10 error Please try running this command again as root/Administrator.
+11 error System Darwin 13.2.0
+12 error command "node" "/usr/local/bin/npm" "uninstall" "cordova" "-g"
+13 error cwd /Users/ikedamasayuki/開発/MBTwitter20140701
+14 error node -v v0.10.29
+15 error npm -v 1.4.14
+16 error path /usr/local/bin/cordova
+17 error code EACCES
+18 error errno 3
+19 error stack Error: EACCES, unlink '/usr/local/bin/cordova'
+20 verbose exit [ 3, true ]

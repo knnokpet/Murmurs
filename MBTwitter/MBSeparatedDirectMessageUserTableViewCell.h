@@ -7,12 +7,25 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "MBAvatorImageView.h"
+#import "MBCharacterScreenNameView.h"
 
 @interface MBSeparatedDirectMessageUserTableViewCell : UITableViewCell
-@property (weak, nonatomic) IBOutlet UIImageView *iconImageView;
-@property (weak, nonatomic) IBOutlet UILabel *screenNameLabel;
-@property (weak, nonatomic) IBOutlet UILabel *characterNameLabel;
+
+@property (weak, nonatomic) IBOutlet MBAvatorImageView *avatorImageView;
+@property (weak, nonatomic) IBOutlet MBCharacterScreenNameView *characterScreenNameView;
+
 @property (weak, nonatomic) IBOutlet UILabel *dateLabel;
 @property (weak, nonatomic) IBOutlet UILabel *subtitleLabel;
+
+@property (nonatomic, readonly) NSString *dateString;
+@property (nonatomic, readonly) NSAttributedString *charaScreenString;
+@property (nonatomic, readonly) NSString *subtitleString;
+@property (nonatomic, readonly) NSString *userIDStr;
+
+- (void)setDateString:(NSString *)dateString;
+- (void)setCharaScreenString:(NSAttributedString *)charaScreenString;
+- (void)setSubtitleString:(NSString *)subtitleString;
+- (void)setUserIDStr:(NSString *)userIDStr;
 
 @end

@@ -13,4 +13,6 @@
 @property (nonatomic, readonly) NSString *expandedURLText;
 @property (nonatomic, readonly) NSString *wrappedURLText;
 
+- (instancetype)initWithURLString:(NSString *)urlString;/* for linking Web Tweet */
+
 @end

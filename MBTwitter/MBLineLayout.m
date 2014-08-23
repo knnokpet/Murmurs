@@ -83,7 +83,16 @@
 {
     for (MBLinkText *linkText in self.links) {
         for (MBTextGeo *textGeo in linkText.geometries) {
-            if (CGRectContainsPoint(textGeo.rect, point)) {
+            CGRect expandedRect = textGeo.rect;
+            
+            CGFloat expandWidth = 8.0f;
+            CGFloat expandHeight = 8.0f;
+            expandedRect.origin.x -= - expandWidth;
+            expandedRect.size.width += expandWidth * 2;
+            expandedRect.origin.y -= expandHeight;
+            expandedRect.size.height += expandHeight * 2;
+            
+            if (CGRectContainsPoint(expandedRect, point)) {
                 return linkText;
             }
         }

@@ -14,4 +14,6 @@
 @property (nonatomic, readonly) NSString *userIDStr;
 @property (nonatomic, readonly) NSString *screenName;
 
+- (instancetype)initWithUserID:(NSNumber *)userID IDStr:(NSString *)IDStr screenName:(NSString *)screenName;/* For linking User On TL */
+
 @end

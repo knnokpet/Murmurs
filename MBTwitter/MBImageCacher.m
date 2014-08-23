@@ -18,7 +18,10 @@
 @property (nonatomic, readonly) NSString *mediaImageDirectory;
 
 @property (nonatomic, readonly) NSCache *profileImageCache;
+@property (nonatomic, readonly) NSCache *timelineImageCache;
 @property (nonatomic, readonly) NSCache *mediaImageCache;
+@property (nonatomic, readonly) NSCache *croppedMediaImageCache;
+
 
 @end
 
@@ -48,9 +51,13 @@
         [self createDirectories];
         
         _profileImageCache = [[NSCache alloc] init];
-        self.profileImageCache.countLimit = 500;
+        self.profileImageCache.countLimit = 100;
+        _timelineImageCache = [[NSCache alloc] init];
+        self.timelineImageCache.countLimit = 500;
         _mediaImageCache = [[NSCache alloc] init];
-        self.mediaImageCache.countLimit = 100;
+        self.mediaImageCache.countLimit = 50;
+        _croppedMediaImageCache = [[NSCache alloc] init];
+        self.croppedMediaImageCache.countLimit = 50;
         
     }
     
@@ -135,15 +142,10 @@
 
 - (UIImage *)cachedProfileImageForUserID:(NSString *)userID defaultImage:(UIImage *)defaultImage
 {
-    return [self cachedImageForID:userID defaultImage:defaultImage from:self.profileImageCache directory:self.profileImageDirectory];
+    return [self cachedProfileImageForID:userID defaultImage:defaultImage from:self.profileImageCache directory:self.profileImageDirectory];
 }
 
-- (UIImage *)cachedMediaImageForMediaID:(NSString *)mediaID
-{
-    return [self cachedImageForID:mediaID defaultImage:nil from:self.mediaImageCache directory:self.mediaImageDirectory];
-}
-
-- (UIImage *)cachedImageForID:(NSString *)sourceID defaultImage:(UIImage *)defaultImage from:(NSCache *)cache directory:(NSString *)directoryPath
+- (UIImage *)cachedProfileImageForID:(NSString *)sourceID defaultImage:(UIImage *)defaultImage from:(NSCache *)cache directory:(NSString *)directoryPath
 {
     if (sourceID == nil) {
         return defaultImage;
@@ -160,10 +162,49 @@
         NSData *imageData = [[NSData alloc] initWithContentsOfFile:pathForImage];
         UIImage *savedImage = [[UIImage alloc] initWithData:imageData];
         UIImage *resizedImage = [savedImage imageByScallingToFillSize:CGSizeMake(44.0f, 44.0f)];
-        [self storeImage:resizedImage data:imageData forID:sourceID to:cache directory:directoryPath];
+        [self storeTimelineImage:resizedImage forUserID:sourceID];
     });
     
     return defaultImage;
+}
+
+- (UIImage *)cachedTimelineImageForUser:(NSString *)userID
+{
+    if (nil == userID) {
+        return nil;
+    }
+    
+    UIImage *cachedImage = [self.timelineImageCache objectForKey:userID];
+    if (cachedImage) {
+        return cachedImage;
+    }
+    return nil;
+}
+
+- (UIImage *)cachedMediaImageForMediaID:(NSString *)mediaID
+{
+    if (!mediaID || mediaID.length == 0) {
+        return nil;
+    }
+    UIImage *cachedImage = [self.mediaImageCache objectForKey:mediaID];
+    if (cachedImage) {
+        return cachedImage;
+    }
+    
+    return nil;
+}
+
+- (UIImage *)cachedCroppedMediaImageForMediaID:(NSString *)mediaID
+{
+    if (!mediaID || mediaID.length == 0) {
+        return nil;
+    }
+    UIImage *cachedImage = [self.croppedMediaImageCache objectForKey:mediaID];
+    if (cachedImage) {
+        return cachedImage;
+    }
+    
+    return nil;
 }
 
 - (void)storeProfileImage:(UIImage *)image data:(NSData *)data forUserID:(NSString *)userID
@@ -189,12 +230,31 @@
     [data writeToFile:pathForID atomically:YES];
 }
 
+- (void)storeTimelineImage:(UIImage *)image forUserID:(NSString *)userID
+{
+    if (nil == image || nil == userID) {
+        return;
+    }
+    
+    [self.timelineImageCache setObject:image forKey:userID];
+}
+
+- (void)storeCroppedMediaImage:(UIImage *)image forMediaID:(NSString *)mediaID
+{
+    if (!image || !mediaID || mediaID.length == 0) {
+        return;
+    }
+    
+    [self.croppedMediaImageCache setObject:image forKey:mediaID];
+}
+
 #pragma mark -
 #pragma mark crear Cache
 - (void)clearMemoryCache
 {
     [self.profileImageCache removeAllObjects];
     [self.mediaImageCache removeAllObjects];
+    [self.croppedMediaImageCache removeAllObjects];
 }
 
 - (void)deleteAllCacheFiles

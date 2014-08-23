@@ -345,7 +345,7 @@ typedef void (^FailedHandler)(NSHTTPURLResponse *);
     NSLog(@"token = %@, secret = %@, ID = %@, name = %@", userToken, userSecret, userID, userScreenName);
     
     MBAccountManager *accountManager = [MBAccountManager sharedInstance];
-    [accountManager storeMyAccountWith:myAccountData];
+    [accountManager saveMyAccountWith:myAccountData];
     
     if ([_delegate respondsToSelector:@selector(gotAccessTokenTwitterAccesser:)]) {
         [_delegate gotAccessTokenTwitterAccesser:self];

@@ -52,7 +52,7 @@
 @property (nonatomic, readonly) NSString *filterLebel;
 @property (nonatomic, readonly) NSDictionary *contributors; // NULLable
 @property (nonatomic, readonly) NSDictionary *coordinates; // NULLable
-@property (nonatomic, readonly) NSDictionary *currentRetweetedTweet;
+@property (nonatomic, readonly) NSDictionary *currentUserRetweetedTweet;
 @property (nonatomic, readonly) NSDictionary *scopes;
 @property (nonatomic, readonly) NSString *webSource;
 

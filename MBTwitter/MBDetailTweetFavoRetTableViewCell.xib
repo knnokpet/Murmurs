@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="5056" systemVersion="13E28" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES">
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3733"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="KGk-i7-Jjw" customClass="MBDetailTweetFavoRetTableViewCell">
+            <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
+                <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Uym-bo-Fe2">
+                        <rect key="frame" x="20" y="6" width="136" height="32"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="136" id="xCd-v7-Zrn"/>
+                        </constraints>
+                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                        <inset key="titleEdgeInsets" minX="4" minY="0.0" maxX="0.0" maxY="0.0"/>
+                        <state key="normal" title="Retweet" image="Retweet-Line.png">
+                            <color key="titleColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                        </state>
+                    </button>
+                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Cmk-3L-ZEg">
+                        <rect key="frame" x="164" y="4" width="136" height="36"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                        <inset key="titleEdgeInsets" minX="4" minY="0.0" maxX="0.0" maxY="0.0"/>
+                        <state key="normal" title="Favorite" image="Star-Line.png">
+                            <color key="titleColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                        </state>
+                    </button>
+                </subviews>
+                <constraints>
+                    <constraint firstAttribute="centerY" secondItem="Uym-bo-Fe2" secondAttribute="centerY" id="0Bd-bu-Rwh"/>
+                    <constraint firstItem="Cmk-3L-ZEg" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" priority="750" constant="20" id="7Bd-CA-QXe"/>
+                    <constraint firstAttribute="trailing" secondItem="Uym-bo-Fe2" secondAttribute="trailing" priority="250" constant="156" id="EuH-bE-nlQ"/>
+                    <constraint firstAttribute="centerY" secondItem="Cmk-3L-ZEg" secondAttribute="centerY" id="F5u-Vz-u1k"/>
+                    <constraint firstItem="Cmk-3L-ZEg" firstAttribute="leading" secondItem="Uym-bo-Fe2" secondAttribute="trailing" constant="8" id="cX0-XH-W8d"/>
+                    <constraint firstItem="Uym-bo-Fe2" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="20" id="dsX-Wl-IgR"/>
+                    <constraint firstAttribute="trailing" secondItem="Cmk-3L-ZEg" secondAttribute="trailing" priority="750" constant="20" id="yVx-fF-cdt"/>
+                </constraints>
+            </tableViewCellContentView>
+            <connections>
+                <outlet property="favoriteButton" destination="Cmk-3L-ZEg" id="SCc-HA-hm4"/>
+                <outlet property="retweetButton" destination="Uym-bo-Fe2" id="jrO-ro-01E"/>
+            </connections>
+        </tableViewCell>
+    </objects>
+    <resources>
+        <image name="Retweet-Line.png" width="50" height="32"/>
+        <image name="Star-Line.png" width="39" height="36"/>
+    </resources>
+</document>

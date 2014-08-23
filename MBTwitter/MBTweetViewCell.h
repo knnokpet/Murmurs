@@ -7,15 +7,51 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "MBAvatorImageView.h"
+#import "MBTweetTextView.h"
+#import "MBCharacterScreenNameView.h"
+#import "MBFavoriteView.h"
+#import "MBRetweetView.h"
+#import "MBPlaceWithGeoIconView.h"
+#import "MBTimelineImageContainerView.h"
 
-@class MBTweetTextView;
+@protocol MBtweetViewCellLongPressDelegate;
 @interface MBTweetViewCell : UITableViewCell
 
-@property (weak, nonatomic) IBOutlet UIImageView *iconImageView;
-@property (weak, nonatomic) IBOutlet UILabel *screenNameLabel;
-@property (weak, nonatomic) IBOutlet UILabel *characterNameLabel;
-@property (weak, nonatomic) IBOutlet UILabel *dateLabel;
-@property (weak, nonatomic) IBOutlet UILabel *retweetLabel;
+@property (nonatomic, readonly) UILongPressGestureRecognizer *longPressRecognizer;
+@property (nonatomic, weak) id <MBtweetViewCellLongPressDelegate> delegate;
+
+
+@property (weak, nonatomic) IBOutlet MBTweetTextView *retweetView;
+@property (weak, nonatomic) IBOutlet MBCharacterScreenNameView *characterScreenNameView;
+@property (weak, nonatomic) IBOutlet MBRetweetView *retweeterView;
+@property (weak, nonatomic) IBOutlet MBPlaceWithGeoIconView *placeNameView;
+
+@property (weak, nonatomic) IBOutlet MBTweetTextView *dateView;
 @property (weak, nonatomic) IBOutlet MBTweetTextView *tweetTextView;
+@property (weak, nonatomic) IBOutlet MBAvatorImageView *avatorImageView;
+@property (weak, nonatomic) IBOutlet MBFavoriteView *favoriteView;
+@property (weak, nonatomic) IBOutlet MBTimelineImageContainerView *imageContainerView;
+
+
+
+@property (nonatomic) NSNumber *userID;
+@property (nonatomic) NSString *userIDStr;
+@property (nonatomic, readonly) NSAttributedString *dateString;
+@property (nonatomic, readonly) NSAttributedString *charaScreenString;
+
+- (void)removeRetweetView;
+- (void)removePlaceNameView;
+- (void)removeFavoriteView;
+- (void)removeImageContainerView;
+
+- (void)setDateString:(NSAttributedString *)dateString;
+- (void)setCharaScreenString:(NSAttributedString *)charaScreenString;
+
+@end
+
+@protocol MBtweetViewCellLongPressDelegate <NSObject>
+
+- (void)didLongPressTweetViewCell:(MBTweetViewCell *)cell atPoint:(CGPoint)touchPoint;
 
 @end

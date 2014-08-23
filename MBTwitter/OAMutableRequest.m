@@ -68,7 +68,7 @@
     NSLog(@"signature = %@", signatureBasedString);
     // if exist token
     NSString *oauthTokenString;
-    if (YES == [self.token.key isEqualToString:@""]) {
+    if ([self.token.key isEqualToString:@""]) {
         oauthTokenString = @"";
     } else {
         oauthTokenString = [NSString stringWithFormat:@"oauth_token=\"%@\", ", [self encodedString:self.token.key]];
@@ -116,7 +116,7 @@
     NSLog(@"signature = %@", signatureBasedString);
     // if exist token
     NSString *oauthTokenString;
-    if (YES == [self.token.key isEqualToString:@""]) {
+    if ([self.token.key isEqualToString:@""]) {
         oauthTokenString = @"";
     } else {
         oauthTokenString = [NSString stringWithFormat:@"oauth_token=\"%@\", ", [self encodedString:self.token.key]];
@@ -212,14 +212,14 @@
 {
     NSString *encodedParameters;
     
-    if (YES == [[self HTTPMethod] isEqualToString:@"GET"] || YES == [[self HTTPMethod] isEqualToString:@"DELETE"]) {
+    if ([[self HTTPMethod] isEqualToString:@"GET"] || [[self HTTPMethod] isEqualToString:@"DELETE"]) {
         encodedParameters = [[self URL] query];
         
     } else { // POST, PUT
         encodedParameters = [[NSString alloc] initWithData:[self HTTPBody] encoding:NSUTF8StringEncoding];
     }
     
-    if (encodedParameters == nil || YES == [encodedParameters isEqualToString:@""]) {
+    if (encodedParameters == nil || [encodedParameters isEqualToString:@""]) {
         return nil;
     }
     
@@ -251,7 +251,7 @@
     }
 
     // add Parameter. Separate for each HTTPMethod
-    if (YES == [[self HTTPMethod] isEqualToString:@"GET"] || YES == [[self HTTPMethod] isEqualToString:@"DELETE"]) {
+    if ([[self HTTPMethod] isEqualToString:@"GET"] || [[self HTTPMethod] isEqualToString:@"DELETE"]) {
         NSString *quaryURL = [NSString stringWithFormat:@"%@?%@", [[self URL] URLStringWithoutQuery], parameterString];
         [self setURL:[NSURL URLWithString:quaryURL]];
         

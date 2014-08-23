@@ -67,6 +67,26 @@
             ReferencedContainer = "container:MBTwitter.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
+<<<<<<< HEAD
+=======
+      <EnvironmentVariables>
+         <EnvironmentVariable
+            key = "NSDebugEnabled"
+            value = "YES"
+            isEnabled = "YES">
+         </EnvironmentVariable>
+         <EnvironmentVariable
+            key = "MallocStackLogging"
+            value = "YES"
+            isEnabled = "YES">
+         </EnvironmentVariable>
+         <EnvironmentVariable
+            key = "NSZombieEnabled"
+            value = "YES"
+            isEnabled = "YES">
+         </EnvironmentVariable>
+      </EnvironmentVariables>
+>>>>>>> detailTweet
       <AdditionalOptions>
       </AdditionalOptions>
    </LaunchAction>

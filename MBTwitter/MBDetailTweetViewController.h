@@ -8,22 +8,24 @@
 
 #import <UIKit/UIKit.h>
 #import "MBPostTweetViewController.h"
+#import "MBImageViewController.h"
 #import "MBAOuth_TwitterAPICenter.h"
+#import "MBWebBrowsViewController.h"
+
+
+#import "MBTweetTextView.h"
+#import "MBMediaImageView.h"
+#import "MBRetweetView.h"
 
 @class MBTweet;
-@class MBTweetTextView;
-@interface MBDetailTweetViewController : UIViewController <MBPostTweetViewControllerDelegate, MBAOuth_TwitterAPICenterDelegate>
+@class MBUser;
+@interface MBDetailTweetViewController : UIViewController <UIViewControllerTransitioningDelegate, MBPostTweetViewControllerDelegate, MBAOuth_TwitterAPICenterDelegate, MBTweetTextViewDelegate, MBWebBrowsViewControllerDelegate, MBMediaImageViewDelegate, MBImageViewControllerDelegate, MBRetweetViewDelegate>
 
 @property (nonatomic, readonly) MBTweet *tweet;
-@property (weak, nonatomic) IBOutlet UIImageView *avatorImageView;
-@property (weak, nonatomic) IBOutlet UIButton *screenNameLabel;
-@property (weak, nonatomic) IBOutlet UILabel *characterNameLabel;
-@property (weak, nonatomic) IBOutlet MBTweetTextView *tweetTextView;
-@property (weak, nonatomic) IBOutlet UIButton *replyButton;
-@property (weak, nonatomic) IBOutlet UIButton *retweetButton;
-@property (weak, nonatomic) IBOutlet UIButton *favoriteButton;
-@property (weak, nonatomic) IBOutlet UIButton *unFavoriteButton;
+@property (nonatomic, readonly) MBUser *retweeter;
+@property (weak, nonatomic) IBOutlet UITableView *tableView;
 
 - (void)setTweet:(MBTweet *)tweet;
+- (void)setRetweeter:(MBUser *)retweeter;
 
 @end

@@ -32,6 +32,7 @@
             [gotMessages addObject:message];
         }
         
+        [[MBDirectMessageManager sharedInstance] setLatestMessageWithMessages:gotMessages];
         self.completion(gotMessages);
     }
 }

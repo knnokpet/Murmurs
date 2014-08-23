@@ -10,7 +10,7 @@
 
 @implementation MBImageDownloader
 
-+ (void)downloadImageWithURL:(NSString *)imageURL completionHandler:(ImageDownloadCompletionHandler)completionHandler failedHandler:(ImageDownloadFailedHandler)failedHandler
++ (void)downloadMediaImageWithURL:(NSString *)imageURL completionHandler:(ImageDownloadCompletionHandler)completionHandler failedHandler:(ImageDownloadFailedHandler)failedHandler
 {
     MBImageDownloader *downloader = [[MBImageDownloader alloc] init];
     [downloader downloadImageWithURL:imageURL completionHandler:completionHandler failedHandler:failedHandler];
@@ -28,6 +28,14 @@
     NSString *originURL = [imageURL stringByReplacingOccurrencesOfString:@"_normal" withString:@"_bigger"];
     MBImageDownloader *imageDownloader = [[MBImageDownloader alloc] init];
     [imageDownloader downloadImageWithURL:originURL completionHandler:completionHandler failedHandler:failedHandler];
+}
+
++ (void)downloadBannerImageMobileRetina:(NSString *)imageURL completionHandler:(ImageDownloadCompletionHandler)completionHandler failedHandler:(ImageDownloadFailedHandler)failedHandler
+{
+    NSLog(@"imageURL %@", imageURL);
+    NSString *resourceURL = [NSString stringWithFormat:@"%@/mobile_retina", imageURL];
+    MBImageDownloader *imageDownloader = [[MBImageDownloader alloc] init];
+    [imageDownloader downloadImageWithURL:resourceURL completionHandler:completionHandler failedHandler:failedHandler];
 }
 
 - (void)downloadImageWithURL:(NSString *)imageURL completionHandler:(ImageDownloadCompletionHandler)completionHandler failedHandler:(ImageDownloadFailedHandler)failedHandler

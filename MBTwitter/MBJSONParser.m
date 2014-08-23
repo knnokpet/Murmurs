@@ -34,6 +34,13 @@
 }
 
 #pragma mark -
+#pragma mark Setter & Getter
+- (void)setErrorCompletion:(ErrorCompletion)errorCompletion
+{
+    _errorCompletion = errorCompletion;
+}
+
+#pragma mark -
 #pragma mark Parse
 - (void)startParsing
 {
@@ -80,6 +87,7 @@
 {
     dispatch_async(dispatch_get_main_queue(), ^{
         NSLog(@"parsing error = %@ code = %lu", error.localizedDescription, (unsigned long)error.code);
+        self.errorCompletion(error);
     });
 }
 

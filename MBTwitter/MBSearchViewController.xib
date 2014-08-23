@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="5056" systemVersion="13E28" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES">
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3733"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="MBSearchViewController">
+            <connections>
+                <outlet property="searchDisplayController" destination="tXS-nS-yoA" id="glx-SM-hhm"/>
+                <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
+            <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+            <simulatedStatusBarMetrics key="simulatedStatusBarMetrics"/>
+            <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
+        </view>
+        <searchDisplayController id="lVf-86-nci">
+            <connections>
+                <outlet property="delegate" destination="-1" id="RP4-vW-ASO"/>
+                <outlet property="searchContentsController" destination="-1" id="s2Q-V6-Rpo"/>
+                <outlet property="searchResultsDataSource" destination="-1" id="YlS-kT-HY6"/>
+                <outlet property="searchResultsDelegate" destination="-1" id="nrk-ay-IbM"/>
+            </connections>
+        </searchDisplayController>
+        <searchDisplayController id="tXS-nS-yoA">
+            <connections>
+                <outlet property="delegate" destination="-1" id="gRY-Xx-4za"/>
+                <outlet property="searchContentsController" destination="-1" id="Iif-Rf-xZW"/>
+                <outlet property="searchResultsDataSource" destination="-1" id="ZTn-rm-lrR"/>
+                <outlet property="searchResultsDelegate" destination="-1" id="4Rp-JB-NnA"/>
+            </connections>
+        </searchDisplayController>
+    </objects>
+</document>

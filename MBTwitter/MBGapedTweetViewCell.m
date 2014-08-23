@@ -15,6 +15,7 @@
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
         // Initialization code
+        [self common];
     }
     return self;
 }
@@ -22,6 +23,12 @@
 - (void)awakeFromNib
 {
     // Initialization code
+    [self common];
+}
+
+- (void)common
+{
+    self.selectionStyle = UITableViewCellSelectionStyleNone;
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated

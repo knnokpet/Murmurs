@@ -9,7 +9,11 @@
 #import "MBAuthorizationViewController.h"
 #import "OAAccessibility.h"
 
+#import "MBLoadingView.h"
+
 @interface MBAuthorizationViewController () <UIWebViewDelegate>
+
+@property (nonatomic) MBLoadingView *loadingView;
 
 @end
 
@@ -39,8 +43,15 @@
 
 - (void)commonConfigureNavigationItem
 {
-    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Cancel", nil) style:UIBarButtonItemStylePlain target:self action:@selector(didPushCancelButton)];
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Log In", nil) style:UIBarButtonItemStyleDone target:self action:@selector(didPushLoginButton)];
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Cancel", nil) style:UIBarButtonItemStylePlain target:self action:@selector(didPushCancelButton)];
+}
+
+- (void)configureLoadingView
+{
+    if (!self.loadingView.superview) {
+        _loadingView = [[MBLoadingView alloc] initWithFrame:self.view.bounds];
+        [self.view addSubview:self.loadingView];
+    }
 }
 
 - (void)viewDidLoad
@@ -48,6 +59,7 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     [self commonConfigureView];
+    [self configureLoadingView];
     
     self.twitterAccesser.delegate = self;
     
@@ -56,6 +68,7 @@
         [self.twitterAccesser requestRequestToken];
     }
     
+    self.title = NSLocalizedString(@"New Account", nil);
 }
 
 - (void)didReceiveMemoryWarning
@@ -72,12 +85,6 @@
         [_delegate dismissAuthorizationViewController:self animated:YES];
     }
 }
-
-- (void)didPushLoginButton
-{
-    
-}
-
 
 #pragma mark Private Methods
 - (NSString *)authPinInWebView: (UIWebView *)webView;
@@ -103,6 +110,15 @@
     [self.twitterAccesser requestAccessToken];
 }
 
+#pragma mark
+- (void)removeLoadingView
+{
+    if (self.loadingView.superview) {
+        [self.loadingView removeFromSuperview];
+        self.loadingView = nil;
+    }
+}
+
 /*
 #pragma mark - Navigation
 
@@ -118,6 +134,7 @@
 #pragma mark WebView Delegate
 - (void)webViewDidFinishLoad:(UIWebView *)webView
 {
+    [self removeLoadingView];
     
     NSString *pin = [self authPinInWebView:webView];
     if (pin) {

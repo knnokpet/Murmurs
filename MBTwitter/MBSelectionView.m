@@ -10,7 +10,8 @@
 #import "MBSelectionGrabber.h"
 #import "MBTweetTextView.h"
 
-static const CGFloat MBSelectionGrabberWidth = 32.0f;
+static const CGFloat MBSelectionGrabberWidth = 44.0f;
+static const CGFloat MBSelectionGrabberHeight = 44.0f;
 
 @interface MBTweetTextView (private)
 - (void)selectionGestureStateChanged:(UILongPressGestureRecognizer *)gestureRecognizer;
@@ -60,14 +61,17 @@ static const CGFloat MBSelectionGrabberWidth = 32.0f;
 {
     CGRect startFrame = self.startFrame;
     startFrame.origin.x = CGRectGetMinX(self.startFrame) - MBSelectionGrabberWidth / 2;
+    startFrame.origin.y = CGRectGetMinY(self.startFrame) - MBSelectionGrabberHeight / 2;
     startFrame.size.width = MBSelectionGrabberWidth;
+    startFrame.size.height = MBSelectionGrabberHeight;
     self.startGrabber.frame = startFrame;
     
     CGRect endFrame = self.endFrame;
     endFrame.origin.x = CGRectGetMaxX(self.endFrame) - MBSelectionGrabberWidth / 2;
+    endFrame.origin.y = CGRectGetMaxY(self.endFrame) - MBSelectionGrabberHeight / 2;
     endFrame.size.width = MBSelectionGrabberWidth;
+    endFrame.size.height = MBSelectionGrabberHeight;
     self.endGrabber.frame = endFrame;
-    NSLog(@"start originx %f end %f", self.startGrabber.frame.origin.x, self.endGrabber.frame.origin.x);
 }
 
 - (void)showViews

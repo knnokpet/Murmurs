@@ -10,6 +10,27 @@
 
 @implementation UIImage (Resize)
 
+- (UIImage *)imageForResizing:(UIImage *)image ToSize:(CGSize)size
+{
+    if (UIGraphicsBeginImageContextWithOptions != NULL) {
+        UIGraphicsBeginImageContextWithOptions(size, NO, [UIScreen mainScreen].scale);
+    } else {
+        UIGraphicsBeginImageContext(size);
+    }
+    
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    CGContextSetInterpolationQuality(context, kCGInterpolationHigh);
+    
+    [image drawInRect:CGRectMake(0, 0, size.width, size.height)];
+    
+    UIImage *resizedImage = UIGraphicsGetImageFromCurrentImageContext();
+    
+    UIGraphicsEndImageContext();
+    
+    return resizedImage;
+}
+
+/* 以下 unused */
 - (UIImage *)imageByScallingToSize:(CGSize)size contentMode:(UIViewContentMode)contentMode
 {
     if (contentMode == UIViewContentModeScaleToFill) {
@@ -30,7 +51,7 @@
         UIImage *image = [self imageByScallingToFillSize:sizeForAspectScale];
         
         if (contentMode == UIViewContentModeScaleAspectFill) {
-            CGRect subRect = CGRectMake(floor((sizeForAspectScale.width - size.width) / 2), floor((sizeForAspectScale.height - size.height / 2)), size.width, size.height);
+            CGRect subRect = CGRectMake(floor((sizeForAspectScale.width - size.width) / 2), floor((sizeForAspectScale.height - size.height) / 2), size.width, size.height);
             image = [image imageByCroppingToBounds:subRect];
         }
         
@@ -50,7 +71,7 @@
 
 - (UIImage *)imageByScallingToFillSize:(CGSize)size
 {
-    UIGraphicsBeginImageContextWithOptions(size, YES, 0.0);
+    UIGraphicsBeginImageContextWithOptions(size, NO, 0.0);
     CGContextRef context = UIGraphicsGetCurrentContext();
     CGContextSetInterpolationQuality(context, kCGInterpolationHigh);
     [self drawInRect:CGRectMake(0, 0, size.width, size.height)];

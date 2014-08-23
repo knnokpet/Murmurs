@@ -10,6 +10,9 @@
 
 @interface UIImage (Resize)
 
+- (UIImage *)imageForResizing:(UIImage *)image ToSize:(CGSize)size;
+
+/*　以下 unused */
 - (UIImage *)imageByScallingToSize:(CGSize)size contentMode:(UIViewContentMode)contentMode;
 - (UIImage *)imageByCroppingToBounds:(CGRect)bounds;
 - (UIImage *)imageByScallingToFillSize:(CGSize)size;

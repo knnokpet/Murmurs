@@ -14,6 +14,10 @@
 {
     if ([parsedObj isKindOfClass:[NSDictionary class]]) {
         MBTweet *tweet = [[MBTweet alloc] initWithDictionary:(NSDictionary *)parsedObj];
+        if (!tweet) {
+            return;
+        }
+        
         [[MBTweetManager sharedInstance] storeTweet:tweet];
         [[MBUserManager sharedInstance] storeUser:tweet.tweetUser];
         NSArray *gotTweet = [NSArray arrayWithObject:tweet];

@@ -97,7 +97,7 @@
     return isSelected;
 }
 
-- (void)storeMyAccountWith:(NSDictionary *)myAccount
+- (void)saveMyAccountWith:(NSDictionary *)myAccount
 {
     if (!myAccount) {
         return;
@@ -157,8 +157,6 @@
             }
         }
         
-    } else {
-        return nil;
     }
     
     return nil;
