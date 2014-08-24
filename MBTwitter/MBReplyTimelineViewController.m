@@ -8,6 +8,7 @@
 
 #import "MBReplyTimelineViewController.h"
 
+#import "MBNavigationControllerTitleView.h"
 
 @interface MBReplyTimelineViewController ()
 
@@ -45,6 +46,7 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    [self updateNavigationTitleView];
     
     [self receiveChangedAccountnotification];
 }
@@ -53,6 +55,7 @@
 {
     [[NSNotificationCenter defaultCenter] addObserverForName:@"ChangeMyAccount" object:nil queue:nil usingBlock:^(NSNotification *notification) {
         NSLog(@"user change account to = %@", [[MBAccountManager sharedInstance] currentAccount].screenName);
+        [self updateNavigationTitleView];
         [self configureTimelineManager];
         self.dataSource = self.timelineManager.tweets;
         self.aoAPICenter = [[MBAOuth_TwitterAPICenter alloc] init];
@@ -80,6 +83,15 @@
 
 #pragma mark -
 #pragma mark Instance Methods
+- (void)updateNavigationTitleView
+{
+    MBNavigationControllerTitleView *titleView = [[MBNavigationControllerTitleView alloc] initWithFrame:CGRectZero];
+    [titleView setTitle:NSLocalizedString(@"Reply", nil)];
+    [titleView setScreenName:[[MBAccountManager sharedInstance] currentAccount].screenName];
+    [titleView sizeToFit];
+    [self.navigationItem setTitleView:titleView];
+}
+
 #pragma mark Action
 - (void)didPushLeftBarButtonItem
 {
