@@ -51,12 +51,7 @@ static NSString *retweetCellIdentifier = @"RetweetCellIdentifier";
 static NSString *tweetWithImageCellIdentifier = @"TweetWithImageCellIdentifier";
 static NSString *retweetWithImageCellIdentifier = @"RetweetWithImageCellIdentifier";
 static NSString *actionsCellIdentifier = @"ActionsCellIdentifier";
-/*
-static NSString *countKey = @"CountKey";
-static NSString *contentKey = @"ContentKey";
-static NSString *contentIdentifier = @"ContentIdentifier";
-static NSString *favoriteStr = @"fav";
-static NSString *retweetStr = @"ret";*/
+
 
 @interface MBDetailTweetViewController () <UIActionSheetDelegate, UITableViewDataSource, UITableViewDelegate>
 {
