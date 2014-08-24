@@ -160,7 +160,7 @@
     contentInsets.bottom = bottomHeight;
     self.tweetViewController.tableView.contentInset = contentInsets;
     UIEdgeInsets indicatorInsets = self.tweetViewController.tableView.scrollIndicatorInsets;
-    indicatorInsets.top = containeHeight; //+ containerOriginY;
+    indicatorInsets.top = containeHeight + containerOriginY;
     indicatorInsets.bottom = bottomHeight;
     self.tweetViewController.tableView.scrollIndicatorInsets = indicatorInsets;
     
