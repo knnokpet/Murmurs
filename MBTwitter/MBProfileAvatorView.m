@@ -31,12 +31,14 @@
 - (void)configureView
 {
     self.containAvatorImageView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 72, 72)];
-    self.containAvatorImageView.backgroundColor = [UIColor whiteColor];
     CGRect containerFrame = self.containAvatorImageView.frame;
     containerFrame.origin.x = self.frame.size.width / 2 - self.containAvatorImageView.frame.size.width / 2;
     containerFrame.origin.y = 16;
     self.containAvatorImageView.frame = containerFrame;
     self.containAvatorImageView.layer.cornerRadius = 8.0f;
+    //self.containAvatorImageView.layer.borderWidth = 0.5f;
+    //self.containAvatorImageView.layer.borderColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5].CGColor;
+    self.containAvatorImageView.layer.backgroundColor = [UIColor whiteColor].CGColor;
     [self addSubview:self.containAvatorImageView];
     
     self.avatorImageView = [[MBAvatorImageView alloc] initWithFrame:CGRectMake(0, 0, 62, 62)];
