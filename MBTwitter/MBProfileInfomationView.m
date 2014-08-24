@@ -73,9 +73,19 @@
 }
 */
 
+- (void)updateTextViewsRect
+{
+    CGFloat horizontalMargin = 4.0f;
+    
+    self.locationTextView.frame = CGRectMake(0, 0, self.bounds.size.width - horizontalMargin, self.bounds.size.height / 2);
+    self.urlTextView.frame = CGRectMake(0, 0, self.bounds.size.width - horizontalMargin, self.bounds.size.height / 2);
+}
+
 - (void)layoutSubviews
 {
     [super layoutSubviews];
+    
+    [self updateTextViewsRect];
     
     [self.locationTextView sizeToFit];
     [self.urlTextView sizeToFit];
