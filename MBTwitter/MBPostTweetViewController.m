@@ -213,6 +213,7 @@
     [self commonConfigureView];
     
     self.tweetTextView.text = self.tweetText;
+    [self beEnableButtonForTextViewLength];
     
     self.title = NSLocalizedString(@"New Tweet", nil);
 }
