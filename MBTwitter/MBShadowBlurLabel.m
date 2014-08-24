@@ -28,7 +28,9 @@
     
     CGContextRef context = UIGraphicsGetCurrentContext();
     CGContextSaveGState(context);
-    CGContextSetShadow(context, CGSizeMake(0.0f, 0.0f), 6.0f);
+    //CGContextSetShadow(context, CGSizeMake(0.0f, 0.0f), 6.0f);
+    UIColor *shadowColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
+    CGContextSetShadowWithColor(context, CGSizeMake(0.0f, 0.0f), 6.0f, shadowColor.CGColor);
     [super drawRect:rect];
     CGContextRestoreGState(context);
 }
