@@ -11,8 +11,6 @@
 @interface MBNavigationControllerTitleView : UIView
 
 @property (nonatomic, readonly) NSString *title;
-@property (nonatomic, readonly) NSString *screenName;
 - (void)setTitle:(NSString *)title;
-- (void)setScreenName:(NSString *)screenName;
 
 @end
