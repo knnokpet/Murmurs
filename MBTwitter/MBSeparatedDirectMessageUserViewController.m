@@ -7,6 +7,7 @@
 //
 
 #import "MBSeparatedDirectMessageUserViewController.h"
+#import "MBDetailUserViewController.h"
 
 
 #import "MBImageCacher.h"
@@ -24,6 +25,7 @@
 #import "MBUserIDManager.h"
 
 #import "MBLoadingView.h"
+#import "MBNavigationControllerTitleView.h"
 #import "MBSeparatedDirectMessageUserTableViewCell.h"
 
 @interface MBSeparatedDirectMessageUserViewController () <UITableViewDataSource, UITableViewDelegate>
@@ -94,6 +96,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    [self updateNavigationTitleView];
     
     [self configureModel];
     [self configureView];
@@ -116,6 +119,11 @@
     }
     
     for (MBSeparatedDirectMessageUserTableViewCell *cell in [self.tableView visibleCells]) {
+        
+        if (cell.avatorImageView.isSelected) {
+            [cell.avatorImageView setIsSelected:NO withAnimated:YES];
+        }
+        
         NSIndexPath *updatingIndexPath = [self.tableView indexPathForCell:cell];
         [self updateCell:cell AtIndexPath:updatingIndexPath];
     }
@@ -133,6 +141,7 @@
 {
     [[NSNotificationCenter defaultCenter] addObserverForName:@"ChangeMyAccount" object:nil queue:nil usingBlock:^(NSNotification *notification) {
         NSLog(@"user change account to = %@", [[MBAccountManager sharedInstance] currentAccount].screenName);
+        [self updateNavigationTitleView];
         [self configureModel];
         [self.tableView reloadData];
         [self fetchCurrentMessage];
@@ -140,6 +149,15 @@
 }
 
 #pragma mark 
+- (void)updateNavigationTitleView
+{
+    MBNavigationControllerTitleView *titleView = [[MBNavigationControllerTitleView alloc] initWithFrame:CGRectZero];
+    [titleView setTitle:NSLocalizedString(@"Message", nil)];
+    [titleView setScreenName:[[MBAccountManager sharedInstance] currentAccount].screenName];
+    [titleView sizeToFit];
+    [self.navigationItem setTitleView:titleView];
+}
+
 - (void)removeLoadingView
 {
     if (self.loadingView.superview) {
@@ -270,8 +288,9 @@
     cell.avatorImageView.delegate = self;
     UIImage *avatorImage = [[MBImageCacher sharedInstance] cachedProfileImageForUserID:user.userIDStr];
     if (!avatorImage) {
+        cell.avatorImageView.image = [UIImage imageNamed:@"TimelineDefaultImage"];
         if (NO == user.isDefaultProfileImage) {
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                 [MBImageDownloader downloadOriginImageWithURL:user.urlHTTPSAtProfileImage completionHandler:^(UIImage *image, NSData *imageData){
                     if (image) {
                         [[MBImageCacher sharedInstance] storeProfileImage:image data:imageData forUserID:user.userIDStr];
@@ -292,6 +311,7 @@
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
             CGSize imageSize = CGSizeMake(cell.avatorImageView.frame.size.width, cell.avatorImageView.frame.size.height);
             UIImage *radiusImage = [MBImageApplyer imageForTwitter:avatorImage size:imageSize radius:cell.avatorImageView.layer.cornerRadius];
+            
             dispatch_async(dispatch_get_main_queue(), ^{
                 cell.avatorImageView.image = radiusImage;
             });
@@ -320,7 +340,7 @@
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return YES;
+    return NO; /* delete 処理が がうまくいかないので */
 }
 
 - (void)tableView:(UITableView *)tableView willBeginEditingRowAtIndexPath:(NSIndexPath *)indexPath
@@ -426,6 +446,22 @@
 {
     [controller dismissViewControllerAnimated:animated completion:nil];
     controller = nil;
+}
+
+#pragma mark MBAvatorImageView Delegate
+- (void)imageViewDidClick:(MBAvatorImageView *)imageView userID:(NSNumber *)userID userIDStr:(NSString *)userIDStr
+{
+    [imageView setIsSelected:YES withAnimated:NO];
+    
+    MBUser *selectedUser = [[MBUserManager sharedInstance] storedUserForKey:userIDStr];
+    MBDetailUserViewController *userViewController = [[MBDetailUserViewController alloc] initWithNibName:@"MBUserDetailView" bundle:nil];
+    [userViewController setUser:selectedUser];
+    if (nil == selectedUser) {
+        [userViewController setUserID:userID];
+    } else {
+        [userViewController setUserID:nil];
+    }
+    [self.navigationController pushViewController:userViewController animated:YES];
 }
 
 @end
