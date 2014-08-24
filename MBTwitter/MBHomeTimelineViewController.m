@@ -8,6 +8,8 @@
 
 #import "MBHomeTimelineViewController.h"
 
+#import "MBNavigationControllerTitleView.h"
+
 @interface MBHomeTimelineViewController ()
 
 @end
@@ -38,7 +40,8 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    self.title = [[MBAccountManager sharedInstance] currentAccount].screenName;
+    
+    [self updateNavigationTitleView];
     
    [self refreshMyAccountUser];
     
@@ -50,7 +53,8 @@
     [[NSNotificationCenter defaultCenter] addObserverForName:@"ChangeMyAccount" object:nil queue:nil usingBlock:^(NSNotification *notification) {
         NSLog(@"user change account to = %@", [[MBAccountManager sharedInstance] currentAccount].screenName);
         MBAccount *currentAccount = [[MBAccountManager sharedInstance] currentAccount];
-        self.title = currentAccount.screenName;
+        
+        [self updateNavigationTitleView];
         self.timelineManager = currentAccount.timelineManager;
         self.dataSource = self.timelineManager.tweets;
         self.aoAPICenter = [[MBAOuth_TwitterAPICenter alloc] init];
@@ -108,6 +112,15 @@
         [accountIDs addObject:accountID];
     }
     [self.aoAPICenter getUsersLookupUserIDs:accountIDs];
+}
+
+- (void)updateNavigationTitleView
+{
+    MBNavigationControllerTitleView *titleView = [[MBNavigationControllerTitleView alloc] initWithFrame:CGRectZero];
+    [titleView setTitle:NSLocalizedString(@"Timeline", nil)];
+    [titleView setScreenName:[[MBAccountManager sharedInstance] currentAccount].screenName];
+    [titleView sizeToFit];
+    [self.navigationItem setTitleView:titleView];
 }
 
 #pragma mark Action
