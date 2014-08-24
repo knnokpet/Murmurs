@@ -13,6 +13,7 @@
 #import "MBSeparatedDirectMessageUserViewController.h"
 #import "MBMyListViewController.h"
 #import "MBSearchViewController.h"
+#import "MBMyProfileViewController.h"
 
 #import "MBAccountManager.h"
 #import "MBTimeLineManager.h"
@@ -57,18 +58,21 @@
     separatedDMUserViewController.tabBarItem = messageBarItem;
     
     MBMyListViewController *myListViewController = [[MBMyListViewController alloc] initWithNibName:@"MBListViewController" bundle:nil];
-    UINavigationController *listNavigation = [[UINavigationController alloc] initWithRootViewController:myListViewController];
-    [viewControllers addObject:listNavigation];
-    UIImage *listImage = [[UIImage alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"List2@2x" ofType:@"png"]];
-    UIImage *listSelectedImage = [[UIImage alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"List-Selected-2@2x" ofType:@"png"]];
-    UITabBarItem *listBarItem = [[UITabBarItem alloc] initWithTitle:NSLocalizedString(@"List", nil) image:listImage selectedImage:listSelectedImage];
-    myListViewController.tabBarItem = listBarItem;
+    
     
     MBSearchViewController *searchViewController = [[MBSearchViewController alloc] init];
     UINavigationController *searchNavigationController = [[UINavigationController alloc] initWithRootViewController:searchViewController];
     [viewControllers addObject:searchNavigationController];
     UITabBarItem *searchItem = [[UITabBarItem alloc] initWithTabBarSystemItem:UITabBarSystemItemSearch tag:5];
     searchViewController.tabBarItem = searchItem;
+    
+    MBMyProfileViewController *myProfileViewController = [[MBMyProfileViewController alloc] initWithNibName:@"MBUserDetailView" bundle:nil];
+    UINavigationController *listNavigation = [[UINavigationController alloc] initWithRootViewController:myProfileViewController];
+    [viewControllers addObject:listNavigation];
+    UIImage *listImage = [[UIImage alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"List2@2x" ofType:@"png"]];
+    UIImage *listSelectedImage = [[UIImage alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"List-Selected-2@2x" ofType:@"png"]];
+    UITabBarItem *listBarItem = [[UITabBarItem alloc] initWithTitle:NSLocalizedString(@"Profile", nil) image:listImage selectedImage:listSelectedImage];
+    myListViewController.tabBarItem = listBarItem;
     
     self.tabBarController.viewControllers = viewControllers;
     self.window.rootViewController = self.tabBarController;

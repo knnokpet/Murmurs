@@ -60,14 +60,10 @@
 		8622AE1B199372CC00872E15 /* retweet-Boarder-Tint@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8622AE1A199372CC00872E15 /* retweet-Boarder-Tint@2x.png */; };
 		8622AE1E199372DB00872E15 /* Star-Boarder-Tint.png in Resources */ = {isa = PBXBuildFile; fileRef = 8622AE1C199372DB00872E15 /* Star-Boarder-Tint.png */; };
 		8622AE1F199372DB00872E15 /* retweet-Boarder-Tint.png in Resources */ = {isa = PBXBuildFile; fileRef = 8622AE1D199372DB00872E15 /* retweet-Boarder-Tint.png */; };
-		8622AE311993731600872E15 /* man-Check-ActionCell.png in Resources */ = {isa = PBXBuildFile; fileRef = 8622AE2C1993731600872E15 /* man-Check-ActionCell.png */; };
 		8622AE321993731600872E15 /* More-ActionCell.png in Resources */ = {isa = PBXBuildFile; fileRef = 8622AE2D1993731600872E15 /* More-ActionCell.png */; };
 		8622AE331993731600872E15 /* Message-ActionCell.png in Resources */ = {isa = PBXBuildFile; fileRef = 8622AE2E1993731600872E15 /* Message-ActionCell.png */; };
 		8622AE341993731600872E15 /* Pen-ActionCell.png in Resources */ = {isa = PBXBuildFile; fileRef = 8622AE2F1993731600872E15 /* Pen-ActionCell.png */; };
-		8622AE351993731600872E15 /* man-Plus-ActionCell.png in Resources */ = {isa = PBXBuildFile; fileRef = 8622AE301993731600872E15 /* man-Plus-ActionCell.png */; };
-		8622AE3B199373E400872E15 /* man-Plus-ActionCell@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8622AE36199373E400872E15 /* man-Plus-ActionCell@2x.png */; };
 		8622AE3D199373E400872E15 /* Pen-ActionCell@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8622AE38199373E400872E15 /* Pen-ActionCell@2x.png */; };
-		8622AE3E199373E400872E15 /* man-Check-ActionCell@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8622AE39199373E400872E15 /* man-Check-ActionCell@2x.png */; };
 		8622AE43199488DF00872E15 /* Message-ActionCell@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8622AE41199488DF00872E15 /* Message-ActionCell@2x.png */; };
 		8622AE4519948B2700872E15 /* More-ActionCell@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8622AE4419948B2700872E15 /* More-ActionCell@2x.png */; };
 		8623B8BC1978C4B3004380FF /* MBUnderLineToolbar.m in Sources */ = {isa = PBXBuildFile; fileRef = 8623B8BB1978C4B3004380FF /* MBUnderLineToolbar.m */; };
@@ -215,6 +211,12 @@
 		8690B571197029A6003DB47B /* MBUsersTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8690B56F197029A6003DB47B /* MBUsersTableViewCell.xib */; };
 		8690B575197032B2003DB47B /* MBListsTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8690B573197032B2003DB47B /* MBListsTableViewCell.m */; };
 		8690B576197032B2003DB47B /* MBListsTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8690B574197032B2003DB47B /* MBListsTableViewCell.xib */; };
+		8690F50F19A9A34500E46995 /* MBMyProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8690F50E19A9A34500E46995 /* MBMyProfileViewController.m */; };
+		8690F51219AA047E00E46995 /* MBProfileAvatorImageContainerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8690F51119AA047E00E46995 /* MBProfileAvatorImageContainerView.m */; };
+		8690F51D19AA19A200E46995 /* man-Plus-ActionCell@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8690F51B19AA19A200E46995 /* man-Plus-ActionCell@2x.png */; };
+		8690F51E19AA19A200E46995 /* man-Check-Disenabled@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8690F51C19AA19A200E46995 /* man-Check-Disenabled@2x.png */; };
+		8690F52119AA19B500E46995 /* man-Plus-ActionCell.png in Resources */ = {isa = PBXBuildFile; fileRef = 8690F51F19AA19B500E46995 /* man-Plus-ActionCell.png */; };
+		8690F52219AA19B500E46995 /* man-Check-Disenabled.png in Resources */ = {isa = PBXBuildFile; fileRef = 8690F52019AA19B500E46995 /* man-Check-Disenabled.png */; };
 		869B48D11938A69F00221E38 /* UIImage+Radius.m in Sources */ = {isa = PBXBuildFile; fileRef = 869B48D01938A69F00221E38 /* UIImage+Radius.m */; };
 		869F58991951C87900927700 /* MBTemporaryDirectMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 869F58981951C87900927700 /* MBTemporaryDirectMessage.m */; };
 		869F589C1951EA3000927700 /* MBDIrectMessage_JSONParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 869F589B1951EA3000927700 /* MBDIrectMessage_JSONParser.m */; };
@@ -399,14 +401,10 @@
 		8622AE1A199372CC00872E15 /* retweet-Boarder-Tint@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "retweet-Boarder-Tint@2x.png"; sourceTree = "<group>"; };
 		8622AE1C199372DB00872E15 /* Star-Boarder-Tint.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Star-Boarder-Tint.png"; sourceTree = "<group>"; };
 		8622AE1D199372DB00872E15 /* retweet-Boarder-Tint.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "retweet-Boarder-Tint.png"; sourceTree = "<group>"; };
-		8622AE2C1993731600872E15 /* man-Check-ActionCell.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "man-Check-ActionCell.png"; sourceTree = "<group>"; };
 		8622AE2D1993731600872E15 /* More-ActionCell.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "More-ActionCell.png"; sourceTree = "<group>"; };
 		8622AE2E1993731600872E15 /* Message-ActionCell.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Message-ActionCell.png"; sourceTree = "<group>"; };
 		8622AE2F1993731600872E15 /* Pen-ActionCell.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Pen-ActionCell.png"; sourceTree = "<group>"; };
-		8622AE301993731600872E15 /* man-Plus-ActionCell.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "man-Plus-ActionCell.png"; sourceTree = "<group>"; };
-		8622AE36199373E400872E15 /* man-Plus-ActionCell@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "man-Plus-ActionCell@2x.png"; sourceTree = "<group>"; };
 		8622AE38199373E400872E15 /* Pen-ActionCell@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Pen-ActionCell@2x.png"; sourceTree = "<group>"; };
-		8622AE39199373E400872E15 /* man-Check-ActionCell@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "man-Check-ActionCell@2x.png"; sourceTree = "<group>"; };
 		8622AE41199488DF00872E15 /* Message-ActionCell@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Message-ActionCell@2x.png"; sourceTree = "<group>"; };
 		8622AE4419948B2700872E15 /* More-ActionCell@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "More-ActionCell@2x.png"; sourceTree = "<group>"; };
 		8623B8BA1978C4B3004380FF /* MBUnderLineToolbar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBUnderLineToolbar.h; sourceTree = "<group>"; };
@@ -643,6 +641,14 @@
 		8690B572197032B2003DB47B /* MBListsTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBListsTableViewCell.h; sourceTree = "<group>"; };
 		8690B573197032B2003DB47B /* MBListsTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBListsTableViewCell.m; sourceTree = "<group>"; };
 		8690B574197032B2003DB47B /* MBListsTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MBListsTableViewCell.xib; sourceTree = "<group>"; };
+		8690F50D19A9A34500E46995 /* MBMyProfileViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBMyProfileViewController.h; sourceTree = "<group>"; };
+		8690F50E19A9A34500E46995 /* MBMyProfileViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBMyProfileViewController.m; sourceTree = "<group>"; };
+		8690F51019AA047E00E46995 /* MBProfileAvatorImageContainerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBProfileAvatorImageContainerView.h; sourceTree = "<group>"; };
+		8690F51119AA047E00E46995 /* MBProfileAvatorImageContainerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBProfileAvatorImageContainerView.m; sourceTree = "<group>"; };
+		8690F51B19AA19A200E46995 /* man-Plus-ActionCell@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "man-Plus-ActionCell@2x.png"; sourceTree = "<group>"; };
+		8690F51C19AA19A200E46995 /* man-Check-Disenabled@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "man-Check-Disenabled@2x.png"; sourceTree = "<group>"; };
+		8690F51F19AA19B500E46995 /* man-Plus-ActionCell.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "man-Plus-ActionCell.png"; sourceTree = "<group>"; };
+		8690F52019AA19B500E46995 /* man-Check-Disenabled.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "man-Check-Disenabled.png"; sourceTree = "<group>"; };
 		869B48CF1938A69F00221E38 /* UIImage+Radius.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+Radius.h"; sourceTree = "<group>"; };
 		869B48D01938A69F00221E38 /* UIImage+Radius.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+Radius.m"; sourceTree = "<group>"; };
 		869F58971951C87900927700 /* MBTemporaryDirectMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBTemporaryDirectMessage.h; sourceTree = "<group>"; };
@@ -847,6 +853,7 @@
 			children = (
 				86CB540C190FD8FA0016A7F2 /* Cell */,
 				86CB54131910C9D10016A7F2 /* TextView */,
+				8690F52319AA1A5F00E46995 /* 没 */,
 				86396A261925F18B00A7D0AD /* MBAvatorImageView.h */,
 				86396A271925F18B00A7D0AD /* MBAvatorImageView.m */,
 				8605929F193AEE6300559C33 /* MBProfileAvatorView.h */,
@@ -949,9 +956,9 @@
 		8622AE2B1993730000872E15 /* DetailUserActionButton */ = {
 			isa = PBXGroup;
 			children = (
-				8622AE36199373E400872E15 /* man-Plus-ActionCell@2x.png */,
+				8690F51B19AA19A200E46995 /* man-Plus-ActionCell@2x.png */,
+				8690F51C19AA19A200E46995 /* man-Check-Disenabled@2x.png */,
 				8622AE38199373E400872E15 /* Pen-ActionCell@2x.png */,
-				8622AE39199373E400872E15 /* man-Check-ActionCell@2x.png */,
 				8622AE4419948B2700872E15 /* More-ActionCell@2x.png */,
 				8622AE41199488DF00872E15 /* Message-ActionCell@2x.png */,
 			);
@@ -1021,13 +1028,13 @@
 			name = Cell;
 			sourceTree = "<group>";
 		};
-		8623B8F21980AC0A004380FF /* お蔵入り */ = {
+		8623B8F21980AC0A004380FF /* 没 */ = {
 			isa = PBXGroup;
 			children = (
 				8623B8EF19809FA6004380FF /* MBFollowRequestViewController.h */,
 				8623B8F019809FA6004380FF /* MBFollowRequestViewController.m */,
 			);
-			name = "お蔵入り";
+			name = "没";
 			sourceTree = "<group>";
 		};
 		862B25DC18D074C2004FC786 /* Model */ = {
@@ -1153,11 +1160,11 @@
 				862C4E051992047B009ECA57 /* retweet-BoarderWhite.png */,
 				8622AE1C199372DB00872E15 /* Star-Boarder-Tint.png */,
 				8622AE1D199372DB00872E15 /* retweet-Boarder-Tint.png */,
-				8622AE2C1993731600872E15 /* man-Check-ActionCell.png */,
+				8690F51F19AA19B500E46995 /* man-Plus-ActionCell.png */,
+				8690F52019AA19B500E46995 /* man-Check-Disenabled.png */,
 				8622AE2D1993731600872E15 /* More-ActionCell.png */,
 				8622AE2E1993731600872E15 /* Message-ActionCell.png */,
 				8622AE2F1993731600872E15 /* Pen-ActionCell.png */,
-				8622AE301993731600872E15 /* man-Plus-ActionCell.png */,
 				861DA633199F7D95000F008F /* TimelineMediaImageDefault.png */,
 				861DA634199F7D95000F008F /* TimelineDefaultImage.png */,
 				861DA64919A1DC7B000F008F /* searchBarBackgroundImage.png */,
@@ -1470,6 +1477,8 @@
 				863969E1191F408300A7D0AD /* MBFollowingViewController.m */,
 				863969DD191F3EC500A7D0AD /* MBFollowerViewController.h */,
 				863969DE191F3EC500A7D0AD /* MBFollowerViewController.m */,
+				8690F50D19A9A34500E46995 /* MBMyProfileViewController.h */,
+				8690F50E19A9A34500E46995 /* MBMyProfileViewController.m */,
 				869F58C2195EAF8100927700 /* DirectMessage */,
 				86396A131924FC3900A7D0AD /* List */,
 				8639E20B196CE84D0078266B /* Search */,
@@ -1487,7 +1496,7 @@
 				867A09871941BC9B00741C2F /* MBImageViewController.xib */,
 				869F58A2195A828C00927700 /* MBZoomTransitioning.h */,
 				869F58A3195A828C00927700 /* MBZoomTransitioning.m */,
-				8623B8F21980AC0A004380FF /* お蔵入り */,
+				8623B8F21980AC0A004380FF /* 没 */,
 			);
 			name = Controller;
 			sourceTree = "<group>";
@@ -1519,6 +1528,15 @@
 				860592A8193B254E00559C33 /* MBImageApplyer.m */,
 			);
 			name = Logic;
+			sourceTree = "<group>";
+		};
+		8690F52319AA1A5F00E46995 /* 没 */ = {
+			isa = PBXGroup;
+			children = (
+				8690F51019AA047E00E46995 /* MBProfileAvatorImageContainerView.h */,
+				8690F51119AA047E00E46995 /* MBProfileAvatorImageContainerView.m */,
+			);
+			name = "没";
 			sourceTree = "<group>";
 		};
 		869F58C2195EAF8100927700 /* DirectMessage */ = {
@@ -1780,16 +1798,16 @@
 				862C4DEC199116D4009ECA57 /* reply-BoarderWhite@2x.png in Resources */,
 				86533C2419506E8500AF37EA /* MBMessageReceiverViewController.xib in Resources */,
 				8690B571197029A6003DB47B /* MBUsersTableViewCell.xib in Resources */,
-				8622AE351993731600872E15 /* man-Plus-ActionCell.png in Resources */,
 				8605928619397AE900559C33 /* MagnifierMask@2x.png in Resources */,
 				861AEF391931E3B400C02A38 /* Magnifier-low@2x.png in Resources */,
 				86C662B619A5BA5D0033C5C8 /* Retweet-Line.png in Resources */,
 				86C662D319A7156B0033C5C8 /* Dot-Green.png in Resources */,
+				8690F51D19AA19A200E46995 /* man-Plus-ActionCell@2x.png in Resources */,
 				8622AE4519948B2700872E15 /* More-ActionCell@2x.png in Resources */,
 				862C4E001992015D009ECA57 /* Hoge.png in Resources */,
+				8690F51E19AA19A200E46995 /* man-Check-Disenabled@2x.png in Resources */,
 				861DA636199F7D95000F008F /* TimelineMediaImageDefault.png in Resources */,
 				86BC62051916289E00600EAD /* MBIndividualDirectMessagesViewController.xib in Resources */,
-				8622AE311993731600872E15 /* man-Check-ActionCell.png in Resources */,
 				861DA628199E35D3000F008F /* MBTwitterIcon@2x.png in Resources */,
 				86C662C819A70A7B0033C5C8 /* Camera-Tool.png in Resources */,
 				8639E1FC196A6A3D0078266B /* MBSendMessageTableViewCell.xib in Resources */,
@@ -1803,6 +1821,7 @@
 				861AEF3C1931E74300C02A38 /* Mask2@2x.png in Resources */,
 				8622AE331993731600872E15 /* Message-ActionCell.png in Resources */,
 				862C4E071992047B009ECA57 /* Star-BoarderWhite.png in Resources */,
+				8690F52119AA19B500E46995 /* man-Plus-ActionCell.png in Resources */,
 				86C662D419A7156B0033C5C8 /* Pin.png in Resources */,
 				86BC61F019137F4800600EAD /* MyAccountView.xib in Resources */,
 				86C662D219A7156B0033C5C8 /* PinHole.png in Resources */,
@@ -1811,7 +1830,6 @@
 				862C4DE9199116D4009ECA57 /* Star-BoarderWhite@2x.png in Resources */,
 				869F589E1959E2D200927700 /* Message-Fukidashi@2x.png in Resources */,
 				8623B91B19892D27004380FF /* Man-Cell-blue@2x.png in Resources */,
-				8622AE3E199373E400872E15 /* man-Check-ActionCell@2x.png in Resources */,
 				86C662B119A5BA550033C5C8 /* Retweet-Line@2x.png in Resources */,
 				863969FE1924AA9900A7D0AD /* MBCreateListViewController.xib in Resources */,
 				86C662CE19A715350033C5C8 /* Pin@2x.png in Resources */,
@@ -1837,7 +1855,6 @@
 				860592881939858C00559C33 /* MagnifierMask-withWhite@2x.png in Resources */,
 				86C6629319A442270033C5C8 /* Photo-Tool-1@2x.png in Resources */,
 				86162C431950202000EC836C /* List2@2x.png in Resources */,
-				8622AE3B199373E400872E15 /* man-Plus-ActionCell@2x.png in Resources */,
 				8684FEA318CB43BA00ECDD91 /* Main_iPad.storyboard in Resources */,
 				86C662CC19A715350033C5C8 /* PinHole@2x.png in Resources */,
 				86396A031924ABFC00A7D0AD /* MBTextFieldTableViewCell.xib in Resources */,
@@ -1873,6 +1890,7 @@
 				8622AE19199372BD00872E15 /* Star-Boarder-Tint@2x.png in Resources */,
 				861AFAAC19264A30006B736A /* MBDetailTweetActionsTableViewCell.xib in Resources */,
 				862C4DF9199127EF009ECA57 /* reply-Cell-Boarder-Tint@2x.png in Resources */,
+				8690F52219AA19B500E46995 /* man-Check-Disenabled.png in Resources */,
 				8623B8D8197A3F8C004380FF /* Timeline@2x.png in Resources */,
 				862C4E0A1992047B009ECA57 /* retweet-BoarderWhite.png in Resources */,
 				863969C1191B97CA00A7D0AD /* MBListTimelineManagementViewController.xib in Resources */,
@@ -2056,6 +2074,7 @@
 				867A09BA19480AF900741C2F /* MBProfileInfomationView.m in Sources */,
 				8639E20E196CE8720078266B /* MBSearchedTweetViewController.m in Sources */,
 				863969F0191F73C800A7D0AD /* MBOtherUserListViewController.m in Sources */,
+				8690F51219AA047E00E46995 /* MBProfileAvatorImageContainerView.m in Sources */,
 				86B5C5DB18EE5BF40035CDC3 /* OAParameter.m in Sources */,
 				869F58B5195D4D7F00927700 /* MBTimelineActionButton.m in Sources */,
 				8623B8C71979484D004380FF /* UIImage+MaskColor.m in Sources */,
@@ -2069,6 +2088,7 @@
 				869B48D11938A69F00221E38 /* UIImage+Radius.m in Sources */,
 				8690B570197029A6003DB47B /* MBUsersTableViewCell.m in Sources */,
 				8639E217196CEF8F0078266B /* MBSegmentedContainerView.m in Sources */,
+				8690F50F19A9A34500E46995 /* MBMyProfileViewController.m in Sources */,
 				861AFAC11929048B006B736A /* MBWebBrowsViewController.m in Sources */,
 				86B6CA0D18FBA13E00D4C5DF /* MBTweets_JSONParser.m in Sources */,
 				86CB5400190E75B10016A7F2 /* MBReplyTimelineViewController.m in Sources */,

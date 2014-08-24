@@ -67,6 +67,6 @@
         </tableViewCell>
     </objects>
     <resources>
-        <image name="bird_blue_32.png" width="16" height="12"/>
+        <image name="bird_blue_32.png" width="32" height="25"/>
     </resources>
 </document>
