@@ -37,7 +37,7 @@
     [viewControllers addObject:timelineNavigationController];
     UIImage *homeImage = [[UIImage alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"Timeline@2x" ofType:@"png"]];
     UIImage *homeSelectedImage = [[UIImage alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"Timeline-Selected@2x" ofType:@"png"]];
-    UITabBarItem *homeBarItem = [[UITabBarItem alloc] initWithTitle:NSLocalizedString(@"Home", nil) image:homeImage selectedImage:homeSelectedImage];
+    UITabBarItem *homeBarItem = [[UITabBarItem alloc] initWithTitle:NSLocalizedString(@"Timeline", nil) image:homeImage selectedImage:homeSelectedImage];
     homeViewController.tabBarItem = homeBarItem;
     
     MBReplyTimelineViewController *replyTimelineViewController = [[MBReplyTimelineViewController alloc] initWithNibName:@"TimelineTableView" bundle:nil];

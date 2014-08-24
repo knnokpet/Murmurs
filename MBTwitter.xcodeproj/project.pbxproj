@@ -169,6 +169,9 @@
 		863B3823192F798900063C83 /* MBMagnifierView.m in Sources */ = {isa = PBXBuildFile; fileRef = 863B3822192F798900063C83 /* MBMagnifierView.m */; };
 		863C1F3619307AAB00DA6371 /* MagnifierRangeMask@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 863C1F3319307AAB00DA6371 /* MagnifierRangeMask@2x.png */; };
 		863C1F391930809400DA6371 /* MBMagnifierRangeView.m in Sources */ = {isa = PBXBuildFile; fileRef = 863C1F381930809400DA6371 /* MBMagnifierRangeView.m */; };
+		864ADBE719A8A9E400489885 /* MBNavigationControllerTitleView.m in Sources */ = {isa = PBXBuildFile; fileRef = 864ADBE619A8A9E400489885 /* MBNavigationControllerTitleView.m */; };
+		864ADBE919A8C3B800489885 /* bird_blue_32.png in Resources */ = {isa = PBXBuildFile; fileRef = 864ADBE819A8C3B800489885 /* bird_blue_32.png */; };
+		864ADBEB19A8C41E00489885 /* bird_blue_16@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 864ADBEA19A8C41E00489885 /* bird_blue_16@2x.png */; };
 		86533C2319506E8500AF37EA /* MBMessageReceiverViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 86533C2119506E8500AF37EA /* MBMessageReceiverViewController.m */; };
 		86533C2419506E8500AF37EA /* MBMessageReceiverViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 86533C2219506E8500AF37EA /* MBMessageReceiverViewController.xib */; };
 		86705DBE18FE72DA002A23DD /* MBHelp_JSONParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 86705DBD18FE72DA002A23DD /* MBHelp_JSONParser.m */; };
@@ -568,6 +571,10 @@
 		863C1F3319307AAB00DA6371 /* MagnifierRangeMask@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "MagnifierRangeMask@2x.png"; sourceTree = "<group>"; };
 		863C1F371930809400DA6371 /* MBMagnifierRangeView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBMagnifierRangeView.h; sourceTree = "<group>"; };
 		863C1F381930809400DA6371 /* MBMagnifierRangeView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBMagnifierRangeView.m; sourceTree = "<group>"; };
+		864ADBE519A8A9E400489885 /* MBNavigationControllerTitleView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBNavigationControllerTitleView.h; sourceTree = "<group>"; };
+		864ADBE619A8A9E400489885 /* MBNavigationControllerTitleView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBNavigationControllerTitleView.m; sourceTree = "<group>"; };
+		864ADBE819A8C3B800489885 /* bird_blue_32.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bird_blue_32.png; sourceTree = "<group>"; };
+		864ADBEA19A8C41E00489885 /* bird_blue_16@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "bird_blue_16@2x.png"; sourceTree = "<group>"; };
 		86533C2019506E8500AF37EA /* MBMessageReceiverViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBMessageReceiverViewController.h; sourceTree = "<group>"; };
 		86533C2119506E8500AF37EA /* MBMessageReceiverViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBMessageReceiverViewController.m; sourceTree = "<group>"; };
 		86533C2219506E8500AF37EA /* MBMessageReceiverViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MBMessageReceiverViewController.xib; sourceTree = "<group>"; };
@@ -886,6 +893,8 @@
 				862C4DF619911C27009ECA57 /* MBTitleWithImageButton.m */,
 				86C6628B19A388E80033C5C8 /* MBLabelImageHeaderView.h */,
 				86C6628C19A388E80033C5C8 /* MBLabelImageHeaderView.m */,
+				864ADBE519A8A9E400489885 /* MBNavigationControllerTitleView.h */,
+				864ADBE619A8A9E400489885 /* MBNavigationControllerTitleView.m */,
 				868203941963DEF100B336AC /* TimelineActionView */,
 			);
 			name = View;
@@ -962,7 +971,7 @@
 		8623B8C9197A3F4E004380FF /* Bird */ = {
 			isa = PBXGroup;
 			children = (
-				86BFD2521974F7F800269D34 /* bird_blue_16.png */,
+				864ADBEA19A8C41E00489885 /* bird_blue_16@2x.png */,
 				86BFD2581974F8C100269D34 /* bird_blue_32@2x.png */,
 				86BFD2541974F7F800269D34 /* bird_blue_48.png */,
 			);
@@ -1163,6 +1172,8 @@
 				86C662CF19A7156B0033C5C8 /* PinHole.png */,
 				86C662D019A7156B0033C5C8 /* Dot-Green.png */,
 				86C662D119A7156B0033C5C8 /* Pin.png */,
+				86BFD2521974F7F800269D34 /* bird_blue_16.png */,
+				864ADBE819A8C3B800489885 /* bird_blue_32.png */,
 			);
 			name = "要変更";
 			sourceTree = "<group>";
@@ -1856,6 +1867,7 @@
 				869F58CA195EEE8E00927700 /* MBDetailUserInfomationTableViewCell.xib in Resources */,
 				86162C4119500F9B00EC836C /* List-Selected-2@2x.png in Resources */,
 				861AFAC21929048B006B736A /* MBWebBrowsViewController.xib in Resources */,
+				864ADBEB19A8C41E00489885 /* bird_blue_16@2x.png in Resources */,
 				867A0980193FF77000741C2F /* MBEditListUserTableViewCell.xib in Resources */,
 				861AFA9D19264942006B736A /* MBTweetDetailView.xib in Resources */,
 				8622AE19199372BD00872E15 /* Star-Boarder-Tint@2x.png in Resources */,
@@ -1869,6 +1881,7 @@
 				8684FEA818CB43BA00ECDD91 /* Images.xcassets in Resources */,
 				861DA64C19A1E804000F008F /* searchBarBackgroundImage-Selected@2x.png in Resources */,
 				8622AE1F199372DB00872E15 /* retweet-Boarder-Tint.png in Resources */,
+				864ADBE919A8C3B800489885 /* bird_blue_32.png in Resources */,
 				861DA61D199CB0CB000F008F /* Message-Selected@2x.png in Resources */,
 				861DA63C199F7D9F000F008F /* TimelineDefaultImage@2x.png in Resources */,
 				86C662B219A5BA550033C5C8 /* Star-Line@2x.png in Resources */,
@@ -2025,6 +2038,7 @@
 				86B5C5BD18EA80320035CDC3 /* MBLink.m in Sources */,
 				8623B8E819800397004380FF /* MBFollowRequestTableViewCell.m in Sources */,
 				86B5C5B718EA7E2D0035CDC3 /* MBTextIndex.m in Sources */,
+				864ADBE719A8A9E400489885 /* MBNavigationControllerTitleView.m in Sources */,
 				86705DC318FFD1B4002A23DD /* MBLineLayout.m in Sources */,
 				86BC620E1917CABF00600EAD /* MBUser_JSONParser.m in Sources */,
 				86B5C5E818F40C2A0035CDC3 /* MBImageDownloader.m in Sources */,
