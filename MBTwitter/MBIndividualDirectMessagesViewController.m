@@ -534,6 +534,8 @@ static NSString *sendCellIdentifier = @"SendCellIdentifier";
         [self updateSentCell:(MBSendMessageTableViewCell *)cell atIndexPath:indexPath];
     }
     
+    cell.userInteractionEnabled = NO; /* delete 処理がうまくいっていないため */
+    
     return cell;
 }
 
