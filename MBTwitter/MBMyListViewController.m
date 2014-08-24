@@ -43,7 +43,6 @@
 
 - (void)configureNavigationitem
 {
-    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Account", nil) style:UIBarButtonItemStylePlain target:self action:@selector(didPushAccountButton)];
     self.navigationItem.rightBarButtonItem = self.editButtonItem;
 }
 
@@ -51,11 +50,11 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    [self updateNavigationTitleView];
+    self.title = NSLocalizedString(@"List", nil);
     
     // viewWillAppea にあったので viewDidLoad に変更。なぜ viewWillAppear に？
     [self setttingMyUser];
-    [self receiveChangedAccountNotification];
+    //[self receiveChangedAccountNotification];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -115,7 +114,6 @@
 {
     MBNavigationControllerTitleView *titleView = [[MBNavigationControllerTitleView alloc] initWithFrame:CGRectZero];
     [titleView setTitle:NSLocalizedString(@"List", nil)];
-    [titleView setScreenName:[[MBAccountManager sharedInstance] currentAccount].screenName];
     [titleView sizeToFit];
     [self.navigationItem setTitleView:titleView];
 }
