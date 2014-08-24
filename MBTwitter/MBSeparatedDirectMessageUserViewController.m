@@ -153,7 +153,6 @@
 {
     MBNavigationControllerTitleView *titleView = [[MBNavigationControllerTitleView alloc] initWithFrame:CGRectZero];
     [titleView setTitle:NSLocalizedString(@"Message", nil)];
-    [titleView setScreenName:[[MBAccountManager sharedInstance] currentAccount].screenName];
     [titleView sizeToFit];
     [self.navigationItem setTitleView:titleView];
 }
