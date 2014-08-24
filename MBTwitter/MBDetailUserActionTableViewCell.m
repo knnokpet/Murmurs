@@ -91,7 +91,7 @@
         self.followButton.enabled = NO;
         [self.followButton setTitle:NSLocalizedString(@"Following!", nil) forState:UIControlStateNormal];
         [self.followButton setButtonTitle:NSLocalizedString(@"Following!", nil)];
-        [self.followButton setButtonImage:[UIImage imageNamed:@"man-Check-ActionCell"]];
+        [self.followButton setButtonImage:[UIImage imageNamed:@"man-Check-Disenabled"]];
         [self.followButton.titleLabel setFont:[UIFont systemFontOfSize:14.0f]];
     }
     [self setNeedsLayout];
@@ -116,6 +116,7 @@
     _sentFollowRequest = sentFollowRequest;
     if (sentFollowRequest) {
         [self.followButton setTitle:NSLocalizedString(@"Sent Request", nil) forState:UIControlStateNormal];
+        [self.followButton setButtonImage:[UIImage imageNamed:@"man-Check-Disenabled"]];
         self.followButton.enabled = NO;
     } else {
         
