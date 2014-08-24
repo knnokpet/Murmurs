@@ -55,9 +55,12 @@
 
 - (void)didPushUnSubscriveButton
 {
-    [self.aoAPICenter postDestroySubscrivedList:[self.list.listID unsignedLongLongValue] slug:self.list.slug ownerScreenName:self.list.user.screenName ownerID:[self.list.user.userID unsignedLongLongValue]];
-    
-    [self.navigationItem setRightBarButtonItem:[self animatingIndicatorButton] animated:YES];
+    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) destructiveButtonTitle:NSLocalizedString(@"UnSubscrive", nil) otherButtonTitles:nil, nil];
+    if (self.tabBarController.tabBar) {
+        [actionSheet showFromTabBar:self.tabBarController.tabBar];
+    } else {
+        [actionSheet showInView:self.view];
+    }
 }
 
 - (UIBarButtonItem *)animatingIndicatorButton
@@ -81,6 +84,8 @@
 }
 */
 
+#pragma mark - Delegate
+#pragma mark TwitterAPICenter
 - (void)twitterAPICenter:(MBAOuth_TwitterAPICenter *)center parsedLists:(NSArray *)lists
 {
     if (0 < [lists count]) {
@@ -106,6 +111,18 @@
             }
         }
         [self setList:parsedList];
+    }
+}
+
+#pragma mark UIActionSheet
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if (buttonIndex == actionSheet.cancelButtonIndex) {
+        ;
+    } else {
+        [self.aoAPICenter postDestroySubscrivedList:[self.list.listID unsignedLongLongValue] slug:self.list.slug ownerScreenName:self.list.user.screenName ownerID:[self.list.user.userID unsignedLongLongValue]];
+        
+        [self.navigationItem setRightBarButtonItem:[self animatingIndicatorButton] animated:YES];
     }
 }
 

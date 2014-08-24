@@ -9,7 +9,7 @@
 #import "MBListTimelineManagementViewController.h"
 
 @protocol MBOther_ListTimelineManagerViewControllerDelegate;
-@interface MBOther_ListTimelineManagerViewController : MBListTimelineManagementViewController
+@interface MBOther_ListTimelineManagerViewController : MBListTimelineManagementViewController <UIActionSheetDelegate>
 
 @property (nonatomic, weak) id <MBOther_ListTimelineManagerViewControllerDelegate> delegate;
 
