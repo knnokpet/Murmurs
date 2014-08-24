@@ -14,6 +14,7 @@
 @class MBUser;
 @interface MBDetailUserViewController : UIViewController <MBAOuth_TwitterAPICenterDelegate, MBSelecting_ListViewControllerDelegate, MBPostTweetViewControllerDelegate, UIScrollViewDelegate, UIActionSheetDelegate>
 
+@property (nonatomic, readonly) MBAOuth_TwitterAPICenter *aoAPICenter;
 @property (nonatomic, readonly) MBUser *user;
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 
@@ -22,5 +23,9 @@
 
 - (void)setUser:(MBUser *)user;
 - (void)setUserID:(NSNumber *)userID;
+
+- (void)configureModel;
+- (void)configureUserObject;
+- (void)updateViews;
 
 @end

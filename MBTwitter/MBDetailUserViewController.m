@@ -47,8 +47,6 @@ typedef enum ActionSheetTag {
     CGFloat _headerImageOffSet;
 }
 
-@property (nonatomic, readonly) MBAOuth_TwitterAPICenter *aoAPICenter;
-
 @property (nonatomic) UIImageView *headerImageView;
 @property (nonatomic) UIScrollView *scrollView;
 @property (nonatomic) MBProfileAvatorView *profileAvatorView;
@@ -129,11 +127,31 @@ typedef enum ActionSheetTag {
     [self.scrollView setContentSize:CGSizeMake(pageCount * self.view.frame.size.width, tableHeaderHeight)];
     [self.tableView.tableHeaderView addSubview:self.scrollView];
     
-    self.profileAvatorView = [[MBProfileAvatorView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, tableHeaderHeight)];
+    [self configureAvatorView];
+    
+    
+    self.pageControl = [[UIPageControl alloc] init];
+    self.pageControl.frame = CGRectMake(0, self.scrollView.frame.size.height - 30, self.view.frame.size.width, 30);
+    [self.pageControl addTarget:self action:@selector(pageControll:) forControlEvents:UIControlEventValueChanged];
+    self.pageControl.backgroundColor = [UIColor clearColor];
+    self.pageControl.numberOfPages = pageCount;
+    self.pageControl.currentPage = 0;
+    self.pageControl.hidesForSinglePage = YES;
+    [tableHeaderView addSubview:self.pageControl];
+    
+    [self configureDescriptionView];
+    [self configureInfomationView];
+}
+
+- (void)configureAvatorView
+{
+    if (!self.profileAvatorView.superview) {
+        self.profileAvatorView = [[MBProfileAvatorView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.headerImageView.bounds.size.height)];
+        [self.scrollView addSubview:self.profileAvatorView];
+    }
     self.profileAvatorView.characterName = self.user.characterName;
     self.profileAvatorView.screenName = self.user.screenName;
     self.profileAvatorView.isProtected = self.user.isProtected;
-    [self.scrollView addSubview:self.profileAvatorView];
     
     
     UIImage *avatorImage = [[MBImageCacher sharedInstance] cachedProfileImageForUserID:self.user.userIDStr];
@@ -151,19 +169,6 @@ typedef enum ActionSheetTag {
         });
     }
     [self downloadBannerImage];
-    
-    
-    self.pageControl = [[UIPageControl alloc] init];
-    self.pageControl.frame = CGRectMake(0, self.scrollView.frame.size.height - 30, self.view.frame.size.width, 30);
-    [self.pageControl addTarget:self action:@selector(pageControll:) forControlEvents:UIControlEventValueChanged];
-    self.pageControl.backgroundColor = [UIColor clearColor];
-    self.pageControl.numberOfPages = pageCount;
-    self.pageControl.currentPage = 0;
-    self.pageControl.hidesForSinglePage = YES;
-    [tableHeaderView addSubview:self.pageControl];
-    
-    [self configureDescriptionView];
-    [self configureInfomationView];
 }
 
 - (void)configureDescriptionView
@@ -172,12 +177,15 @@ typedef enum ActionSheetTag {
         return;
     }
     
-    if (0 < self.user.desctiprion.length) {
+    if (!self.profileDescriptionView.superview) {
         CGRect profileFrame = CGRectMake(self.view.frame.size.width, 0, self.view.frame.size.width, self.scrollView.frame.size.height);
         self.profileDescriptionView = [[MBProfileDesciptionView alloc] initWithFrame:profileFrame];
+        [self.scrollView addSubview:self.profileDescriptionView];
+    }
+    
+    if (0 < self.user.desctiprion.length) {
         NSAttributedString *descriptionText = [MBTweetTextComposer attributedStringForUser:self.user linkColor:nil];
         [self.profileDescriptionView setAttributedString:descriptionText];
-        [self.scrollView addSubview:self.profileDescriptionView];
     }
 }
 
@@ -186,14 +194,17 @@ typedef enum ActionSheetTag {
     if (!self.user) {
         return;
     }
-    
-    if (0 < self.user.urlAtProfile.length || 0 < self.user.location.length) {
+
+    if (!self.profileInformationView.superview) {
         CGFloat xOrigin = self.view.frame.size.width + self.profileDescriptionView.frame.size.width;
         self.profileInformationView = [[MBProfileInfomationView alloc] initWithFrame:CGRectMake(xOrigin, 0, self.view.frame.size.width, self.scrollView.frame.size.height)];
+        [self.scrollView addSubview:self.profileInformationView];
+    }
+    
+    if (0 < self.user.urlAtProfile.length || 0 < self.user.location.length) {
         [self.profileInformationView setLocationText:self.user.location];
         MBURLLink *urlInProfile = self.user.entity.urls.firstObject;
         [self.profileInformationView setUrlText:urlInProfile.displayText];
-        [self.scrollView addSubview:self.profileInformationView];
     }
 }
 
@@ -204,15 +215,25 @@ typedef enum ActionSheetTag {
     self.title = NSLocalizedString(@"User", nil);
     
     [self configureModel];
+    [self configureUserObject];
+    [self fetchRelationship];
+    
     [self configureView];
     [self configureOtherActions];
     
+}
+
+- (void)configureUserObject
+{
     if (self.user.requireLoading) {
         [self.aoAPICenter getUser:[self.user.userID unsignedLongLongValue] screenName:self.user.screenName];
     } else if (nil != self.userID) {
         [self.aoAPICenter getUser:[self.userID unsignedLongLongValue] screenName:nil];
     }
-    
+}
+
+- (void)fetchRelationship
+{
     if(NO == self.user.requireLoading && self.user.userID && !self.user.relationship) {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
             NSArray *requiredIDs = [[[MBAccountManager sharedInstance].currentAccount relationshipManger] requiredLoadingRelationshipUserIDs:99];
@@ -312,9 +333,7 @@ typedef enum ActionSheetTag {
 
 - (void)updateViews
 {
-    self.profileAvatorView.characterName = self.user.characterName;
-    self.profileAvatorView.screenName = self.user.screenName;
-    
+    [self configureAvatorView];
     [self configureDescriptionView];
     [self configureInfomationView];
     
@@ -325,16 +344,8 @@ typedef enum ActionSheetTag {
     [self.scrollView setNeedsDisplay];
     [self.tableView reloadData];
     
-    if (nil == self.headerImageView.image && nil != self.user.urlAtProfileBanner) {
-        [self downloadBannerImage];
-    }
-    if (nil == self.profileAvatorView.avatorImageView.image && nil != self.user.urlHTTPSAtProfileImage) {
-        [self downloadAvatorImage];
-    }
-    
-    if(NO == self.user.requireLoading && self.user.userID && !self.user.relationship) {
-        [self.aoAPICenter getRelationshipsOfMyAccountsWith:@[self.user.userID]];
-    }
+    [self fetchRelationship];
+
 }
 
 - (void)configureOtherActions
@@ -653,7 +664,7 @@ typedef enum ActionSheetTag {
 {
     MBUser *user = [users firstObject];
     if (user) {
-        NSLog(@"screen %@ chara %@", user.screenName, user.characterName);
+        
         [self setUser:user];
         
         if (requestType == MBTwitterFriendShipsCreateRequest) {
