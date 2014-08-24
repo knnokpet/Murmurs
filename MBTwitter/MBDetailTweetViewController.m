@@ -39,10 +39,10 @@
 #import "MBDetailTweetActionsTableViewCell.h"
 #import "MBDetailTweetFavoRetTableViewCell.h"
 
-#define LINE_SPACING 4.0f
-#define LINE_HEIGHT 0.0f
-#define PARAGRAPF_SPACING 0.0f
-#define FONT_SIZE 20.0f
+#define DETAIL_LINE_SPACING 4.0f
+#define DETAIL_LINE_HEIGHT 0.0f
+#define DETAIL_PARAGRAPF_SPACING 0.0f
+#define DETAIL_FONT_SIZE 20.0f
 
 static NSString *countCellIdentifier = @"CountCellIdentifier";
 static NSString *userCellIdentifier = @"UserCellIdentifier";
@@ -147,6 +147,8 @@ static NSString *retweetStr = @"ret";*/
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    self.title = NSLocalizedString(@"Tweet", nil);
+    
     [self configureModel];
     [self configureViews];
     
@@ -430,10 +432,10 @@ static NSString *retweetStr = @"ret";*/
 - (void)updateTweetViewCell:(MBDetailTweetTextTableViewCell *)cell
 {
     
-    cell.tweetTextView.font = [UIFont systemFontOfSize:FONT_SIZE];
-    cell.tweetTextView.lineSpace = LINE_SPACING;
-    cell.tweetTextView.lineHeight = LINE_HEIGHT;
-    cell.tweetTextView.paragraphSpace = PARAGRAPF_SPACING;
+    cell.tweetTextView.font = [UIFont systemFontOfSize:DETAIL_FONT_SIZE];
+    cell.tweetTextView.lineSpace = DETAIL_LINE_SPACING;
+    cell.tweetTextView.lineHeight = DETAIL_LINE_HEIGHT;
+    cell.tweetTextView.paragraphSpace = DETAIL_PARAGRAPF_SPACING;
     cell.tweetTextView.attributedString = [MBTweetTextComposer attributedStringForTweet:self.tweet tintColor:[self.navigationController.navigationBar tintColor]];
     //cell.tweetTextView.isSelectable = YES; ルーペを実装できないため。
     cell.tweetTextView.delegate = self;
