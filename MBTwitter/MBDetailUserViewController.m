@@ -201,6 +201,8 @@ typedef enum ActionSheetTag {
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    self.title = NSLocalizedString(@"User", nil);
+    
     [self configureModel];
     [self configureView];
     [self configureOtherActions];
