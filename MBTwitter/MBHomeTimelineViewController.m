@@ -118,7 +118,6 @@
 {
     MBNavigationControllerTitleView *titleView = [[MBNavigationControllerTitleView alloc] initWithFrame:CGRectZero];
     [titleView setTitle:NSLocalizedString(@"Timeline", nil)];
-    [titleView setScreenName:[[MBAccountManager sharedInstance] currentAccount].screenName];
     [titleView sizeToFit];
     [self.navigationItem setTitleView:titleView];
 }
