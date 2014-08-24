@@ -927,7 +927,6 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
 #pragma mark MBAvatorImageView Delegate
 - (void)imageViewDidClick:(MBAvatorImageView *)imageView userID:(NSNumber *)userID userIDStr:(NSString *)userIDStr
 {
-    //imageView.selected = YES;
     [imageView setIsSelected:YES withAnimated:NO];
     
     MBUser *selectedUser = [[MBUserManager sharedInstance] storedUserForKey:userIDStr];
