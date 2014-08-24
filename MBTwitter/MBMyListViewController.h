@@ -8,9 +8,10 @@
 
 #import "MBListViewController.h"
 #import "MBCreateListViewController.h"
+#import "MBMyAccountsViewController.h"
 #import "MBOwn_ListTimelineManagerViewController.h"
 #import "MBOther_ListTimelineManagerViewController.h"
 
-@interface MBMyListViewController : MBListViewController <MBCreateListViewControllerDelegate,MBOwn_ListTimelineManagerViewControllerDelegate, MBOther_ListTimelineManagerViewControllerDelegate>
+@interface MBMyListViewController : MBListViewController <MBCreateListViewControllerDelegate,MBOwn_ListTimelineManagerViewControllerDelegate, MBOther_ListTimelineManagerViewControllerDelegate, MBMyAccountsViewControlerDelegate>
 
 @end

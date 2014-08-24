@@ -9,6 +9,8 @@
 #import "MBMyListViewController.h"
 
 
+#import "MBNavigationControllerTitleView.h"
+
 @interface MBMyListViewController ()
 
 @property (nonatomic) NSMutableArray *dataSouece;
@@ -41,7 +43,7 @@
 
 - (void)configureNavigationitem
 {
-    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(didPushRefreshButton)];
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Account", nil) style:UIBarButtonItemStylePlain target:self action:@selector(didPushAccountButton)];
     self.navigationItem.rightBarButtonItem = self.editButtonItem;
 }
 
@@ -49,6 +51,7 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    [self updateNavigationTitleView];
     
     // viewWillAppea にあったので viewDidLoad に変更。なぜ viewWillAppear に？
     [self setttingMyUser];
@@ -90,6 +93,8 @@
         [self.listManager removeAllLists];/* アカウント変更時に account.listManager に保存されているリストを全消去 */
         [self commonConfigureModel];
         [self commonConfigureView];
+        
+        [self updateNavigationTitleView];
 
         [self.tableView reloadData];
         
@@ -106,6 +111,14 @@
 
 #pragma mark -
 #pragma mark Instance Method
+- (void)updateNavigationTitleView
+{
+    MBNavigationControllerTitleView *titleView = [[MBNavigationControllerTitleView alloc] initWithFrame:CGRectZero];
+    [titleView setTitle:NSLocalizedString(@"List", nil)];
+    [titleView setScreenName:[[MBAccountManager sharedInstance] currentAccount].screenName];
+    [titleView sizeToFit];
+    [self.navigationItem setTitleView:titleView];
+}
 
 - (BOOL)reachsTheLimitOfList
 {
@@ -151,6 +164,14 @@
 - (void)didPushRefreshButton
 {
     
+}
+                                             
+- (void)didPushAccountButton
+{
+    MBMyAccountsViewController *accountViewController = [[MBMyAccountsViewController alloc] initWithNibName:@"MyAccountView" bundle:nil];
+    accountViewController.delegate = self;
+    UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:accountViewController];
+    [self.navigationController presentViewController:navigationController animated:YES completion:nil];
 }
 
 #pragma mark -
@@ -290,6 +311,13 @@
     NSIndexPath *selectedPath = [self.tableView indexPathForSelectedRow];
     [self.listManager removeListOfSubscrive:selectedPath.row];
     [self.tableView reloadData];
+}
+
+#pragma mark MyAccountViewController
+- (void)dismissAccountsViewController:(MBMyAccountsViewController *)controller animated:(BOOL)animated
+{
+    [controller dismissViewControllerAnimated:animated completion:nil];
+    controller = nil;
 }
 
 @end
