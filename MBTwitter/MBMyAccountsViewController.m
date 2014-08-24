@@ -314,7 +314,7 @@ static NSString *imageKey = @"ImageKey";
 #pragma mark TableView DataSource & Delegate
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    return [self.dataSource count];
+    return 1; //[self.dataSource count];
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
