@@ -45,7 +45,7 @@
     // searchBar
     _searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 300, 44)];
     [self.searchBar setSearchFieldBackgroundImage:[UIImage imageNamed:@"searchBarBackgroundImage"] forState:UIControlStateNormal];
-    NSString *searchBarPlaceHolder = NSLocalizedString(@"Search for Tweet or User", nil);
+    NSString *searchBarPlaceHolder = NSLocalizedString(@"Search Tweet or User", nil);
     [self.searchBar setPlaceholder:searchBarPlaceHolder];
     self.searchBar.delegate = self;
     [self.navigationItem setTitleView:self.searchBar];
@@ -266,6 +266,13 @@
 
 #pragma mark - Delegate
 #pragma mark AouthAPICenter Delegate
+- (void)twitterAPICenter:(MBAOuth_TwitterAPICenter *)center requestType:(MBRequestType)requestType parsedTweets:(NSArray *)tweets
+{
+    MBTweet *tweet = [tweets firstObject];
+    if (tweet) {
+        [self.tweetViewController refreshAction];
+    }
+}
 
 #pragma mark UISearchBar Delegate
 - (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar
@@ -340,9 +347,11 @@
     }];
 }
 
-- (void)sendTweetPostTweetViewController:(MBPostTweetViewController *)controller
+- (void)sendTweetPostTweetViewController:(MBPostTweetViewController *)controller tweetText:(NSString *)tweetText replys:(NSArray *)replys place:(NSDictionary *)place media:(NSArray *)media
 {
-    [self.tweetViewController refreshAction];
+    [self.aoAPICenter postTweet:tweetText inReplyTo:replys place:place media:media];
+    
+    [controller dismissViewControllerAnimated:YES completion:nil];
 }
 
 @end
