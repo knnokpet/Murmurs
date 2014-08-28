@@ -42,6 +42,7 @@ static NSString *deleteListCellIdentifier = @"DeleteListCellIdentifier";
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    self.title = NSLocalizedString(@"Edit List", nil);
     
     self.removeListMembers = [NSMutableArray array];
     
