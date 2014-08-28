@@ -139,12 +139,4 @@
     controller = nil;
 }
 
-#pragma mark PostTweetViewController
-- (void)dismissPostTweetViewController:(MBPostTweetViewController *)controller animated:(BOOL)animated
-{
-    [controller dismissViewControllerAnimated:YES completion:^{
-        [self refreshAction];
-    }];
-}
-
 @end
