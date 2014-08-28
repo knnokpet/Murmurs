@@ -33,7 +33,7 @@
 @property (nonatomic, readonly) MBPlace *place;// NULLable
 
 @property (nonatomic, readonly) NSInteger favoritedCount; // NULLable
-@property (nonatomic, readonly) NSInteger retweetedCount;
+@property (nonatomic) NSInteger retweetedCount;
 
 @property (nonatomic, assign, readonly) BOOL isFavorited; // NULLable
 @property (nonatomic, assign, readonly) BOOL isRetweeted;
@@ -60,6 +60,9 @@
 @property (nonatomic, assign, readonly) BOOL isWithheldCopyright;
 @property (nonatomic, readonly) NSArray *withheldCountries;
 @property (nonatomic, readonly) NSString *withheldScope;
+
+
+- (void)setIsRetweeted:(BOOL)isRetweeted;
 
 - (id)initWithDictionary:(NSDictionary *)tweet;
 

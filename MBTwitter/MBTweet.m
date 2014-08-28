@@ -173,4 +173,11 @@
     [aCoder encodeObject:_filterLebel forKey:KEY_FILTER_LEVEL];
 }
 
+#pragma mark Setter & Getter
+
+- (void)setIsRetweeted:(BOOL)isRetweeted
+{
+    _isRetweeted = isRetweeted;
+}
+
 @end
