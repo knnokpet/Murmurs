@@ -138,25 +138,25 @@
 - (void)createButtons
 {
     // reply
-    MBTimelineActionButton *replyButton = [[MBTimelineActionButton alloc] initWithTitle:@"Reply" image:[UIImage imageNamed:@"reply-BoarderWhite"]];
+    MBTimelineActionButton *replyButton = [[MBTimelineActionButton alloc] initWithTitle:@"Reply" image:[UIImage imageNamed:@"reply-White"]];
     [replyButton addTarget:self action:@selector(didPushReplyButton) forControlEvents:UIControlEventTouchUpInside];
     
     
     // favorite
-    MBTimelineActionButton *favoriteButton = [[MBTimelineActionButton alloc] initWithTitle:@"Favorite" image:[UIImage imageNamed:@"Star-BoarderWhite"]];
+    MBTimelineActionButton *favoriteButton = [[MBTimelineActionButton alloc] initWithTitle:@"Favorite" image:[UIImage imageNamed:@"Star-White"]];
     [favoriteButton addTarget:self action:@selector(didPushFavoriteButton) forControlEvents:UIControlEventTouchUpInside];
     if (self.selectedTweet.isFavorited) {
-        favoriteButton = [[MBTimelineActionButton alloc] initWithTitle:@"Cancel" image:[UIImage imageNamed:@"Star-DashWhite"]];
+        favoriteButton = [[MBTimelineActionButton alloc] initWithTitle:@"Cancel" image:[UIImage imageNamed:@"Favorite-Cancel-White"]];
         [favoriteButton addTarget:self action:@selector(didPushCancelFavoriteButton) forControlEvents:UIControlEventTouchUpInside];
     }
     
     
     // retweet
-    MBTimelineActionButton *retweetButton = [[MBTimelineActionButton alloc] initWithTitle:@"Retweet" image:[UIImage imageNamed:@"retweet-BoarderWhite"]];
+    MBTimelineActionButton *retweetButton = [[MBTimelineActionButton alloc] initWithTitle:@"Retweet" image:[UIImage imageNamed:@"Retweet-White"]];
     [retweetButton addTarget:self action:@selector(didPushRetweetButton) forControlEvents:UIControlEventTouchUpInside];
     
     if (self.selectedTweet.isRetweeted) {
-        retweetButton = [[MBTimelineActionButton alloc] initWithTitle:@"Cancel" image:[UIImage imageNamed:@"retweet-DashWhite"]];
+        retweetButton = [[MBTimelineActionButton alloc] initWithTitle:@"Cancel" image:[UIImage imageNamed:@"Retweet-Cancel-White"]];
         [retweetButton addTarget:self action:@selector(didPushCancelRetweetButton) forControlEvents:UIControlEventTouchUpInside];
     }
     
