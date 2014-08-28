@@ -8,7 +8,11 @@
 
 #import "MBWebBrowsViewController.h"
 
+#import "MBLoadingView.h"
+
 @interface MBWebBrowsViewController ()
+
+@property (nonatomic, readonly) MBLoadingView *loadingView;
 
 @end
 
@@ -38,6 +42,14 @@
     self.webView.delegate = self;
 }
 
+- (void)configureLoadingView
+{
+    if (!self.loadingView.superview) {
+        _loadingView = [[MBLoadingView alloc] initWithFrame:self.view.bounds];
+        [self.view addSubview:self.loadingView];
+    }
+}
+
 - (void)configureNavigationitem
 {
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Done", nil) style:UIBarButtonItemStyleDone target:self action:@selector(didPushDoneButton)];
@@ -48,6 +60,9 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
     [self configureView];
+    
+    self.title = NSLocalizedString(@"Loading...", nil);
+    [self configureLoadingView];
     
     [self.webView loadRequest:self.urlRequest];
 }
@@ -60,12 +75,29 @@
 
 #pragma mark -
 #pragma mark Instance Methods
+- (void)removeLoadingView
+{
+    if (self.loadingView.superview) {
+        [self.loadingView removeFromSuperview];
+        _loadingView = nil;
+    }
+}
+
 #pragma mark Action
 - (void)didPushDoneButton
 {
     if ([_delegate respondsToSelector:@selector(closeBrowsViewController:animated:)]) {
         [_delegate closeBrowsViewController:self animated:YES];
     }
+}
+
+#pragma mark - Delegate
+#pragma mark UIWebView
+- (void)webViewDidFinishLoad:(UIWebView *)webView
+{
+    [self removeLoadingView];
+    
+    self.title = [webView stringByEvaluatingJavaScriptFromString:@"document.title"];
 }
 
 @end
