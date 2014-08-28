@@ -49,12 +49,12 @@
     CGPoint center = CGPointMake(bounds.size.width / 2, bounds.size.height / 2);
     
     CGRect titleRect = self.titleLabel.frame;
-    titleRect.origin = CGPointMake(center.x - titleRect.size.width / 2, center.y - titleRect.size.height / 2 - 4.0f);
+    titleRect.origin = CGPointMake(center.x - titleRect.size.width / 2, center.y - titleRect.size.height / 2 + 2.0f);
     self.titleLabel.frame = titleRect;
     
     
     CGRect logoRect = self.logoImageView.frame;
-    logoRect.origin = CGPointMake(center.x - logoRect.size.width / 2, titleRect.origin.y + titleRect.size.height);
+    logoRect.origin = CGPointMake(center.x - logoRect.size.width / 2, titleRect.origin.y - logoRect.size.height);
     self.logoImageView.frame = logoRect;
     
 }
