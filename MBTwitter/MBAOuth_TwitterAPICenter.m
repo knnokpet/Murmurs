@@ -82,9 +82,12 @@
     
     [request prepareRequest];
     
+    [self setNetworkActivityIndicatorVisible:YES];
+    
     id __weak weakSelf = self;
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         [NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
+            [self setNetworkActivityIndicatorVisible:NO];
             if (error) {
                 NSLog(@"code %d error = %@", error.code, error.localizedDescription);
             }
@@ -262,5 +265,13 @@
     
     [jsonParser startParsing];
 }
+
+- (void)setNetworkActivityIndicatorVisible:(BOOL)visible
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:visible];
+    });
+}
+
 
 @end
