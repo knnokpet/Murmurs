@@ -522,7 +522,7 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
         requireRetweet = YES;
         
         NSString *identifier;
-        if (tweetForUpdating.isFavorited && tweetForUpdating.place) {
+        if (tweetAtIndex.isFavorited && tweetForUpdating.place) {
             identifier = favoriteRetweetPlaceCellIdentifier;
             requirePlace = YES;
             requireFavorite = YES;
@@ -532,7 +532,7 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
                 requireImage = YES;
             }
             
-        } else if (tweetForUpdating.isFavorited) {
+        } else if (tweetAtIndex.isFavorited) {
             identifier = favoriteRetweetCellIdentifier;
             requireFavorite = YES;
             
@@ -559,14 +559,14 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
 
         /* retweetView が必ずある状態で、という考えでここに */
         /* retweetTweet の代入もあるのでここに */
-        //cell.retweetView.attributedString = [MBTweetTextComposer attributedStringForTimelineRetweeter:tweetAtIndex.tweetUser font:[UIFont systemFontOfSize:15.0f]];
-        //cell.retweetView.delegate = self;
         NSAttributedString *retweeterName = [MBTweetTextComposer attributedStringForTimelineRetweeter:tweetAtIndex.tweetUser font:[UIFont systemFontOfSize:15.0f]];
-        if ([[MBAccountManager sharedInstance].currentAccount.userID isEqualToString:tweetAtIndex.tweetUser.userIDStr]) {
+        MBUser *linkUser = tweetAtIndex.tweetUser;
+        if (tweetAtIndex.isRetweeted) {
             retweeterName = [MBTweetTextComposer attributedStringByRetweetedMeForTimelineWithfont:[UIFont systemFontOfSize:15.0f]];
+            linkUser = [[MBUserManager sharedInstance] storedUserForKey:[[MBAccountManager sharedInstance]currentAccount].userID];
         }
         [cell.retweeterView setRetweeterString:retweeterName];
-        [cell.retweeterView setUserLink:[[MBMentionUserLink alloc]initWithUserID:tweetAtIndex.tweetUser.userID IDStr:tweetAtIndex.tweetUser.userIDStr screenName:tweetAtIndex.tweetUser.screenName]];
+        [cell.retweeterView setUserLink:[[MBMentionUserLink alloc]initWithUserID:linkUser.userID IDStr:linkUser.userIDStr screenName:linkUser.screenName]];
         cell.retweeterView.delegate = self;
         
     } else {
@@ -630,7 +630,8 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
     cell.delegate = self;
     
     MBTweet *tweetAtIndexPath = tweet;
-    if (tweetAtIndexPath == nil) { /* nil チェック. 必要ないかも */
+    /* nil チェック. 必要ないかも。あれ、ないと自身が retweet したつぶやきが表示されないぞ*/
+    if (tweetAtIndexPath == nil) {
         NSString *key = [self.dataSource objectAtIndex:indexPath.row];
         tweetAtIndexPath = [[MBTweetManager sharedInstance] storedTweetForKey:key];
         if (tweetAtIndexPath.tweetOfOriginInRetweet) {
@@ -774,7 +775,10 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
                 
                 // tableView の更新後に endRefreshing を呼ばないと、tableViewOffset が反映されない
                 [weakSelf.refreshControl endRefreshing];
-                weakSelf.enableBacking = YES;
+                if (weakSelf.backsTimeline) {
+                    weakSelf.enableBacking = YES;
+                }
+                
                 weakSelf.backsTimeline = NO;
                 [weakSelf removeLoadingView];
             });
@@ -892,9 +896,8 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
             [self.aoAPICenter postDestroyTweetForTweetID:[tweetID unsignedLongLongValue]];
         }
         return;
-    }
-    
-    if (requestType == MBTwitterStatusesDestroyTweetRequest) {
+        
+    } else if (requestType == MBTwitterStatusesDestroyTweetRequest) {
         MBTweet *tweet = [tweets firstObject];
         
         [self.dataSource enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
@@ -912,6 +915,13 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
             }
         }];
         return;
+        
+    } else if (requestType == MBTwitterStatusesUpdateRequest) {
+        MBTweet *postedTweet = [tweets firstObject];
+        if (postedTweet) {
+            [self refreshAction];
+        }
+        return;
     }
     
     [self updateTableViewDataSource:tweets];
@@ -920,7 +930,13 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
 #pragma mark MBPostTweetViewController Delegate
 - (void)dismissPostTweetViewController:(MBPostTweetViewController *)controller animated:(BOOL)animated
 {
-    [self refreshAction];
+    [controller dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (void)sendTweetPostTweetViewController:(MBPostTweetViewController *)controller tweetText:(NSString *)tweetText replys:(NSArray *)replys place:(NSDictionary *)place media:(NSArray *)media
+{
+    [self.aoAPICenter postTweet:tweetText inReplyTo:replys place:place media:media];
+    
     [controller dismissViewControllerAnimated:YES completion:nil];
 }
 
