@@ -152,7 +152,7 @@ typedef enum ActionSheetTag {
     self.profileAvatorView.characterName = self.user.characterName;
     self.profileAvatorView.screenName = self.user.screenName;
     self.profileAvatorView.isProtected = self.user.isProtected;
-    
+    self.profileAvatorView.isVerified = self.user.isVerified;
     
     UIImage *avatorImage = [[MBImageCacher sharedInstance] cachedProfileImageForUserID:self.user.userIDStr];
     if (nil == avatorImage) {
@@ -212,7 +212,7 @@ typedef enum ActionSheetTag {
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    self.title = NSLocalizedString(@"User", nil);
+    self.title = NSLocalizedString(@"Profile", nil);
     
     [self configureModel];
     [self configureUserObject];
@@ -423,7 +423,7 @@ typedef enum ActionSheetTag {
         title = NSLocalizedString(@"Cancel Request ?", nil);
     }
     
-    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:title delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) destructiveButtonTitle:NSLocalizedString(@"Unfollow", nil) otherButtonTitles:nil, nil];
+    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:title delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) destructiveButtonTitle:NSLocalizedString(@"UnFollow", nil) otherButtonTitles:nil, nil];
     actionSheet.tag = PushUnfollowButtonTag;
     [self showActionSheet:actionSheet];
 }
@@ -623,26 +623,43 @@ typedef enum ActionSheetTag {
     if (0 == row) {
         MBUserTimelineViewController *userTimelineViewController = [[MBUserTimelineViewController alloc] initWithNibName:@"TimelineTableView" bundle:nil];
         userTimelineViewController.user = self.user;
+        UIBarButtonItem *backButton = [[UIBarButtonItem alloc] init];
+        backButton.title = [NSString stringWithFormat:@"@%@", self.user.screenName];
+        self.navigationItem.backBarButtonItem = backButton;
+        
         [self.navigationController pushViewController:userTimelineViewController animated:YES];
         
     } else if (1 == row) {
         MBFollowingViewController *followingViewController = [[MBFollowingViewController alloc] initWithNibName:@"MBUsersViewController" bundle:nil];
         [followingViewController setUser:self.user];
+        UIBarButtonItem *backButton = [[UIBarButtonItem alloc] init];
+        backButton.title = [NSString stringWithFormat:@"@%@", self.user.screenName];
+        self.navigationItem.backBarButtonItem = backButton;
+        
         [self.navigationController pushViewController:followingViewController animated:YES];
         
     } else if (2 == row) {
         MBFollowerViewController *followerViewController = [[MBFollowerViewController alloc] initWithNibName:@"MBUsersViewController" bundle:nil];
         [followerViewController setUser:self.user];
+        UIBarButtonItem *backButton = [[UIBarButtonItem alloc] init];
+        backButton.title = [NSString stringWithFormat:@"@%@", self.user.screenName];
+        self.navigationItem.backBarButtonItem = backButton;
         [self.navigationController pushViewController:followerViewController animated:YES];
         
     } else if (3 == row) {
         MBFavoritesViewController *favoritesViewController = [[MBFavoritesViewController alloc] initWithNibName:@"TimelineTableView" bundle:nil];
         [favoritesViewController setUser:self.user];
+        UIBarButtonItem *backButton = [[UIBarButtonItem alloc] init];
+        backButton.title = [NSString stringWithFormat:@"@%@", self.user.screenName];
+        self.navigationItem.backBarButtonItem = backButton;
         [self.navigationController pushViewController:favoritesViewController animated:YES];
         
     } else if (4 == row) {
         MBOtherUserListViewController *otherListViewController = [[MBOtherUserListViewController alloc] initWithNibName:@"MBListViewController" bundle:nil];
         [otherListViewController setUser:self.user];
+        UIBarButtonItem *backButton = [[UIBarButtonItem alloc] init];
+        backButton.title = [NSString stringWithFormat:@"@%@", self.user.screenName];
+        self.navigationItem.backBarButtonItem = backButton;
         [self.navigationController pushViewController:otherListViewController animated:YES];
         
     }
@@ -815,6 +832,13 @@ typedef enum ActionSheetTag {
 #pragma mark MBPostTweetViewController Delegate
 - (void)dismissPostTweetViewController:(MBPostTweetViewController *)controller animated:(BOOL)animated
 {
+    [controller dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (void)sendTweetPostTweetViewController:(MBPostTweetViewController *)controller tweetText:(NSString *)tweetText replys:(NSArray *)replys place:(NSDictionary *)place media:(NSArray *)media
+{
+    [self.aoAPICenter postTweet:tweetText inReplyTo:replys place:place media:media];
+    
     [controller dismissViewControllerAnimated:YES completion:nil];
 }
 
