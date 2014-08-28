@@ -94,6 +94,7 @@ static NSString *listsCellIdentifier = @"ListsCellIdentifier";
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
+    self.title = NSLocalizedString(@"List", nil);
     
     [self commonConfigureModel];
     [self commonConfigureView];
@@ -203,11 +204,11 @@ static NSString *listsCellIdentifier = @"ListsCellIdentifier";
         
     } else {
         if (0 == section) {
-            NSString *ownersList = NSLocalizedString(@" 's List", nil);
-            headername = [NSString stringWithFormat:@"%@%@", self.user.characterName, ownersList];
+            NSString *ownersList = NSLocalizedString(@"%@'s List", nil);
+            headername = [NSString stringWithFormat:ownersList, self.user.characterName];
         } else {
-            NSString *subscrivingString = NSLocalizedString(@" 's Subscriving List", nil);
-            headername = [NSString stringWithFormat:@"%@%@", self.user.characterName, subscrivingString];
+            NSString *subscrivingString = NSLocalizedString(@"%@'s Subscriving List", nil);
+            headername = [NSString stringWithFormat:subscrivingString, self.user.characterName];
         }
     }
     
