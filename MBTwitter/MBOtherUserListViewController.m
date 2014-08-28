@@ -57,6 +57,10 @@
     MBOther_ListTimelineManagerViewController *listTimelineManagerViweController = [[MBOther_ListTimelineManagerViewController alloc] initWithNibName:@"MBListTimelineManagementViewController" bundle:nil];
     listTimelineManagerViweController.delegate = self;
     [listTimelineManagerViweController setList:selectedList];
+    UIBarButtonItem *backButtonItem = [[UIBarButtonItem alloc] init];
+    NSString *localizedString = NSLocalizedString(@"@%@'s List", nil);
+    backButtonItem.title = [NSString stringWithFormat:localizedString, self.user.screenName];
+    self.navigationItem.backBarButtonItem = backButtonItem;
     
     [self.navigationController pushViewController:listTimelineManagerViweController animated:YES];
 }
