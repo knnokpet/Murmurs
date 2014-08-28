@@ -63,9 +63,12 @@
     self.screenNameLabel.layer.cornerRadius = 8.0f;
     [self addSubview:self.screenNameLabel];
     
-    self.protectImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Lock-mini"]];
+    self.protectImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Lock-mini-1-white"]];
     [self setIsProtected:NO];
     [self addSubview:self.protectImageView];
+    
+    self.verifiedIconImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"VerifiedBadge"]];
+    [self addSubview:self.verifiedIconImageView];
 }
 
 - (void)setCharacterName:(NSString *)characterName
@@ -93,6 +96,20 @@
     
     BOOL isHidden = (isProtected) ? NO : YES;
     self.protectImageView.hidden = isHidden;
+    
+    [self setNeedsLayout];
+}
+
+- (void)setIsVerified:(BOOL)isVerified
+{
+    _isVerified = isVerified;
+    if (!isVerified) {
+        [self.verifiedIconImageView removeFromSuperview];
+    } else {
+        if (!self.verifiedIconImageView.superview) {
+            [self addSubview:self.verifiedIconImageView];
+        }
+    }
     
     [self setNeedsLayout];
 }
@@ -125,6 +142,10 @@
     labelFrame.origin.y = self.containAvatorImageView.frame.origin.y + self.containAvatorImageView.frame.size.height + 4;
     self.characterNameLabel.frame = labelFrame;
     
+    // verified badge
+    CGRect badgeRect = self.verifiedIconImageView.frame;
+    badgeRect.origin = CGPointMake(labelFrame.origin.x + labelFrame.size.width + verticalMargin, (labelFrame.origin.y + labelFrame.size.height / 2) - (badgeRect.size.height / 2));
+    self.verifiedIconImageView.frame = badgeRect;
     
     // screenNameLabel
     CGRect screenLabelFrame = self.screenNameLabel.frame;

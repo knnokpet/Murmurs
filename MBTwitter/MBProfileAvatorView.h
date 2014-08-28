@@ -16,12 +16,15 @@
 @property (nonatomic) MBShadowBlurLabel *characterNameLabel;
 @property (nonatomic) MBShadowBlurLabel *screenNameLabel;
 @property (nonatomic) UIImageView *protectImageView;
+@property (nonatomic) UIImageView *verifiedIconImageView;
 
 @property (nonatomic) NSString *characterName;
 @property (nonatomic) NSString *screenName;
 @property (nonatomic, assign) BOOL isProtected;
+@property (nonatomic, assign) BOOL isVerified;
 - (void)setCharacterName:(NSString *)characterName;
 - (void)setScreenName:(NSString *)screenName;
 - (void)setIsProtected:(BOOL)isProtected;
+- (void)setIsVerified:(BOOL)isVerified;
 
 @end
