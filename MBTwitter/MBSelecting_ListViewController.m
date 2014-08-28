@@ -73,6 +73,8 @@ static NSString *selectingListCellIdentifier = @"SelectingListCellIdentifier";
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    self.title = NSLocalizedString(@"Add / Remove List", nil);
+    
     [self settingMyUser];
     
     self.listIndex = 0;
@@ -177,7 +179,7 @@ static NSString *selectingListCellIdentifier = @"SelectingListCellIdentifier";
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
-    headerViewHeight = 40;
+    headerViewHeight = 28;
     return headerViewHeight;
 }
 
