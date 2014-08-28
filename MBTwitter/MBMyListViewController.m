@@ -50,7 +50,6 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    self.title = NSLocalizedString(@"List", nil);
     
     // viewWillAppea にあったので viewDidLoad に変更。なぜ viewWillAppear に？
     [self setttingMyUser];
@@ -148,7 +147,7 @@
 - (void)didPushAddListButton
 {
     if ([self reachsTheLimitOfList]) {
-        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil message:NSLocalizedString(@"Limit the Limit of List", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil message:NSLocalizedString(@"Reach the Limit of List", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
         [alertView show];
     }
     
@@ -244,7 +243,9 @@
     }
     
     [listTimelineManagerViewController setList:selectedList];
-    
+    UIBarButtonItem *backButtonItem = [[UIBarButtonItem alloc] init];
+    backButtonItem.title = NSLocalizedString(@"My List", nil);
+    self.navigationItem.backBarButtonItem = backButtonItem;
     [self.navigationController pushViewController:listTimelineManagerViewController animated:YES];
 }
 /*
