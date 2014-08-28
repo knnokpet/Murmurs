@@ -40,7 +40,7 @@
 - (void)configureNavigationTitleView
 {
     MBNavigationControllerTitleView *titleView = [[MBNavigationControllerTitleView alloc] initWithFrame:CGRectZero];
-    [titleView setTitle:NSLocalizedString(@"Profile", nil)];
+    [titleView setTitle:NSLocalizedString(@"MyProfile", nil)];
     [titleView sizeToFit];
     [self.navigationItem setTitleView:titleView];
 }
@@ -51,6 +51,7 @@
     // Do any additional setup after loading the view.
     [self configureNavigationTitleView];
     
+    self.title = NSLocalizedString(@"MyProfile", nil);
     [self configureNavigationItem];
     [self receiveChangedAccountNotification];
 }
@@ -151,12 +152,5 @@
     controller = nil;
 }
 
-#pragma mark PostTweetViewController
-- (void)dismissPostTweetViewController:(MBPostTweetViewController *)controller animated:(BOOL)animated
-{
-    [controller dismissViewControllerAnimated:YES completion:^{
-        
-    }];
-}
 
 @end
