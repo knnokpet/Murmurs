@@ -92,8 +92,8 @@
         NSString *screenNameAt = [NSString stringWithFormat:@"@%@ ", screenName];
         [self setText:screenNameAt];
         
-        NSString *title = NSLocalizedString(@"Send to ", nil);
-        self.title = [NSString stringWithFormat:@"%@%@", title, screenName];
+        NSString *title = NSLocalizedString(@"Send to %@", nil);
+        self.title = [NSString stringWithFormat:title, screenName];
     }
 }
 
@@ -213,16 +213,15 @@
     [self commonConfigureView];
     
     self.tweetTextView.text = self.tweetText;
-    [self beEnableButtonForTextViewLength];
     
     self.title = NSLocalizedString(@"New Tweet", nil);
+    
+    [self beEnableButtonForTextViewLength];
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    
-    [self beEnableButtonForTextViewLength];
     
     NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
     [notificationCenter addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
@@ -269,7 +268,7 @@
 #pragma mark
 - (void)beEnableButtonForTextViewLength
 {
-    if (0 < self.tweetTextView.text.length || 140 >= self.tweetTextView.text.length) {
+    if (0 < self.tweetTextView.text.length && 140 >= self.tweetTextView.text.length) {
         [self.postBarButtonitem setEnabled:YES];
     } else if (0 < [self.photos count]) {
         [self.postBarButtonitem setEnabled:YES];
@@ -533,9 +532,10 @@
 
 - (void)didPushPostButton
 {
-    if (self.tweetTextView.hasText) {
-        
-        [self.aoAPICenter postTweet:self.tweetTextView.text inReplyTo:self.replys place:self.place media:self.photos];
+    if (self.tweetTextView.hasText || self.photos.count > 0) {
+        if ([_delegate respondsToSelector:@selector(sendTweetPostTweetViewController:tweetText:replys:place:media:)]) {
+            [_delegate sendTweetPostTweetViewController:self tweetText:self.tweetTextView.text replys:self.replys place:self.place media:self.photos];
+        }
     }
 }
 
@@ -686,13 +686,14 @@
 
 #pragma mark -
 #pragma mark TextView Delegate
+/*
 - (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text
 {
     [self beEnableButtonForTextViewLength];
     [self setCountOfBarButtonItem];
     
     return YES;
-}
+}*/
 
 - (void)textViewDidChange:(UITextView *)textView
 {
@@ -886,6 +887,7 @@
     } else if (buttonIndex == 0) {
         if (self.photos.count > 0) {
             [self cancelAttachedImage];
+            [self beEnableButtonForTextViewLength];
         } else {
             [self didPushCancelGeoButton];
         }
