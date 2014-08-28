@@ -29,6 +29,7 @@
 - (void)common
 {
     self.selectionStyle = UITableViewCellSelectionStyleNone;
+    [self.gapButton setTitle:NSLocalizedString(@"Loading Gapped Tweet", nil) forState:UIControlStateNormal];
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated
