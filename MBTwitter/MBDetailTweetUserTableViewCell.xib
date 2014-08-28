@@ -22,7 +22,7 @@
                         </constraints>
                     </imageView>
                     <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="CharacterName" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Jux-ba-JOS">
-                        <rect key="frame" x="80" y="13" width="177" height="21"/>
+                        <rect key="frame" x="80" y="13" width="147" height="21"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                         <nil key="highlightedColor"/>
@@ -43,18 +43,29 @@
                         </constraints>
                         <state key="normal" image="bird_blue_32.png"/>
                     </button>
+                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="VerifiedBadge.png" translatesAutoresizingMaskIntoConstraints="NO" id="AZ5-dt-XlB">
+                        <rect key="frame" x="229" y="14" width="20" height="20"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="20" id="kvu-aQ-NQB"/>
+                            <constraint firstAttribute="width" constant="20" id="m1Q-Tf-Xzm"/>
+                        </constraints>
+                    </imageView>
                 </subviews>
                 <constraints>
+                    <constraint firstItem="Jux-ba-JOS" firstAttribute="centerY" secondItem="AZ5-dt-XlB" secondAttribute="centerY" id="0uC-ld-CBm"/>
                     <constraint firstItem="QPo-ZH-rwu" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="16" id="85n-yC-YBv"/>
+                    <constraint firstAttribute="trailing" secondItem="AZ5-dt-XlB" secondAttribute="trailing" priority="750" constant="30" id="E3A-Hi-LW5"/>
                     <constraint firstAttribute="trailing" secondItem="uFp-Hn-F7t" secondAttribute="trailing" constant="30" id="Kw6-Qj-ivs"/>
                     <constraint firstItem="QPo-ZH-rwu" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="10" id="f83-t1-jec"/>
                     <constraint firstItem="Jux-ba-JOS" firstAttribute="leading" secondItem="QPo-ZH-rwu" secondAttribute="trailing" constant="16" id="g50-BL-8Aq"/>
                     <constraint firstItem="uFp-Hn-F7t" firstAttribute="leading" secondItem="QPo-ZH-rwu" secondAttribute="trailing" constant="16" id="kBD-Th-T3g"/>
-                    <constraint firstAttribute="trailing" secondItem="Jux-ba-JOS" secondAttribute="trailing" constant="30" id="n6z-yj-Rms"/>
+                    <constraint firstAttribute="trailing" secondItem="Jux-ba-JOS" secondAttribute="trailing" priority="750" constant="60" id="oCt-76-eDB"/>
                     <constraint firstItem="uFp-Hn-F7t" firstAttribute="centerY" secondItem="QPo-ZH-rwu" secondAttribute="centerY" constant="8" id="oOh-w8-IK5"/>
                     <constraint firstItem="Jux-ba-JOS" firstAttribute="centerY" secondItem="QPo-ZH-rwu" secondAttribute="centerY" constant="-10.5" id="rew-8f-ujL"/>
                     <constraint firstAttribute="trailing" secondItem="E4t-0J-xfC" secondAttribute="trailing" constant="-8" id="tuf-7D-wph"/>
                     <constraint firstItem="E4t-0J-xfC" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="18" id="twF-di-zE9"/>
+                    <constraint firstItem="AZ5-dt-XlB" firstAttribute="leading" secondItem="Jux-ba-JOS" secondAttribute="trailing" constant="2" id="vPw-HQ-kjv"/>
                 </constraints>
             </tableViewCellContentView>
             <inset key="separatorInset" minX="320" minY="0.0" maxX="0.0" maxY="0.0"/>
@@ -63,10 +74,12 @@
                 <outlet property="characterNameLabel" destination="Jux-ba-JOS" id="dOD-j5-PBP"/>
                 <outlet property="screenNameLabel" destination="uFp-Hn-F7t" id="Z2j-Ac-FCW"/>
                 <outlet property="twitterButton" destination="E4t-0J-xfC" id="QqJ-xu-Cf7"/>
+                <outlet property="verifiedBadgeImageView" destination="AZ5-dt-XlB" id="S3Q-Hq-1uZ"/>
             </connections>
         </tableViewCell>
     </objects>
     <resources>
+        <image name="VerifiedBadge.png" width="40" height="40"/>
         <image name="bird_blue_32.png" width="32" height="25"/>
     </resources>
 </document>

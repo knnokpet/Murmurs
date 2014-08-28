@@ -32,4 +32,12 @@
     }
 }
 
+- (void)setIsVerified:(BOOL)isVerified
+{
+    _isVerified = isVerified;
+    if (!isVerified) {
+        [self.verifiedBadgeImageView removeFromSuperview];
+    }
+}
+
 @end

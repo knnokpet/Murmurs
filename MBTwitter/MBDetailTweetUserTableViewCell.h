@@ -13,9 +13,11 @@
 @property (weak, nonatomic) IBOutlet UILabel *characterNameLabel;
 @property (weak, nonatomic) IBOutlet UILabel *screenNameLabel;
 @property (weak, nonatomic) IBOutlet UIButton *twitterButton;
+@property (weak, nonatomic) IBOutlet UIImageView *verifiedBadgeImageView;
 
 @property (nonatomic, readonly) NSString *screenName;
+@property (nonatomic, readonly, assign) BOOL isVerified;
 - (void)setScreenName:(NSString *)screenName;
-
+- (void)setIsVerified:(BOOL)isVerified;
 
 @end
