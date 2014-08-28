@@ -170,19 +170,6 @@
     controller = nil;
 }
 
-#pragma mark PostTweetViewController
-- (void)dismissPostTweetViewController:(MBPostTweetViewController *)controller animated:(BOOL)animated
-{
-    [controller dismissViewControllerAnimated:animated completion:^{
-        
-    }];
-}
-
-- (void)sendTweetPostTweetViewController:(MBPostTweetViewController *)controller
-{
-    [self refreshAction];
-}
-
 #pragma mark AOuthAPICenter Delegate
 - (void)twitterAPICenter:(MBAOuth_TwitterAPICenter *)center requestType:(MBRequestType)requestType parsedUsers:(NSArray *)users
 {
