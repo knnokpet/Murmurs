@@ -26,25 +26,25 @@
     
     NSInteger first = intervalUTC / daySecond;
     if (1 <= first) {
-        NSString *d = NSLocalizedString(@"day", nil);
+        NSString *d = NSLocalizedString(@"%dd", nil);
         int day = (int)first;
-        return [NSString stringWithFormat:@"%d%@", day, d];
+        return [NSString stringWithFormat:d, day];
     }
     
     NSInteger hourSecond = 60 * 60;
     NSInteger second = intervalUTC / hourSecond;
     if (1 <= second) {
-        NSString *h = NSLocalizedString(@"h", nil);
+        NSString *h = NSLocalizedString(@"%dh", nil);
         int hour = (int)second;
-        return [NSString stringWithFormat:@"%d%@", hour, h];
+        return [NSString stringWithFormat:h, hour];
     }
     
     NSInteger minuteSecond = 60;
     NSInteger third = intervalUTC / minuteSecond;
     if (1 <= third) {
-        NSString *m = NSLocalizedString(@"m", nil);
+        NSString *m = NSLocalizedString(@"%dm", nil);
         int minute = (int)third;
-        return [NSString stringWithFormat:@"%d%@", minute, m];
+        return [NSString stringWithFormat:m, minute];
     }
     
     if (0 < intervalUTC && 60 > intervalUTC) {
