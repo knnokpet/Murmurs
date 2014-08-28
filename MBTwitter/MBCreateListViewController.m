@@ -57,6 +57,8 @@
     // Do any additional setup after loading the view from its nib.
     [self commonConfigureModel];
     [self commonConfigureView];
+    
+    self.title = NSLocalizedString(@"New List", nil);
 }
 
 - (void)viewWillAppear:(BOOL)animated
