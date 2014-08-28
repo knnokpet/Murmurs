@@ -62,6 +62,7 @@
 - (void)configureNabigationItem
 {
     [self.closeButton addTarget:self action:@selector(didPushBackButton) forControlEvents:UIControlEventTouchUpInside];
+    [self.actionButton setImage:[UIImage imageNamed:@"Action"] forState:UIControlStateNormal];
     [self.actionButton addTarget:self action:@selector(didPushActionButton) forControlEvents:UIControlEventTouchUpInside];
 }
 
