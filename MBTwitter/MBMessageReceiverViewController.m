@@ -152,8 +152,8 @@ static NSString *usersCellIdentifier = @"MBUsersTableViewCellIdentifier";
 
 - (void)updateScreenNameCell:(UITableViewCell *)cell atIndexpath:(NSIndexPath *)indexPath
 {
-    NSString *searchString = NSLocalizedString(@"Search for ", nil);
-    NSString *screenNameWithAtmark = [NSString stringWithFormat:@"%@%@", searchString, self.inputedString];
+    NSString *searchString = NSLocalizedString(@"Search %@", nil);
+    NSString *screenNameWithAtmark = [NSString stringWithFormat:searchString, self.inputedString];
     cell.textLabel.text = screenNameWithAtmark;
     cell.textLabel.textColor = [self.navigationController.navigationBar tintColor];
 }
