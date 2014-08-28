@@ -57,8 +57,6 @@
     UITabBarItem *messageBarItem = [[UITabBarItem alloc] initWithTitle:NSLocalizedString(@"Message", nil) image:messageImage selectedImage:messageSelectedImage];
     separatedDMUserViewController.tabBarItem = messageBarItem;
     
-    MBMyListViewController *myListViewController = [[MBMyListViewController alloc] initWithNibName:@"MBListViewController" bundle:nil];
-    
     
     MBSearchViewController *searchViewController = [[MBSearchViewController alloc] init];
     UINavigationController *searchNavigationController = [[UINavigationController alloc] initWithRootViewController:searchViewController];
@@ -69,10 +67,10 @@
     MBMyProfileViewController *myProfileViewController = [[MBMyProfileViewController alloc] initWithNibName:@"MBUserDetailView" bundle:nil];
     UINavigationController *listNavigation = [[UINavigationController alloc] initWithRootViewController:myProfileViewController];
     [viewControllers addObject:listNavigation];
-    UIImage *listImage = [[UIImage alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"List2@2x" ofType:@"png"]];
-    UIImage *listSelectedImage = [[UIImage alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"List-Selected-2@2x" ofType:@"png"]];
-    UITabBarItem *listBarItem = [[UITabBarItem alloc] initWithTitle:NSLocalizedString(@"Profile", nil) image:listImage selectedImage:listSelectedImage];
-    myListViewController.tabBarItem = listBarItem;
+    UIImage *profileImage = [[UIImage alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"Profile" ofType:@"png"]];
+    UIImage *profileSelectedImage = [[UIImage alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"Profile-Selected-Fill" ofType:@"png"]];
+    UITabBarItem *listBarItem = [[UITabBarItem alloc] initWithTitle:NSLocalizedString(@"MyProfile", nil) image:profileImage selectedImage:profileSelectedImage];
+    myProfileViewController.tabBarItem = listBarItem;
     
     self.tabBarController.viewControllers = viewControllers;
     self.window.rootViewController = self.tabBarController;
