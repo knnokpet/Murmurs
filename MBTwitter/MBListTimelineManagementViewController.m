@@ -99,6 +99,8 @@
     [self.segmentedController setTitle:NSLocalizedString(@"Tweet", nil) forSegmentAtIndex:0];
     [self.segmentedController setTitle:NSLocalizedString(@"Member", nil) forSegmentAtIndex:1];
     
+    self.title = self.list.name;
+    
     [self.view bringSubviewToFront:self.containerView];
 }
 
