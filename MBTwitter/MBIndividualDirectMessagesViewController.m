@@ -55,6 +55,7 @@ static NSString *sendCellIdentifier = @"SendCellIdentifier";
 
 @property (nonatomic, readonly) UIToolbar *toolBar;
 @property (nonatomic, readonly) UITextView *textView;
+@property (nonatomic, readonly) UIView *containedTextView;
 @property (nonatomic, readonly) UIBarButtonItem *cameraButton;
 @property (nonatomic, readonly) UIBarButtonItem *sendButton;
 
@@ -90,6 +91,9 @@ static NSString *sendCellIdentifier = @"SendCellIdentifier";
 - (void)setPartner:(MBUser *)partner
 {
     _partner = partner;
+    
+    NSString *title = [NSString stringWithFormat:@"%@", self.partner.screenName];
+    self.title = title;
 }
 
 - (void)setConversation:(NSMutableArray *)conversation
@@ -130,10 +134,22 @@ static NSString *sendCellIdentifier = @"SendCellIdentifier";
     _sendButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Send", nil) style:UIBarButtonItemStyleDone target:self action:@selector(didPushSendButton:)];
     
     defaultTextViewSize = CGSizeMake(210, 32);
-    _textView = [[UITextView alloc] initWithFrame:CGRectMake(0, 0, defaultTextViewSize.width, defaultTextViewSize.height)];
-    self.textView.layer.cornerRadius = 4.0f;
+    _containedTextView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, defaultTextViewSize.width, defaultTextViewSize.height)];
+    self.containedTextView.backgroundColor = [UIColor whiteColor];
+    self.containedTextView.layer.cornerRadius = 4.0f;
+    self.containedTextView.layer.borderWidth = 0.5f;
+    self.containedTextView.layer.borderColor = [UIColor lightGrayColor].CGColor;
+    self.containedTextView.autoresizesSubviews = YES;
+    
+    CGFloat margin = 2.0f;
+    _textView = [[UITextView alloc] initWithFrame:CGRectMake(margin, margin, defaultTextViewSize.width - margin * 2, defaultTextViewSize.height - margin * 2)];
+    self.textView.backgroundColor = [UIColor clearColor];
+    [self.containedTextView addSubview:self.textView];
+    self.textView.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     self.textView.font = [UIFont systemFontOfSize:17.0f];
-    UIBarButtonItem *textBarItem = [[UIBarButtonItem alloc] initWithCustomView:self.textView];
+    
+    self.containedTextView.frame = CGRectMake(0, 0, defaultTextViewSize.width, defaultTextViewSize.height);
+    UIBarButtonItem *textBarItem = [[UIBarButtonItem alloc] initWithCustomView:self.containedTextView];
     
 
     defaultToolBarSize = CGSizeMake(self.view.bounds.size.width, 44.0f);
@@ -161,6 +177,7 @@ static NSString *sendCellIdentifier = @"SendCellIdentifier";
 - (void)configureMessageView
 {
     if (YES == self.isEditing) {
+        self.title = NSLocalizedString(@"New Message", nil);
         
         UIEdgeInsets topInsets = self.tableView.contentInset;
         UIEdgeInsets scrollInsets = self.tableView.scrollIndicatorInsets;
@@ -201,6 +218,9 @@ static NSString *sendCellIdentifier = @"SendCellIdentifier";
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
+    NSString *title = [NSString stringWithFormat:@"%@", self.partner.screenName];
+    self.title = title;
+    
     [self commonConfigureModel];
     [self commonConfigureView];
     
@@ -450,8 +470,6 @@ static NSString *sendCellIdentifier = @"SendCellIdentifier";
 
 - (void)didChangeTextField
 {
-    NSLog(@"didchange %@", self.receiverTextField.text);
-    
     NSUInteger textLength = self.receiverTextField.text.length;
     NSString *suggestString = self.receiverTextField.text;
     
@@ -586,7 +604,12 @@ static NSString *sendCellIdentifier = @"SendCellIdentifier";
 {
     MBDirectMessage *message = [self.dataSource objectAtIndex:indexPath.row];
     
-    cell.dateString = [self dateStringWithMessage:message];
+    if ([message isKindOfClass:[MBTemporaryDirectMessage class]]) {
+        cell.dateString= NSLocalizedString(@"Sending...", nil);
+    } else {
+        cell.dateString = [self dateStringWithMessage:message];
+    }
+    
     
     // messageText
     cell.tweetTextView.font = [UIFont systemFontOfSize:FONT_SIZE_MESSAGE];
@@ -594,10 +617,8 @@ static NSString *sendCellIdentifier = @"SendCellIdentifier";
     cell.tweetTextView.lineHeight = LINE_HEIGHT_MESSAGE;
     cell.tweetTextView.paragraphSpace = PARAGRAPH_SPACING_MESSAGE;
     cell.tweetTextView.textColor = [UIColor whiteColor];
-    if ([message isKindOfClass:[MBTemporaryDirectMessage class]]) {
-        cell.tweetTextView.textColor = [UIColor redColor];
-    }
     cell.tweetTextView.attributedString = [MBTweetTextComposer attributedStringForTweet:message tintColor:[self.navigationController.navigationBar tintColor]];
+    
     CGRect longestRect = [self cellRectForMessage:message constraintSize:CGSizeMake(self.view.bounds.size.width - (cell.messageView.frame.origin.x + cell.messageViewLeftSpaceConstraint.constant), CGFLOAT_MAX)];
     [cell setTweetViewRect:longestRect];
     [cell.messageView setPopsFromRight:YES];
@@ -675,8 +696,11 @@ static NSString *sendCellIdentifier = @"SendCellIdentifier";
     
     CGRect textFrame = self.textView.frame;
     textFrame.size.height = textViewHeight;
-    self.textView.frame = textFrame;
+    //self.textView.frame = textFrame;
     
+    CGRect containerFrame = self.containedTextView.frame;
+    containerFrame.size.height = textViewHeight + 2.0f * 2;
+    self.containedTextView.frame = containerFrame;
     
     // enable sendButton
     if (0 < self.textView.text.length  && self.partner) {
