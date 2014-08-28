@@ -29,7 +29,7 @@
     [self addSubview:self.imageView];
     
     _label = [[UILabel alloc] initWithFrame:CGRectZero];
-    self.label.font = [UIFont boldSystemFontOfSize:14.0f];
+    self.label.font = [UIFont boldSystemFontOfSize:15.0f];
     [self addSubview:self.label];
     
     CGFloat r, g, b, a;
@@ -58,8 +58,10 @@
 {
     [super layoutSubviews];
     
+    CGRect bounds = self.bounds;
+    
     CGRect imageViewRect = self.imageView.frame;
-    imageViewRect.origin = CGPointMake(14.0f, 4.0f);
+    imageViewRect.origin = CGPointMake(14.0f, (bounds.size.height - imageViewRect.size.height) / 2);
     self.imageView.frame = imageViewRect;
     
     [self.label sizeToFit];
