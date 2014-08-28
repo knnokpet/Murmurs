@@ -268,7 +268,9 @@
             NSData *data64 = [imageData base64EncodedDataWithOptions:0];
             [parameters setObject:data64 forKey:@"media[]"];
         }
-    } else {
+    } else if (mediaImages.count > 0) {
+        
+    }else {
         return nil;
     }
     
@@ -280,7 +282,9 @@
     NSMutableDictionary *parameters = [NSMutableDictionary dictionaryWithCapacity:0];
     if (nil != tweetText && tweetText.length >= 1 && tweetText.length <= 140) {
         [parameters setObject:tweetText forKey:@"status"];
-    } else {
+    } else if (media.count > 0) {
+        
+    }else {
         return nil;
     }
     
@@ -1239,11 +1243,14 @@
 {
     NSString *resource = @"lists/members/show";
     NSMutableDictionary *parameters = [NSMutableDictionary dictionaryWithCapacity:0];
-    if (listID == 0 && slug.length == 0) {
-        return nil;
-    }
-    if (userID == 0) {
-        return nil;
+    if (0 == listID) {
+        if (0 == slug.length & nil == slug) {
+            return nil;
+        } else {
+            if (0 == userScreenName.length & nil == userScreenName && 0 == ownerID) {
+                return nil;
+            }
+        }
     }
     
     // set parameters
