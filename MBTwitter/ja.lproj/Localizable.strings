@@ -1,0 +1,120 @@
+/* 
+  Localizable.strings
+  MBTwitter
+
+  Created by Masayuki Ikeda on 2014/08/28.
+  Copyright (c) 2014年 Masayuki Ikeda. All rights reserved.
+*/
+
+"Timeline" = "タイムライン";
+"Reply" = "リプライ";
+"Message" = "メッセージ";
+"Profile" = "プロフィール";
+"MyProfile" = "マイプロフィール";
+
+"Cancel" = "キャンセル";
+"New Account" = "新規アカウント";
+
+"Create" = "作成";
+"Over Limit" = "リミット";
+"List Name is ferwer than 25." = "リストネームは 25 文字までです。";
+"Name" = "名前";
+"Description" = "詳細";
+"Public" = "公開";
+
+"@Tweet" = "@ ツイート";
+"Tweet" = "ツイート";
+"Cancel Retweet" = "リツイートを取り消す";
+"Retweet" = "リツイート";
+"Cancel Favorite" = "お気に入りを取り消す";
+"Favorite" = "お気に入り";
+"More" = "その他";
+"Follow!" = "フォロー!";
+"Following!" = "フォロー中!";
+"Follow Back!" = "フォローバック!";
+"Sent Request" = "フォローリクエスト";
+"Blocking" = "ブロック中";
+
+/* 使ってないんじゃない？ */
+"Follow" = "フォロー";
+"Now Following" = "フォロー中";
+
+"User" = "ユーザー";
+"Add / Remove List" = "リストへの追加、削除";
+"UnFollow" = "フォローを解除";
+"Block" = "ブロック";
+"Cancel Request" = "フォローリクエストを取り消す";
+"Cancel Blocking" = "ブロックを解除";
+"Block User" = "ユーザーのブロック";
+"Spam Report" = "スパム報告";
+"Cancel Mute" = "ミュートを解除";
+"Mute" = "ミュート";
+"UnFollow User ?" = "このユーザーへのフォローを解除しますか？";
+"Cancel Request ?" = "リクエストを取り消しますか？";
+"Cancel Blocking ?" = "このユーザーのブロックを解除しますか？";
+"Block User ?" = "このユーザーをブロックしますか？";
+"Cancel Mute ?" = "このユーザーのミュートを解除しますか？";
+"Mute this User ?" = "このユーザーをミュートしますか？";
+"Send Spam Request ?" = "スパム報告を送信しますか？";
+"Send Spam Request" = "スパム報告を送信";
+"Follower" = "フォロワー";
+"List" = "リスト";
+
+"Member" = "メンバー";
+"Delete List" = "リストの削除";
+
+"Save Image" = "画像を保存";
+
+"Send" = "送信";
+"Sending..." = "送信中...";
+
+"Your List" = "あなたのリスト";
+"Subscriving List" = "登録中のリスト";
+"%@'s List" = "%@ のリスト";
+"%@'s Subscriving List" = "%@ が登録中のリスト";
+
+"Search %@" = "%@ を検索";
+
+"Tweets" = "ツイート";
+"Following" = "フォロー";
+"Follower" = "フォロワー";
+"Close" = "閉じる";
+"Account" = "アカウント";
+"Accounts" = "アカウント";
+"Follow Request" = "フォローリクエスト";
+
+"Reach the Limit of List." = "リスト数の限界です。";
+"OK" = "OK";
+
+"UnSubscrive" = "登録解除";
+"Subscrive" = "登録";
+
+"Send to %@" = "%@ へのリプライ";
+"Post" = "投稿";
+"Suspend" = "取り消す";
+"New Tweet" = "新規ツイート";
+"From %1$@, %2$@" = "%2$@, %1$@ から";
+"Cancellation of Image" = "画像を取り消す";
+"Cancellation of Location" = "位置情報を取り消す";
+"Cancellation" = "取り消す項目を選んでください。";
+
+"Search Tweet or User" = "つぶやき、ユーザーの検索";
+
+"You" = "あなた";
+
+"Done" = "完了";
+
+"%dd" = "%d 日";
+"%dh" = "%d 時間";
+"%dm" = "%d 分";
+"Now" = "Now";
+
+"New Message" = "新規メッセージ";
+"My List" = "マイリスト";
+"@%@'s List" = "%@ のリスト";
+"New List" = "新規リスト";
+"Edit List" = "リストの編集";
+
+"Loading Gapped Tweet" = "この間のつぶやきを読み込む";
+
+"Loading..." = "読み込み中...";

@@ -13,11 +13,11 @@
                 <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Uym-bo-Fe2">
-                        <rect key="frame" x="20" y="6" width="136" height="32"/>
+                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Uym-bo-Fe2">
+                        <rect key="frame" x="20" y="4" width="115" height="36"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <constraints>
-                            <constraint firstAttribute="width" constant="136" id="xCd-v7-Zrn"/>
+                            <constraint firstAttribute="width" priority="750" constant="60" id="HNx-hX-Oa5"/>
                         </constraints>
                         <fontDescription key="fontDescription" type="system" pointSize="15"/>
                         <inset key="titleEdgeInsets" minX="4" minY="0.0" maxX="0.0" maxY="0.0"/>
@@ -27,8 +27,11 @@
                         </state>
                     </button>
                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Cmk-3L-ZEg">
-                        <rect key="frame" x="164" y="4" width="136" height="36"/>
+                        <rect key="frame" x="143" y="4" width="97" height="36"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <constraints>
+                            <constraint firstAttribute="width" priority="700" constant="60" id="K8X-D9-Ajr"/>
+                        </constraints>
                         <fontDescription key="fontDescription" type="system" pointSize="15"/>
                         <inset key="titleEdgeInsets" minX="4" minY="0.0" maxX="0.0" maxY="0.0"/>
                         <state key="normal" title="Favorite" image="Star-Line.png">
@@ -40,21 +43,21 @@
                 <constraints>
                     <constraint firstAttribute="centerY" secondItem="Uym-bo-Fe2" secondAttribute="centerY" id="0Bd-bu-Rwh"/>
                     <constraint firstItem="Cmk-3L-ZEg" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" priority="750" constant="20" id="7Bd-CA-QXe"/>
-                    <constraint firstAttribute="trailing" secondItem="Uym-bo-Fe2" secondAttribute="trailing" priority="250" constant="156" id="EuH-bE-nlQ"/>
-                    <constraint firstAttribute="centerY" secondItem="Cmk-3L-ZEg" secondAttribute="centerY" id="F5u-Vz-u1k"/>
+                    <constraint firstAttribute="trailing" secondItem="Uym-bo-Fe2" secondAttribute="trailing" priority="750" constant="156" id="EuH-bE-nlQ"/>
+                    <constraint firstAttribute="centerY" secondItem="Cmk-3L-ZEg" secondAttribute="centerY" priority="250" id="F5u-Vz-u1k"/>
                     <constraint firstItem="Cmk-3L-ZEg" firstAttribute="leading" secondItem="Uym-bo-Fe2" secondAttribute="trailing" constant="8" id="cX0-XH-W8d"/>
                     <constraint firstItem="Uym-bo-Fe2" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="20" id="dsX-Wl-IgR"/>
-                    <constraint firstAttribute="trailing" secondItem="Cmk-3L-ZEg" secondAttribute="trailing" priority="750" constant="20" id="yVx-fF-cdt"/>
+                    <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="Cmk-3L-ZEg" secondAttribute="trailing" priority="750" constant="20" id="yVx-fF-cdt"/>
                 </constraints>
             </tableViewCellContentView>
             <connections>
-                <outlet property="favoriteButton" destination="Cmk-3L-ZEg" id="SCc-HA-hm4"/>
-                <outlet property="retweetButton" destination="Uym-bo-Fe2" id="jrO-ro-01E"/>
+                <outlet property="favoriteButton" destination="Cmk-3L-ZEg" id="e8g-22-0El"/>
+                <outlet property="retweetButton" destination="Uym-bo-Fe2" id="4qG-ul-MND"/>
             </connections>
         </tableViewCell>
     </objects>
     <resources>
-        <image name="Retweet-Line.png" width="50" height="32"/>
-        <image name="Star-Line.png" width="39" height="36"/>
+        <image name="Retweet-Line.png" width="54" height="36"/>
+        <image name="Star-Line.png" width="37" height="36"/>
     </resources>
 </document>

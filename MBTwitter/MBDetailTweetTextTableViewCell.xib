@@ -19,7 +19,7 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="iag-ax-DYD" customClass="MBRetweetView">
-                        <rect key="frame" x="16" y="403" width="288" height="20"/>
+                        <rect key="frame" x="16" y="411" width="288" height="20"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
@@ -60,8 +60,8 @@
                     <constraint firstItem="xww-mZ-dhf" firstAttribute="top" secondItem="fmC-Cf-28O" secondAttribute="bottom" constant="8" id="HaH-5f-qof"/>
                     <constraint firstItem="RUx-mq-6wE" firstAttribute="top" secondItem="fmC-Cf-28O" secondAttribute="bottom" priority="750" constant="8" id="Jc1-Do-Z63"/>
                     <constraint firstAttribute="trailing" secondItem="xww-mZ-dhf" secondAttribute="trailing" priority="750" constant="180" id="N2f-jD-iYl"/>
-                    <constraint firstAttribute="bottom" secondItem="iag-ax-DYD" secondAttribute="bottom" constant="10" id="NzD-8L-uJ0"/>
-                    <constraint firstItem="iag-ax-DYD" firstAttribute="top" secondItem="xww-mZ-dhf" secondAttribute="bottom" constant="2" id="Sr2-TK-kBY"/>
+                    <constraint firstAttribute="bottom" secondItem="iag-ax-DYD" secondAttribute="bottom" constant="2" id="NzD-8L-uJ0"/>
+                    <constraint firstItem="iag-ax-DYD" firstAttribute="top" secondItem="xww-mZ-dhf" secondAttribute="bottom" constant="10" id="Sr2-TK-kBY"/>
                     <constraint firstItem="RUx-mq-6wE" firstAttribute="top" secondItem="r6M-6n-16l" secondAttribute="bottom" priority="250" constant="8" id="V5w-dr-eBC"/>
                     <constraint firstAttribute="trailing" secondItem="r6M-6n-16l" secondAttribute="trailing" constant="16" id="XYb-Yy-TLe"/>
                     <constraint firstItem="RUx-mq-6wE" firstAttribute="top" secondItem="xww-mZ-dhf" secondAttribute="top" id="Z2i-x2-ZeO"/>

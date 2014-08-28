@@ -1,0 +1,111 @@
+
+/* Class = "IBUILabel"; text = "CharacterName"; ObjectID = "1Wb-oZ-5ys"; */
+"1Wb-oZ-5ys.text" = "CharacterName";
+
+/* Class = "IBUILabel"; text = "Label"; ObjectID = "642-eW-sdn"; */
+"642-eW-sdn.text" = "Label";
+
+/* Class = "IBUITabBarItem"; title = "Item"; ObjectID = "Ahq-Tn-tjP"; */
+"Ahq-Tn-tjP.title" = "Item";
+
+/* Class = "IBUIButton"; normalTitle = "Follow"; ObjectID = "CHq-Uw-AgM"; */
+"CHq-Uw-AgM.normalTitle" = "Follow";
+
+/* Class = "IBUIBarButtonItem"; title = "Log In"; ObjectID = "Gi7-Iy-b6R"; */
+"Gi7-Iy-b6R.title" = "Log In";
+
+/* Class = "IBUIButton"; normalTitle = "Reply"; ObjectID = "Gk1-ey-IAC"; */
+"Gk1-ey-IAC.normalTitle" = "Reply";
+
+/* Class = "IBUIButton"; normalTitle = "Favorite"; ObjectID = "Mga-Hk-cvz"; */
+"Mga-Hk-cvz.normalTitle" = "Favorite";
+
+/* Class = "IBUITabBarItem"; title = "Item"; ObjectID = "Nup-9V-c7e"; */
+"Nup-9V-c7e.title" = "Item";
+
+/* Class = "IBUIBarButtonItem"; title = "Cancel"; ObjectID = "T4d-fR-W6k"; */
+"T4d-fR-W6k.title" = "Cancel";
+
+/* Class = "IBUIBarButtonItem"; title = "Close"; ObjectID = "VKC-D2-f7w"; */
+"VKC-D2-f7w.title" = "Close";
+
+/* Class = "IBUIButton"; normalTitle = "ScreenName"; ObjectID = "Wmc-a3-gR6"; */
+"Wmc-a3-gR6.normalTitle" = "ScreenName";
+
+/* Class = "IBUIBarButtonItem"; title = "Account"; ObjectID = "XrS-5z-Sgi"; */
+"XrS-5z-Sgi.title" = "Account";
+
+/* Class = "IBUIButton"; normalTitle = "Delete All"; ObjectID = "YT8-wA-NMb"; */
+"YT8-wA-NMb.normalTitle" = "Delete All";
+
+/* Class = "IBUILabel"; text = "Label"; ObjectID = "bVj-HK-BoJ"; */
+"bVj-HK-BoJ.text" = "Label";
+
+/* Class = "IBUILabel"; text = "CharacterID"; ObjectID = "bnU-3w-p6p"; */
+"bnU-3w-p6p.text" = "CharacterID";
+
+/* Class = "IBUIBarButtonItem"; title = "Camera"; ObjectID = "cV5-eg-9WT"; */
+"cV5-eg-9WT.title" = "Camera";
+
+/* Class = "IBUITabBarItem"; title = "Item 1"; ObjectID = "ckc-O1-SOP"; */
+"ckc-O1-SOP.title" = "Item 1";
+
+/* Class = "IBUILabel"; text = "ScreenName"; ObjectID = "d9J-P3-B7G"; */
+"d9J-P3-B7G.text" = "ScreenName";
+
+/* Class = "IBUIButton"; normalTitle = "UnFavorite"; ObjectID = "dmH-pD-c8v"; */
+"dmH-pD-c8v.normalTitle" = "UnFavorite";
+
+/* Class = "IBUITabBarItem"; title = "Item"; ObjectID = "duY-oh-5UQ"; */
+"duY-oh-5UQ.title" = "Item";
+
+/* Class = "IBUIBarButtonItem"; title = "Save"; ObjectID = "eAE-5i-yFI"; */
+"eAE-5i-yFI.title" = "Save";
+
+/* Class = "IBUINavigationItem"; title = "Log In"; ObjectID = "fNH-oY-Gn8"; */
+"fNH-oY-Gn8.title" = "Log In";
+
+/* Class = "IBUIBarButtonItem"; title = "Timeline"; ObjectID = "g58-hg-EsU"; */
+"g58-hg-EsU.title" = "Timeline";
+
+/* Class = "IBUITabBarItem"; title = "Item"; ObjectID = "kB4-kW-Orz"; */
+"kB4-kW-Orz.title" = "Item";
+
+/* Class = "IBUITextView"; text = "Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda."; ObjectID = "m5D-nO-UYW"; */
+"m5D-nO-UYW.text" = "Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.";
+
+/* Class = "IBUIBarButtonItem"; title = "Add Account"; ObjectID = "mEQ-1E-JsI"; */
+"mEQ-1E-JsI.title" = "Add Account";
+
+/* Class = "IBUIBarButtonItem"; title = "Geo"; ObjectID = "qEw-ng-Ysx"; */
+"qEw-ng-Ysx.title" = "Geo";
+
+/* Class = "IBUIBarButtonItem"; title = "Tweet"; ObjectID = "r43-xS-x5q"; */
+"r43-xS-x5q.title" = "Tweet";
+
+/* Class = "IBUIButton"; normalTitle = "Unfollow"; ObjectID = "rt1-i3-Uz8"; */
+"rt1-i3-Uz8.normalTitle" = "Unfollow";
+
+/* Class = "IBUITabBarItem"; title = "Item"; ObjectID = "s3J-42-0vH"; */
+"s3J-42-0vH.title" = "Item";
+
+/* Class = "IBUILabel"; text = "Label"; ObjectID = "sr7-VZ-JRt"; */
+"sr7-VZ-JRt.text" = "Label";
+
+/* Class = "IBUIBarButtonItem"; title = "Cancel"; ObjectID = "t3g-b7-RHB"; */
+"t3g-b7-RHB.title" = "Cancel";
+
+/* Class = "IBUIBarButtonItem"; title = "New Message"; ObjectID = "wg5-Ap-TZv"; */
+"wg5-Ap-TZv.title" = "New Message";
+
+/* Class = "IBUILabel"; text = "Label"; ObjectID = "x6t-Q2-hq5"; */
+"x6t-Q2-hq5.text" = "Label";
+
+/* Class = "IBUILabel"; text = "ScreenName"; ObjectID = "xCZ-Bh-8s2"; */
+"xCZ-Bh-8s2.text" = "ScreenName";
+
+/* Class = "IBUIButton"; normalTitle = "ReTweet"; ObjectID = "xqC-0V-jHU"; */
+"xqC-0V-jHU.normalTitle" = "ReTweet";
+
+/* Class = "IBUIBarButtonItem"; title = "Post"; ObjectID = "zVZ-VO-ST8"; */
+"zVZ-VO-ST8.title" = "Post";

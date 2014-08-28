@@ -43,8 +43,8 @@
                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                         <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                     </textView>
-                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Lock-mini.png" translatesAutoresizingMaskIntoConstraints="NO" id="1zT-cA-Kya">
-                        <rect key="frame" x="120" y="12" width="9" height="14"/>
+                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Lock-mini-1.png" translatesAutoresizingMaskIntoConstraints="NO" id="1zT-cA-Kya">
+                        <rect key="frame" x="120" y="5" width="20" height="28"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                     </imageView>
                 </subviews>
@@ -75,6 +75,6 @@
         </tableViewCell>
     </objects>
     <resources>
-        <image name="Lock-mini.png" width="9" height="14"/>
+        <image name="Lock-mini-1.png" width="20" height="28"/>
     </resources>
 </document>

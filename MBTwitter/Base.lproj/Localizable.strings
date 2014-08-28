@@ -1,0 +1,120 @@
+/* 
+  Localizable.strings
+  MBTwitter
+
+  Created by Masayuki Ikeda on 2014/08/28.
+  Copyright (c) 2014年 Masayuki Ikeda. All rights reserved.
+*/
+
+"Timeline" = "Timeline";
+"Reply" = "Reply";
+"Message" = "Message";
+"Profile" = "Profile";
+"MyProfile" = "MyProfile";
+
+"Cancel" = "Cancel";
+"New Account" = "New Account";
+
+"Create" = "Create";
+"Over Limit" = "Over Limit";
+"List Name is ferwer than 25." = "List Name is ferwer than 25.";
+"Name" = "Name";
+"Description" = "Description";
+"Public" = "Public";
+
+"@Tweet" = "@Tweet";
+"Tweet" = "Tweet";
+"Cancel Retweet" = "Cancel Retweet";
+"Retweet" = "Retweet";
+"Cancel Favorite" = "Cancel Favorite";
+"Favorite" = "Favorite" ;
+"More" = "More";
+"Follow!" = "Follow";
+"Following!" = "Following!";
+"Follow Back!" = "Follow Back!";
+"Sent Request" = "Sent Request";
+"Blocking" = "Blocking";
+
+/* 使ってないんじゃない？ */
+"Follow" = "Follow";
+"Now Following" = "Now Following";
+
+"User" = "User";
+"Add / Remove List" = "Add / Remove List";
+"UnFollow" = "UnFollow";
+"Block" = "Block";
+"Cancel Request" = "Cancel Request";
+"Cancel Blocking" = "Cancel Blocking";
+"Block User" = "Block User";
+"Spam Report" = "Spam Report";
+"Cancel Mute" = "Cancel Mute";
+"Mute" = "Mute";
+"UnFollow User ?" = "UnFollow User ?";
+"Cancel Request ?" = "Cancel Request ?";
+"Cancel Blocking ?" = "Cancel Blocking ?";
+"Block User ?" = "Block User ?";
+"Cancel Mute ?" = "Cancel Mute ?";
+"Mute this User ?" = "Mute this User ?";
+"Send Spam Request ?" = "Send Spam Request ?";
+"Send Spam Request" = "Send Spam Request";
+"Follower" = "Follower";
+"List" = "List";
+
+"Member" = "Member";
+"Delete List" = "Delete List";
+
+"Save Image" = "Save Image";
+
+"Send" = "Send";
+"Sending..." = "Sending...";
+
+"Your List" = "Your List";
+"Subscriving List" = "Subscriving List";
+"%@'s List" = "%@'s List";
+"%@'s Subscriving List" = "%@'s Subscriving List";
+
+"Search %@" = "Search %@";
+
+"Tweets" = "Tweets";
+"Following" = "Following";
+"Follower" = "Follower";
+"Close" = "Close";
+"Account" = "Account";
+"Accounts" = "Accounts";
+"Follow Request" = "Follow Request";
+
+"Reach the Limit of List" = "Reach the Limit of List";
+"OK" = "OK";
+
+"UnSubscrive" = "UnSubscrive";
+"Subscrive" = "Subscrive";
+
+"Send to %@" = "Send to %@";
+"Post" = "Post";
+"Suspend" = "Suspend";
+"New Tweet" = "New Tweet";
+"From %1$@, %2$@" = "From %1$@, %2$@";
+"Cancellation of Image" = "Cancellation of Image";
+"Cancellation of Location" = "Cancellation of Location";
+"Cancellation" = "Cancellation";
+
+"Search Tweet or User" = "Search Tweet or User";
+
+"You" = "You";
+
+"Done" = "Done";
+
+"%dd" = "%dd";
+"%dh" = "%dh";
+"%dm" = "%dm";
+"Now" = "Now";
+
+"New Message" = "New Message";
+"My List" = "My List";
+"@%@'s List" = "@%@'s List";
+"New List" = "New List";
+"Edit List" = "Edit List";
+
+"Loading Gapped Tweet" = "Loading Gapped Tweet";
+
+"Loading..." = "Loading...";
