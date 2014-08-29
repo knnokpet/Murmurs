@@ -550,6 +550,9 @@ static NSString *imageKey = @"ImageKey";
 - (void)succeedAuthorizationViewController:(MBAuthorizationViewController *)controller animated:(BOOL)animated
 {
     NSInteger lastIndex = [[MBAccountManager sharedInstance].accounts count] - 1;
+    if (lastIndex < 0) {
+        lastIndex = 0;
+    }
     [[MBAccountManager sharedInstance] selectAccountAtIndex:lastIndex];
     
     [self.tableView reloadData];
