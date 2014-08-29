@@ -57,11 +57,10 @@ typedef void (^FailedHandler)(NSHTTPURLResponse *);
 {
     self = [super init];
     if (self) {
-        
+        _accessToken = accessToken;
         if (!accessToken) {
             _accessToken = [[OAToken alloc] initWithKey:nil secret:nil];
         }
-        _accessToken = accessToken;
     }
     
     return self;
