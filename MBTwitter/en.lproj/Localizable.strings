@@ -118,3 +118,13 @@
 "Loading Gapped Tweet" = "Loading Gapped Tweet";
 
 "Loading..." = "Loading...";
+
+"Location Service is Disabled." = "Location Service is Disabled.";
+"Setting > Privacy > Location. Set enable this App." = "Setting > Privacy > Location. Set enable this App.";
+"Netwotk Error." = "Netwotk Error.";
+"Check Network Status. Try Again." = "Check Network Status. Try Again.";
+"Twitter Setting" = "Twitter Setting";
+"Go Twitter. Be Enabled Twitter's Location Service." = "Go Twitter. Be Enabled Twitter's Location Service.";
+"Location Service is Restricted." = "Location Service is Restricted.";
+"Setting > General > Restriction > Location Service. Uncheck this App." = "Setting > General > Restriction > Location Service. Uncheck this App.";
+"Check Network, Restriction or Privacy." = "Check Network, Restriction or Privacy.";
