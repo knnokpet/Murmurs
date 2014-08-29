@@ -265,6 +265,32 @@
     [self.replys addObject:replyID];
 }
 
+- (NSData *)compressedData64WithLimitLength:(NSUInteger)sizeLimit
+{
+    CGFloat compression = 1.0f;
+    CGFloat maxCompression = 0.1f;
+    NSData *imageData = UIImageJPEGRepresentation(self.compressingImage, compression);
+    NSData *data64 = [imageData base64EncodedDataWithOptions:0];
+    
+    while (data64.length > sizeLimit && compression > maxCompression) {
+        compression -=1;
+        imageData = UIImageJPEGRepresentation(self.compressingImage, compression);
+        data64 = [imageData base64EncodedDataWithOptions:0];
+    }
+    
+    if (data64.length > sizeLimit) {
+        return nil;
+    }
+    
+    return data64;
+}
+
+- (void)showLocationAlertViewWithTitle:(NSString *)title message:(NSString *)message
+{
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:title message:message delegate:nil cancelButtonTitle:nil otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
+    [alertView show];
+}
+
 #pragma mark
 - (void)beEnableButtonForTextViewLength
 {
@@ -329,26 +355,6 @@
     self.horizontalConstraint.constant = 0.0f;
     self.widthConstraint.constant = .0f;
     self.heightConstraint.constant = .0f;
-}
-
-- (NSData *)compressedData64WithLimitLength:(NSUInteger)sizeLimit
-{
-    CGFloat compression = 1.0f;
-    CGFloat maxCompression = 0.1f;
-    NSData *imageData = UIImageJPEGRepresentation(self.compressingImage, compression);
-    NSData *data64 = [imageData base64EncodedDataWithOptions:0];
-    
-    while (data64.length > sizeLimit && compression > maxCompression) {
-        compression -=1;
-        imageData = UIImageJPEGRepresentation(self.compressingImage, compression);
-        data64 = [imageData base64EncodedDataWithOptions:0];
-    }
-    
-    if (data64.length > sizeLimit) {
-        return nil;
-    }
-    
-    return data64;
 }
 
 #pragma mark
@@ -604,7 +610,7 @@
     
     BOOL isEnabledGeo = currenUser.isEnabledGeo;
     if (!isEnabledGeo) {
-        NSLog(@"Twitter の設定で位置情報を ON にしろ。");
+        [self showLocationAlertViewWithTitle:NSLocalizedString(@"Twitter Setting", nil) message:NSLocalizedString(@"Go Twitter. Be Enabled Twitter's Location Service.", nil)];
         return;
     }
     
@@ -614,23 +620,23 @@
         
         CLAuthorizationStatus status = [CLLocationManager authorizationStatus];
         if (status == kCLAuthorizationStatusNotDetermined) {
-            //[self setGeoIndicatorButton];
-            //[self.locationManager startUpdatingLocation];
+            [self setGeoIndicatorButton];
+            [self.locationManager startUpdatingLocation];
             
         } else if (status == kCLAuthorizationStatusAuthorized) {
             [self setGeoIndicatorButton];
             [self.locationManager startUpdatingLocation];
             
         } else if (status == kCLAuthorizationStatusRestricted) {
-            NSLog(@"位置情報サービス機能が制限されています。");
+            [self showLocationAlertViewWithTitle:NSLocalizedString(@"Location Service is Restricted.", nil) message:NSLocalizedString(@"Setting > General > Restriction > Location Service. Uncheck this App.", nil)];
             
         } else if (status == kCLAuthorizationStatusDenied) {
-            NSLog(@"プライバシー＞位置情報サービスをオン、MurmurBird をオンにしろ");
+            [self showLocationAlertViewWithTitle:NSLocalizedString(@"Location Service is Disabled.", nil) message:NSLocalizedString(@"Setting > Privacy > Location. Set enable this App.", nil)];
             
         }
         
     } else {
-        NSLog(@"プライバシー＞位置情報サービスをオンにしろ");
+        [self showLocationAlertViewWithTitle:NSLocalizedString(@"Location Service is Disabled.", nil) message:NSLocalizedString(@"Check Network, Restriction or Privacy.", nil)];
     }
 }
 
@@ -870,13 +876,13 @@
     if (error) {
         NSInteger errorCode = [error code];
         if (errorCode == kCLErrorDenied) {
-            NSLog(@"位置情報サービスがオンになってない");
+            [self showLocationAlertViewWithTitle:NSLocalizedString(@"Location Service is Disabled.", nil) message:NSLocalizedString(@"Setting > Privacy > Location. Set enable this App.", nil)];
             
         } else if (errorCode == kCLErrorNetwork) {
-            NSLog(@"ネットワークエラー");
-            
+            [self showLocationAlertViewWithTitle:NSLocalizedString(@"Netwotk Error.", nil) message:NSLocalizedString(@"Check Network Status. Try Again.", nil)];
         }
     }
+    [self settingToolBarItemWithAnimated:YES];
 }
 
 #pragma mark UIActionsheet Delegate
