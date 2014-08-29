@@ -189,8 +189,18 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
     } else {
         MBAccountManager *accountManager = [MBAccountManager sharedInstance];
         [accountManager requestAccessToAccountWithCompletionHandler:^ (BOOL granted, NSArray *accounts, NSError *error) {
-            if (!granted) {
-                //
+
+            if (!granted || accounts.count == 0) {
+                
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    MBAuthorizationViewController *authorizationViewController = [[MBAuthorizationViewController alloc] initWithNibName:@"AuthorizationView" bundle:nil];
+                    authorizationViewController.delegate = self;
+                    self.twitterAccesser = [[MBTwitterAccesser alloc] init];
+                    self.twitterAccesser.delegate = self;
+                    authorizationViewController.twitterAccesser = [[MBTwitterAccesser alloc] init];
+                    UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:authorizationViewController];
+                    [self.navigationController presentViewController:navigationController animated:YES completion:nil];
+                });
             } else {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     self.twitterAccesser = [[MBTwitterAccesser alloc] init];
@@ -884,6 +894,24 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
     }
     [[MBAccountManager sharedInstance] selectAccountAtIndex:0];
     [self refreshMyAccountUser];
+}
+
+#pragma mark MBAuthorizationViewController Delegate
+- (void)dismissAuthorizationViewController:(MBAuthorizationViewController *)controller animated:(BOOL)animated
+{
+    [controller dismissViewControllerAnimated:animated completion:nil];
+}
+
+- (void)succeedAuthorizationViewController:(MBAuthorizationViewController *)controller animated:(BOOL)animated
+{
+    MBAccountManager *accountManager = [MBAccountManager sharedInstance];
+    if ([accountManager isSelectedAccount]) {
+        return;
+    }
+    [[MBAccountManager sharedInstance] selectAccountAtIndex:0];
+    [self refreshMyAccountUser];
+    
+    [controller dismissViewControllerAnimated:YES completion:nil];
 }
 
 #pragma mark AOuth_TwitterAPICenter Delegate
