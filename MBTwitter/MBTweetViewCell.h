@@ -22,7 +22,6 @@
 @property (nonatomic, weak) id <MBtweetViewCellLongPressDelegate> delegate;
 
 
-@property (weak, nonatomic) IBOutlet MBTweetTextView *retweetView;
 @property (weak, nonatomic) IBOutlet MBCharacterScreenNameView *characterScreenNameView;
 @property (weak, nonatomic) IBOutlet MBRetweetView *retweeterView;
 @property (weak, nonatomic) IBOutlet MBPlaceWithGeoIconView *placeNameView;
