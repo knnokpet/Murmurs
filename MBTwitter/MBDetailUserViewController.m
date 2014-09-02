@@ -163,7 +163,7 @@ typedef enum ActionSheetTag {
             UIImage *radiusImage = [MBImageApplyer imageForTwitter:avatorImage size:imageSize radius:self.profileAvatorView.avatorImageView.layer.cornerRadius];
             
             dispatch_async(dispatch_get_main_queue(), ^{
-                self.profileAvatorView.avatorImageView.image = radiusImage;
+                self.profileAvatorView.avatorImageView.avatorImage = radiusImage;
                 [self.profileAvatorView setNeedsDisplay];
             });
         });
@@ -300,7 +300,7 @@ typedef enum ActionSheetTag {
                     UIImage *radiusImage = [MBImageApplyer imageForTwitter:image size:imageSize radius:self.profileAvatorView.avatorImageView.layer.cornerRadius];
                     
                     dispatch_async(dispatch_get_main_queue(), ^{
-                        self.profileAvatorView.avatorImageView.image = radiusImage;
+                        self.profileAvatorView.avatorImageView.avatorImage = radiusImage;
                         [self.profileAvatorView setNeedsDisplay];
                     });
                 }
