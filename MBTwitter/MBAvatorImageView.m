@@ -22,8 +22,19 @@
     self = [super initWithFrame:frame];
     if (self) {
         // Initialization code
+        [self commonInit];
     }
     return self;
+}
+
+- (void)awakeFromNib
+{
+    [self commonInit];
+}
+
+- (void)commonInit
+{
+    self.backgroundColor = [UIColor colorWithRed:0.95 green:0.95 blue:0.96 alpha:1.0];
 }
 
 #pragma mark - Setter & Getter
@@ -42,6 +53,14 @@
     _isSelected = isSelected;
     
     [self changeViewStateForSelectingWithAnimated:animated];
+}
+
+- (void)setAvatorImage:(UIImage *)avatorImage
+{
+    _avatorImage = avatorImage;
+    
+    self.backgroundColor = (avatorImage)? [UIColor clearColor] : [UIColor colorWithRed:0.95 green:0.95 blue:0.96 alpha:1.0];
+    self.image = avatorImage;
 }
 
 #pragma mark - Instance Methods

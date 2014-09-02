@@ -16,9 +16,11 @@
 @property (nonatomic, readonly) NSNumber *userID;
 @property (nonatomic, readonly) NSString *userIDStr;
 @property (nonatomic, readonly, assign) BOOL isSelected;
+@property (nonatomic, readonly) UIImage *avatorImage;
 - (void)setUserID:(NSNumber *)userID;
 - (void)setUserIDStr:(NSString *)userIDStr;
 - (void)setIsSelected:(BOOL)isSelected withAnimated:(BOOL)animated;
+- (void)setAvatorImage:(UIImage *)avatorImage;
 
 @end
 
@@ -26,6 +28,7 @@
 
 @protocol MBAvatorImageViewDelegate <NSObject>
 
+@optional
 - (void)imageViewDidClick:(MBAvatorImageView *)imageView userID:(NSNumber *)userID userIDStr:(NSString *)userIDStr;
 
 @end
