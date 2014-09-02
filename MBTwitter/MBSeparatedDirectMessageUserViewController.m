@@ -277,7 +277,7 @@
     [cell setDateString:timeInterval];
     
     // charaScreenNameView
-    [cell setCharaScreenString:[MBTweetTextComposer attributedStringForTimelineUser:user charFont:[UIFont systemFontOfSize:15.0f] screenFont:[UIFont systemFontOfSize:14.0f]]];
+    [cell setCharaScreenString:[MBTweetTextComposer attributedStringForTimelineUser:user charFont:[UIFont boldSystemFontOfSize:17.0f] screenFont:[UIFont systemFontOfSize:14.0f]]];
     
     // subtitleText
     [cell setSubtitleString:lastMessage.tweetText];
@@ -285,34 +285,33 @@
     // avatorImage
     [cell setUserIDStr:user.userIDStr];
     cell.avatorImageView.delegate = self;
+    cell.avatorImageView.avatorImage = nil;
     UIImage *avatorImage = [[MBImageCacher sharedInstance] cachedProfileImageForUserID:user.userIDStr];
     if (!avatorImage) {
-        cell.avatorImageView.image = [UIImage imageNamed:@"TimelineDefaultImage"];
-        if (NO == user.isDefaultProfileImage) {
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                [MBImageDownloader downloadOriginImageWithURL:user.urlHTTPSAtProfileImage completionHandler:^(UIImage *image, NSData *imageData){
-                    if (image) {
-                        [[MBImageCacher sharedInstance] storeProfileImage:image data:imageData forUserID:user.userIDStr];
-                        
-                        CGSize imageSize = CGSizeMake(cell.avatorImageView.frame.size.width, cell.avatorImageView.frame.size.height);
-                        UIImage *radiusImage = [MBImageApplyer imageForTwitter:image size:imageSize radius:cell.avatorImageView.layer.cornerRadius];
-
-                        dispatch_async(dispatch_get_main_queue(), ^{
-                            cell.avatorImageView.image = radiusImage;
-                        });
-                    }
-                }failedHandler:^(NSURLResponse *response, NSError *error){
+        
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            [MBImageDownloader downloadOriginImageWithURL:user.urlHTTPSAtProfileImage completionHandler:^(UIImage *image, NSData *imageData){
+                if (image) {
+                    [[MBImageCacher sharedInstance] storeProfileImage:image data:imageData forUserID:user.userIDStr];
                     
-                }];
-            });
-        }
+                    CGSize imageSize = CGSizeMake(cell.avatorImageView.frame.size.width, cell.avatorImageView.frame.size.height);
+                    UIImage *radiusImage = [MBImageApplyer imageForTwitter:image size:imageSize radius:cell.avatorImageView.layer.cornerRadius];
+                    
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        cell.avatorImageView.avatorImage = radiusImage;
+                    });
+                }
+            }failedHandler:^(NSURLResponse *response, NSError *error){
+                
+            }];
+        });
     } else {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
             CGSize imageSize = CGSizeMake(cell.avatorImageView.frame.size.width, cell.avatorImageView.frame.size.height);
             UIImage *radiusImage = [MBImageApplyer imageForTwitter:avatorImage size:imageSize radius:cell.avatorImageView.layer.cornerRadius];
             
             dispatch_async(dispatch_get_main_queue(), ^{
-                cell.avatorImageView.image = radiusImage;
+                cell.avatorImageView.avatorImage = radiusImage;
             });
         });
     }
