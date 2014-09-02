@@ -180,23 +180,25 @@ static NSString *usersCellIdentifier = @"UsersCellIdentifier";
     
     cell.characterNameLabel.text = userAtIndex.characterName;
     cell.screenName = userAtIndex.screenName;
-    cell.avatorImageView.userIDStr = userAtIndex.userIDStr;
-    cell.avatorImageView.avatorImage = nil;
+    //cell.avatorImageView.userIDStr = userAtIndex.userIDStr;
+    //cell.avatorImageView.avatorImage = nil;
     UIImage *avatorImage = [[MBImageCacher sharedInstance] cachedProfileImageForUserID:userAtIndex.userIDStr];
     if (!avatorImage) {
+        cell.avatorImageView.userIDStr = userAtIndex.userIDStr;
+        cell.avatorImageView.avatorImage = nil;
         
-        dispatch_queue_t globalQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0);
+        dispatch_queue_t globalQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0);
         dispatch_async(globalQueue, ^{
             [MBImageDownloader downloadOriginImageWithURL:userAtIndex.urlHTTPSAtProfileImage completionHandler:^(UIImage *image, NSData *imageData){
                 if (image) {
                     [[MBImageCacher sharedInstance] storeProfileImage:image data:imageData forUserID:userAtIndex.userIDStr];
                     CGSize imageSize = CGSizeMake(cell.avatorImageView.frame.size.width, cell.avatorImageView.frame.size.height);
                     UIImage *radiusImage = [MBImageApplyer imageForTwitter:image size:imageSize radius:cell.avatorImageView.layer.cornerRadius];
-                    [[MBImageCacher sharedInstance] storeTimelineImage:radiusImage forUserID:userAtIndex.userIDStr];
                     
                     dispatch_async(dispatch_get_main_queue(), ^{
-                        if ([cell.avatorImageView.userIDStr isEqualToString:userAtIndex.userIDStr]) {
+                        if (!cell.avatorImageView.avatorImage && [cell.avatorImageView.userIDStr isEqualToString:userAtIndex.userIDStr]) {
                             cell.avatorImageView.image = radiusImage;
+                            
                         }
                         
                     });
@@ -208,15 +210,21 @@ static NSString *usersCellIdentifier = @"UsersCellIdentifier";
             
         });
     } else {
+        if (cell.avatorImageView.avatorImage && [cell.avatorImageView.userIDStr isEqualToString:userAtIndex.userIDStr]) {
+            return;
+        } else {
+            cell.avatorImageView.userIDStr = userAtIndex.userIDStr;
+            cell.avatorImageView.avatorImage = nil;
+        }
         
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
             CGSize imageSize = CGSizeMake(cell.avatorImageView.frame.size.width, cell.avatorImageView.frame.size.height);
             UIImage *radiusImage = [MBImageApplyer imageForTwitter:avatorImage size:imageSize radius:cell.avatorImageView.layer.cornerRadius];
             dispatch_async(dispatch_get_main_queue(), ^{
-                if ([cell.avatorImageView.userIDStr isEqualToString:userAtIndex.userIDStr]) {
+                if (!cell.avatorImageView.avatorImage && [cell.avatorImageView.userIDStr isEqualToString:userAtIndex.userIDStr]) {
                     cell.avatorImageView.image = radiusImage;
+                    
                 }
-                
             });
         });
     }
