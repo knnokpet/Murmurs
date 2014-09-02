@@ -14,8 +14,19 @@
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
         [self commonInit];
+        UIColor  *titleColor = [UIColor grayColor];
+        UIFont *titleFont = [UIFont systemFontOfSize:17.0f];
+        
         _favoriteButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        [self.favoriteButton setTitleColor:titleColor forState:UIControlStateNormal];
+        [self.favoriteButton.titleLabel setFont:titleFont];
+        
+        
         _retweetButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        [self.retweetButton setTitleColor:titleColor forState:UIControlStateNormal];
+        [self.retweetButton.titleLabel setFont:titleFont];
+        
+        
         
         [self.contentView addSubview:self.favoriteButton];
         [self.contentView addSubview:self.retweetButton];
@@ -142,15 +153,27 @@
     [self.retweetButton sizeToFit];
     
     CGRect contentBounds = self.contentView.bounds;
+    CGFloat sideEdge = 16.0f;
+    CGFloat buttonBetweetMargin = 8.0f;
+    CGFloat titleLeftEdgeMargin = 8.0f;
     
     CGRect retRect = self.retweetButton.frame;
-    retRect.origin = CGPointMake(contentBounds.origin.x, (contentBounds.size.height - retRect.size.height) / 2);
+    UIEdgeInsets retTitleInsets = self.retweetButton.titleEdgeInsets;
+    retTitleInsets.left = titleLeftEdgeMargin;
+    [self.retweetButton setTitleEdgeInsets:retTitleInsets];
+    retRect.size.width += titleLeftEdgeMargin;
+    retRect.origin = CGPointMake(contentBounds.origin.x + sideEdge, (contentBounds.size.height - retRect.size.height) / 2);
     self.retweetButton.frame = retRect;
     
+    
     CGRect favoRect = self.favoriteButton.frame;
-    favoRect.origin = CGPointMake(retRect.origin.x + retRect.size.width, (contentBounds.size.height - favoRect.size.height) / 2);
+    UIEdgeInsets favoTitleInsets = self.favoriteButton.titleEdgeInsets;
+    favoTitleInsets.left = titleLeftEdgeMargin;
+    [self.favoriteButton setTitleEdgeInsets:favoTitleInsets];
+    favoRect.size.width += titleLeftEdgeMargin;
+    favoRect.origin = CGPointMake(retRect.origin.x + retRect.size.width + buttonBetweetMargin, (contentBounds.size.height - favoRect.size.height) / 2);
     if (!self.requireRetweet) {
-        favoRect.origin = CGPointMake(contentBounds.origin.x, (contentBounds.size.height - favoRect.size.height) / 2);
+        favoRect.origin = CGPointMake(contentBounds.origin.x + sideEdge, (contentBounds.size.height - favoRect.size.height) / 2);
     }
     self.favoriteButton.frame = favoRect;
     
