@@ -130,8 +130,8 @@ static NSString *actionsCellIdentifier = @"ActionsCellIdentifier";
     [self.tableView registerNib:retweetCell forCellReuseIdentifier:retweetCellIdentifier];
     UINib *retweetWithImageCell = [UINib nibWithNibName:@"MBDetailTweetTextTableViewCell" bundle:nil];
     [self.tableView registerNib:retweetWithImageCell forCellReuseIdentifier:retweetWithImageCellIdentifier];
-    UINib *countCell = [UINib nibWithNibName:@"MBDetailTweetFavoRetTableViewCell" bundle:nil];
-    [self.tableView registerNib:countCell forCellReuseIdentifier:countCellIdentifier];
+    //UINib *countCell = [UINib nibWithNibName:@"MBDetailTweetFavoRetTableViewCell" bundle:nil];
+    //[self.tableView registerNib:countCell forCellReuseIdentifier:countCellIdentifier];
     UINib *actionsCell = [UINib nibWithNibName:@"MBDetailTweetActionsTableViewCell" bundle:nil];
     [self.tableView registerNib:actionsCell forCellReuseIdentifier:actionsCellIdentifier];
     
@@ -358,6 +358,9 @@ static NSString *actionsCellIdentifier = @"ActionsCellIdentifier";
         cell = actionsCell;
     }else {
         cell = [self.tableView dequeueReusableCellWithIdentifier:countCellIdentifier];
+        if (!cell) {
+            cell = [[MBDetailTweetFavoRetTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:countCellIdentifier];
+        }
         [self updateCountCell:(MBDetailTweetFavoRetTableViewCell *)cell atIndexPath:indexPath];
     }
     
@@ -375,33 +378,25 @@ static NSString *actionsCellIdentifier = @"ActionsCellIdentifier";
     UIImage *avatorImage = [[MBImageCacher sharedInstance] cachedTimelineImageForUser:user.userIDStr];
     if (!avatorImage) {
         
-        NSString *path = [[NSBundle mainBundle] pathForResource:@"DefaultImage@2x" ofType:@"png"];
-        UIImage *defaultImage = [[UIImage alloc] initWithContentsOfFile:path];
-        
-        avatorImage = defaultImage;
-        if (NO == user.isDefaultProfileImage) {
-            
-            dispatch_queue_t globalQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0);
-            dispatch_async(globalQueue, ^{
-                [MBImageDownloader downloadOriginImageWithURL:user.urlHTTPSAtProfileImage completionHandler:^(UIImage *image, NSData *imageData){
-                    if (image) {
-                        [[MBImageCacher sharedInstance] storeProfileImage:image data:imageData forUserID:user.userIDStr];
-                        CGSize imageSize = CGSizeMake(cell.avatorImageView.frame.size.width, cell.avatorImageView.frame.size.height);
-                        UIImage *radiusImage = [MBImageApplyer imageForTwitter:image size:imageSize radius:cell.avatorImageView.layer.cornerRadius];
-                        [[MBImageCacher sharedInstance] storeTimelineImage:image forUserID:user.userIDStr];
-                        
-                        dispatch_async(dispatch_get_main_queue(), ^{
-                            cell.avatorImageView.image = radiusImage;
-                        });
-                    }
+        dispatch_queue_t globalQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0);
+        dispatch_async(globalQueue, ^{
+            [MBImageDownloader downloadOriginImageWithURL:user.urlHTTPSAtProfileImage completionHandler:^(UIImage *image, NSData *imageData){
+                if (image) {
+                    [[MBImageCacher sharedInstance] storeProfileImage:image data:imageData forUserID:user.userIDStr];
+                    CGSize imageSize = CGSizeMake(cell.avatorImageView.frame.size.width, cell.avatorImageView.frame.size.height);
+                    UIImage *radiusImage = [MBImageApplyer imageForTwitter:image size:imageSize radius:cell.avatorImageView.layer.cornerRadius];
+                    [[MBImageCacher sharedInstance] storeTimelineImage:image forUserID:user.userIDStr];
                     
-                }failedHandler:^(NSURLResponse *response, NSError *error){
-                    
-                }];
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        cell.avatorImageView.image = radiusImage;
+                    });
+                }
                 
-            });
+            }failedHandler:^(NSURLResponse *response, NSError *error){
+                
+            }];
             
-        }
+        });
     } else {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
             CGSize imageSize = CGSizeMake(cell.avatorImageView.frame.size.width, cell.avatorImageView.frame.size.height);
@@ -501,7 +496,7 @@ static NSString *actionsCellIdentifier = @"ActionsCellIdentifier";
                     
                     dispatch_async(dispatch_get_main_queue(), ^{
                         
-                        mediaImageView.image = croppedImage;
+                        mediaImageView.mediaImage = croppedImage;
                     });
                     
                 } else {
@@ -513,7 +508,7 @@ static NSString *actionsCellIdentifier = @"ActionsCellIdentifier";
                             UIImage *croppedImage = [MBImageApplyer imageForMediaWithImage:image size:mediaImageSize];
                             
                             dispatch_async(dispatch_get_main_queue(), ^{
-                                [mediaImageView setImage:croppedImage];
+                                [mediaImageView setMediaImage:croppedImage];
                             });
                         }
                         
@@ -528,34 +523,43 @@ static NSString *actionsCellIdentifier = @"ActionsCellIdentifier";
 
 - (void)updateCountCell:(MBDetailTweetFavoRetTableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
 {
+    BOOL requireRetweet = NO;
+    BOOL requireFavorite = NO;
+    NSString *retCountStr = nil;
+    NSString *favoCountStr = nil;
     if (self.tweet.favoritedCount > 0 && self.tweet.retweetedCount > 0) {
-        [cell.favoriteButton setTitle:[NSString stringWithFormat:@"%ld", (long)self.tweet.favoritedCount] forState:UIControlStateNormal];
-        [cell.retweetButton setTitle:[NSString stringWithFormat:@"%ld", (long)self.tweet.retweetedCount] forState:UIControlStateNormal];
+        requireRetweet = requireFavorite = YES;
+        retCountStr = [NSString stringWithFormat:@"%ld", (long)self.tweet.retweetedCount];
+        favoCountStr = [NSString stringWithFormat:@"%ld", (long)self.tweet.favoritedCount];
         
     } else if (self.tweet.favoritedCount > 0) {
-        [cell.favoriteButton setTitle:[NSString stringWithFormat:@"%ld", (long)self.tweet.favoritedCount] forState:UIControlStateNormal];
-        [cell removeRetweetButton];
+        requireFavorite = YES;
+        favoCountStr = [NSString stringWithFormat:@"%ld", (long)self.tweet.favoritedCount];
         
     } else if (self.tweet.retweetedCount > 0) {
-        [cell.retweetButton setTitle:[NSString stringWithFormat:@"%ld", (long)self.tweet.retweetedCount] forState:UIControlStateNormal];
-        [cell removeFavoriteButton];
+        requireRetweet = YES;
+        retCountStr = [NSString stringWithFormat:@"%ld", (long)self.tweet.retweetedCount];
     }
+    [cell setRetweetCountStr:retCountStr];
+    [cell setFavoriteCountStr:favoCountStr];
+    [cell setRequireRetweet:requireRetweet];
+    [cell setRequireFavorite:requireFavorite];
     
     
     
     if (self.tweet.isFavorited) {
-        [cell.favoriteButton setImage:[UIImage imageNamed:@"Star-Orange"] forState:UIControlStateNormal];
+        [cell setFavoriteImage:[UIImage imageNamed:@"Star-Orange"]];
         [cell.favoriteButton addTarget:self action:@selector(didPushCancelFavoriteButton:) forControlEvents:UIControlEventTouchUpInside];
     } else {
-        [cell.favoriteButton setImage:[UIImage imageNamed:@"Star-Line"] forState:UIControlStateNormal];
+        [cell setFavoriteImage:[UIImage imageNamed:@"Star-Line"]];
         [cell.favoriteButton addTarget:self action:@selector(didPushFavoriteButton:) forControlEvents:UIControlEventTouchUpInside];
     }
     
     if (self.tweet.isRetweeted) {
-        [cell.retweetButton setImage:[UIImage imageNamed:@"Retweet-Green"] forState:UIControlStateNormal];
+        [cell setRetweetImage:[UIImage imageNamed:@"Retweet-Green"]];
         [cell.retweetButton addTarget:self action:@selector(didPushCancelRetweetButton) forControlEvents:UIControlEventTouchUpInside];
     } else {
-        [cell.retweetButton setImage:[UIImage imageNamed:@"Retweet-Line"] forState:UIControlStateNormal];
+        [cell setRetweetImage:[UIImage imageNamed:@"Retweet-Line"]];
         [cell.retweetButton addTarget:self action:@selector(didPushRetweetButton:) forControlEvents:UIControlEventTouchUpInside];
     }
 }
