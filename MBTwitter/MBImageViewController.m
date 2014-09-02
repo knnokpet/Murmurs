@@ -13,6 +13,7 @@
 #import "MBTweet.h"
 #import "MBImageCacher.h"
 #import "MBImageDownloader.h"
+#import "MBImageApplyer.h"
 
 #import "MBAvatorImageView.h"
 #import "MBSeparateLineView.h"
@@ -140,7 +141,25 @@
     // setting or downloading Image
     UIImage *avatorImage = [[MBImageCacher sharedInstance] cachedTimelineImageForUser:user.userIDStr];
     if (!avatorImage) {
-        ;
+        dispatch_queue_t globalQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0);
+        dispatch_async(globalQueue, ^{
+            [MBImageDownloader downloadOriginImageWithURL:user.urlHTTPSAtProfileImage completionHandler:^(UIImage *image, NSData *imageData){
+                if (image) {
+                    [[MBImageCacher sharedInstance] storeProfileImage:image data:imageData forUserID:user.userIDStr];
+                    CGSize imageSize = CGSizeMake(self.avatorImageView.frame.size.width, self.avatorImageView.frame.size.height);
+                    UIImage *radiusImage = [MBImageApplyer imageForTwitter:image size:imageSize radius:self.avatorImageView.layer.cornerRadius];
+                    [[MBImageCacher sharedInstance] storeTimelineImage:image forUserID:user.userIDStr];
+                    
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        self.avatorImageView.image = radiusImage;
+                    });
+                }
+                
+            }failedHandler:^(NSURLResponse *response, NSError *error){
+                
+            }];
+            
+        });
     } else {
         self.avatorImageView.image = avatorImage;
     }
