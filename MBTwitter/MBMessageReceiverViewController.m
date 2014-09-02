@@ -15,6 +15,7 @@
 #import "MBImageCacher.h"
 #import "MBImageApplyer.h"
 
+#import "MBAvatorImageView.h"
 #import "MBUsersTableViewCell.h"
 
 static NSString *usersCellIdentifier = @"MBUsersTableViewCellIdentifier";
@@ -113,38 +114,35 @@ static NSString *usersCellIdentifier = @"MBUsersTableViewCellIdentifier";
     cell.screenName = userAtIndex.screenName;
     cell.textLabel.textColor = [UIColor blackColor];
     
+    cell.avatorImageView.avatorImage = nil;
     UIImage *avatorImage = [[MBImageCacher sharedInstance] cachedProfileImageForUserID:userAtIndex.userIDStr];
     if (!avatorImage) {
-        cell.avatorImageView.image = [UIImage imageNamed:@"DefaultImage"];
-        if (NO == userAtIndex.isDefaultProfileImage) {
-            
-            dispatch_queue_t globalQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0);
-            dispatch_async(globalQueue, ^{
-                [MBImageDownloader downloadOriginImageWithURL:userAtIndex.urlHTTPSAtProfileImage completionHandler:^(UIImage *image, NSData *imageData){
-                    if (image) {
-                        [[MBImageCacher sharedInstance] storeProfileImage:image data:imageData forUserID:userAtIndex.userIDStr];
-                        CGSize imageSize = CGSizeMake(cell.avatorImageView.frame.size.width, cell.avatorImageView.frame.size.height);
-                        UIImage *radiusImage = [MBImageApplyer imageForTwitter:image size:imageSize radius:cell.avatorImageView.layer.cornerRadius];
-                        [[MBImageCacher sharedInstance] storeTimelineImage:radiusImage forUserID:userAtIndex.userIDStr];
-                        
-                        dispatch_async(dispatch_get_main_queue(), ^{
-                            cell.avatorImageView.image = radiusImage;
-                        });
-                    }
+        
+        dispatch_queue_t globalQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0);
+        dispatch_async(globalQueue, ^{
+            [MBImageDownloader downloadOriginImageWithURL:userAtIndex.urlHTTPSAtProfileImage completionHandler:^(UIImage *image, NSData *imageData){
+                if (image) {
+                    [[MBImageCacher sharedInstance] storeProfileImage:image data:imageData forUserID:userAtIndex.userIDStr];
+                    CGSize imageSize = CGSizeMake(cell.avatorImageView.frame.size.width, cell.avatorImageView.frame.size.height);
+                    UIImage *radiusImage = [MBImageApplyer imageForTwitter:image size:imageSize radius:cell.avatorImageView.layer.cornerRadius];
+                    [[MBImageCacher sharedInstance] storeTimelineImage:radiusImage forUserID:userAtIndex.userIDStr];
                     
-                }failedHandler:^(NSURLResponse *response, NSError *error){
-                    
-                }];
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        cell.avatorImageView.avatorImage = radiusImage;
+                    });
+                }
                 
-            });
+            }failedHandler:^(NSURLResponse *response, NSError *error){
+                
+            }];
             
-        }
+        });
     } else {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
             CGSize imageSize = CGSizeMake(cell.avatorImageView.frame.size.width, cell.avatorImageView.frame.size.height);
             UIImage *radiusImage = [MBImageApplyer imageForTwitter:avatorImage size:imageSize radius:cell.avatorImageView.layer.cornerRadius];
             dispatch_async(dispatch_get_main_queue(), ^{
-                cell.avatorImageView.image = radiusImage;
+                cell.avatorImageView.avatorImage = radiusImage;
             });
         });
     }
