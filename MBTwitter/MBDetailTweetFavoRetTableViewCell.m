@@ -9,13 +9,33 @@
 #import "MBDetailTweetFavoRetTableViewCell.h"
 
 @implementation MBDetailTweetFavoRetTableViewCell
+- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
+{
+    self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
+    if (self) {
+        [self commonInit];
+        _favoriteButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        _retweetButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        
+        [self.contentView addSubview:self.favoriteButton];
+        [self.contentView addSubview:self.retweetButton];
+    }
+    
+    return self;
+}
 
 - (void)awakeFromNib
 {
     // Initialization code
+    [self commonInit];
+}
+
+- (void)commonInit
+{
     self.selectionStyle = UITableViewCellSelectionStyleNone;
 }
 
+#pragma mark - Accessor
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated
 {
     [super setSelected:selected animated:animated];
@@ -23,11 +43,87 @@
     // Configure the view for the selected state
 }
 
+- (void)setFavoriteImage:(UIImage *)favoriteImage
+{
+    _favoriteImage = favoriteImage;
+    [self.favoriteButton setImage:favoriteImage forState:UIControlStateNormal];
+    [self setNeedsLayout];
+}
+
+- (void)setRetweetImage:(UIImage *)retweetImage
+{
+    _retweetImage = retweetImage;
+    [self.retweetButton setImage:retweetImage forState:UIControlStateNormal];
+    [self setNeedsLayout];
+}
+
+- (void)setFavoriteCountStr:(NSString *)favoriteCountStr
+{
+    _favoriteCountStr = favoriteCountStr;
+    [self.favoriteButton setTitle:favoriteCountStr forState:UIControlStateNormal];
+    [self setNeedsLayout];
+}
+
+- (void)setRetweetCountStr:(NSString *)retweetCountStr
+{
+    _retweetCountStr = retweetCountStr;
+    [self.retweetButton setTitle:retweetCountStr forState:UIControlStateNormal];
+    [self setNeedsLayout];
+}
+
+- (void)setRequireFavorite:(BOOL)requireFavorite
+{
+    _requireFavorite = requireFavorite;
+    [self updateFavoriteButton];
+    [self setNeedsLayout];
+}
+
+- (void)setRequireRetweet:(BOOL)requireRetweet
+{
+    _requireRetweet = requireRetweet;
+    
+    [self updateRetweetButton];
+    
+    [self setNeedsLayout];
+}
+
+#pragma mark - Instance Methods
+- (void)updateFavoriteButton
+{
+    if (self.requireFavorite) {
+        [self addFavoriteButton];
+    } else {
+        [self removeFavoriteButton];
+    }
+}
+
+- (void)updateRetweetButton
+{
+    if (self.requireRetweet) {
+        [self addRetweetButton];
+    } else {
+        [self removeRetweetButton];
+    }
+}
+
+- (void)addFavoriteButton
+{
+    if (!self.favoriteButton.superview) {
+        [self.contentView addSubview:self.favoriteButton];
+    }
+}
+
+- (void)addRetweetButton
+{
+    if (!self.retweetButton.superview) {
+        [self.contentView addSubview:self.retweetButton];
+    }
+}
+
 - (void)removeFavoriteButton
 {
     if (self.favoriteButton.superview) {
         [self.favoriteButton removeFromSuperview];
-        self.favoriteButton = nil;
     }
 }
 
@@ -35,8 +131,29 @@
 {
     if (self.retweetButton.superview) {
         [self.retweetButton removeFromSuperview];
-        self.retweetButton = nil;
     }
+}
+
+#pragma mark - View
+- (void)layoutSubviews
+{
+    [super layoutSubviews];
+    [self.favoriteButton sizeToFit];
+    [self.retweetButton sizeToFit];
+    
+    CGRect contentBounds = self.contentView.bounds;
+    
+    CGRect retRect = self.retweetButton.frame;
+    retRect.origin = CGPointMake(contentBounds.origin.x, (contentBounds.size.height - retRect.size.height) / 2);
+    self.retweetButton.frame = retRect;
+    
+    CGRect favoRect = self.favoriteButton.frame;
+    favoRect.origin = CGPointMake(retRect.origin.x + retRect.size.width, (contentBounds.size.height - favoRect.size.height) / 2);
+    if (!self.requireRetweet) {
+        favoRect.origin = CGPointMake(contentBounds.origin.x, (contentBounds.size.height - favoRect.size.height) / 2);
+    }
+    self.favoriteButton.frame = favoRect;
+    
 }
 
 @end

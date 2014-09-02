@@ -9,10 +9,20 @@
 #import <UIKit/UIKit.h>
 
 @interface MBDetailTweetFavoRetTableViewCell : UITableViewCell
-@property (weak, nonatomic) IBOutlet UIButton *favoriteButton;
-@property (weak, nonatomic) IBOutlet UIButton *retweetButton;
+@property (nonatomic, readonly) UIButton *favoriteButton;
+@property (nonatomic, readonly) UIButton *retweetButton;
+@property (nonatomic, readonly) UIImage *favoriteImage;
+@property (nonatomic, readonly) UIImage *retweetImage;
+@property (nonatomic, readonly) NSString *favoriteCountStr;
+@property (nonatomic, readonly) NSString *retweetCountStr;
+@property (nonatomic, readonly, assign) BOOL requireFavorite;
+@property (nonatomic, readonly, assign) BOOL requireRetweet;
 
-- (void)removeFavoriteButton;
-- (void)removeRetweetButton;
+- (void)setFavoriteImage:(UIImage *)favoriteImage;
+- (void)setRetweetImage:(UIImage *)retweetImage;
+- (void)setFavoriteCountStr:(NSString *)favoriteCountStr;
+- (void)setRetweetCountStr:(NSString *)retweetCountStr;
+- (void)setRequireFavorite:(BOOL)requireFavorite;
+- (void)setRequireRetweet:(BOOL)requireRetweet;
 
 @end
