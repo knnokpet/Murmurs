@@ -224,23 +224,7 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
         [self.tableView deselectRowAtIndexPath:selectedPath animated:animated];
     }
     
-    for (MBTweetViewCell *cell in [self.tableView visibleCells]) {
-        if ([cell isKindOfClass:[MBGapedTweetViewCell class]]) {
-            continue;
-        }
-        
-        if (cell.avatorImageView.isSelected) {
-            [cell.avatorImageView setIsSelected:NO  withAnimated:YES];
-        }
-        
-        NSIndexPath *updatingIndexPath = [self.tableView indexPathForCell:cell];
-        MBTweet *visibleTweet = [[MBTweetManager sharedInstance] storedTweetForKey:[self.dataSource objectAtIndex:updatingIndexPath.row]];
-        MBTweet *updatingTweet = visibleTweet;
-        if (visibleTweet.tweetOfOriginInRetweet) {
-            updatingTweet = visibleTweet.tweetOfOriginInRetweet;
-        }
-        [self updateCell:cell tweet:updatingTweet AtIndexPath:updatingIndexPath];
-    }
+    [self updateVisibleCells];
 }
 
 - (void)didReceiveMemoryWarning
@@ -272,6 +256,27 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
     UIView *view = [[UIView alloc] init];
     view.backgroundColor = [UIColor clearColor];
     self.tableView.tableFooterView = view;
+}
+
+- (void)updateVisibleCells
+{
+    for (MBTweetViewCell *cell in [self.tableView visibleCells]) {
+        if ([cell isKindOfClass:[MBGapedTweetViewCell class]]) {
+            continue;
+        }
+        
+        if (cell.avatorImageView.isSelected) {
+            [cell.avatorImageView setIsSelected:NO  withAnimated:YES];
+        }
+        
+        NSIndexPath *updatingIndexPath = [self.tableView indexPathForCell:cell];
+        MBTweet *visibleTweet = [[MBTweetManager sharedInstance] storedTweetForKey:[self.dataSource objectAtIndex:updatingIndexPath.row]];
+        MBTweet *updatingTweet = visibleTweet;
+        if (visibleTweet.tweetOfOriginInRetweet) {
+            updatingTweet = visibleTweet.tweetOfOriginInRetweet;
+        }
+        [self updateCell:cell tweet:updatingTweet AtIndexPath:updatingIndexPath];
+    }
 }
 
 #pragma mark save & load Tweets
@@ -718,9 +723,8 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
     // mediaImage
     NSInteger imageCounts = tweetAtIndexPath.entity.media.count;
     if (imageCounts > 0) {
-        [cell.imageContainerView resetImageOfMediaImageView];
         cell.imageContainerView.imageCount = imageCounts;
-        
+        //[cell.imageContainerView resetImageOfMediaImageView];
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
 
             int i = 0;
@@ -728,12 +732,16 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
                 UIImage *mediaImage = [[MBImageCacher sharedInstance] cachedCroppedMediaImageForMediaID:mediaLink.mediaIDStr];
                 MBMediaImageView *mediaImageView = [cell.imageContainerView.imageViews objectAtIndex:i];
                 mediaImageView.delegate = self;
-                mediaImageView.mediaIDStr = mediaLink.mediaIDStr;
                 mediaImageView.mediaHTTPURLString = mediaLink.originalURLHttpsText;
                 
                 if (mediaImage) {
                     dispatch_async(dispatch_get_main_queue(), ^{
-                        mediaImageView.mediaImage = mediaImage;
+                        if (!mediaImageView.mediaImage || ![mediaImageView.mediaIDStr isEqualToString:mediaLink.mediaIDStr]) {
+                            mediaImageView.mediaIDStr = mediaLink.mediaIDStr;
+                            [cell.imageContainerView resetImageOfMediaImageView];
+                            mediaImageView.mediaImage = mediaImage;
+                        }
+                        
                     });
                     
                 } else {
@@ -746,8 +754,13 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
                             UIImage *croppedImage = [MBImageApplyer imageForMediaWithImage:image size:mediaImageSize];
                             
                             [[MBImageCacher sharedInstance] storeCroppedMediaImage:croppedImage forMediaID:mediaLink.mediaIDStr];
+                            
                             dispatch_async(dispatch_get_main_queue(), ^{
-                                [mediaImageView setMediaImage:croppedImage];
+                                if (!mediaImageView.mediaImage || ![mediaImageView.mediaIDStr isEqualToString:mediaLink.mediaIDStr]) {
+                                    mediaImageView.mediaIDStr = mediaLink.mediaIDStr;
+                                    [cell.imageContainerView resetImageOfMediaImageView];
+                                }
+                                
                             });
                         }
                         
@@ -879,6 +892,8 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
 {
+    [self updateVisibleCells];
+    
     float max = scrollView.contentInset.top + scrollView.contentInset.bottom + scrollView.contentSize.height - scrollView.bounds.size.height;
     float current = scrollView.contentOffset.y + self.topLayoutGuide.length;
     int intMax = max * 0.5;
