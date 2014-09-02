@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "MBAOuth_TwitterAPICenter.h"
 #import "MBUser.h"
+#import "MBAvatorImageView.h"
 
 @interface MBUsersViewController : UIViewController <MBAOuth_TwitterAPICenterDelegate, UITableViewDataSource, UITableViewDelegate>
 
