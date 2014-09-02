@@ -18,4 +18,6 @@
 - (void)setImageCount:(NSInteger)imageCount;
 - (void)setImages:(NSArray *)images;
 
+- (void)resetImageOfMediaImageView;
+
 @end

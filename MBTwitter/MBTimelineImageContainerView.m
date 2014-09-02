@@ -21,8 +21,10 @@
 
 - (void)setImageCount:(NSInteger)imageCount
 {
-    _imageCount = imageCount;
-    [self configureImageView];
+    if (_imageCount != imageCount) {
+        _imageCount = imageCount;
+        [self configureImageView];
+    }
 }
 
 - (void)setImages:(NSArray *)images
@@ -34,10 +36,18 @@
 {
     CGSize boundsSize = self.bounds.size;
     MBMediaImageView *imageView = [[MBMediaImageView alloc] initWithFrame:CGRectMake(0, 0, boundsSize.width, boundsSize.height)];
-    imageView.image = [UIImage imageNamed:@"TimelineMediaImageDefault"];
+
     [self addSubview:imageView];
     
     _imageViews = @[imageView];
+}
+
+- (void)resetImageOfMediaImageView
+{
+    for (MBMediaImageView *mediaImageView in self.imageViews) {
+        mediaImageView.mediaImage = nil;
+        mediaImageView.backgroundColor = [UIColor colorWithRed:0.95 green:0.95 blue:0.96 alpha:1.0];
+    }
 }
 
 /*
