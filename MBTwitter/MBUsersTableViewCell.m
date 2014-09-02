@@ -7,6 +7,7 @@
 //
 
 #import "MBUsersTableViewCell.h"
+#import "MBAvatorImageView.h"
 
 @implementation MBUsersTableViewCell
 

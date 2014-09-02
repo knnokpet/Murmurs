@@ -13,7 +13,7 @@
                 <rect key="frame" x="0.0" y="0.0" width="320" height="51"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="lM1-hF-HhM">
+                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="lM1-hF-HhM" customClass="MBAvatorImageView">
                         <rect key="frame" x="16" y="8" width="36" height="36"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <constraints>
@@ -42,7 +42,7 @@
             </tableViewCellContentView>
             <inset key="separatorInset" minX="15" minY="0.0" maxX="0.0" maxY="0.0"/>
             <connections>
-                <outlet property="avatorImageView" destination="lM1-hF-HhM" id="sU5-st-B6k"/>
+                <outlet property="avatorImageView" destination="lM1-hF-HhM" id="sGz-fm-byG"/>
                 <outlet property="characterNameLabel" destination="3cK-W1-fwJ" id="BXn-CF-d37"/>
                 <outlet property="screenNameLabel" destination="Hc7-28-u4X" id="08B-pv-ebf"/>
             </connections>
