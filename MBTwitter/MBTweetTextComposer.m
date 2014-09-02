@@ -247,11 +247,11 @@
         return [[NSAttributedString alloc] init];
     }
     UIFont *characterNameFont = charaFont;
-    if (characterNameFont) {
+    if (!characterNameFont) {
         characterNameFont = [UIFont boldSystemFontOfSize:15.0f];
     }
     UIFont *screenNameFont = screenFont;
-    if (screenNameFont) {
+    if (!screenNameFont) {
         screenNameFont = [UIFont systemFontOfSize:14.0f];
     }
     CTFontRef characterFontRef = CTFontCreateWithName((__bridge CFStringRef)characterNameFont.fontName, characterNameFont.pointSize, NULL);
