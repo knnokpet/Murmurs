@@ -157,13 +157,16 @@
 {
     [super layoutSubviews];
     
-    
+    CGRect contentBounds = self.contentView.bounds;
     CGFloat centerOriginY = self.contentView.bounds.size.height / 2;
-    CGFloat edgheMargin = 20.0f;
-    CGFloat buttonMargin = 16.0f;
+    CGFloat buttonMargin = 0.0f;
+    [self.tweetButton sizeToFit];
+    [self.messageButton sizeToFit];
+    [self.otherButton sizeToFit];
+    [self.followButton sizeToFit];
     
     CGRect tweetRect = self.tweetButton.frame;
-    tweetRect.origin = CGPointMake(edgheMargin, centerOriginY - tweetRect.size.height / 2);
+    tweetRect.origin = CGPointMake(contentBounds.origin.x, centerOriginY - tweetRect.size.height / 2);
     self.tweetButton.frame = tweetRect;
     
     CGRect messageRect = self.messageButton.frame;
@@ -179,7 +182,7 @@
     self.otherButton.frame = otherRect;
     
     CGRect followRect = self.followButton.frame;
-    followRect.origin = CGPointMake(self.bounds.size.width - (followRect.size.width + edgheMargin), centerOriginY - followRect.size.height / 2);
+    followRect.origin = CGPointMake(contentBounds.size.width - followRect.size.width , centerOriginY - followRect.size.height / 2);
     self.followButton.frame = followRect;
 }
 
