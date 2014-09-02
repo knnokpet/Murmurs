@@ -46,12 +46,13 @@
 {
     // Drawing code
     CGContextRef context = UIGraphicsGetCurrentContext();
+
     CGRect bounds = self.bounds;
-    CGFloat retweetIconHeight = bounds.size.height;
-    if (retweetIconHeight > 12.0f) {
-        retweetIconHeight = 12.0f;
+    CGFloat retweetIconHeight = rect.size.height;
+    if (retweetIconHeight > 14.0f) {
+        retweetIconHeight = 14.0f;
     }
-    CGRect retweetIconRect = CGRectMake(0, (bounds.size.height - retweetIconHeight) / 2, 24.0f, retweetIconHeight);
+    CGRect retweetIconRect = CGRectMake(0, (rect.size.height - retweetIconHeight) / 2, retweetIconHeight * 1.8, retweetIconHeight);
     [self drawRetweetIconInContext:context rect:retweetIconRect];
     
     CGFloat margin = 2.0f; /* 密参照すぎる */
@@ -73,7 +74,7 @@
     CGFloat arrowHeight = rect.size.height / 2;
     CGFloat arrowLineWidth = arrowWidth / 3;
     
-    CGPoint sentanLeftArrow = CGPointMake(rect.origin.x + (rect.size.width / 4) - betweenMargin, 0);
+    CGPoint sentanLeftArrow = CGPointMake(rect.origin.x + (rect.size.width / 4) - betweenMargin, rect.origin.y);
     CGPoint sentanRightArrow = CGPointMake(rect.origin.x + rect.size.width + betweenMargin - (rect.size.width / 4), rect.origin.y + rect.size.height);
     
     
