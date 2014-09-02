@@ -9,17 +9,19 @@
 #import "MBMediaImageView.h"
 
 @implementation MBMediaImageView
-
+#pragma mark - Initialize
 - (id)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];
     if (self) {
         // Initialization code
         self.userInteractionEnabled = YES;
+        self.backgroundColor = [UIColor colorWithRed:0.95 green:0.95 blue:0.96 alpha:1.0];
     }
     return self;
 }
 
+#pragma mark Accessor
 - (void)setMediaIDStr:(NSString *)mediaIDStr
 {
     _mediaIDStr = mediaIDStr;
@@ -30,6 +32,13 @@
     _mediaHTTPURLString = mediaHTTPURLString;
 }
 
+- (void)setMediaImage:(UIImage *)mediaImage
+{
+    _mediaImage = mediaImage;
+    self.image = mediaImage;
+}
+
+#pragma mark - UIView
 - (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event
 {
     UIView *touchedView = [super hitTest:point withEvent:event];

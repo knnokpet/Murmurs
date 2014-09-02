@@ -15,8 +15,10 @@
 
 @property (nonatomic, readonly) NSString *mediaIDStr;
 @property (nonatomic, readonly) NSString *mediaHTTPURLString;
+@property (nonatomic, readonly) UIImage *mediaImage;
 - (void)setMediaIDStr:(NSString *)mediaIDStr;
 - (void)setMediaHTTPURLString:(NSString *)mediaHTTPURLString;
+- (void)setMediaImage:(UIImage *)mediaImage;
 
 @end
 
