@@ -358,7 +358,6 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
     if (sender) {
         if ([sender isKindOfClass:[UIButton class]]) {
             UIButton *button = (UIButton *)sender;
-            NSLog(@"row = %d", button.tag);
             
             NSString *maxStr = [self.dataSource objectAtIndex:button.tag - 1];
             MBTweet *maxTweet = [[MBTweetManager sharedInstance] storedTweetForKey:maxStr];
@@ -647,9 +646,16 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
         if (tweetAtIndexPath.tweetOfOriginInRetweet) {
             MBTweet *retweetedTweet = tweet.tweetOfOriginInRetweet;
             tweetAtIndexPath = retweetedTweet;
-            if (cell.retweetView.superview) {
-                cell.retweetView.attributedString = [MBTweetTextComposer attributedStringForTimelineRetweeter:tweet.tweetUser font:[UIFont systemFontOfSize:15.0f]];
-                cell.retweetView.delegate = self;
+            if (cell.retweeterView.superview) {
+                NSAttributedString *retweeterName = [MBTweetTextComposer attributedStringForTimelineRetweeter:tweetAtIndexPath.tweetUser font:[UIFont systemFontOfSize:15.0f]];
+                MBUser *linkUser = tweetAtIndexPath.tweetUser;
+                if (tweetAtIndexPath.isRetweeted) {
+                    retweeterName = [MBTweetTextComposer attributedStringByRetweetedMeForTimelineWithfont:[UIFont systemFontOfSize:15.0f]];
+                    linkUser = [[MBUserManager sharedInstance] storedUserForKey:[[MBAccountManager sharedInstance]currentAccount].userID];
+                }
+                [cell.retweeterView setRetweeterString:retweeterName];
+                [cell.retweeterView setUserLink:[[MBMentionUserLink alloc]initWithUserID:linkUser.userID IDStr:linkUser.userIDStr screenName:linkUser.screenName]];
+                cell.retweeterView.delegate = self;
             }
         }
     }
@@ -666,7 +672,7 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
     cell.dateView.delegate = self;
     
     // charaScreenNameView
-    [cell setCharaScreenString:[MBTweetTextComposer attributedStringForTimelineUser:tweetAtIndexPath.tweetUser charFont:[UIFont systemFontOfSize:15.0f] screenFont:[UIFont systemFontOfSize:14.0f]]];
+    [cell setCharaScreenString:[MBTweetTextComposer attributedStringForTimelineUser:tweetAtIndexPath.tweetUser charFont:[UIFont boldSystemFontOfSize:15.0f] screenFont:[UIFont systemFontOfSize:14.0f]]];
     
     // tweetText
     cell.tweetTextView.font = [UIFont systemFontOfSize:FONT_SIZE];
@@ -680,41 +686,39 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
     cell.userIDStr = userAtIndexPath.userIDStr;
     cell.userID = userAtIndexPath.userID;
     cell.avatorImageView.delegate = self;
+    cell.avatorImageView.avatorImage = nil;
     UIImage *avatorImage = [[MBImageCacher sharedInstance] cachedTimelineImageForUser:userAtIndexPath.userIDStr];
     if (!avatorImage) {
-        cell.avatorImageView.image = [UIImage imageNamed:@"TimelineDefaultImage"];
-        if (NO == tweetAtIndexPath.tweetUser.isDefaultProfileImage) {
-            
-            dispatch_queue_t globalQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0);
-            dispatch_async(globalQueue, ^{
-                [MBImageDownloader downloadOriginImageWithURL:userAtIndexPath.urlHTTPSAtProfileImage completionHandler:^(UIImage *image, NSData *imageData){
-                    if (image) {
-                        [[MBImageCacher sharedInstance] storeProfileImage:image data:imageData forUserID:userAtIndexPath.userIDStr];
-                        CGSize imageSize = CGSizeMake(cell.avatorImageView.frame.size.width, cell.avatorImageView.frame.size.height);
-                        UIImage *radiusImage = [MBImageApplyer imageForTwitter:image size:imageSize radius:cell.avatorImageView.layer.cornerRadius];
-                        [[MBImageCacher sharedInstance] storeTimelineImage:radiusImage forUserID:userAtIndexPath.userIDStr];
-                        
-                        dispatch_async(dispatch_get_main_queue(), ^{
-                            if ([cell.userIDStr isEqualToString:userAtIndexPath.userIDStr]) {
-                                cell.avatorImageView.image = radiusImage;
-                            }
-                        });
-                    }
+        
+        dispatch_queue_t globalQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0);
+        dispatch_async(globalQueue, ^{
+            [MBImageDownloader downloadOriginImageWithURL:userAtIndexPath.urlHTTPSAtProfileImage completionHandler:^(UIImage *image, NSData *imageData){
+                if (image) {
+                    [[MBImageCacher sharedInstance] storeProfileImage:image data:imageData forUserID:userAtIndexPath.userIDStr];
+                    CGSize imageSize = CGSizeMake(cell.avatorImageView.frame.size.width, cell.avatorImageView.frame.size.height);
+                    UIImage *radiusImage = [MBImageApplyer imageForTwitter:image size:imageSize radius:cell.avatorImageView.layer.cornerRadius];
+                    [[MBImageCacher sharedInstance] storeTimelineImage:radiusImage forUserID:userAtIndexPath.userIDStr];
                     
-                }failedHandler:^(NSURLResponse *response, NSError *error){
-                    
-                }];
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        if ([cell.userIDStr isEqualToString:userAtIndexPath.userIDStr]) {
+                            cell.avatorImageView.avatorImage = radiusImage;
+                        }
+                    });
+                }
                 
-            });
+            }failedHandler:^(NSURLResponse *response, NSError *error){
+                
+            }];
             
-        }
+        });
     } else {
-        cell.avatorImageView.image = avatorImage;
+        cell.avatorImageView.avatorImage = avatorImage;
     }
     
     // mediaImage
     NSInteger imageCounts = tweetAtIndexPath.entity.media.count;
     if (imageCounts > 0) {
+        [cell.imageContainerView resetImageOfMediaImageView];
         cell.imageContainerView.imageCount = imageCounts;
         
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
@@ -729,7 +733,7 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
                 
                 if (mediaImage) {
                     dispatch_async(dispatch_get_main_queue(), ^{
-                        mediaImageView.image = mediaImage;
+                        mediaImageView.mediaImage = mediaImage;
                     });
                     
                 } else {
@@ -740,9 +744,10 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
                             
                             CGSize mediaImageSize = CGSizeMake(mediaImageView.frame.size.width, mediaImageView.frame.size.height);
                             UIImage *croppedImage = [MBImageApplyer imageForMediaWithImage:image size:mediaImageSize];
+                            
                             [[MBImageCacher sharedInstance] storeCroppedMediaImage:croppedImage forMediaID:mediaLink.mediaIDStr];
                             dispatch_async(dispatch_get_main_queue(), ^{
-                                [mediaImageView setImage:croppedImage];
+                                [mediaImageView setMediaImage:croppedImage];
                             });
                         }
                         
@@ -750,6 +755,7 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
                         
                     }];
                 }
+                i++;
             }
         });
     }
