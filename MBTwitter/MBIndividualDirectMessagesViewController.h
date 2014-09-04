@@ -26,7 +26,7 @@
 
 @property (weak, nonatomic) IBOutlet MBUnderLineToolbar *receiverToolbar;
 @property (weak, nonatomic) IBOutlet UITextField *receiverTextField;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint *receiverToolbarConstraint;
+//@property (weak, nonatomic) IBOutlet NSLayoutConstraint *receiverToolbarConstraint;
 
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 

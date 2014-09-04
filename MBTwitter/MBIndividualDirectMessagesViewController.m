@@ -21,17 +21,17 @@
 #import "MBImageDownloader.h"
 #import "MBImageApplyer.h"
 
-#import "MBMessageTableViewCell.h"
-#import "MBSendMessageTableViewCell.h"
+
 #import "MBMessageView.h"
 #import "MBTweetTextView.h"
 #import "MBAvatorImageView.h"
 #import "MBUnderLineToolbar.h"
+#import "MBIndividualMessageTableViewCell.h"
 
 static NSString *deliverdCellIdentifier = @"DeliverdCellIdentifier";
 static NSString *sendCellIdentifier = @"SendCellIdentifier";
 
-#define FONT_SIZE_MESSAGE 15.0f
+#define FONT_SIZE_MESSAGE 17.0f
 #define LINE_SPACING_MESSAGE 4.0f
 #define LINE_HEIGHT_MESSAGE 0.0f
 #define PARAGRAPH_SPACING_MESSAGE 0.0f
@@ -55,7 +55,6 @@ static NSString *sendCellIdentifier = @"SendCellIdentifier";
 
 @property (nonatomic, readonly) UIToolbar *toolBar;
 @property (nonatomic, readonly) UITextView *textView;
-@property (nonatomic, readonly) UIView *containedTextView;
 @property (nonatomic, readonly) UIBarButtonItem *cameraButton;
 @property (nonatomic, readonly) UIBarButtonItem *sendButton;
 
@@ -123,33 +122,23 @@ static NSString *sendCellIdentifier = @"SendCellIdentifier";
     self.tableView.dataSource = self;
     self.tableView.keyboardDismissMode = UIScrollViewKeyboardDismissModeInteractive;
     
-    UINib *deliverdCell = [UINib nibWithNibName:@"MBMessageTableViewCell" bundle:nil];
-    [self.tableView registerNib:deliverdCell forCellReuseIdentifier:deliverdCellIdentifier];
-    UINib *sendCell = [UINib nibWithNibName:@"MBSendMessageTableViewCell" bundle:nil];
-    [self.tableView registerNib:sendCell forCellReuseIdentifier:sendCellIdentifier];
-    
     
     _cameraButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCamera target:self action:@selector(didPushCameraButton:)]; /* unused */
     _cameraButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
     _sendButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Send", nil) style:UIBarButtonItemStyleDone target:self action:@selector(didPushSendButton:)];
     
-    defaultTextViewSize = CGSizeMake(210, 32);
-    _containedTextView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, defaultTextViewSize.width, defaultTextViewSize.height)];
-    self.containedTextView.backgroundColor = [UIColor whiteColor];
-    self.containedTextView.layer.cornerRadius = 4.0f;
-    self.containedTextView.layer.borderWidth = 0.5f;
-    self.containedTextView.layer.borderColor = [UIColor lightGrayColor].CGColor;
-    self.containedTextView.autoresizesSubviews = YES;
-    
-    CGFloat margin = 2.0f;
-    _textView = [[UITextView alloc] initWithFrame:CGRectMake(margin, margin, defaultTextViewSize.width - margin * 2, defaultTextViewSize.height - margin * 2)];
-    self.textView.backgroundColor = [UIColor clearColor];
-    [self.containedTextView addSubview:self.textView];
-    self.textView.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    defaultTextViewSize = CGSizeMake(self.view.bounds.size.width - 100, 36);
+    _textView = [[UITextView alloc] initWithFrame:CGRectMake(0, 0, defaultTextViewSize.width, defaultTextViewSize.height)];
+    self.textView.backgroundColor = [UIColor whiteColor];
+    self.textView.layer.cornerRadius = 4.0f;
+    self.textView.layer.borderWidth = 0.5f;
+    CGColorRef lineColorRef = CGColorCreateCopyWithAlpha([UIColor lightGrayColor].CGColor, 0.5);
+    self.textView.layer.borderColor = lineColorRef;
+    CGColorRelease(lineColorRef);
     self.textView.font = [UIFont systemFontOfSize:17.0f];
+    self.textView.scrollEnabled = NO;
     
-    self.containedTextView.frame = CGRectMake(0, 0, defaultTextViewSize.width, defaultTextViewSize.height);
-    UIBarButtonItem *textBarItem = [[UIBarButtonItem alloc] initWithCustomView:self.containedTextView];
+    UIBarButtonItem *textBarItem = [[UIBarButtonItem alloc] initWithCustomView:self.textView];
     
 
     defaultToolBarSize = CGSizeMake(self.view.bounds.size.width, 44.0f);
@@ -160,6 +149,7 @@ static NSString *sendCellIdentifier = @"SendCellIdentifier";
     __weak UIView *toolBar = self.toolBar;
     self.textView.inputAccessoryView = toolBar;
     [self.view addSubview:self.toolBar];
+    
     
     UIEdgeInsets contentInsets = self.tableView.contentInset;
     UIEdgeInsets scrollInsets = self.tableView.scrollIndicatorInsets;
@@ -284,7 +274,7 @@ static NSString *sendCellIdentifier = @"SendCellIdentifier";
 
 #pragma mark -Instance Methods
 - (void)keyBoardWillAppear:(NSNotification *)notification
-{
+{    
     NSDictionary *userInfo = notification.userInfo;
     CGSize keyboardSize = [[userInfo objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue].size;
     self.currentKeyboardHeight = [NSNumber numberWithFloat:keyboardSize.height];
@@ -521,20 +511,19 @@ static NSString *sendCellIdentifier = @"SendCellIdentifier";
     NSAttributedString *attributedString = [MBTweetTextComposer attributedStringForTweet:message tintColor:[self.navigationController.navigationBar tintColor]];
     
     CGFloat messageViewVerticalMargin = 8.0;
-    CGFloat dateLabelHeight = 14.0f;
+    CGFloat dateLabelHeight = 12.0f;
     CGFloat dateLabelVerticalMargin = 2.0f + 8.0f;
-    CGFloat textViewSideMargin = 12.0 + 16.0;
     CGFloat textViewUpMargin = 12.0f + 12.0f;
     
     
     // calculate textView
-    NSInteger textViewWidthSpace = tableView.bounds.size.width - (50 + 60) - textViewSideMargin;
+    MBIndividualMessageTableViewCell *sizingCell = [[MBIndividualMessageTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"Sizing"];
     CGFloat lineSpace = LINE_SPACING_MESSAGE;
     CGFloat fontSize = FONT_SIZE_MESSAGE;
-    CGRect textViewRect = [MBTweetTextView frameRectWithAttributedString:attributedString constraintSize:CGSizeMake(textViewWidthSpace, CGFLOAT_MAX) lineSpace:lineSpace font:[UIFont systemFontOfSize:fontSize]];
+    CGRect textViewRect = [MBTweetTextView frameRectWithAttributedString:attributedString constraintSize:CGSizeMake(sizingCell.maxTweetTextViewWidth, CGFLOAT_MAX) lineSpace:lineSpace font:[UIFont systemFontOfSize:fontSize]];
     
     CGFloat cellHeight = textViewRect.size.height + messageViewVerticalMargin + textViewUpMargin + dateLabelHeight + dateLabelVerticalMargin;
-    
+
     return cellHeight;
 }
 
@@ -546,10 +535,16 @@ static NSString *sendCellIdentifier = @"SendCellIdentifier";
     UITableViewCell *cell;
     if (YES == isPartner) {
         cell = [self.tableView dequeueReusableCellWithIdentifier:deliverdCellIdentifier];
-        [self updateDeliverdCell:(MBMessageTableViewCell *)cell atIndexPath:indexPath];
+        if (!cell) {
+            cell = [[MBIndividualMessageTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:deliverdCellIdentifier];
+        }
+        [self updateDeliverdCell:(MBIndividualMessageTableViewCell *)cell atIndexPath:indexPath];
     } else {
         cell = [self.tableView dequeueReusableCellWithIdentifier:sendCellIdentifier];
-        [self updateSentCell:(MBSendMessageTableViewCell *)cell atIndexPath:indexPath];
+        if (!cell) {
+            cell = [[MBIndividualMessageTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:sendCellIdentifier];
+        }
+        [self updateSentCell:(MBIndividualMessageTableViewCell *)cell atIndexPath:indexPath];
     }
     
     cell.userInteractionEnabled = NO; /* delete 処理がうまくいっていないため */
@@ -557,7 +552,7 @@ static NSString *sendCellIdentifier = @"SendCellIdentifier";
     return cell;
 }
 
-- (void)updateDeliverdCell:(MBMessageTableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
+- (void)updateDeliverdCell:(MBIndividualMessageTableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
 {
     MBDirectMessage *message = [self.dataSource objectAtIndex:indexPath.row];
     
@@ -569,7 +564,7 @@ static NSString *sendCellIdentifier = @"SendCellIdentifier";
     cell.tweetTextView.lineHeight = LINE_HEIGHT_MESSAGE;
     cell.tweetTextView.paragraphSpace = PARAGRAPH_SPACING_MESSAGE;
     cell.tweetTextView.attributedString = [MBTweetTextComposer attributedStringForTweet:message tintColor:[self.navigationController.navigationBar tintColor]];
-    CGRect longestRect = [self cellRectForMessage:message constraintSize:CGSizeMake(self.view.bounds.size.width - (cell.messageView.frame.origin.x + cell.messageViewRightSpaceConstraint.constant), CGFLOAT_MAX)];
+    CGRect longestRect = [self cellRectForMessage:message constraintSize:CGSizeMake(cell.maxTweetTextViewWidth, CGFLOAT_MAX)];
 
     [cell setTweetViewRect:longestRect];
     
@@ -580,7 +575,7 @@ static NSString *sendCellIdentifier = @"SendCellIdentifier";
             UIImage *radiusImage = [MBImageApplyer imageForTwitter:partnerImage size:avatorSize radius:4];
             
             dispatch_async(dispatch_get_main_queue(), ^{
-                cell.avatorImageView.image = radiusImage;
+                cell.avatorImageView.avatorImage = radiusImage;
             });
         });
     } else {
@@ -591,7 +586,7 @@ static NSString *sendCellIdentifier = @"SendCellIdentifier";
                 UIImage *radiusImage = [MBImageApplyer imageForTwitter:image size:avatorSize radius:4];
                 
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    cell.avatorImageView.image = radiusImage;
+                    cell.avatorImageView.avatorImage = radiusImage;
                 });
             }failedHandler:^(NSURLResponse *response, NSError *error) {
                 
@@ -600,7 +595,7 @@ static NSString *sendCellIdentifier = @"SendCellIdentifier";
     }
 }
 
-- (void)updateSentCell:(MBSendMessageTableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
+- (void)updateSentCell:(MBIndividualMessageTableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
 {
     MBDirectMessage *message = [self.dataSource objectAtIndex:indexPath.row];
     
@@ -619,9 +614,10 @@ static NSString *sendCellIdentifier = @"SendCellIdentifier";
     cell.tweetTextView.textColor = [UIColor whiteColor];
     cell.tweetTextView.attributedString = [MBTweetTextComposer attributedStringForTweet:message tintColor:[self.navigationController.navigationBar tintColor]];
     
-    CGRect longestRect = [self cellRectForMessage:message constraintSize:CGSizeMake(self.view.bounds.size.width - (cell.messageView.frame.origin.x + cell.messageViewLeftSpaceConstraint.constant), CGFLOAT_MAX)];
+    [cell setPopsFromRight:YES];
+    CGRect longestRect = [self cellRectForMessage:message constraintSize:CGSizeMake(cell.maxTweetTextViewWidth, CGFLOAT_MAX)];
     [cell setTweetViewRect:longestRect];
-    [cell.messageView setPopsFromRight:YES];
+    
     
     UIImage *partnerImage = [[MBImageCacher sharedInstance] cachedProfileImageForUserID:message.sender.userIDStr];
     if (partnerImage) {
@@ -630,7 +626,7 @@ static NSString *sendCellIdentifier = @"SendCellIdentifier";
             UIImage *radiusImage = [MBImageApplyer imageForTwitter:partnerImage size:avatorSize radius:4];
             
             dispatch_async(dispatch_get_main_queue(), ^{
-                cell.avatorImageView.image = radiusImage;
+                cell.avatorImageView.avatorImage = radiusImage;
             });
         });
     } else {
@@ -641,7 +637,7 @@ static NSString *sendCellIdentifier = @"SendCellIdentifier";
                 UIImage *radiusImage = [MBImageApplyer imageForTwitter:image size:avatorSize radius:4];
                 
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    cell.avatorImageView.image = radiusImage;
+                    cell.avatorImageView.avatorImage = radiusImage;
                 });
             }failedHandler:^(NSURLResponse *response, NSError *error) {
                 
@@ -671,36 +667,38 @@ static NSString *sendCellIdentifier = @"SendCellIdentifier";
     UITextView *sizingTextView = [[UITextView alloc] init];
     sizingTextView.attributedText = textView.attributedText;
     CGSize textSize = [sizingTextView sizeThatFits:CGSizeMake(defaultTextViewSize.width, CGFLOAT_MAX)];
-    
-    CGFloat defaultTabbarItemMargin = 6.0f;
-    CGFloat defaultToolbarHeight = defaultToolBarSize.height;
-    CGFloat textViewHeightMargin = textSize.height - defaultTextViewSize.height;
+    CGFloat defaultBarItemMargin = 3.0f;
     CGFloat defaultKeyBoardHeight = self.currentKeyboardHeight.floatValue - textView.inputAccessoryView.frame.size.height;
     
     
     CGFloat limitOriginY = (self.navigationController.navigationBar.bounds.size.height + [[UIApplication sharedApplication] statusBarFrame].size.height);
     CGFloat maxSpace = self.view.bounds.size.height - limitOriginY - defaultKeyBoardHeight;
     
-    CGFloat toolbarHeight = defaultToolbarHeight + textViewHeightMargin;
-    CGFloat textViewHeight;
+    CGFloat toolbarHeight = textSize.height + (defaultBarItemMargin * 2);
+    CGFloat textHeight = textSize.height;
+    if (toolbarHeight < defaultToolBarSize.height) {
+        toolbarHeight = defaultToolBarSize.height;
+        textHeight = defaultTextViewSize.height;
+    }
+    
     
     if (toolbarHeight > maxSpace) {
         toolbarHeight = maxSpace;
+        textHeight = maxSpace - (defaultBarItemMargin * 2);
+        textView.scrollEnabled = YES;
+    } else {
+        textView.scrollEnabled = NO;
     }
     
-    textViewHeight = toolbarHeight -(defaultTabbarItemMargin * 2) ;
-    
     CGRect toolBarRect = self.toolBar.frame;
+    toolBarRect.origin.x = 0;
     toolBarRect.size.height = toolbarHeight;
     self.toolBar.frame = toolBarRect;
     
     CGRect textFrame = self.textView.frame;
-    textFrame.size.height = textViewHeight;
-    //self.textView.frame = textFrame;
+    textFrame.size.height = textHeight;
+    self.textView.frame = textFrame;
     
-    CGRect containerFrame = self.containedTextView.frame;
-    containerFrame.size.height = textViewHeight + 2.0f * 2;
-    self.containedTextView.frame = containerFrame;
     
     // enable sendButton
     if (0 < self.textView.text.length  && self.partner) {

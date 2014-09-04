@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="5056" systemVersion="13E28" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="6206.9" systemVersion="13E28" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3733"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7026.1"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="MBIndividualDirectMessagesViewController">
             <connections>
                 <outlet property="receiverTextField" destination="J0e-jd-ORM" id="Kaa-OA-qnf"/>
                 <outlet property="receiverToolbar" destination="Bxa-ch-5sb" id="U8b-VX-0Gv"/>
-                <outlet property="receiverToolbarConstraint" destination="6KE-32-Qaj" id="fbQ-QG-1Kv"/>
                 <outlet property="searchDisplayController" destination="8MY-zz-CQ6" id="RVR-dO-VbF"/>
                 <outlet property="tableView" destination="haj-rC-wD4" id="wgR-dd-oMs"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
@@ -21,12 +20,10 @@
             <subviews>
                 <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="none" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="haj-rC-wD4">
                     <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
-                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                 </tableView>
                 <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Bxa-ch-5sb" customClass="MBUnderLineToolbar">
                     <rect key="frame" x="0.0" y="64" width="320" height="44"/>
-                    <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                     <items>
                         <barButtonItem enabled="NO" title="To:" style="plain" id="shy-it-0xG">
                             <color key="tintColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
@@ -46,14 +43,12 @@
             <constraints>
                 <constraint firstItem="haj-rC-wD4" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="0Zy-ed-xXs"/>
                 <constraint firstAttribute="trailing" secondItem="haj-rC-wD4" secondAttribute="trailing" id="5gd-gn-XXA"/>
-                <constraint firstItem="Bxa-ch-5sb" firstAttribute="top" secondItem="haj-rC-wD4" secondAttribute="top" constant="64" id="6KE-32-Qaj"/>
                 <constraint firstItem="Bxa-ch-5sb" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="IZK-0h-ARz"/>
                 <constraint firstAttribute="trailing" secondItem="Bxa-ch-5sb" secondAttribute="trailing" id="Nvf-lV-qmn"/>
                 <constraint firstAttribute="bottom" secondItem="haj-rC-wD4" secondAttribute="bottom" id="fjK-2Y-Xlc"/>
+                <constraint firstItem="Bxa-ch-5sb" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" constant="64" id="nbG-Rb-BH8"/>
                 <constraint firstItem="haj-rC-wD4" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="tnk-B5-07t"/>
             </constraints>
-            <simulatedStatusBarMetrics key="simulatedStatusBarMetrics"/>
-            <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
         </view>
         <searchDisplayController id="8MY-zz-CQ6">
             <connections>
@@ -64,4 +59,12 @@
             </connections>
         </searchDisplayController>
     </objects>
+    <simulatedMetricsContainer key="defaultSimulatedMetrics">
+        <simulatedStatusBarMetrics key="statusBar"/>
+        <simulatedOrientationMetrics key="orientation"/>
+        <simulatedScreenMetrics key="destination" type="retina4">
+            <size key="portraitSize" width="320" height="568"/>
+            <size key="landscapeSize" width="568" height="320"/>
+        </simulatedScreenMetrics>
+    </simulatedMetricsContainer>
 </document>
