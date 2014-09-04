@@ -66,7 +66,7 @@
     }
     
     CGRect bounds = self.bounds;
-    if (0 < self.user.description.length) {
+    if (0 < self.user.desctiprion.length) {
         CGRect profileFrame = CGRectMake(bounds.size.width, 0, bounds.size.width, bounds.size.height);
         _profileDescriptionView = [[MBProfileDesciptionView alloc] initWithFrame:profileFrame];
         NSAttributedString *descriptionText = [MBTweetTextComposer attributedStringForUser:self.user linkColor:nil];
@@ -119,9 +119,9 @@
 - (NSInteger)numberOfPage
 {
     NSInteger pageCount = 1;
-    if (0 < self.user.description.length && (0 < self.user.urlAtProfile.length || 0 < self.user.location.length)) {
+    if (0 < self.user.desctiprion.length && (0 < self.user.urlAtProfile.length || 0 < self.user.location.length)) {
         pageCount = 3;
-    } else if (0 < self.user.description.length || self.user.urlAtProfile.length || 0 < self.user.location.length) {
+    } else if (0 < self.user.desctiprion.length || self.user.urlAtProfile.length || 0 < self.user.location.length) {
         pageCount = 2;
     }
     
