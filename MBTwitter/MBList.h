@@ -20,7 +20,7 @@
 @property (nonatomic, readonly) NSInteger members;
 @property (nonatomic, readonly) NSNumber *listID;
 @property (nonatomic, readonly) NSString *listIDStr;
-@property (nonatomic, readonly) NSString *description;
+@property (nonatomic, readonly) NSString *detail;
 @property (nonatomic, readonly) MBUser *user;
 @property (nonatomic, assign, readonly) BOOL isFollowing;
 @property (nonatomic, assign, readonly) BOOL isPublic;

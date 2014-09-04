@@ -24,7 +24,7 @@
 #define KEY_ID_STR @"id_str"
 #define KEY_MEMBER_COUNT @"member_count"
 #define KEY_MODE @"mode"
-#define KEY_DESCRIPTION @"description"
+#define KEY_DETAIL @"description"
 #define KEY_USER @"user"
 #define KEY_MODE @"mode"
 #define KEY_FOLLOWING @"following"
@@ -52,7 +52,7 @@
     _members = [list integerForKey:KEY_MEMBER_COUNT];
     _listID = [list numberForKey:KEY_ID];
     _listIDStr = [list stringForKey:KEY_ID_STR];
-    _description = [list stringForKey:KEY_DESCRIPTION];
+    _detail = [list stringForKey:KEY_DETAIL];
     _user = [[MBUser alloc] initWithDictionary:[list objectForKey:KEY_USER]];
     _isFollowing = [list boolForKey:KEY_FOLLOWING];
     
