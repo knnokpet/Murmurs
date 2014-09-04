@@ -37,7 +37,7 @@
 
 - (void)drawFavostarInContext:(CGContextRef)context inRect:(CGRect)rect
 {
-    CGContextSetRGBStrokeColor(context, 1.0, 0.8, 0, 0.5);
+    CGContextSetRGBStrokeColor(context, 1.0, 0.8, 0.02, 1.0);
     CGContextSetRGBFillColor(context, 1.0f, 0.8, 0.f, 1.0f);
     CGContextSetLineWidth(context, 1.0f);
     
