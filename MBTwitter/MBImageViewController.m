@@ -120,18 +120,20 @@
     // setting Tweet
     self.tweetTextView.text = self.tweet.tweetText;
     self.tweetTextView.font = [UIFont systemFontOfSize:15.0f];
+    self.tweetTextView.textColor = [UIColor whiteColor];
     CGSize textViewSize = [self.tweetTextView sizeThatFits:CGSizeMake(self.tweetTextView.frame.size.width, CGFLOAT_MAX)];
+    
     CGRect textViewRect = self.tweetTextView.frame;
     textViewRect.size = textViewSize;
     self.tweetTextView.frame = textViewRect;
     
     CGRect tweetContainerViewRect = self.tweetContainerView.frame;
-    tweetContainerViewRect.size.height = self.tweetTextView.frame.size.height + (44.0f + 49.0f);
+    tweetContainerViewRect.size.height = self.tweetTextView.frame.size.height + (26.0f + 50.0f);
     self.tweetContainerView.frame = tweetContainerViewRect;
     // gradient mask
     CAGradientLayer *gradientLayer = [CAGradientLayer layer];
     gradientLayer.frame = self.tweetContainerView.bounds;
-    gradientLayer.colors = [NSArray arrayWithObjects:(id)[UIColor blackColor].CGColor, (id)[UIColor colorWithRed:0 green:0 blue:0 alpha:0.9].CGColor, nil];
+    gradientLayer.colors = [NSArray arrayWithObjects:(id)[UIColor whiteColor].CGColor, (id)[UIColor colorWithRed:0 green:0 blue:0 alpha:0.9].CGColor, nil];
     gradientLayer.startPoint = CGPointMake(0.0f, 0.2f);
     gradientLayer.endPoint = CGPointMake(0.0f, 0.0f);
     self.tweetContainerView.layer.mask = gradientLayer;
@@ -275,7 +277,7 @@
 #pragma mark Action
 - (void)didPushActionButton
 {
-    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:NSLocalizedString(@"Chancel", nil) destructiveButtonTitle:nil otherButtonTitles:NSLocalizedString(@"Save Image", nil), nil];
+    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) destructiveButtonTitle:nil otherButtonTitles:NSLocalizedString(@"Save Image", nil), nil];
     [actionSheet showInView:self.view];
 }
 
@@ -291,7 +293,7 @@
     BOOL isHidden = (self.hiddenViews) ? NO : YES;
     CGFloat alpha = (self.hiddenViews) ? 1.0f : 0.0f;
     
-    [UIView animateWithDuration:0.3f delay:0 options:0 animations:^{
+    [UIView animateWithDuration:0.1f delay:0 options:0 animations:^{
         self.tweetContainerView.alpha = alpha;
         [self.navigationController setNavigationBarHidden:isHidden];
         
