@@ -38,7 +38,7 @@
     
     CGFloat tweetViewWidth = tweetViewRect.size.width + self.tweetTextViewLeftSpaceConstraint.constant + self.tweetTextViewRightSpaceConstraint.constant;
     
-    CGFloat defaultMessageViewRightSpace = 54.0f;
+    CGFloat defaultMessageViewRightSpace = 60.0f;
     CGFloat maximumMessageWidth = self.bounds.size.width - (self.messageView.frame.origin.y + defaultMessageViewRightSpace);
     if (tweetViewWidth < maximumMessageWidth) {
         self.messageViewRightSpaceConstraint.constant = self.bounds.size.width - (self.messageView.frame.origin.x) - tweetViewWidth;

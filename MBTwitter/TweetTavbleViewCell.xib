@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="5056" systemVersion="13E28" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="6206.9" systemVersion="13E28" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3733"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7026.1"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
@@ -15,7 +15,6 @@
                 <subviews>
                     <imageView contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="OoA-Oc-RDj" customClass="MBAvatorImageView">
                         <rect key="frame" x="8" y="12" width="48" height="48"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="48" id="UPH-tZ-ivY"/>
                             <constraint firstAttribute="width" constant="48" id="hsR-eH-gl2"/>
@@ -23,12 +22,10 @@
                     </imageView>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Kdl-qO-9E7" customClass="MBTweetTextView">
                         <rect key="frame" x="64" y="32" width="248" height="133"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="bed-xa-aaB" customClass="MBTweetTextView">
                         <rect key="frame" x="272" y="12" width="40" height="16"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstAttribute="width" constant="40" id="og0-El-kzr"/>
@@ -36,7 +33,6 @@
                     </view>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="yHN-54-aDN" customClass="MBCharacterScreenNameView">
                         <rect key="frame" x="64" y="10" width="180" height="18"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="18" id="gaa-Eq-zeU"/>
@@ -44,7 +40,6 @@
                     </view>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Ms6-Bp-7gF" customClass="MBFavoriteView">
                         <rect key="frame" x="248" y="10" width="20" height="20"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstAttribute="width" constant="20" id="LA2-yc-RrF"/>
@@ -53,23 +48,20 @@
                     </view>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="f1k-oa-B9x" customClass="MBTimelineImageContainerView">
                         <rect key="frame" x="64" y="173" width="248" height="128"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="128" id="FVe-w2-CdV"/>
                         </constraints>
                     </view>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="vcG-hN-cwB" customClass="MBRetweetView">
-                        <rect key="frame" x="40" y="327" width="272" height="18"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <rect key="frame" x="32" y="327" width="280" height="18"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="18" id="P5M-0U-GaC"/>
                         </constraints>
                     </view>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="wrX-qj-KVl" customClass="MBPlaceWithGeoIconView">
-                        <rect key="frame" x="40" y="305" width="272" height="18"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <rect key="frame" x="32" y="305" width="280" height="18"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="18" id="KdT-Zh-p6R"/>
@@ -100,8 +92,8 @@
                     <constraint firstItem="yHN-54-aDN" firstAttribute="leading" secondItem="OoA-Oc-RDj" secondAttribute="trailing" constant="8" id="jeg-1N-ndB"/>
                     <constraint firstItem="Kdl-qO-9E7" firstAttribute="top" secondItem="bed-xa-aaB" secondAttribute="bottom" constant="4" id="kkC-cz-iiA"/>
                     <constraint firstItem="vcG-hN-cwB" firstAttribute="top" secondItem="wrX-qj-KVl" secondAttribute="bottom" constant="4" id="la8-l2-La6"/>
-                    <constraint firstItem="wrX-qj-KVl" firstAttribute="leading" secondItem="Pnn-36-8ML" secondAttribute="leading" constant="40" id="liM-4X-1y9"/>
-                    <constraint firstItem="vcG-hN-cwB" firstAttribute="leading" secondItem="Pnn-36-8ML" secondAttribute="leading" constant="40" id="mQC-Dp-lxf"/>
+                    <constraint firstItem="wrX-qj-KVl" firstAttribute="leading" secondItem="Pnn-36-8ML" secondAttribute="leading" constant="32" id="liM-4X-1y9"/>
+                    <constraint firstItem="vcG-hN-cwB" firstAttribute="leading" secondItem="Pnn-36-8ML" secondAttribute="leading" constant="32" id="mQC-Dp-lxf"/>
                     <constraint firstAttribute="trailing" secondItem="wrX-qj-KVl" secondAttribute="trailing" constant="8" id="mhW-eh-Yf6"/>
                     <constraint firstAttribute="bottom" secondItem="vcG-hN-cwB" secondAttribute="bottom" constant="4" id="rCS-o6-W55"/>
                     <constraint firstAttribute="trailing" secondItem="vcG-hN-cwB" secondAttribute="trailing" constant="8" id="rSh-sE-mxh"/>
@@ -122,4 +114,12 @@
             </connections>
         </tableViewCell>
     </objects>
+    <simulatedMetricsContainer key="defaultSimulatedMetrics">
+        <simulatedStatusBarMetrics key="statusBar"/>
+        <simulatedOrientationMetrics key="orientation"/>
+        <simulatedScreenMetrics key="destination" type="retina4">
+            <size key="portraitSize" width="320" height="568"/>
+            <size key="landscapeSize" width="568" height="320"/>
+        </simulatedScreenMetrics>
+    </simulatedMetricsContainer>
 </document>

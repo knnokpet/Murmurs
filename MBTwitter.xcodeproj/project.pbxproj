@@ -332,6 +332,7 @@
 		86CB540B190FD7830016A7F2 /* MBSeparatedDirectMessageUserTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 86CB540A190FD7830016A7F2 /* MBSeparatedDirectMessageUserTableViewCell.m */; };
 		86CB540F190FD94E0016A7F2 /* MBSeparatedDirectMessageUserViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 86CB540E190FD94E0016A7F2 /* MBSeparatedDirectMessageUserViewController.m */; };
 		86CB54121910BE940016A7F2 /* MBDirectMessages_JSONParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 86CB54111910BE940016A7F2 /* MBDirectMessages_JSONParser.m */; };
+		86D2A31119B5D61F009FE619 /* MBIndividualMessageTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 86D2A31019B5D61F009FE619 /* MBIndividualMessageTableViewCell.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -849,6 +850,8 @@
 		86CB540E190FD94E0016A7F2 /* MBSeparatedDirectMessageUserViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBSeparatedDirectMessageUserViewController.m; sourceTree = "<group>"; };
 		86CB54101910BE940016A7F2 /* MBDirectMessages_JSONParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBDirectMessages_JSONParser.h; sourceTree = "<group>"; };
 		86CB54111910BE940016A7F2 /* MBDirectMessages_JSONParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBDirectMessages_JSONParser.m; sourceTree = "<group>"; };
+		86D2A30F19B5D61F009FE619 /* MBIndividualMessageTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBIndividualMessageTableViewCell.h; sourceTree = "<group>"; };
+		86D2A31019B5D61F009FE619 /* MBIndividualMessageTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBIndividualMessageTableViewCell.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1364,12 +1367,9 @@
 			children = (
 				86CB5409190FD7830016A7F2 /* MBSeparatedDirectMessageUserTableViewCell.h */,
 				86CB540A190FD7830016A7F2 /* MBSeparatedDirectMessageUserTableViewCell.m */,
-				8639E1F7196A6A260078266B /* MBMessageTableViewCell.h */,
-				8639E1FD196A6A500078266B /* MBMessageTableViewCell.m */,
-				8639E1F9196A6A370078266B /* MBMessageTableViewCell.xib */,
-				8639E1F8196A6A2E0078266B /* MBSendMessageTableViewCell.h */,
-				8639E1FF196A6A5C0078266B /* MBSendMessageTableViewCell.m */,
-				8639E1FB196A6A3D0078266B /* MBSendMessageTableViewCell.xib */,
+				86D2A30F19B5D61F009FE619 /* MBIndividualMessageTableViewCell.h */,
+				86D2A31019B5D61F009FE619 /* MBIndividualMessageTableViewCell.m */,
+				86D2A31219B6B48E009FE619 /* 没 */,
 			);
 			name = DirectMessage;
 			sourceTree = "<group>";
@@ -1832,6 +1832,19 @@
 			name = Category;
 			sourceTree = "<group>";
 		};
+		86D2A31219B6B48E009FE619 /* 没 */ = {
+			isa = PBXGroup;
+			children = (
+				8639E1F7196A6A260078266B /* MBMessageTableViewCell.h */,
+				8639E1FD196A6A500078266B /* MBMessageTableViewCell.m */,
+				8639E1F9196A6A370078266B /* MBMessageTableViewCell.xib */,
+				8639E1F8196A6A2E0078266B /* MBSendMessageTableViewCell.h */,
+				8639E1FF196A6A5C0078266B /* MBSendMessageTableViewCell.m */,
+				8639E1FB196A6A3D0078266B /* MBSendMessageTableViewCell.xib */,
+			);
+			name = "没";
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -2215,6 +2228,7 @@
 				862B261C18D5C506004FC786 /* OAAuthFetcher.m in Sources */,
 				867A09BE1948856500741C2F /* MBDetailUserTableViewCell.m in Sources */,
 				8623B90E1987AA59004380FF /* MBSeparateLineView.m in Sources */,
+				86D2A31119B5D61F009FE619 /* MBIndividualMessageTableViewCell.m in Sources */,
 				867A09BA19480AF900741C2F /* MBProfileInfomationView.m in Sources */,
 				8639E20E196CE8720078266B /* MBSearchedTweetViewController.m in Sources */,
 				863969F0191F73C800A7D0AD /* MBOtherUserListViewController.m in Sources */,
