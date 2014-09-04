@@ -233,7 +233,7 @@ static NSString *selectingListCellIdentifier = @"SelectingListCellIdentifier";
     NSArray *listsAtSection = [self.listManager.lists objectAtIndex:indexPath.section];
     MBList *listAtIndex = [listsAtSection objectAtIndex:indexPath.row];
     cell.listNameLabel.text = listAtIndex.name;
-    cell.descriptionTextView.text = listAtIndex.description;
+    cell.descriptionTextView.text = listAtIndex.detail;
     
     cell.accessoryType = UITableViewCellAccessoryNone;
     if ([listAtIndex.memberIDs objectForKey:self.selectingUser.userID]) {
