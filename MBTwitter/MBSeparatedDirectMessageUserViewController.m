@@ -382,7 +382,7 @@
     NSMutableArray *messages = [[MBDirectMessageManager sharedInstance] separatedMessagesForKey:userKey];
     
     MBIndividualDirectMessagesViewController *individualViewController = [[MBIndividualDirectMessagesViewController alloc] init];
-    
+    individualViewController.delegate = self;
     [individualViewController setPartner:partner];
     [individualViewController setConversation:messages];
     [self.navigationController pushViewController:individualViewController animated:YES];
@@ -435,7 +435,7 @@
 
 - (void)sendMessageIndividualDirectMessagesViewController:(MBIndividualDirectMessagesViewController *)controller
 {
-    self.dataSource = [[MBDirectMessageManager sharedInstance] separatedMessages].mutableCopy;
+    self.dataSource = [[MBDirectMessageManager sharedInstance] separatedMessages];
     [self.tableView reloadData];
 }
 
