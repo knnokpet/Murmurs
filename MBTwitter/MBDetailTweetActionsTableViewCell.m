@@ -13,7 +13,6 @@
 - (void)awakeFromNib
 {
     // Initialization code
-    self.selectionStyle = UITableViewCellSelectionStyleNone;
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated
@@ -21,6 +20,18 @@
     [super setSelected:selected animated:animated];
 
     // Configure the view for the selected state
+}
+
+- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event
+{
+    UIView *hittedView = [super hitTest:point withEvent:event];
+    if (hittedView == self) {
+        return nil;
+    } else if (hittedView == self.contentView) {
+        return nil;
+    }
+    
+    return hittedView;
 }
 
 @end
