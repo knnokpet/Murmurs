@@ -44,6 +44,7 @@
 - (void)configureNavigationitem
 {
     self.navigationItem.rightBarButtonItem = self.editButtonItem;
+    self.navigationItem.leftBarButtonItem = self.navigationItem.backBarButtonItem;
 }
 
 - (void)viewDidLoad
@@ -180,8 +181,7 @@
         UIBarButtonItem *addBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(didPushAddListButton)];
         [self.navigationItem setLeftBarButtonItem:addBarButtonItem animated:animated];
     } else {
-        UIBarButtonItem *refreshBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(didPushRefreshButton)];
-        [self.navigationItem setLeftBarButtonItem:refreshBarButtonItem animated:animated];
+        [self configureNavigationitem];
     }
     
     [self.tableView setEditing:editing animated:YES];
