@@ -153,7 +153,7 @@
     [self.retweetButton sizeToFit];
     
     CGRect contentBounds = self.contentView.bounds;
-    CGFloat sideEdge = 16.0f;
+    CGFloat sideEdge = 12.0f;
     CGFloat buttonBetweetMargin = 8.0f;
     CGFloat titleLeftEdgeMargin = 8.0f;
     
