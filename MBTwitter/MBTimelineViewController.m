@@ -892,7 +892,6 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
 {
-    [self updateVisibleCells];
     
     float max = scrollView.contentInset.top + scrollView.contentInset.bottom + scrollView.contentSize.height - scrollView.bounds.size.height;
     float current = scrollView.contentOffset.y + self.topLayoutGuide.length;
@@ -902,6 +901,13 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
         if (self.enableBacking && 0 != self.dataSource.count) {
             [self goBacksAtIndex:self.saveIndex];
         }
+    }
+}
+
+- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
+{
+    if (!decelerate) {
+        [self updateVisibleCells];
     }
 }
 
