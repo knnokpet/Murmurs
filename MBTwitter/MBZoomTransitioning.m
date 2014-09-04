@@ -73,6 +73,7 @@ static const NSTimeInterval MBZoomTransitioningDuration = 0.3f;
             toViewController.view.transform = CGAffineTransformIdentity;
             CGRect toRect = toViewController.view.frame;
             toRect.origin = fromViewController.view.frame.origin;
+            toRect.size = fromViewController.view.frame.size;
             toViewController.view.frame = toRect;
             
         }
