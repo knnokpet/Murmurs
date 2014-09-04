@@ -23,9 +23,7 @@
 }
 
 - (void)commonInit
-{
-    self.selectionStyle = UITableViewCellSelectionStyleNone;
-    
+{    
     self.isMyAccount = NO;
 }
 
@@ -85,6 +83,7 @@
         self.followButton.enabled = YES;
         [self.followButton setTitle:NSLocalizedString(@"Follow!", nil) forState:UIControlStateNormal];
         [self.followButton setButtonTitle:NSLocalizedString(@"Follow!", nil)];
+        [self.followButton setButtonImage:[UIImage imageNamed:@"man-Plus-ActionCell"]];
         [self.followButton.titleLabel setFont:[UIFont systemFontOfSize:15.0f]];
         
     } else {
@@ -184,6 +183,18 @@
     CGRect followRect = self.followButton.frame;
     followRect.origin = CGPointMake(contentBounds.size.width - followRect.size.width , centerOriginY - followRect.size.height / 2);
     self.followButton.frame = followRect;
+}
+
+- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event
+{
+    UIView *hittedView = [super hitTest:point withEvent:event];
+    if (hittedView == self) {
+        return nil;
+    } else if (hittedView == self.contentView) {
+        return nil;
+    }
+    
+    return hittedView;
 }
 
 @end
