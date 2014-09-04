@@ -43,7 +43,7 @@
 - (void)configureView
 {
     // searchBar
-    _searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 300, 44)];
+    _searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width - 20, 44)];
     [self.searchBar setSearchFieldBackgroundImage:[UIImage imageNamed:@"searchBarBackgroundImage"] forState:UIControlStateNormal];
     NSString *searchBarPlaceHolder = NSLocalizedString(@"Search Tweet or User", nil);
     [self.searchBar setPlaceholder:searchBarPlaceHolder];
@@ -62,7 +62,7 @@
     [self.segmentedControl addTarget:self action:@selector(didChangeSegmentedControlValue) forControlEvents:UIControlEventValueChanged];
     [self.segmentedContainerView addSubview:self.segmentedControl];
     CGRect segmentedRect = self.segmentedControl.frame;
-    segmentedRect.size.width = 280;
+    segmentedRect.size.width = self.view.bounds.size.width - 40;
     segmentedRect.origin.x = self.segmentedControl.superview.bounds.size.width / 2 - segmentedRect.size.width / 2;
     segmentedRect.origin.y = self.segmentedControl.superview.bounds.size.height / 2 - segmentedRect.size.height / 2;
     self.segmentedControl.frame = segmentedRect;
