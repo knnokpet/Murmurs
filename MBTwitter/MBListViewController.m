@@ -230,10 +230,10 @@ static NSString *listsCellIdentifier = @"ListsCellIdentifier";
     NSArray *listsAtSection = [self.listManager.lists objectAtIndex:indexPath.section];
     MBList *listAtIndex = [listsAtSection objectAtIndex:indexPath.row];
     UITextView *sizingTextView = [[UITextView alloc] init];
-    sizingTextView.text = listAtIndex.description;
+    sizingTextView.text = listAtIndex.detail;
     CGSize fitSizt = [sizingTextView sizeThatFits:CGSizeMake(tableView.frame.size.width - (horizontalLeftMargin + horizontalRightMargin), CGFLOAT_MAX)];
     CGFloat heightWithTextView = fitSizt.height + verticalTextViewMargin + verticalMargin;
-    if (listAtIndex.description.length == 0) {
+    if (listAtIndex.detail.length == 0) {
         heightWithTextView = 0.0f;
     }
         
@@ -258,7 +258,7 @@ static NSString *listsCellIdentifier = @"ListsCellIdentifier";
     
     cell.listNameLabel.text = listAtIndex.name;
     cell.screenNameLabel.text = [NSString stringWithFormat:@"@%@", userAtList.screenName];
-    cell.descriptionTextView.text = listAtIndex.description;
+    cell.descriptionTextView.text = listAtIndex.detail;
     cell.isPublic = listAtIndex.isPublic;
     
     UIImage *avatorImage = [[MBImageCacher sharedInstance] cachedProfileImageForUserID:userAtList.userIDStr];
