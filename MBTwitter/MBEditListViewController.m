@@ -130,7 +130,7 @@ static NSString *deleteListCellIdentifier = @"DeleteListCellIdentifier";
         }else if (1 == indexPath.row) {
             cell = [self.tableView dequeueReusableCellWithIdentifier:textFieldCellIdentifier];
             MBTextFieldTableViewCell *textFieldCell = (MBTextFieldTableViewCell *)cell;
-            textFieldCell.textField.text = self.list.description;
+            textFieldCell.textField.text = self.list.detail;
         }else if (2 == indexPath.row) {
             cell = [self.tableView dequeueReusableCellWithIdentifier:switchCellIdentifier];
             MBSwitchTableViewCell *switcCell = (MBSwitchTableViewCell *)cell;
