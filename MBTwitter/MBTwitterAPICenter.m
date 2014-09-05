@@ -1070,7 +1070,7 @@
         [parameters setObject:@"public" forKey:@"mode"];
     }
     if (description) {
-        [parameters setObject:parameters forKey:@"description"];
+        [parameters setObject:description forKey:@"description"];
     }
     
     return [self sendRequestMethod:HTTP_POST_METHOD resource:resource parameters:parameters requestType:MBTwitterListsUpdateRequest responseType:MBTwitterListResponse];
