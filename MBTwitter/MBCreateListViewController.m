@@ -103,6 +103,14 @@
     return isOK;
 }
 
+- (void)resignInputViewsFirstResponder
+{
+    MBTextFieldTableViewCell *listNameCell = (MBTextFieldTableViewCell *)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
+    MBTextFieldTableViewCell *descriptionCell = (MBTextFieldTableViewCell *)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:0]];
+    [listNameCell.textField resignFirstResponder];
+    [descriptionCell.textField resignFirstResponder];
+}
+
 #pragma mark Notification
 - (void)keyboardWillShow:(NSNotification *)notification
 {
@@ -154,10 +162,16 @@
     BOOL isOn = switchCell.switchView.on;
     
     [self.aoAPICenter postCreateList:listName isPublic:isOn description:description];
+    
+    [self resignInputViewsFirstResponder];
 }
 
 #pragma mark -
 #pragma markTableView Delegate
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return 44;
+}
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     return 3;

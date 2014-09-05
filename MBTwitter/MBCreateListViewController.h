@@ -28,6 +28,7 @@ static NSString *switchCellIdentifier = @"SwitchCellIdentifier";
 - (BOOL)checksListName:(NSString *)listName;
 - (void)commonConfigureNavigationItem;
 - (void)updateCell:(UITableViewCell *)cell atIndexpath:(NSIndexPath *)indexPath;
+- (void)resignInputViewsFirstResponder;
 
 @end
 
