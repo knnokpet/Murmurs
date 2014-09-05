@@ -99,7 +99,7 @@ static NSString *deleteListCellIdentifier = @"DeleteListCellIdentifier";
     
     
     [self.aoAPICenter postUpdateList:[self.list.listID unsignedLongLongValue] name:listName slug:self.list.slug isPublic:isON description:description];
-    
+    [self resignInputViewsFirstResponder];
 }
 
 #pragma mark UITableview Datasource & Delegate
@@ -123,7 +123,7 @@ static NSString *deleteListCellIdentifier = @"DeleteListCellIdentifier";
 {
     UITableViewCell *cell;
     if (0 == indexPath.section) {
-        if (0 == indexPath.row || 1 == indexPath.row) {
+        if (0 == indexPath.row ) {
             cell = [self.tableView dequeueReusableCellWithIdentifier:textFieldCellIdentifier];
             MBTextFieldTableViewCell *textFieldCell = (MBTextFieldTableViewCell *)cell;
             textFieldCell.textField.text = self.list.name;
