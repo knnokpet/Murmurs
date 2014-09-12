@@ -130,4 +130,30 @@
 }
 */
 
+#pragma mark 
+- (void)usersScrollViewDidScroll:(UIScrollView *)scrollView
+{
+    if (self.users.count == 0) {
+        return;
+    }
+    
+    if ([_scrollDelegate respondsToSelector:@selector(listMembersScrollViewDidScroll:scrollView:)]) {
+        [_scrollDelegate listMembersScrollViewDidScroll:self scrollView:scrollView];
+    }
+}
+
+- (void)usersScrollViewWillBeginDragging:(UIScrollView *)scrollView
+{
+    if ([_scrollDelegate respondsToSelector:@selector(listMembersScrollViewWillBeginDragging:)]) {
+        [_scrollDelegate listMembersScrollViewWillBeginDragging:scrollView];
+    }
+}
+
+- (void)usersScrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
+{
+    if ([_scrollDelegate respondsToSelector:@selector(listMembersScrollViewDidEndDragging:willDecelerate:)]) {
+        [_scrollDelegate listMembersScrollViewDidEndDragging:scrollView willDecelerate:decelerate];
+    }
+}
+
 @end
