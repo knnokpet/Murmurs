@@ -40,6 +40,8 @@
     self.tableView.delegate = self;
     UINib *textFieldCell = [UINib nibWithNibName:@"MBTextFieldTableViewCell" bundle:nil];
     [self.tableView registerNib:textFieldCell forCellReuseIdentifier:textFieldCellIdentifier];
+    UINib *textViewCell = [UINib nibWithNibName:@"MBTextViewTableViewCell" bundle:nil];
+    [self.tableView registerNib:textViewCell forCellReuseIdentifier:textViewCellIdentifier];
     UINib *switchCell = [UINib nibWithNibName:@"MBSwitchTableViewCell" bundle:nil];
     [self.tableView registerNib:switchCell forCellReuseIdentifier:switchCellIdentifier];
     
@@ -75,6 +77,16 @@
     [nCenter addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
 }
 
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    
+    MBTextFieldTableViewCell *textFieldCell = (MBTextFieldTableViewCell *)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
+    if (textFieldCell) {
+        [textFieldCell.textField becomeFirstResponder];
+    }
+}
+
 - (void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
@@ -106,9 +118,9 @@
 - (void)resignInputViewsFirstResponder
 {
     MBTextFieldTableViewCell *listNameCell = (MBTextFieldTableViewCell *)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
-    MBTextFieldTableViewCell *descriptionCell = (MBTextFieldTableViewCell *)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:0]];
+    MBTextViewTableViewCell *descriptionCell = (MBTextViewTableViewCell *)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:0]];
     [listNameCell.textField resignFirstResponder];
-    [descriptionCell.textField resignFirstResponder];
+    [descriptionCell.placeholderTextView resignFirstResponder];
 }
 
 #pragma mark Notification
@@ -147,7 +159,7 @@
 - (void)didPushCreateButton
 {
     MBTextFieldTableViewCell *listNameCell = (MBTextFieldTableViewCell *)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
-    MBTextFieldTableViewCell *descriptionCell = (MBTextFieldTableViewCell *)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:0]];
+    MBTextViewTableViewCell *descriptionCell = (MBTextViewTableViewCell *)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:0]];
     MBSwitchTableViewCell *switchCell = (MBSwitchTableViewCell *)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:2 inSection:0]];
     NSString *listName = listNameCell.textField.text;
     BOOL isOK = [self checksListName:listName];
@@ -155,7 +167,7 @@
         return;
     }
     
-    NSString *description = descriptionCell.textField.text;
+    NSString *description = descriptionCell.placeholderTextView.text;
     if (description.length > 100) {
         return;
     }
@@ -170,19 +182,39 @@
 #pragma markTableView Delegate
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return 44;
+    CGFloat height = 44;
+    if (indexPath.section == 0 && indexPath.row == 1) {
+        height = 64;
+    }
+    return height;
 }
+
+- (NSInteger )numberOfSectionsInTableView:(UITableView *)tableView
+{
+    return 2;
+}
+
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return 3;
+    NSInteger rows;
+    if (section == 0) {
+        rows = 2;
+    } else {
+        rows = 1;
+    }
+    return rows;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     UITableViewCell *cell;
-    if (0 == indexPath.row || 1 == indexPath.row) {
-        cell = [self.tableView dequeueReusableCellWithIdentifier:textFieldCellIdentifier];
-    } else if (2 == indexPath.row) {
+    if (indexPath.section == 0) {
+        if (indexPath.row == 0) {
+            cell = [self.tableView dequeueReusableCellWithIdentifier:textFieldCellIdentifier];
+        } else if (indexPath.row == 1) {
+            cell = [self.tableView dequeueReusableCellWithIdentifier:textViewCellIdentifier];
+        }
+    } else if (indexPath.section == 1) {
         cell = [self.tableView dequeueReusableCellWithIdentifier:switchCellIdentifier];
     }
     
@@ -192,25 +224,37 @@
 
 - (void)updateCell:(UITableViewCell *)cell atIndexpath:(NSIndexPath *)indexPath
 {
-    if (0 == indexPath.row || 1 == indexPath.row) {
-        [self updateTextFieldCell:cell atIndexPath:indexPath];
-    } else if (2 == indexPath.row) {
+    if (indexPath.section == 0) {
+        if (indexPath.row == 0) {
+            [self updateTextFieldCell:(MBTextFieldTableViewCell *)cell atIndexPath:indexPath];
+        } else if (indexPath.row == 1) {
+            [self updateTextViewCell:(MBTextViewTableViewCell *)cell atIndexPath:indexPath];
+            
+        }
+    } else if (indexPath.section == 1) {
         [self updateSwitchCell:cell atIndexPath:indexPath];
     }
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
 }
 
-- (void)updateTextFieldCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
+- (void)updateTextFieldCell:(MBTextFieldTableViewCell  *)cell atIndexPath:(NSIndexPath *)indexPath
 {
     NSString *textLabel;
     if (0 == indexPath.row) {
-        textLabel = NSLocalizedString(@"Name", nil);
+        //textLabel = NSLocalizedString(@"Name", nil);
+        cell.textField.placeholder = NSLocalizedString(@"List Name. Fewer than  25 char.", nil);
     } else if (1 == indexPath.row) {
         textLabel = NSLocalizedString(@"Description", nil);
+        cell.textField.placeholder = NSLocalizedString(@"List Detail. Ferwer than 100 char.", nil);
     }
     
-    cell.textLabel.text = textLabel;
 }
+
+- (void)updateTextViewCell:(MBTextViewTableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
+{
+    cell.placeholderTextView.placeHolder = NSLocalizedString(@"List Detail. Ferwer than 100 char.", nil);
+}
+
 - (void)updateSwitchCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
 {
     cell.textLabel.text = NSLocalizedString(@"Public", nil);

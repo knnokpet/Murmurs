@@ -11,9 +11,11 @@
 #import "MBList.h"
 
 #import "MBTextFieldTableViewCell.h"
+#import "MBTextViewTableViewCell.h"
 #import "MBSwitchTableViewCell.h"
 
 static NSString *textFieldCellIdentifier = @"TextFieldCellIdentifier";
+static NSString *textViewCellIdentifier = @"TextViewCellIdentifier";
 static NSString *switchCellIdentifier = @"SwitchCellIdentifier";
 
 @protocol MBCreateListViewControllerDelegate;
