@@ -28,8 +28,8 @@
 
 - (void)common
 {
-    self.selectionStyle = UITableViewCellSelectionStyleNone;
     [self.gapButton setTitle:NSLocalizedString(@"Loading Gapped Tweet", nil) forState:UIControlStateNormal];
+    [self.gapButton setTitle:NSLocalizedString(@"Now Loading...", nil) forState:UIControlStateDisabled];
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated
@@ -37,6 +37,17 @@
     [super setSelected:selected animated:animated];
 
     // Configure the view for the selected state
+}
+
+- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event
+{
+    UIView *hittedView = [super hitTest:point withEvent:event];
+    
+    if (hittedView == self.gapButton) {
+        return hittedView;
+    }
+    
+    return nil;
 }
 
 @end
