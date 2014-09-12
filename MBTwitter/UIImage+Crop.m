@@ -15,9 +15,13 @@
 {
     CIImage *ciImage = [[CIImage alloc] initWithImage:image];
     CGSize imageSize = CGSizeMake(image.size.width * image.scale, image.size.height * image.scale);
+
     
     CGFloat screenScale = [UIScreen mainScreen].scale;
     CGSize croppingSize = CGSizeMake(size.width * screenScale, size.height * screenScale);
+    if (imageSize.width < croppingSize.width || imageSize.height < croppingSize.height) {
+        croppingSize = size;
+    }
     
     CGPoint center = CGPointMake(imageSize.width / 2.f, imageSize.height / 2.f);
     CIImage *centerCroppedImage = [ciImage imageByCroppingToRect:CGRectMake(center.x - croppingSize.width / 2.f, center.y - croppingSize.height / 2.f, croppingSize.width, croppingSize.height)];
