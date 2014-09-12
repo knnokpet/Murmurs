@@ -89,7 +89,32 @@
 
 
 #pragma mark -
-#pragma mark TwitterAPICenter Delegate
+#pragma mark UIScrollView Delegate
 
+#pragma mark
+- (void)timelineScrollViewDidScroll:(UIScrollView *)scrollView
+{
+    if (self.dataSource.count == 0) {
+        return;
+    }
+    
+    if ([_delegate respondsToSelector:@selector(listTimelineScrollViewDidScroll:scrollView:)]) {
+        [_delegate listTimelineScrollViewDidScroll:self scrollView:scrollView];
+    }
+}
+
+- (void)timelineScrollViewWillBeginDragging:(UIScrollView *)scrollView
+{
+    if ([_delegate respondsToSelector:@selector(listTimelineScrollViewWillBeginDragging:)]) {
+        [_delegate listTimelineScrollViewWillBeginDragging:scrollView];
+    }
+}
+
+- (void)timelineScrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
+{
+    if ([_delegate respondsToSelector:@selector(listTimelineScrollViewDidEndDragging:willDecelerate:)]) {
+        [_delegate listTimelineScrollViewDidEndDragging:scrollView willDecelerate:decelerate];
+    }
+}
 
 @end
