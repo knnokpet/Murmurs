@@ -22,7 +22,7 @@
 "Description" = "詳細";
 "Public" = "公開";
 
-"@Tweet" = "@ ツイート";
+"@Tweet" = "@ツイート";
 "Tweet" = "ツイート";
 "Cancel Retweet" = "リツイートを取り消す";
 "Retweet" = "リツイート";
@@ -88,6 +88,11 @@
 
 "UnSubscrive" = "登録解除";
 "Subscrive" = "登録";
+"Delete" = "削除";
+"List Name. Fewer than  25 char." = "リスト名を 25 文字以内で。";
+"Enter List Detail" = "リストの詳細は 100 文字以内です。";
+"Ferwer than 25 char.\"-\", \"_\" and Number." = "25 文字以内。数字と\"-\", \"_\" も使用可能。";
+"List Detail. Ferwer than 100 char." = "リストの説明を 100 文字以内で。";
 
 "Send to %@" = "%@ へのリプライ";
 "Post" = "投稿";

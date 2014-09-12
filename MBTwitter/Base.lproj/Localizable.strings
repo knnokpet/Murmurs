@@ -88,6 +88,10 @@
 
 "UnSubscrive" = "UnSubscrive";
 "Subscrive" = "Subscrive";
+"Delete" = "Delete";
+"List Name. Fewer than  25 char." = "List Name. Fewer than  25 char.";
+"Ferwer than 25 char.\"-\", \"_\" and Number." = "Ferwer than 25 char.\"-\", \"_\" and Number.";
+"List Detail. Ferwer than 100 char." = "List Detail. Ferwer than 100 char.";
 
 "Send to %@" = "Send to %@";
 "Post" = "Post";
