@@ -78,7 +78,7 @@ static NSString *deleteListCellIdentifier = @"DeleteListCellIdentifier";
 - (void)didPushDoneButton
 {
     MBTextFieldTableViewCell *listNameCell = (MBTextFieldTableViewCell *)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
-    MBTextFieldTableViewCell *descriptionCell = (MBTextFieldTableViewCell *)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:0]];
+    MBTextViewTableViewCell *descriptionCell = (MBTextViewTableViewCell *)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:0]];
     MBSwitchTableViewCell *switchCell = (MBSwitchTableViewCell *)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:2 inSection:0]];
     NSString *listName = listNameCell.textField.text;
     BOOL isOK = [self checksListName:listName];
@@ -86,7 +86,7 @@ static NSString *deleteListCellIdentifier = @"DeleteListCellIdentifier";
         return;
     }
     
-    NSString *description = descriptionCell.textField.text;
+    NSString *description = descriptionCell.placeholderTextView.text;
     BOOL isON = switchCell.switchView.on;
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
@@ -105,14 +105,23 @@ static NSString *deleteListCellIdentifier = @"DeleteListCellIdentifier";
 #pragma mark UITableview Datasource & Delegate
 - (NSInteger )numberOfSectionsInTableView:(UITableView *)tableView
 {
-    return 3;
+    return 4;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+{
+    CGFloat height = 0;
+    if (section == 3) {
+        height = 40;
+    }
+    return height;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     if (0 == section) {
-        return 3;
-    } else if (1 == section || 2 == section) {
+        return 2;
+    } else {
         return 1;
     }
     
@@ -128,19 +137,23 @@ static NSString *deleteListCellIdentifier = @"DeleteListCellIdentifier";
             MBTextFieldTableViewCell *textFieldCell = (MBTextFieldTableViewCell *)cell;
             textFieldCell.textField.text = self.list.name;
         }else if (1 == indexPath.row) {
-            cell = [self.tableView dequeueReusableCellWithIdentifier:textFieldCellIdentifier];
-            MBTextFieldTableViewCell *textFieldCell = (MBTextFieldTableViewCell *)cell;
-            textFieldCell.textField.text = self.list.detail;
-        }else if (2 == indexPath.row) {
-            cell = [self.tableView dequeueReusableCellWithIdentifier:switchCellIdentifier];
-            MBSwitchTableViewCell *switcCell = (MBSwitchTableViewCell *)cell;
-            [switcCell.switchView setOn:self.list.isPublic];
+            cell = [self.tableView dequeueReusableCellWithIdentifier:textViewCellIdentifier];
+            MBTextViewTableViewCell *textViewCell = (MBTextViewTableViewCell *)cell;
+            textViewCell.placeholderTextView.text = self.list.detail;
+            
         }
         [self updateCell:cell atIndexpath:indexPath];
-    } else if (1 == indexPath.section) {
+        
+    } else if (indexPath.section == 1) {
+        cell = [self.tableView dequeueReusableCellWithIdentifier:switchCellIdentifier];
+        MBSwitchTableViewCell *switcCell = (MBSwitchTableViewCell *)cell;
+        [switcCell.switchView setOn:self.list.isPublic];
+        [self updateCell:cell atIndexpath:indexPath];
+        
+    }else if (2 == indexPath.section) {
         cell = [self.tableView dequeueReusableCellWithIdentifier:editListUserCellIdentifier];
         cell.textLabel.text = NSLocalizedString(@"Member", nil);
-    } else if (2 == indexPath.section) {
+    } else if (3 == indexPath.section) {
         cell = [self.tableView dequeueReusableCellWithIdentifier:deleteListCellIdentifier];
         if (!cell) {
             cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:deleteListCellIdentifier];
@@ -156,14 +169,14 @@ static NSString *deleteListCellIdentifier = @"DeleteListCellIdentifier";
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (1 == indexPath.section) {
+    if (indexPath.section == 2) {
         MBListMembersViewController *listMembersViewController = [[MBListMembersViewController alloc] initWithNibName:@"MBUsersViewController" bundle:nil];
         listMembersViewController.delegate = self;
         [listMembersViewController setList:self.list];
         listMembersViewController.reservedRemovingUsers = self.removeListMembers;
         [listMembersViewController setEditing:YES animated:NO];
         [self.navigationController pushViewController:listMembersViewController animated:YES];
-    } else if (2 == indexPath.section) {
+    } else if (indexPath.section == 3) {
         UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) destructiveButtonTitle:NSLocalizedString(@"Delete List", nil) otherButtonTitles:nil, nil];
         [actionSheet showInView:self.view];
         [tableView deselectRowAtIndexPath:indexPath animated:YES];
