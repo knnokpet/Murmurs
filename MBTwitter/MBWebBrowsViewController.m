@@ -14,6 +14,9 @@
 
 @property (nonatomic, readonly) MBLoadingView *loadingView;
 
+@property (nonatomic, readonly) UIBarButtonItem *goBackBarButtonItem;
+@property (nonatomic, readonly) UIBarButtonItem *goForwardBarButtonItem;
+
 @end
 
 @implementation MBWebBrowsViewController
@@ -53,6 +56,13 @@
 - (void)configureNavigationitem
 {
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Done", nil) style:UIBarButtonItemStyleDone target:self action:@selector(didPushDoneButton)];
+    
+    _goBackBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"goBack"] style:UIBarButtonItemStylePlain target:self action:@selector(goBack)];
+    _goForwardBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"goForward"] style:UIBarButtonItemStylePlain target:self action:@selector(goForward)];
+    UIBarButtonItem *space2 = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+    UIBarButtonItem *space3 = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+    [self setToolbarItems:@[self.goBackBarButtonItem, self.goForwardBarButtonItem, space2, space3] animated:NO];
+    [self.navigationController setToolbarHidden:YES];
 }
 
 - (void)viewDidLoad
@@ -83,6 +93,16 @@
     }
 }
 
+- (void)updateToolbar
+{
+    if (self.webView.canGoBack || self.webView.canGoForward) {
+        [self.navigationController setToolbarHidden:NO animated:YES];
+    }
+    
+    self.goBackBarButtonItem.enabled = self.webView.canGoBack;
+    self.goForwardBarButtonItem.enabled = self.webView.canGoForward;
+}
+
 #pragma mark Action
 - (void)didPushDoneButton
 {
@@ -91,13 +111,37 @@
     }
 }
 
+- (void)goBack
+{
+    if (self.webView.canGoBack) {
+        [self.webView goBack];
+    }
+}
+
+- (void)goForward
+{
+    if (self.webView.canGoForward) {
+        [self.webView goForward];
+    }
+}
+
 #pragma mark - Delegate
 #pragma mark UIWebView
+- (void)webViewDidStartLoad:(UIWebView *)webView
+{
+    [self updateToolbar];
+}
+
 - (void)webViewDidFinishLoad:(UIWebView *)webView
 {
     [self removeLoadingView];
-    
+
     self.title = [webView stringByEvaluatingJavaScriptFromString:@"document.title"];
+}
+
+- (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error
+{
+    
 }
 
 @end
