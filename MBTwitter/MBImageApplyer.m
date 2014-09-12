@@ -25,8 +25,16 @@
 
 + (UIImage *)imageForTwitter:(UIImage *)image size:(CGSize)size radius:(CGFloat)radius
 {
-    UIImage *resizedImage = [image imageForResizing:image ToSize:size];
+    UIImage *resizingImage = image;
+    
+    if (image.size.width != image.size.height) {
+        CGFloat fit = image.size.width < image.size.height ? image.size.width : image.size.height;
+       CGSize fitSize = CGSizeMake(fit / [UIScreen mainScreen].scale, fit / [UIScreen mainScreen].scale);
+        resizingImage = [UIImage centerCroppingImageWithImage:image atSize:fitSize];
+    }
+    UIImage *resizedImage = [image imageForResizing:resizingImage ToSize:size];
     UIImage *radiusImage = [resizedImage imageWithRadius:radius];
+
     return radiusImage;
 }
 
