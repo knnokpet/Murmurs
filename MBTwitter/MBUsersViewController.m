@@ -18,7 +18,6 @@ static NSString *usersCellIdentifier = @"UsersCellIdentifier";
 
 @interface MBUsersViewController ()
 
-
 @end
 
 @implementation MBUsersViewController
@@ -183,6 +182,7 @@ static NSString *usersCellIdentifier = @"UsersCellIdentifier";
     //cell.avatorImageView.userIDStr = userAtIndex.userIDStr;
     //cell.avatorImageView.avatorImage = nil;
     UIImage *avatorImage = [[MBImageCacher sharedInstance] cachedProfileImageForUserID:userAtIndex.userIDStr];
+    
     if (!avatorImage) {
         cell.avatorImageView.userIDStr = userAtIndex.userIDStr;
         cell.avatorImageView.avatorImage = nil;
@@ -197,7 +197,7 @@ static NSString *usersCellIdentifier = @"UsersCellIdentifier";
                     
                     dispatch_async(dispatch_get_main_queue(), ^{
                         if (!cell.avatorImageView.avatorImage && [cell.avatorImageView.userIDStr isEqualToString:userAtIndex.userIDStr]) {
-                            cell.avatorImageView.image = radiusImage;
+                            cell.avatorImageView.avatorImage = radiusImage;
                             
                         }
                         
@@ -222,7 +222,7 @@ static NSString *usersCellIdentifier = @"UsersCellIdentifier";
             UIImage *radiusImage = [MBImageApplyer imageForTwitter:avatorImage size:imageSize radius:cell.avatorImageView.layer.cornerRadius];
             dispatch_async(dispatch_get_main_queue(), ^{
                 if (!cell.avatorImageView.avatorImage && [cell.avatorImageView.userIDStr isEqualToString:userAtIndex.userIDStr]) {
-                    cell.avatorImageView.image = radiusImage;
+                    cell.avatorImageView.avatorImage = radiusImage;
                     
                 }
             });
@@ -262,17 +262,57 @@ static NSString *usersCellIdentifier = @"UsersCellIdentifier";
 }
 
 #pragma mark ScrollView Delegate
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView
+{
+    [self usersScrollViewDidScroll:scrollView];
+}
+
+- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
+{
+    [self usersScrollViewWillBeginDragging:scrollView];
+}
+
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
+{
+    [self fireFetchingByContentOffsetOfScrollView:scrollView];
+}
+
+- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
+{
+    if (!decelerate) {
+        [self fireFetchingByContentOffsetOfScrollView:scrollView];
+    }
+    
+    [self usersScrollViewDidEndDragging:scrollView willDecelerate:decelerate];
+}
+
+- (void)fireFetchingByContentOffsetOfScrollView:(UIScrollView *)scrollView
 {
     float max = scrollView.contentInset.top + scrollView.contentInset.bottom + scrollView.contentSize.height - scrollView.bounds.size.height;
     float current = scrollView.contentOffset.y + self.topLayoutGuide.length;
     int intMax = max * 0.5;
     int intCurrent = current;
     if (intMax < intCurrent) {
-        if (self.enableAdding) {
+        if (self.enableAdding && self.users.count != 0) {
             [self goBacksWithCursor:self.nextCursor];
         }
     }
+}
+
+#pragma mark
+- (void)usersScrollViewDidScroll:(UIScrollView *)scrollView
+{
+    
+}
+
+- (void)usersScrollViewWillBeginDragging:(UIScrollView *)scrollView
+{
+    
+}
+
+- (void)usersScrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
+{
+    
 }
 
 #pragma mark -

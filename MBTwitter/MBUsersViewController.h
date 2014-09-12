@@ -34,4 +34,8 @@
 - (void)updateTableViewDataSource:(NSArray *)addingArray;
 - (void)removeBackTimelineIndicatorView;
 
+- (void)usersScrollViewDidScroll:(UIScrollView *)scrollView;
+- (void)usersScrollViewWillBeginDragging:(UIScrollView *)scrollView;
+- (void)usersScrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate;
+
 @end
