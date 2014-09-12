@@ -44,7 +44,7 @@
 - (void)configureNavigationitem
 {
     self.navigationItem.rightBarButtonItem = self.editButtonItem;
-    self.navigationItem.leftBarButtonItem = self.navigationItem.backBarButtonItem;
+    self.navigationItem.leftBarButtonItem = nil;
 }
 
 - (void)viewDidLoad
@@ -181,13 +181,22 @@
         UIBarButtonItem *addBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(didPushAddListButton)];
         [self.navigationItem setLeftBarButtonItem:addBarButtonItem animated:animated];
     } else {
-        [self configureNavigationitem];
+        [self.navigationItem setLeftBarButtonItem:nil animated:animated];
     }
     
     [self.tableView setEditing:editing animated:YES];
     [super setEditing:editing animated:animated];
 }
 
+- (NSString *)tableView:(UITableView *)tableView titleForDeleteConfirmationButtonForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    NSString *title = NSLocalizedString(@"Delete", nil);
+    if (indexPath.section == 1) {
+        title = NSLocalizedString(@"UnSubscrive", nil);
+    }
+    
+    return title;
+}
 
 - (void)tableView:(UITableView *)tableView willBeginEditingRowAtIndexPath:(NSIndexPath *)indexPath
 {
