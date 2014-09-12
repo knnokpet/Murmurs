@@ -73,6 +73,7 @@
     }
     
     self.list = edetedList;
+    self.title = self.list.name;
     [self.listTimelineViewController.tableView reloadData];
     [self.listMembersViewController.tableView reloadData];
     
