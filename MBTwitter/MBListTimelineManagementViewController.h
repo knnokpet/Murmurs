@@ -16,7 +16,7 @@
 
 #import "MBSegmentedContainerView.h"
 
-@interface MBListTimelineManagementViewController : UIViewController < MBAOuth_TwitterAPICenterDelegate>
+@interface MBListTimelineManagementViewController : UIViewController < MBAOuth_TwitterAPICenterDelegate, MBListTimelineViewControllerDelegate, MBListMembersViewControllerScrollViewDelegate>
 
 @property (nonatomic) MBAOuth_TwitterAPICenter *aoAPICenter;
 @property (nonatomic, readonly) MBList *list;
@@ -26,8 +26,9 @@
 @property (nonatomic) MBListTimelineViewController *listTimelineViewController;
 @property (nonatomic) MBListMembersViewController *listMembersViewController;
 
-@property (weak, nonatomic) IBOutlet MBSegmentedContainerView *containerView;
-@property (weak, nonatomic) IBOutlet UISegmentedControl *segmentedController;
+@property (nonatomic, readonly) MBSegmentedContainerView *containerView;
+@property (nonatomic, readonly) UISegmentedControl *segmentedController;
+
 
 - (void)setList:(MBList *)list;
 - (void)configureNavigationItem;
