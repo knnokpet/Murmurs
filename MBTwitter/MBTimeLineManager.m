@@ -12,8 +12,10 @@
 #import "MBGapedTweet.h"
 
 #define UPDATE_KEY @"update"
-#define REMOVE_KEY @"remove"
+//#define REMOVE_KEY @"remove"
 #define GAPS_KEY @"gaps"
+#define ADDING_GAP_KEY @"addingGap"
+#define ADDING_DATA_KEY @"addingData"
 
 @interface MBTimeLineManager()
 @property (nonatomic, readonly) NSMutableArray *sourceTweets;
@@ -47,7 +49,6 @@
     for (MBGapedTweet *gap in self.gaps) {
         NSInteger index = gap.index;
         [tweets insertObject:gap atIndex:index];
-        NSLog(@"add gap");
     }
     
     return tweets;
@@ -64,12 +65,14 @@
     }
     
     NSMutableDictionary *updates = [NSMutableDictionary dictionary];
+    [updates setObject:tweets forKey:ADDING_DATA_KEY];
     
     NSInteger gapsCount = [self.gaps count];
     if (0 < gapsCount) {
+        
         for (NSInteger index = 0; index < gapsCount; index ++) {
-            BOOL isBeingAmong = [self isBeingAmong:tweets gap:self.gaps[index]];
-            if (YES == isBeingAmong) {
+            BOOL isAddingGaps = [self isAddingGaps:tweets gap:self.gaps[index]];
+            if (YES == isAddingGaps) {
                 MBGapedTweet *gapedTweet = self.gaps[index];
                 MBTweet *lastAddingTweet = [[MBTweetManager sharedInstance] storedTweetForKey:[tweets lastObject]];
                 MBTweet *firstExistingTweet = [[MBTweetManager sharedInstance] storedTweetForKey:self.sourceTweets[gapedTweet.index]];
@@ -94,6 +97,7 @@
                     // 差分チェック用のオブジェクトが被るので追加データから削除
                     NSMutableArray *addingTweets = tweets.mutableCopy;
                     [addingTweets removeLastObject];
+                    [updates setObject:addingTweets forKey:ADDING_DATA_KEY];
                     
                     NSInteger addingIndex = [addingTweets count];
                     NSMutableIndexSet *indexSet = [NSMutableIndexSet indexSetWithIndexesInRange:NSMakeRange(gapedTweet.index, addingIndex)];
@@ -113,8 +117,9 @@
                 } else if (result == NSOrderedDescending) {
                     NSLog(@"きてはならない");
                 }
+                [updates setObject:[NSNumber numberWithBool:YES] forKey:ADDING_GAP_KEY];
                 
-            } else { // NO == isBeingAmong
+            } else {
                 
                 MBTweet *lastAddingTweet = [[MBTweetManager sharedInstance] storedTweetForKey:[tweets lastObject]];
                 MBTweet *firstExistingTweet = [[MBTweetManager sharedInstance] storedTweetForKey:[_sourceTweets firstObject]];
@@ -141,6 +146,8 @@
                     // 差分チェック用のオブジェクトが被るので追加データから削除
                     NSMutableArray *addingTweets = tweets.mutableCopy;
                     [addingTweets removeLastObject];
+                    [updates setObject:addingTweets forKey:ADDING_DATA_KEY];
+                    
                     NSInteger addingTweetsIndex = [addingTweets count];
                     NSMutableIndexSet *indexSet = [NSMutableIndexSet indexSetWithIndexesInRange:NSMakeRange(0, addingTweetsIndex)];
                     [self.sourceTweets insertObjects:addingTweets atIndexes:indexSet];
@@ -184,6 +191,8 @@
             // 差分チェック用のオブジェクトが被るので追加データから削除
             NSMutableArray *addingTweets = tweets.mutableCopy;
             [addingTweets removeLastObject];
+            [updates setObject:addingTweets forKey:ADDING_DATA_KEY];
+            
             NSInteger addingTweetsIndex = [addingTweets count];
             NSMutableIndexSet *indexSet = [NSMutableIndexSet indexSetWithIndexesInRange:NSMakeRange(0, addingTweetsIndex)];
             [self.sourceTweets insertObjects:addingTweets atIndexes:indexSet];
@@ -212,7 +221,7 @@
     return result;
 }
 
-- (BOOL)isBeingAmong:(NSArray *)tweets gap:(MBGapedTweet *)gap
+- (BOOL)isAddingGaps:(NSArray *)tweets gap:(MBGapedTweet *)gap
 {
     // minus for since
     NSMutableArray *addingTweets = tweets.mutableCopy;
@@ -227,7 +236,6 @@
     
     NSComparisonResult abobeResult = [self compareTweet:existAbobe with:addingAbobe];
     NSComparisonResult belowResult = [self compareTweet:existBelow with:addingBelow];
-    NSLog(@"result = %d, result = %d", abobeResult, belowResult);
     if (NSOrderedDescending == abobeResult && NSOrderedAscending == belowResult) {
         return YES;
     }
