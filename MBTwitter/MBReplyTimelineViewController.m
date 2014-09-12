@@ -61,6 +61,7 @@
         self.aoAPICenter = [[MBAOuth_TwitterAPICenter alloc] init];
         self.aoAPICenter.delegate = self;
         self.enableBacking = YES;
+        self.requireUpdatingDatasource = NO;
         [self.tableView reloadData];
         if (0 == self.dataSource.count) {
             [self goBacksAtIndex:0];
