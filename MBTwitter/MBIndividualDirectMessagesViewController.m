@@ -41,7 +41,6 @@ static NSString *sendCellIdentifier = @"SendCellIdentifier";
 {
     CGPoint defaultToolBarPoint;
     CGSize defaultToolBarSize;
-    CGSize defaultTextViewSize;
 }
 
 @property (nonatomic) MBMessageReceiverViewController *currentReceiverViewController;
@@ -53,12 +52,8 @@ static NSString *sendCellIdentifier = @"SendCellIdentifier";
 @property (nonatomic) UIImage *partnerImage;
 @property (nonatomic) UIImage *myAccountImage;
 
-@property (nonatomic, readonly) UIToolbar *toolBar;
-@property (nonatomic, readonly) UITextView *textView;
-@property (nonatomic, readonly) UIBarButtonItem *cameraButton;
-@property (nonatomic, readonly) UIBarButtonItem *sendButton;
-
-@property (nonatomic) NSNumber *currentKeyboardHeight;
+@property (nonatomic, readonly) MBDirectMessageToolbar *displayToolbar;
+@property (nonatomic, readonly) MBDirectMessageToolbar *keyboardToolbar;
 
 
 @end
@@ -121,45 +116,23 @@ static NSString *sendCellIdentifier = @"SendCellIdentifier";
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
     self.tableView.keyboardDismissMode = UIScrollViewKeyboardDismissModeInteractive;
-    
-    
-    _cameraButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCamera target:self action:@selector(didPushCameraButton:)]; /* unused */
-    _cameraButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
-    _sendButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Send", nil) style:UIBarButtonItemStyleDone target:self action:@selector(didPushSendButton:)];
-    
-    defaultTextViewSize = CGSizeMake(self.view.bounds.size.width - 100, 36);
-    _textView = [[UITextView alloc] initWithFrame:CGRectMake(0, 0, defaultTextViewSize.width, defaultTextViewSize.height)];
-    self.textView.backgroundColor = [UIColor whiteColor];
-    self.textView.layer.cornerRadius = 4.0f;
-    self.textView.layer.borderWidth = 0.5f;
-    CGColorRef lineColorRef = CGColorCreateCopyWithAlpha([UIColor lightGrayColor].CGColor, 0.5);
-    self.textView.layer.borderColor = lineColorRef;
-    CGColorRelease(lineColorRef);
-    self.textView.font = [UIFont systemFontOfSize:17.0f];
-    self.textView.scrollEnabled = NO;
-    
-    UIBarButtonItem *textBarItem = [[UIBarButtonItem alloc] initWithCustomView:self.textView];
+
     
 
     defaultToolBarSize = CGSizeMake(self.view.bounds.size.width, 44.0f);
-    defaultToolBarPoint = CGPointMake(0,self.view.bounds.size.height - self.tabBarController.tabBar.bounds.size.height - defaultToolBarSize.height);
-    _toolBar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, defaultToolBarPoint.y, defaultToolBarSize.width, defaultToolBarSize.height)];
-    [self.toolBar setItems:@[self.cameraButton, textBarItem, self.sendButton]];
-    self.textView.delegate = self;
-    __weak UIView *toolBar = self.toolBar;
-    self.textView.inputAccessoryView = toolBar;
-    [self.view addSubview:self.toolBar];
+    defaultToolBarPoint = CGPointMake(0,self.tabBarController.tabBar.frame.origin.y - defaultToolBarSize.height);
+
     
+    [self configureInputAccessoryToolbar];
+
     
     UIEdgeInsets contentInsets = self.tableView.contentInset;
     UIEdgeInsets scrollInsets = self.tableView.scrollIndicatorInsets;
-    contentInsets.bottom = self.toolBar.frame.size.height;
-    scrollInsets.bottom = self.toolBar.frame.size.height;
+    contentInsets.bottom = self.displayToolbar.frame.size.height;
+    scrollInsets.bottom = self.displayToolbar.frame.size.height;
     self.tableView.contentInset = contentInsets;
     self.tableView.scrollIndicatorInsets = scrollInsets;
 
-    self.sendButton.title = NSLocalizedString(@"Send", nil);
-    self.sendButton.enabled = NO;
     
     [self commonConfigureNavigationItem];
 }
@@ -179,8 +152,7 @@ static NSString *sendCellIdentifier = @"SendCellIdentifier";
         [self.tableView setHidden:YES];
         
         [self.receiverTextField addTarget:self action:@selector(didChangeTextField) forControlEvents:UIControlEventEditingChanged];
-        __weak UIView *toolBar = self.toolBar;
-        self.receiverTextField.inputAccessoryView = toolBar;
+        self.receiverTextField.inputAccessoryView = self.keyboardToolbar;
         
     } else {
         
@@ -188,6 +160,22 @@ static NSString *sendCellIdentifier = @"SendCellIdentifier";
         
         [self.receiverToolbar removeFromSuperview];
     }
+}
+
+- (void)configureInputAccessoryToolbar
+{
+    _displayToolbar = [[MBDirectMessageToolbar alloc] initWithFrame:CGRectMake(0, defaultToolBarPoint.y, defaultToolBarSize.width, defaultToolBarSize.height) maxSpace:self.view.bounds.size.height - (self.navigationController.navigationBar.frame.origin.y + self.navigationController.navigationBar.bounds.size.height) - (defaultToolBarSize.height) - (self.tabBarController.tabBar.bounds.size.height)];
+    [self.displayToolbar.sendButton setTarget:self];
+    [self.displayToolbar.sendButton setAction:@selector(didPushSendButton:)];
+    self.displayToolbar.textView.delegate = self;
+    [self.view addSubview:self.displayToolbar];
+    
+    _keyboardToolbar = [[MBDirectMessageToolbar alloc] initWithFrame:CGRectMake(0, 0, defaultToolBarSize.width, defaultToolBarSize.height)];
+    self.keyboardToolbar.toolbarDelegate = self;
+    [self.keyboardToolbar.sendButton setTarget:self];
+    [self.keyboardToolbar.sendButton setAction:@selector(didPushSendButton:)];
+    
+    self.displayToolbar.textView.inputAccessoryView = self.keyboardToolbar;
 }
 
 - (void)commonConfigureNavigationItem
@@ -233,7 +221,6 @@ static NSString *sendCellIdentifier = @"SendCellIdentifier";
     NSNotificationCenter *nCenter = [NSNotificationCenter defaultCenter];
     [nCenter addObserver:self selector:@selector(keyBoardWillAppear:) name:UIKeyboardWillShowNotification object:nil];
     [nCenter addObserver:self selector:@selector(keyboardWillDIsappear:) name:UIKeyboardWillHideNotification object:nil];
-    [nCenter addObserver:self selector:@selector(keyboardDidDisappear:) name:UIKeyboardDidHideNotification object:nil];
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -249,10 +236,11 @@ static NSString *sendCellIdentifier = @"SendCellIdentifier";
 {
     [super viewWillDisappear:animated];
     
-    [self.textView resignFirstResponder];
+    [self.displayToolbar.textView resignFirstResponder];
+    [self.keyboardToolbar.textView resignFirstResponder];
+    self.keyboardToolbar.textView.delegate = nil;
     
     self.tableView.delegate = nil;
-    self.textView.delegate = nil;
 }
 
 - (void)viewDidDisappear:(BOOL)animated
@@ -263,7 +251,6 @@ static NSString *sendCellIdentifier = @"SendCellIdentifier";
     NSNotificationCenter *nCenter = [NSNotificationCenter defaultCenter];
     [nCenter removeObserver:self name:UIKeyboardWillShowNotification object:nil];
     [nCenter removeObserver:self name:UIKeyboardWillHideNotification object:nil];
-    [nCenter removeObserver:self name:UIKeyboardDidHideNotification object:nil];
 }
 
 - (void)didReceiveMemoryWarning
@@ -274,10 +261,11 @@ static NSString *sendCellIdentifier = @"SendCellIdentifier";
 
 #pragma mark -Instance Methods
 - (void)keyBoardWillAppear:(NSNotification *)notification
-{    
+{
+    
     NSDictionary *userInfo = notification.userInfo;
     CGSize keyboardSize = [[userInfo objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue].size;
-    self.currentKeyboardHeight = [NSNumber numberWithFloat:keyboardSize.height];
+    self.keyboardToolbar.maxSpace = self.view.bounds.size.height - (self.navigationController.navigationBar.frame.origin.y + self.navigationController.navigationBar.bounds.size.height) - (keyboardSize.height - self.keyboardToolbar.bounds.size.height);
     double duration = [[userInfo objectForKey:UIKeyboardAnimationDurationUserInfoKey] doubleValue];
     unsigned int curve = [[userInfo objectForKey:UIKeyboardAnimationCurveUserInfoKey] unsignedIntValue];
     
@@ -306,18 +294,15 @@ static NSString *sendCellIdentifier = @"SendCellIdentifier";
 
 - (void)keyboardWillDIsappear:(NSNotification *)notification
 {
+    [self.keyboardToolbar.textView resignFirstResponder];
     NSDictionary *userInfo = [notification userInfo];
     double duration = [[userInfo objectForKey:UIKeyboardAnimationDurationUserInfoKey] doubleValue];
     unsigned int curve = [[userInfo objectForKey:UIKeyboardAnimationCurveUserInfoKey] unsignedIntValue];
     
-    CGRect toolBarRect = CGRectMake(0, self.view.frame.size.height, defaultToolBarSize.width, self.toolBar.frame.size.height);
-    self.toolBar.frame = toolBarRect;
-    [self.view addSubview:self.toolBar];
-    
     UIEdgeInsets contentInsets = self.tableView.contentInset;
     UIEdgeInsets scrollInsets = self.tableView.scrollIndicatorInsets;
-    contentInsets.bottom = self.tabBarController.tabBar.frame.size.height + self.toolBar.frame.size.height;
-    scrollInsets.bottom = self.tabBarController.tabBar.frame.size.height + self.toolBar.frame.size.height;
+    contentInsets.bottom = self.tabBarController.tabBar.frame.size.height + self.displayToolbar.frame.size.height;
+    scrollInsets.bottom = self.tabBarController.tabBar.frame.size.height + self.displayToolbar.frame.size.height;
     
     
     [UIView animateWithDuration:duration delay:0.0f options:curve animations:^{
@@ -330,20 +315,6 @@ static NSString *sendCellIdentifier = @"SendCellIdentifier";
     }completion:^(BOOL stop){
         
     }];
-}
-
-- (void)keyboardDidDisappear:(NSNotification *)notification
-{
-    NSDictionary *userInfo = [notification userInfo];
-    double duration = [[userInfo objectForKey:UIKeyboardAnimationDurationUserInfoKey] doubleValue];
-    unsigned int curve = [[userInfo objectForKey:UIKeyboardAnimationCurveUserInfoKey] unsignedIntValue];
-
-    [UIView animateWithDuration:duration delay:0 options:curve animations:^{
-        CGFloat toolBarOriginY = self.view.bounds.size.height - self.tabBarController.tabBar.bounds.size.height - self.toolBar.frame.size.height;
-        CGRect toolBarRect = CGRectMake(0, toolBarOriginY, defaultToolBarSize.width, self.toolBar.frame.size.height);
-        self.toolBar.frame = toolBarRect;
-        [self.view addSubview:self.toolBar];
-    }completion:nil];
 }
 
 - (NSArray *)suggestedUserIDs:(NSArray *)resourceArray suggestString:(NSString *)suggestString
@@ -433,7 +404,7 @@ static NSString *sendCellIdentifier = @"SendCellIdentifier";
         return;
     }
     
-    NSString *sendMessage = self.textView.text;
+    NSString *sendMessage = self.keyboardToolbar.textView.text;
     
     NSUInteger nonSentIndexRow = [self.dataSource count];
     NSNumber *nonSendIndex = [NSNumber numberWithUnsignedInteger:nonSentIndexRow];
@@ -452,7 +423,8 @@ static NSString *sendCellIdentifier = @"SendCellIdentifier";
     
     [self.aoAPICenter postDirectMessage:sendMessage screenName:self.partner.screenName userID:[self.partner.userID unsignedLongLongValue]];
     
-    self.textView.text = @"";
+    self.keyboardToolbar.textView.text = @"";
+    self.displayToolbar.textView.text = @"";
 }
 
 - (IBAction)didPushCameraButton:(id)sender {
@@ -655,57 +627,12 @@ static NSString *sendCellIdentifier = @"SendCellIdentifier";
     
 }
 
-#pragma mark TextView Delegate
+#pragma mark UITextView Delegate
 - (void)textViewDidBeginEditing:(UITextView *)textView
 {
-    [textView becomeFirstResponder]; // keyboard 表示トリガー
-}
-
-- (void)textViewDidChangeSelection:(UITextView *)textView
-{
-    
-    UITextView *sizingTextView = [[UITextView alloc] init];
-    sizingTextView.attributedText = textView.attributedText;
-    CGSize textSize = [sizingTextView sizeThatFits:CGSizeMake(defaultTextViewSize.width, CGFLOAT_MAX)];
-    CGFloat defaultBarItemMargin = 3.0f;
-    CGFloat defaultKeyBoardHeight = self.currentKeyboardHeight.floatValue - textView.inputAccessoryView.frame.size.height;
-    
-    
-    CGFloat limitOriginY = (self.navigationController.navigationBar.bounds.size.height + [[UIApplication sharedApplication] statusBarFrame].size.height);
-    CGFloat maxSpace = self.view.bounds.size.height - limitOriginY - defaultKeyBoardHeight;
-    
-    CGFloat toolbarHeight = textSize.height + (defaultBarItemMargin * 2);
-    CGFloat textHeight = textSize.height;
-    if (toolbarHeight < defaultToolBarSize.height) {
-        toolbarHeight = defaultToolBarSize.height;
-        textHeight = defaultTextViewSize.height;
-    }
-    
-    
-    if (toolbarHeight > maxSpace) {
-        toolbarHeight = maxSpace;
-        textHeight = maxSpace - (defaultBarItemMargin * 2);
-        textView.scrollEnabled = YES;
-    } else {
-        textView.scrollEnabled = NO;
-    }
-    
-    CGRect toolBarRect = self.toolBar.frame;
-    toolBarRect.origin.x = 0;
-    toolBarRect.size.height = toolbarHeight;
-    self.toolBar.frame = toolBarRect;
-    
-    CGRect textFrame = self.textView.frame;
-    textFrame.size.height = textHeight;
-    self.textView.frame = textFrame;
-    
-    
-    // enable sendButton
-    if (0 < self.textView.text.length  && self.partner) {
-        self.sendButton.enabled = YES;
-    } else {
-        self.sendButton.enabled = NO;
-    }
+    __weak id weak = self.keyboardToolbar;
+    self.keyboardToolbar.textView.inputAccessoryView = weak;
+    [self.keyboardToolbar.textView becomeFirstResponder];
 }
 
 #pragma mark MessageReceiverViewController Delegate
@@ -728,7 +655,7 @@ static NSString *sendCellIdentifier = @"SendCellIdentifier";
         [self.tableView reloadData];
         [self.tableView setHidden:NO];
         [self.view insertSubview:self.tableView belowSubview:self.receiverToolbar];
-        [self.view insertSubview:self.toolBar aboveSubview:self.tableView];
+        [self.view insertSubview:self.displayToolbar aboveSubview:self.tableView];
     }
 }
 
@@ -742,12 +669,9 @@ static NSString *sendCellIdentifier = @"SendCellIdentifier";
 
 - (void)scrollReceiverViewController:(MBMessageReceiverViewController *)controller
 {
-    if ([self.receiverTextField isFirstResponder]) {
-        [self.receiverTextField resignFirstResponder];
-    }
-    if ([self.textView isFirstResponder]) {
-        [self.textView resignFirstResponder];
-    }
+    [self.receiverTextField resignFirstResponder];
+    [self.displayToolbar.textView resignFirstResponder];
+    [self.keyboardToolbar.textView resignFirstResponder];
 }
 
 #pragma mark AOuthAPICenter Delegate
@@ -780,6 +704,12 @@ static NSString *sendCellIdentifier = @"SendCellIdentifier";
         self.currentReceiverViewController.inputedString = @"";
         [self.currentReceiverViewController.tableView reloadData];
     }
+}
+
+#pragma mark MBDirectMessageToolbarDelegate
+- (void)toolbarDidChangeText:(MBDirectMessageToolbar *)toolbar
+{
+    self.displayToolbar.textView.text = toolbar.textView.text;
 }
 
 @end

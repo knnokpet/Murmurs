@@ -9,12 +9,13 @@
 #import <UIKit/UIKit.h>
 #import "MBAOuth_TwitterAPICenter.h"
 #import "MBMessageReceiverViewController.h"
+#import "MBDirectMessageToolbar.h"
 
 @protocol MBIndividualDirectMessagesViewControllerDelegate;
 @class MBUserIDManager;
 @class MBUser;
 @class MBUnderLineToolbar;
-@interface MBIndividualDirectMessagesViewController : UIViewController <MBAOuth_TwitterAPICenterDelegate, MBMessageReceiverViewControllerDelegate,  UITextViewDelegate, UIScrollViewDelegate>
+@interface MBIndividualDirectMessagesViewController : UIViewController <MBAOuth_TwitterAPICenterDelegate, MBMessageReceiverViewControllerDelegate, MBDirectMessageToolbarDelegate,  UITextViewDelegate, UIScrollViewDelegate>
 
 
 @property (nonatomic, weak) id < MBIndividualDirectMessagesViewControllerDelegate > delegate;
@@ -26,7 +27,6 @@
 
 @property (weak, nonatomic) IBOutlet MBUnderLineToolbar *receiverToolbar;
 @property (weak, nonatomic) IBOutlet UITextField *receiverTextField;
-//@property (weak, nonatomic) IBOutlet NSLayoutConstraint *receiverToolbarConstraint;
 
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 
