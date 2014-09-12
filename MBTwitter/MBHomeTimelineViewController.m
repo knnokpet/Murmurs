@@ -60,6 +60,7 @@
         self.aoAPICenter = [[MBAOuth_TwitterAPICenter alloc] init];
         self.aoAPICenter.delegate = self;
         self.enableBacking = YES;
+        self.requireUpdatingDatasource = NO;
         [self.tableView reloadData];
         
         // アカウントを変更すると保存されていたものが再び読み込まれてしまうぞ
