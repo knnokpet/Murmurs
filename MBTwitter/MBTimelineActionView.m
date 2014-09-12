@@ -9,7 +9,7 @@
 #import "MBTimelineActionView.h"
 #import "MBTimelineActionContainerView.h"
 #import "MBTimelineActionArrowView.h"
-#import "MBTimelineActionButton.h"
+#import "MBTimelineActionBoarderLineView.h"
 
 #import "MBTweet.h"
 #import "MBUserManager.h"
@@ -23,6 +23,10 @@
 @property (nonatomic) MBTimelineActionArrowView *arrowView;
 @property (nonatomic, assign) CGPoint touchedPoint;
 @property (nonatomic, assign) CGRect selectedViewFrame;
+
+@property (nonatomic) CGFloat leftSideSpaceWidth;
+@property (nonatomic) CGFloat upSideSpaceWidth;
+@property (nonatomic) CGFloat betweetSpaceWidth;
 
 @end
 
@@ -57,6 +61,7 @@
     _buttonItems = buttonItems;
     
     [self createContainerView];
+    [self createBoarderLineView];
     [self createArrowView];
 }
 
@@ -77,7 +82,7 @@
     MBTimelineActionArrowView *sizingArrowView = self.arrowView;
     MBTimelineActionContainerView *sizingContainerView = self.containerView;
     
-    CGRect bouds = CGRectMake(0, 0, sizingContainerView.bounds.size.width, sizingContainerView.bounds.size.height + sizingArrowView.bounds.size.height);
+    CGRect bouds = CGRectMake(0, 0, self.window.bounds.size.width, sizingContainerView.bounds.size.height + sizingArrowView.bounds.size.height);
     
     // self.bound,  arrowView, containerView の Y Origin 計算
     CGFloat actionViewheight = sizingArrowView.frame.size.height + sizingContainerView.frame.size.height;
@@ -103,30 +108,28 @@
     
     // 自身の限界表示位置
     CGFloat edgeWidth = 10.0f;
-    CGFloat showingMyViewOriginX = self.touchedPoint.x - bouds.size.width / 2;
-    if (showingMyViewOriginX < edgeWidth) {
-        showingMyViewOriginX = edgeWidth;
-    } else if ((showingMyViewOriginX + sizingContainerView.frame.size.width) > (self.window.bounds.size.width - edgeWidth)) {
-        showingMyViewOriginX = self.window.bounds.size.width - sizingContainerView.frame.size.width - edgeWidth;
+    CGFloat showingContainerViewOriginX = self.touchedPoint.x - sizingContainerView.bounds.size.width / 2;
+    if (showingContainerViewOriginX < edgeWidth) {
+        showingContainerViewOriginX = edgeWidth;
+    } else if ((showingContainerViewOriginX + sizingContainerView.frame.size.width) > (self.window.bounds.size.width - edgeWidth)) {
+        showingContainerViewOriginX = self.window.bounds.size.width - sizingContainerView.frame.size.width - edgeWidth;
     }
-    
-    bouds.origin.x = showingMyViewOriginX;
     
     
     // arrowView, containerView の X Origin 計算
     CGRect containeRect = self.containerView.frame;
-    containeRect.origin = CGPointMake(0, showingContainerViewOriginY);
+    containeRect.origin = CGPointMake(showingContainerViewOriginX, showingContainerViewOriginY);
     self.containerView.frame = containeRect;
     
     
     // arrowView の限界表示位置は、containeView の両端から 10 に調整
-    CGFloat showingArrowViewOriginX = bouds.size.width / 2 - sizingArrowView.frame.size.width / 2;
-    if (showingArrowViewOriginX < bouds.origin.x) {
-        showingArrowViewOriginX = bouds.origin.x + 10.0f;
-    } else if (showingArrowViewOriginX + (sizingArrowView.frame.size.width)  > (bouds.origin.x + sizingContainerView.frame.size.width)) {
-        showingArrowViewOriginX = (bouds.origin.x + sizingContainerView.frame.size.width) - (sizingArrowView.frame.size.width + 10.0f);
+    CGFloat showingArrowViewOriginX = self.touchedPoint.x - sizingArrowView.bounds.size.width / 2;
+    if (showingArrowViewOriginX < showingContainerViewOriginX) {
+        showingArrowViewOriginX = showingContainerViewOriginX + 10.0f;
+    } else if (showingArrowViewOriginX + (sizingArrowView.frame.size.width)  > (showingContainerViewOriginX + sizingContainerView.frame.size.width)) {
+        showingArrowViewOriginX = (showingContainerViewOriginX + sizingContainerView.frame.size.width) - (sizingArrowView.frame.size.width + 10.0f);
     }
-    NSLog(@"arr %f %f", showingArrowViewOriginX, showingArrowViewOriginY);
+    
     CGRect arrowRect = self.arrowView.frame;
     arrowRect.origin = CGPointMake(showingArrowViewOriginX, showingArrowViewOriginY);
     self.arrowView.frame = arrowRect;
@@ -161,40 +164,56 @@
     }
     
     MBAccount *selectedAccount = [[MBAccountManager sharedInstance] currentAccount];
+    NSArray *buttonItems = @[replyButton, retweetButton, favoriteButton];
     if ([self.selectedTweet.tweetUser.userIDStr isEqualToString:selectedAccount.userID] || self.selectedTweet.tweetUser.isProtected) {
-        [self setButtonItems:@[replyButton, favoriteButton]];
-        return;
+        buttonItems = @[replyButton, favoriteButton];
     }
     
-    
-    
-    [self setButtonItems:@[replyButton, retweetButton, favoriteButton]];
+    [self setButtonItems:buttonItems];
 }
 
 - (void)createContainerView
 {
-    CGFloat leftSideSpaceWidth = 0.0f;
-    CGFloat upSideSpaceWidth = 0.0f;
-    CGFloat betweetSpaceWidth = 1.0f;
+    self.leftSideSpaceWidth = 0.0f;
+    self.upSideSpaceWidth = 0.0f;
+    self.betweetSpaceWidth = 0.5f;
     
     NSInteger buttonCount = [self.buttonItems count];
     MBTimelineActionButton *sizingButton = [self.buttonItems firstObject];
-    CGRect containeRect = CGRectMake(0, 0, (leftSideSpaceWidth * 2) + (sizingButton.frame.size.width * buttonCount) + ((buttonCount - 1) * betweetSpaceWidth), (upSideSpaceWidth * 2) + sizingButton.frame.size.height);
+    CGRect containeRect = CGRectMake(0, 0, (self.leftSideSpaceWidth * 2) + (sizingButton.frame.size.width * buttonCount) + ((buttonCount - 1) * self.betweetSpaceWidth), (self.upSideSpaceWidth * 2) + sizingButton.frame.size.height);
     
     self.containerView = [[MBTimelineActionContainerView alloc] initWithFrame:containeRect];
     
-    CGPoint buttonPoint = CGPointMake(leftSideSpaceWidth, upSideSpaceWidth);
+    CGPoint buttonPoint = CGPointMake(self.leftSideSpaceWidth, self.upSideSpaceWidth);
     NSInteger buttonIndex = 0;
     for (MBTimelineActionButton *button in self.buttonItems) {
-        buttonPoint.x = (sizingButton.frame.size.width * buttonIndex) + leftSideSpaceWidth + (betweetSpaceWidth * (buttonIndex));
+         buttonPoint.x = (sizingButton.frame.size.width * buttonIndex) + self.leftSideSpaceWidth + (self.betweetSpaceWidth * (buttonIndex ));
         CGRect buttonRect = button.frame;
         buttonRect.origin = buttonPoint;
         button.frame = buttonRect;
+        button.index = buttonIndex;
+        button.delegate = self;
         [self.containerView addSubview:button];
+        
         buttonIndex ++;
     }
     
     [self addSubview:self.containerView];
+}
+
+- (void)createBoarderLineView
+{
+    self.boarders = [NSMutableArray arrayWithCapacity:self.buttonItems.count];
+    
+    NSInteger buttonIndex = 0;
+    for (MBTimelineActionButton *button in self.buttonItems) {
+        CGRect boarderLineRect = CGRectMake(button.frame.origin.x + button.bounds.size.width, button.frame.origin.y, self.betweetSpaceWidth, button.bounds.size.height);
+        MBTimelineActionBoarderLineView *boarder = [[MBTimelineActionBoarderLineView alloc] initWithFrame:boarderLineRect];
+        [self.containerView addSubview:boarder];
+        [self.boarders addObject:boarder];
+        
+        buttonIndex ++;
+    }
 }
 
 - (void)createArrowView
@@ -232,9 +251,6 @@
 {
     self.containerView.backgroundView = view;
     [self.containerView updateBlurView];
-    /* Arrow のブラーをやめたのでコメントアウト */
-    //self.arrowView.backgroundView = view;
-    //[self.arrowView updateBlurView];
     [view addSubview:self];
     [self showViews:shows animated:animated];
 }
@@ -313,12 +329,29 @@
         
         return touchedView;
     }
-    if (touchedView == self) {
-        return touchedView;
-    }
     
     [self showViews:NO animated:YES];
     return nil;
+}
+
+#pragma mark - MBTimelineActionButton Delegate
+- (void)timelineActionButton:(MBTimelineActionButton *)control isSelected:(BOOL)selected
+{
+    NSUInteger index = control.index;
+    
+    MBTimelineActionBoarderLineView *rightBoarder = [self.boarders objectAtIndex:index];
+    if (rightBoarder) {
+        [rightBoarder setSelected:selected];
+    }
+    
+    NSInteger leftIndex = index - 1;
+    if (leftIndex < 0) {
+        return;
+    }
+    MBTimelineActionBoarderLineView *leftBoarder = [self.boarders objectAtIndex:leftIndex];
+    if (leftBoarder) {
+        [leftBoarder setSelected:selected];
+    }
 }
 
 @end
