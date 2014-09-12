@@ -51,6 +51,8 @@
 
 @property (nonatomic) NSArray *dataSource;
 @property (nonatomic, assign) BOOL enableBacking;
+@property (nonatomic, assign) BOOL requireUpdatingDatasource;
+@property (nonatomic) NSArray *updatingDatasource;
 
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 @property (nonatomic, readonly) MBLoadingView *loadingView;
@@ -71,5 +73,9 @@
 - (void)goBackTimelineMaxID:(unsigned long long)max;
 - (void)goForwardTimelineSinceID:(unsigned long long)since;
 - (void)updateTableViewDataSource:(NSArray *)addingData;
+
+- (void)timelineScrollViewDidScroll:(UIScrollView *)scrollView;
+- (void)timelineScrollViewWillBeginDragging:(UIScrollView *)scrollView;
+- (void)timelineScrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate;
 
 @end
