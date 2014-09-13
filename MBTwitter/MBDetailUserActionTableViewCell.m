@@ -7,7 +7,14 @@
 //
 
 #import "MBDetailUserActionTableViewCell.h"
+@interface MBDetailUserActionTableViewCell()
+{
+    CGSize defaultButtonSize;
+}
 
+@property (nonatomic)UIFont *titleFont;
+
+@end
 
 @implementation MBDetailUserActionTableViewCell
 
@@ -25,24 +32,26 @@
 - (void)commonInit
 {    
     self.isMyAccount = NO;
+    self.titleFont = [UIFont systemFontOfSize:15.0f];
+    defaultButtonSize = CGSizeMake(44, 44);
 }
 
 - (void)commonView
 {
-    _tweetButton = [[MBTitleWithImageButton alloc] initWithFrame:CGRectMake(0, 0, 48, 48) title:NSLocalizedString(@"Tweet", nil) image:[UIImage imageNamed:@"Pen-ActionCell"]];
-    [self.tweetButton.titleLabel setFont:[UIFont systemFontOfSize:15.0f]];
+    _tweetButton = [[MBTitleWithImageButton alloc] initWithFrame:CGRectMake(0, 0, defaultButtonSize.width, defaultButtonSize.height) title:NSLocalizedString(@"Tweet", nil) image:[UIImage imageNamed:@"Pen-ActionCell"]];
+    [self.tweetButton.titleLabel setFont:self.titleFont];
     [self.contentView addSubview:self.tweetButton];
     
-    _messageButton = [[MBTitleWithImageButton alloc] initWithFrame:CGRectMake(0, 0, 48, 48) title:NSLocalizedString(@"Message", nil) image:[UIImage imageNamed:@"Message-ActionCell"]];
-    [self.messageButton.titleLabel setFont:[UIFont systemFontOfSize:15.0f]];
+    _messageButton = [[MBTitleWithImageButton alloc] initWithFrame:CGRectMake(0, 0, defaultButtonSize.width, defaultButtonSize.height) title:NSLocalizedString(@"Message", nil) image:[UIImage imageNamed:@"Message-ActionCell"]];
+    [self.messageButton.titleLabel setFont:self.titleFont];
     
     
-    _otherButton = [[MBTitleWithImageButton alloc] initWithFrame:CGRectMake(0, 0, 48, 48) title:NSLocalizedString(@"More", nil) image:[UIImage imageNamed:@"More-ActionCell"]];
-    [self.otherButton.titleLabel setFont:[UIFont systemFontOfSize:15.0f]];
+    _otherButton = [[MBTitleWithImageButton alloc] initWithFrame:CGRectMake(0, 0, defaultButtonSize.width, defaultButtonSize.height) title:NSLocalizedString(@"More", nil) image:[UIImage imageNamed:@"More-ActionCell"]];
+    [self.otherButton.titleLabel setFont:self.titleFont];
     [self.contentView addSubview:self.otherButton];
     
     _followButton = [[MBTitleWithImageButton alloc] initWithFrame:CGRectMake(0, 0, 48, 48) title:NSLocalizedString(@"Follow!", nil) image:[UIImage imageNamed:@"man-Plus-ActionCell"]];
-    [self.followButton.titleLabel setFont:[UIFont systemFontOfSize:15.0f]];
+    [self.followButton.titleLabel setFont:self.titleFont];
     [self.contentView addSubview:self.followButton];
     
 }
@@ -84,14 +93,14 @@
         [self.followButton setTitle:NSLocalizedString(@"Follow!", nil) forState:UIControlStateNormal];
         [self.followButton setButtonTitle:NSLocalizedString(@"Follow!", nil)];
         [self.followButton setButtonImage:[UIImage imageNamed:@"man-Plus-ActionCell"]];
-        [self.followButton.titleLabel setFont:[UIFont systemFontOfSize:15.0f]];
+        [self.followButton.titleLabel setFont:self.titleFont];
         
     } else {
         self.followButton.enabled = NO;
         [self.followButton setTitle:NSLocalizedString(@"Following!", nil) forState:UIControlStateNormal];
         [self.followButton setButtonTitle:NSLocalizedString(@"Following!", nil)];
         [self.followButton setButtonImage:[UIImage imageNamed:@"man-Check-Disenabled"]];
-        [self.followButton.titleLabel setFont:[UIFont systemFontOfSize:14.0f]];
+        [self.followButton.titleLabel setFont:self.titleFont];
     }
     [self setNeedsLayout];
 }
@@ -105,7 +114,7 @@
         }
     } else {
     }
-    [self.followButton.titleLabel setFont:[UIFont systemFontOfSize:15.0f]];
+    [self.followButton.titleLabel setFont:self.titleFont];
     
     [self setNeedsLayout];
 }
@@ -121,7 +130,7 @@
         
     }
     
-    [self.followButton.titleLabel setFont:[UIFont systemFontOfSize:15.0f]];
+    [self.followButton.titleLabel setFont:self.titleFont];
     
     [self setNeedsLayout];
 }
@@ -134,7 +143,7 @@
         self.followButton.enabled = NO;
     }
     
-    [self.followButton.titleLabel setFont:[UIFont systemFontOfSize:15.0f]];
+    [self.followButton.titleLabel setFont:self.titleFont];
     [self.followButton sizeToFit];
     
     [self setNeedsLayout];
@@ -158,14 +167,15 @@
     
     CGRect contentBounds = self.contentView.bounds;
     CGFloat centerOriginY = self.contentView.bounds.size.height / 2;
-    CGFloat buttonMargin = 0.0f;
-    [self.tweetButton sizeToFit];
-    [self.messageButton sizeToFit];
-    [self.otherButton sizeToFit];
-    [self.followButton sizeToFit];
+    CGFloat buttonMargin = 8.0f;
+    CGFloat sideMargin = 16.0f;
+    [self fitButtonSizeForTitleAndImage:self.tweetButton];
+    [self fitButtonSizeForTitleAndImage:self.messageButton];
+    [self fitButtonSizeForTitleAndImage:self.otherButton];
+    [self fitButtonSizeForTitleAndImage:self.followButton];
     
     CGRect tweetRect = self.tweetButton.frame;
-    tweetRect.origin = CGPointMake(contentBounds.origin.x, centerOriginY - tweetRect.size.height / 2);
+    tweetRect.origin = CGPointMake(contentBounds.origin.x + sideMargin, centerOriginY - tweetRect.size.height / 2);
     self.tweetButton.frame = tweetRect;
     
     CGRect messageRect = self.messageButton.frame;
@@ -181,8 +191,25 @@
     self.otherButton.frame = otherRect;
     
     CGRect followRect = self.followButton.frame;
-    followRect.origin = CGPointMake(contentBounds.size.width - followRect.size.width , centerOriginY - followRect.size.height / 2);
+    followRect.origin = CGPointMake(contentBounds.size.width - followRect.size.width - sideMargin , centerOriginY - followRect.size.height / 2);
     self.followButton.frame = followRect;
+}
+
+- (void)fitButtonSizeForTitleAndImage:(MBTitleWithImageButton *)button
+{
+    CGFloat width = defaultButtonSize.width;
+    CGFloat height = defaultButtonSize.height;
+    if (button.titleLabel.bounds.size.width > defaultButtonSize.width) {
+        width = button.titleLabel.bounds.size.width;
+    }
+    
+    if (button.titleLabel.bounds.size.height + button.imageView.bounds.size.height > height) {
+        height = button.titleLabel.bounds.size.height + button.imageView.bounds.size.height;
+    }
+    
+    CGRect buttonRect = button.frame;
+    buttonRect.size = CGSizeMake(width, height);
+    button.frame = buttonRect;
 }
 
 - (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event
