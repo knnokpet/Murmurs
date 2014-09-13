@@ -342,7 +342,8 @@ typedef enum ActionSheetTag {
     [self.pageControl setNumberOfPages:pageCount];
     
     [self.scrollView setNeedsDisplay];
-    [self.tableView reloadData];
+    [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationAutomatic];
+    
     
     [self fetchRelationship];
 
@@ -569,6 +570,7 @@ typedef enum ActionSheetTag {
         cell.isMyAccount = YES;
     }
     
+    [cell layoutIfNeeded];
 }
 
 - (void)updateCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
@@ -719,9 +721,11 @@ typedef enum ActionSheetTag {
             if (NSOrderedSame == [self.user.userID compare:relationship.userID]) {
                 self.user.relationship = relationship;
                 NSLog(@"isf %hhd  sentFo %hhd fob %hhd ", relationship.isFollowing, relationship.sentFollowRequest, relationship.followdByTheUser);
+                
+                [self configureOtherActions];
                 UITableViewCell *actionCell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
                 [self updateActionCell:(MBDetailUserActionTableViewCell *)actionCell];
-                [self configureOtherActions];
+                
             }
         }
         NSLog(@"relation count = %d", relationships.count);
