@@ -162,7 +162,8 @@
                     [updates setObject:[NSNumber numberWithBool:NO] forKey:GAPS_KEY];
                     
                 } else if (result == NSOrderedDescending) {
-                    [self.sourceTweets addObjectsFromArray:tweets];
+                    MBTweet *lastExistingTweet = [[MBTweetManager sharedInstance] storedTweetForKey:[self.sourceTweets lastObject]];
+                    [self.sourceTweets addObjectsFromArray:[self removeSavedDuplicatingTweets:tweets lastExistingTweet:lastExistingTweet]];
                     
                     [updates setObject:[NSNumber numberWithBool:NO] forKey:UPDATE_KEY];
                     
@@ -201,7 +202,8 @@
             [updates setObject:[NSNumber numberWithBool:NO] forKey:GAPS_KEY];
             
         } else if (result == NSOrderedDescending) {
-            [self.sourceTweets addObjectsFromArray:tweets];
+            MBTweet *lastExistingTweet = [[MBTweetManager sharedInstance] storedTweetForKey:[self.sourceTweets lastObject]];
+            [self.sourceTweets addObjectsFromArray:[self removeSavedDuplicatingTweets:tweets lastExistingTweet:lastExistingTweet]];
             
             [updates setObject:[NSNumber numberWithBool:NO] forKey:UPDATE_KEY];
             
@@ -241,6 +243,35 @@
     }
     
     return NO;
+}
+
+- (NSArray *)removeSavedDuplicatingTweets:(NSArray *)sourceTweets lastExistingTweet:(MBTweet *)existTweet
+{
+    MBTweet *firstAddingTweet = [[MBTweetManager sharedInstance] storedTweetForKey:[sourceTweets firstObject]];
+    if (!existTweet || firstAddingTweet) {
+        return sourceTweets;
+    }
+    
+    if (firstAddingTweet.tweetID < existTweet.tweetID) {
+        return sourceTweets;
+    }
+    
+    if ([existTweet.tweetID compare:firstAddingTweet.tweetID] == NSOrderedDescending) {
+        return sourceTweets;
+    }
+    
+    NSInteger index = 0;
+    for (NSString *key in sourceTweets) {
+        MBTweet *tweet = [[MBTweetManager sharedInstance] storedTweetForKey:key];
+        if (tweet.tweetID < existTweet.tweetID) {
+            break;
+        }
+        index++;
+    }
+    
+    NSMutableArray *removedTweets = sourceTweets.mutableCopy;
+    [removedTweets removeObjectsAtIndexes:[NSIndexSet indexSetWithIndex:index]];
+    return removedTweets;
 }
 
 - (void)removeTweetAtIndex:(NSUInteger)index
