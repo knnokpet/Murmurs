@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="5056" systemVersion="13E28" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="6245" systemVersion="13E28" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3733"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6238"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
@@ -15,15 +15,13 @@
                 <subviews>
                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="QPo-ZH-rwu">
                         <rect key="frame" x="16" y="10" width="48" height="48"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="48" id="mT1-1v-VvI"/>
                             <constraint firstAttribute="width" constant="48" id="zyb-NC-heh"/>
                         </constraints>
                     </imageView>
                     <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="CharacterName" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Jux-ba-JOS">
-                        <rect key="frame" x="80" y="13" width="124" height="21"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <rect key="frame" x="72" y="14" width="124" height="21"/>
                         <constraints>
                             <constraint firstAttribute="width" relation="lessThanOrEqual" constant="147" id="Ifm-mc-2L7"/>
                         </constraints>
@@ -31,15 +29,13 @@
                         <nil key="highlightedColor"/>
                     </label>
                     <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="ScreenName" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uFp-Hn-F7t">
-                        <rect key="frame" x="80" y="34" width="177" height="17"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <rect key="frame" x="72" y="34" width="185" height="17"/>
                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                        <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                         <nil key="highlightedColor"/>
                     </label>
                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="E4t-0J-xfC">
                         <rect key="frame" x="263" y="18" width="32" height="32"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <constraints>
                             <constraint firstAttribute="width" constant="32" id="2vO-v1-6mH"/>
                             <constraint firstAttribute="height" constant="32" id="Ykr-Vr-iWf"/>
@@ -47,8 +43,7 @@
                         <state key="normal" image="bird_blue_32.png"/>
                     </button>
                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="VerifiedBadge.png" translatesAutoresizingMaskIntoConstraints="NO" id="AZ5-dt-XlB">
-                        <rect key="frame" x="206" y="14" width="20" height="20"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <rect key="frame" x="198" y="15" width="20" height="20"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="20" id="kvu-aQ-NQB"/>
                             <constraint firstAttribute="width" constant="20" id="m1Q-Tf-Xzm"/>
@@ -60,10 +55,10 @@
                     <constraint firstItem="QPo-ZH-rwu" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="16" id="85n-yC-YBv"/>
                     <constraint firstAttribute="trailing" secondItem="uFp-Hn-F7t" secondAttribute="trailing" constant="30" id="Kw6-Qj-ivs"/>
                     <constraint firstItem="QPo-ZH-rwu" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="10" id="f83-t1-jec"/>
-                    <constraint firstItem="Jux-ba-JOS" firstAttribute="leading" secondItem="QPo-ZH-rwu" secondAttribute="trailing" constant="16" id="g50-BL-8Aq"/>
-                    <constraint firstItem="uFp-Hn-F7t" firstAttribute="leading" secondItem="QPo-ZH-rwu" secondAttribute="trailing" constant="16" id="kBD-Th-T3g"/>
+                    <constraint firstItem="Jux-ba-JOS" firstAttribute="leading" secondItem="QPo-ZH-rwu" secondAttribute="trailing" constant="8" id="g50-BL-8Aq"/>
+                    <constraint firstItem="uFp-Hn-F7t" firstAttribute="leading" secondItem="QPo-ZH-rwu" secondAttribute="trailing" constant="8" id="kBD-Th-T3g"/>
                     <constraint firstItem="uFp-Hn-F7t" firstAttribute="centerY" secondItem="QPo-ZH-rwu" secondAttribute="centerY" constant="8" id="oOh-w8-IK5"/>
-                    <constraint firstItem="Jux-ba-JOS" firstAttribute="centerY" secondItem="QPo-ZH-rwu" secondAttribute="centerY" constant="-10.5" id="rew-8f-ujL"/>
+                    <constraint firstItem="Jux-ba-JOS" firstAttribute="centerY" secondItem="QPo-ZH-rwu" secondAttribute="centerY" constant="-10" id="rew-8f-ujL"/>
                     <constraint firstAttribute="trailing" secondItem="E4t-0J-xfC" secondAttribute="trailing" constant="-8" id="tuf-7D-wph"/>
                     <constraint firstItem="E4t-0J-xfC" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="18" id="twF-di-zE9"/>
                     <constraint firstItem="AZ5-dt-XlB" firstAttribute="leading" secondItem="Jux-ba-JOS" secondAttribute="trailing" constant="2" id="vPw-HQ-kjv"/>
@@ -83,4 +78,9 @@
         <image name="VerifiedBadge.png" width="40" height="40"/>
         <image name="bird_blue_32.png" width="32" height="25"/>
     </resources>
+    <simulatedMetricsContainer key="defaultSimulatedMetrics">
+        <simulatedStatusBarMetrics key="statusBar"/>
+        <simulatedOrientationMetrics key="orientation"/>
+        <simulatedScreenMetrics key="destination" type="retina4"/>
+    </simulatedMetricsContainer>
 </document>

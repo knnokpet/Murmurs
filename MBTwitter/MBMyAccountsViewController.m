@@ -75,12 +75,7 @@ static NSString *imageKey = @"ImageKey";
     _aoAPICenter = [[MBAOuth_TwitterAPICenter alloc] init];
     _aoAPICenter.delegate = self;
     
-    [[NSNotificationCenter defaultCenter] addObserverForName:@"ChangeMyAccount" object:nil queue:nil usingBlock:^ (NSNotification *notification) {
-        _aoAPICenter = [[MBAOuth_TwitterAPICenter alloc] init];
-        _aoAPICenter.delegate = self;
-        NSLog(@"change Account in MyAccountViewController");
-        
-    }];
+    [self receiveChangedAccountNotification];
 }
 
 - (void)configureDataSource
@@ -182,6 +177,15 @@ static NSString *imageKey = @"ImageKey";
 
 #pragma mark -
 #pragma mark Instance Methods
+- (void)receiveChangedAccountNotification
+{
+    [[NSNotificationCenter defaultCenter] addObserverForName:@"ChangeMyAccount" object:nil queue:nil usingBlock:^ (NSNotification *notification) {
+        _aoAPICenter = [[MBAOuth_TwitterAPICenter alloc] init];
+        _aoAPICenter.delegate = self;
+        NSLog(@"change Account %@ in MyAccountViewController", [[MBAccountManager sharedInstance] currentAccount].screenName);
+    }];
+}
+
 - (void)requestAccessForDeviceAccount
 {
     MBAccountManager *accountManager = [MBAccountManager sharedInstance];

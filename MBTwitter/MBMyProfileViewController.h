@@ -9,6 +9,7 @@
 #import "MBDetailUserViewController.h"
 #import "MBMyAccountsViewController.h"
 #import "MBPostTweetViewController.h"
+#import "MBSearchedTweetViewController.h"
 
 @interface MBMyProfileViewController : MBDetailUserViewController <MBMyAccountsViewControlerDelegate, MBPostTweetViewControllerDelegate>
 

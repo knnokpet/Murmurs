@@ -74,6 +74,8 @@
 - (void)goForwardTimelineSinceID:(unsigned long long)since;
 - (void)updateTableViewDataSource:(NSArray *)addingData;
 
+- (UIBarButtonItem *)backButtonItem;
+
 - (void)timelineScrollViewDidScroll:(UIScrollView *)scrollView;
 - (void)timelineScrollViewWillBeginDragging:(UIScrollView *)scrollView;
 - (void)timelineScrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate;

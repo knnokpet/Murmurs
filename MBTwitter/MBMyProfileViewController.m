@@ -33,7 +33,7 @@
 
 - (void)configureNavigationItem
 {
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCompose target:self action:@selector(didPushTweetButton)];
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch target:self action:@selector(didPushSearchButton)];
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Account", nil) style:UIBarButtonItemStylePlain target:self action:@selector(didPushAccountButton)];
 }
 
@@ -98,6 +98,14 @@
     postTweetViewController.delegate = self;
     UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:postTweetViewController];
     [self.navigationController presentViewController:navigationController animated:YES completion:nil];
+    
+}
+
+- (void)didPushSearchButton
+{
+    MBSearchedTweetViewController *searchViewController = [[MBSearchedTweetViewController alloc] init];
+    UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:searchViewController];
+    [self.navigationController pushViewController:navigationController animated:YES];
 }
 
 /*

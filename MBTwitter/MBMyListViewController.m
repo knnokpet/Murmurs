@@ -9,8 +9,6 @@
 #import "MBMyListViewController.h"
 
 
-#import "MBNavigationControllerTitleView.h"
-
 @interface MBMyListViewController ()
 
 @property (nonatomic) NSMutableArray *dataSouece;
@@ -44,17 +42,22 @@
 - (void)configureNavigationitem
 {
     self.navigationItem.rightBarButtonItem = self.editButtonItem;
-    self.navigationItem.leftBarButtonItem = nil;
+    [self configureLeftNavigationItemWithAnimated:NO];
+}
+
+- (void)configureLeftNavigationItemWithAnimated:(BOOL)animated
+{
+    [self.navigationItem setLeftBarButtonItem:nil animated:animated];
 }
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    [self updateNavigationTitleView];
     
     // viewWillAppea にあったので viewDidLoad に変更。なぜ viewWillAppear に？
     [self setttingMyUser];
-    //[self receiveChangedAccountNotification];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -85,23 +88,6 @@
     }
 }
 
-- (void)receiveChangedAccountNotification
-{
-    [[NSNotificationCenter defaultCenter] addObserverForName:@"ChangeMyAccount" object:nil queue:nil usingBlock:^(NSNotification *notification) {
-        NSLog(@"user change account to = %@", [[MBAccountManager sharedInstance] currentAccount].screenName);
-        [self.listManager removeAllLists];/* アカウント変更時に account.listManager に保存されているリストを全消去 */
-        [self commonConfigureModel];
-        [self commonConfigureView];
-        
-        [self updateNavigationTitleView];
-
-        [self.tableView reloadData];
-        
-        [self setttingMyUser];
-    }];
-    
-}
-
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
@@ -112,10 +98,7 @@
 #pragma mark Instance Method
 - (void)updateNavigationTitleView
 {
-    MBNavigationControllerTitleView *titleView = [[MBNavigationControllerTitleView alloc] initWithFrame:CGRectZero];
-    [titleView setTitle:NSLocalizedString(@"List", nil)];
-    [titleView sizeToFit];
-    [self.navigationItem setTitleView:titleView];
+    self.title = NSLocalizedString(@"List", nil);
 }
 
 - (BOOL)reachsTheLimitOfList
@@ -181,10 +164,10 @@
         UIBarButtonItem *addBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(didPushAddListButton)];
         [self.navigationItem setLeftBarButtonItem:addBarButtonItem animated:animated];
     } else {
-        [self.navigationItem setLeftBarButtonItem:nil animated:animated];
+        [self configureLeftNavigationItemWithAnimated:animated];
     }
     
-    [self.tableView setEditing:editing animated:YES];
+    [self.tableView setEditing:editing animated:animated];
     [super setEditing:editing animated:animated];
 }
 
@@ -252,10 +235,16 @@
     }
     
     [listTimelineManagerViewController setList:selectedList];
-    UIBarButtonItem *backButtonItem = [[UIBarButtonItem alloc] init];
-    backButtonItem.title = NSLocalizedString(@"My List", nil);
-    self.navigationItem.backBarButtonItem = backButtonItem;
+    
+    self.navigationItem.backBarButtonItem = [self backButtonItem];
     [self.navigationController pushViewController:listTimelineManagerViewController animated:YES];
+}
+
+- (UIBarButtonItem *)backButtonItem
+{
+    UIBarButtonItem *backButtonItem = [[UIBarButtonItem alloc] init];
+    backButtonItem.title = NSLocalizedString(@"List", nil);
+    return backButtonItem;
 }
 /*
 // In a storyboard-based application, you will often want to do a little preparation before navigation

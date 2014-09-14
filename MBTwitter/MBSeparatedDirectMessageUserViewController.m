@@ -385,6 +385,10 @@
     individualViewController.delegate = self;
     [individualViewController setPartner:partner];
     [individualViewController setConversation:messages];
+    
+    UIBarButtonItem *backButtonItem = [[UIBarButtonItem alloc] init];
+    backButtonItem.title = NSLocalizedString(@"Message", nil);
+    self.navigationItem.backBarButtonItem = backButtonItem;
     [self.navigationController pushViewController:individualViewController animated:YES];
 }
 

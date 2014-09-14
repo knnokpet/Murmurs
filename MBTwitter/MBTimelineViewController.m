@@ -448,7 +448,7 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
     if (calcuTweet.place) {
         isPlace = YES;
         
-        defaultHeight = avatorHeight + avatorMargin + 18.0f + 4 * 2;
+        defaultHeight = avatorHeight + avatorMargin * 2 + 18.0f;
     }
     
     BOOL containsImage = NO;
@@ -715,8 +715,11 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
                     
                     dispatch_async(dispatch_get_main_queue(), ^{
                         if ([cell.userIDStr isEqualToString:userAtIndexPath.userIDStr]) {
-                            cell.avatorImageView.userIDStr = userAtIndexPath.userIDStr;
-                            cell.avatorImageView.avatorImage = radiusImage;
+                            if (!self.tableView.dragging && !self.tableView.decelerating) {
+                                cell.avatorImageView.userIDStr = userAtIndexPath.userIDStr;
+                                cell.avatorImageView.avatorImage = radiusImage;
+                            }
+                            
                         }
                     });
                 }
@@ -847,7 +850,14 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
     }
     
     [detailTweetViewController setTweet:selectedTweet];
+    
+    self.navigationItem.backBarButtonItem = [self backButtonItem];
     [self.navigationController pushViewController:detailTweetViewController animated:YES];
+}
+
+- (UIBarButtonItem *)backButtonItem
+{
+    return nil;
 }
 
 #pragma mark

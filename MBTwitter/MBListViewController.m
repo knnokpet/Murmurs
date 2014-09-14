@@ -181,13 +181,14 @@ static NSString *listsCellIdentifier = @"ListsCellIdentifier";
     if (0 < self.listManager.subscriptionLists.count) {
         sectionCount ++;
     }
-    
+    NSLog(@"sect count %d", sectionCount);
     return sectionCount;
 }
 
 - (NSInteger )tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     NSArray *listsAtIndex = [self.listManager.lists objectAtIndex:section];
+    NSLog(@"count %d", listsAtIndex.count);
     return [listsAtIndex count];
 }
 
@@ -222,7 +223,8 @@ static NSString *listsCellIdentifier = @"ListsCellIdentifier";
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     CGFloat verticalMargin = 8.0f;
-    CGFloat verticalTextViewMargin = 48.0f;
+    CGFloat verticalUnderMargin = 0.0f;
+    CGFloat verticalTextViewMargin = 44.0f;
     CGFloat horizontalLeftMargin = 64.0f;
     CGFloat horizontalRightMargin = 8.0f;
     CGFloat defaultHeight = 36.0f + verticalMargin * 2;
@@ -230,9 +232,12 @@ static NSString *listsCellIdentifier = @"ListsCellIdentifier";
     NSArray *listsAtSection = [self.listManager.lists objectAtIndex:indexPath.section];
     MBList *listAtIndex = [listsAtSection objectAtIndex:indexPath.row];
     UITextView *sizingTextView = [[UITextView alloc] init];
+    sizingTextView.font = [UIFont systemFontOfSize:14.0f];
+    sizingTextView.textColor = [UIColor darkGrayColor];
     sizingTextView.text = listAtIndex.detail;
     CGSize fitSizt = [sizingTextView sizeThatFits:CGSizeMake(tableView.frame.size.width - (horizontalLeftMargin + horizontalRightMargin), CGFLOAT_MAX)];
-    CGFloat heightWithTextView = fitSizt.height + verticalTextViewMargin + verticalMargin;
+    
+    CGFloat heightWithTextView = fitSizt.height + verticalTextViewMargin + verticalUnderMargin;
     if (listAtIndex.detail.length == 0) {
         heightWithTextView = 0.0f;
     }
@@ -293,8 +298,9 @@ static NSString *listsCellIdentifier = @"ListsCellIdentifier";
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-
+    
 }
+
 
 - (void)updateTableViewDataSource:(NSArray *)addingData
 {

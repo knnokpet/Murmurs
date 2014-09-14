@@ -11,7 +11,7 @@
 #import "MBHomeTimelineViewController.h"
 #import "MBReplyTimelineViewController.h"
 #import "MBSeparatedDirectMessageUserViewController.h"
-#import "MBMyListViewController.h"
+#import "MBMyListTabViewController.h"
 #import "MBSearchViewController.h"
 #import "MBMyProfileViewController.h"
 
@@ -57,12 +57,11 @@
     UITabBarItem *messageBarItem = [[UITabBarItem alloc] initWithTitle:NSLocalizedString(@"Message", nil) image:messageImage selectedImage:messageSelectedImage];
     separatedDMUserViewController.tabBarItem = messageBarItem;
     
-    
-    MBSearchViewController *searchViewController = [[MBSearchViewController alloc] init];
-    UINavigationController *searchNavigationController = [[UINavigationController alloc] initWithRootViewController:searchViewController];
-    [viewControllers addObject:searchNavigationController];
-    UITabBarItem *searchItem = [[UITabBarItem alloc] initWithTabBarSystemItem:UITabBarSystemItemSearch tag:5];
-    searchViewController.tabBarItem = searchItem;
+    MBMyListTabViewController *listViewController = [[MBMyListTabViewController alloc] initWithNibName:@"MBListViewController" bundle:nil];
+    UINavigationController *listNavigationController = [[UINavigationController alloc] initWithRootViewController:listViewController];
+    [viewControllers addObject:listNavigationController];
+    UITabBarItem *listItem = [[UITabBarItem alloc] initWithTitle:NSLocalizedString(@"List", nil) image:[UIImage imageNamed:@"List2"] selectedImage:[UIImage imageNamed:@"List-Selected-2"]];
+    listViewController.tabBarItem = listItem;
     
     MBMyProfileViewController *myProfileViewController = [[MBMyProfileViewController alloc] initWithNibName:@"MBUserDetailView" bundle:nil];
     UINavigationController *listNavigation = [[UINavigationController alloc] initWithRootViewController:myProfileViewController];

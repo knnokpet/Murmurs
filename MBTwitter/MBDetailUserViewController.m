@@ -607,10 +607,12 @@ typedef enum ActionSheetTag {
     cell.textLabel.text = textLabel;
     cell.imageView.image = cellImage;
     // リストの数はユーザーが登録されているものしかとれないので表示しない
-    detailInteger = (0 <= detailInteger) ? detailInteger : 0;
     if (4 != numberOfRow) {
         cell.detailTextLabel.text = [NSString stringWithFormat:@"%d", detailInteger];
+    } else {
+        cell.detailTextLabel.text = nil;
     }
+    
     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     
 }

@@ -131,6 +131,13 @@
 }
 */
 
+- (UIBarButtonItem *)backButtonItem
+{
+    UIBarButtonItem *backButtonitem = [[UIBarButtonItem alloc] init];
+    backButtonitem.title = NSLocalizedString(@"Reply", nil);
+    return backButtonitem;
+}
+
 #pragma mark -
 #pragma mark Delegate
 #pragma mark MyAccountViewController

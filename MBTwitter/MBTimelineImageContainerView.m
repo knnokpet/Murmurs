@@ -46,7 +46,6 @@
 {
     for (MBMediaImageView *mediaImageView in self.imageViews) {
         mediaImageView.mediaImage = nil;
-        mediaImageView.backgroundColor = [UIColor colorWithRed:0.95 green:0.95 blue:0.96 alpha:1.0];
     }
 }
 

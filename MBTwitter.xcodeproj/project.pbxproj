@@ -189,6 +189,7 @@
 		8684FEBB18CB43BA00ECDD91 /* MBTwitterTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8684FEBA18CB43BA00ECDD91 /* MBTwitterTests.m */; };
 		8684FEC818CB446F00ECDD91 /* MBAccountManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 8684FEC718CB446F00ECDD91 /* MBAccountManager.m */; };
 		8684FECB18CB485600ECDD91 /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8684FECA18CB485600ECDD91 /* Accounts.framework */; };
+		868CB22A19C3EC4500B886AC /* MBMyListTabViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 868CB22919C3EC4500B886AC /* MBMyListTabViewController.m */; };
 		8690B570197029A6003DB47B /* MBUsersTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8690B56E197029A6003DB47B /* MBUsersTableViewCell.m */; };
 		8690B571197029A6003DB47B /* MBUsersTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8690B56F197029A6003DB47B /* MBUsersTableViewCell.xib */; };
 		8690B575197032B2003DB47B /* MBListsTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8690B573197032B2003DB47B /* MBListsTableViewCell.m */; };
@@ -659,6 +660,8 @@
 		8684FEC618CB446F00ECDD91 /* MBAccountManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBAccountManager.h; sourceTree = "<group>"; };
 		8684FEC718CB446F00ECDD91 /* MBAccountManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBAccountManager.m; sourceTree = "<group>"; };
 		8684FECA18CB485600ECDD91 /* Accounts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accounts.framework; path = System/Library/Frameworks/Accounts.framework; sourceTree = SDKROOT; };
+		868CB22819C3EC4500B886AC /* MBMyListTabViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBMyListTabViewController.h; sourceTree = "<group>"; };
+		868CB22919C3EC4500B886AC /* MBMyListTabViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBMyListTabViewController.m; sourceTree = "<group>"; };
 		8690B56D197029A6003DB47B /* MBUsersTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBUsersTableViewCell.h; sourceTree = "<group>"; };
 		8690B56E197029A6003DB47B /* MBUsersTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBUsersTableViewCell.m; sourceTree = "<group>"; };
 		8690B56F197029A6003DB47B /* MBUsersTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MBUsersTableViewCell.xib; sourceTree = "<group>"; };
@@ -1264,6 +1267,8 @@
 				86BFD24A197385DB00269D34 /* MBSelecting_ListViewController.m */,
 				863969F1191F7A0200A7D0AD /* MBMyListViewController.h */,
 				863969F2191F7A0200A7D0AD /* MBMyListViewController.m */,
+				868CB22819C3EC4500B886AC /* MBMyListTabViewController.h */,
+				868CB22919C3EC4500B886AC /* MBMyListTabViewController.m */,
 				863969EE191F73C800A7D0AD /* MBOtherUserListViewController.h */,
 				863969EF191F73C800A7D0AD /* MBOtherUserListViewController.m */,
 				863969BD191B97CA00A7D0AD /* MBListTimelineManagementViewController.h */,
@@ -2270,6 +2275,7 @@
 				8623B8E4197D1A48004380FF /* MBGeoPinView.m in Sources */,
 				86B5C5DE18EE7E360035CDC3 /* MBPostTweetViewController.m in Sources */,
 				8623B9141987D7EB004380FF /* MBGradientMaskView.m in Sources */,
+				868CB22A19C3EC4500B886AC /* MBMyListTabViewController.m in Sources */,
 				86B5C59C18E7D6F00035CDC3 /* NSString+UUID.m in Sources */,
 				863969C4191BA28800A7D0AD /* MBLists_JSONParser.m in Sources */,
 				86B5C59318E5226F0035CDC3 /* MBTweetTextView.m in Sources */,
