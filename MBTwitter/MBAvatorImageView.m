@@ -35,6 +35,8 @@
 - (void)commonInit
 {
     self.backgroundColor = [UIColor colorWithRed:0.95 green:0.95 blue:0.96 alpha:1.0];
+    self.opaque = YES;
+    self.clearsContextBeforeDrawing = YES;
 }
 
 #pragma mark - Setter & Getter
@@ -59,7 +61,7 @@
 {
     _avatorImage = avatorImage;
     
-    self.backgroundColor = (avatorImage)? [UIColor clearColor] : [UIColor colorWithRed:0.95 green:0.95 blue:0.96 alpha:1.0];
+    self.backgroundColor = (avatorImage)? [UIColor whiteColor] : [UIColor colorWithRed:0.95 green:0.95 blue:0.96 alpha:1.0];
     self.image = avatorImage;
 }
 
