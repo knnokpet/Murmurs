@@ -160,7 +160,7 @@
 {
     MBTextFieldTableViewCell *listNameCell = (MBTextFieldTableViewCell *)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
     MBTextViewTableViewCell *descriptionCell = (MBTextViewTableViewCell *)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:0]];
-    MBSwitchTableViewCell *switchCell = (MBSwitchTableViewCell *)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:2 inSection:0]];
+    MBSwitchTableViewCell *switchCell = (MBSwitchTableViewCell *)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:1]];
     NSString *listName = listNameCell.textField.text;
     BOOL isOK = [self checksListName:listName];
     if (NO == isOK) {
