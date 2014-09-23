@@ -81,6 +81,7 @@
     imageFrame.origin = CGPointMake(center.x - imageFrame.size.width / 2, center.y - imageFrame.size.height);
     self.imageView.frame = imageFrame;
     
+    [self.titleLabel sizeToFit];
     CGRect titleFrame = self.titleLabel.frame;
     titleFrame.origin = CGPointMake(center.x - titleFrame.size.width / 2, center.y);
     self.titleLabel.frame = titleFrame;
