@@ -82,8 +82,8 @@
     [listTimelineViewController setList:self.list];
     [self addChildViewController:listTimelineViewController];
     listTimelineViewController.view.frame = self.view.bounds;
-    self.currentController = listTimelineViewController;
-    listTimelineViewController.delegate = self;
+    self.currentController = listTimelineViewController;/* unused */
+    //listTimelineViewController.delegate = self;
     // insets
     UIEdgeInsets contentInsets = listTimelineViewController.tableView.contentInset;
     contentInsets.top = contentInsets.top + containerHeight;
@@ -100,7 +100,7 @@
     [listMembersViewController setList:self.list];
     [self addChildViewController:listMembersViewController];
     listMembersViewController.view.frame = self.view.bounds;
-    listMembersViewController.scrollDelegate = self;
+    //listMembersViewController.scrollDelegate = self;/* unused */
     // insets
     CGFloat navigationStatusBarHeight = self.navigationController.navigationBar.frame.size.height + [UIApplication sharedApplication].statusBarFrame.size.height;
     CGFloat tabBarHeight = self.tabBarController.tabBar.frame.size.height;
