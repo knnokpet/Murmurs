@@ -174,7 +174,8 @@
 - (NSString *)tableView:(UITableView *)tableView titleForDeleteConfirmationButtonForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     NSString *title = NSLocalizedString(@"Delete", nil);
-    if (indexPath.section == 1) {
+    MBList *firstList = [[self.listManager.lists objectAtIndex:indexPath.section] firstObject];
+    if ([firstList.user.userIDStr isEqualToString:self.user.userIDStr] == NO) {
         title = NSLocalizedString(@"UnSubscrive", nil);
     }
     
@@ -199,17 +200,36 @@
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
+        BOOL requiresDeletingSection = NO;
         NSArray *selectedArrayAtSection = [self.listManager.lists objectAtIndex:indexPath.section];
         MBList *selectedList = [selectedArrayAtSection objectAtIndex:indexPath.row];
-        if (0 == indexPath.section) {
+        MBAccount *currentAccount = [MBAccountManager sharedInstance].currentAccount;
+        
+        if ([selectedList.user.userIDStr isEqualToString:currentAccount.userID]) {
             [self.aoAPICenter postDestroyOwnList:[selectedList.listID unsignedLongLongValue] slug:selectedList.slug ownerScreenName:selectedList.user.screenName ownerID:[selectedList.user.userID unsignedLongLongValue]];
             [self.listManager removeListOfOwner:indexPath.row];
+            
+            if (self.listManager.ownerShipLists.count == 0) {
+                requiresDeletingSection = YES;
+            }
+            
         } else {
             [self.aoAPICenter postDestroySubscrivedList:[selectedList.listID unsignedLongLongValue] slug:selectedList.slug ownerScreenName:selectedList.user.screenName ownerID:[selectedList.user.userID unsignedLongLongValue]];
             [self.listManager removeListOfSubscrive:indexPath.row];
+            
+            if (self.listManager.subscriptionLists.count == 0) {
+                requiresDeletingSection = YES;
+            }
+            
         }
         
-        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+        if (requiresDeletingSection) {
+            [tableView deleteSections:[NSIndexSet indexSetWithIndex:indexPath.section] withRowAnimation:UITableViewRowAnimationAutomatic];
+        } else {
+            [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+        }
+        
+        
     } else if (editingStyle == UITableViewCellEditingStyleInsert) {
         
     }
