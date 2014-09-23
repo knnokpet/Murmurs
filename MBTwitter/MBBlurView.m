@@ -30,10 +30,22 @@
 - (void)drawRect:(CGRect)rect
 {
     // Drawing code
-    UIGraphicsBeginImageContextWithOptions(rect.size, NO, 1.0);
+    UIGraphicsBeginImageContextWithOptions(rect.size, NO, 0.0);
     
-    [self.backgroundView drawViewHierarchyInRect:self.backgroundView.bounds afterScreenUpdates:NO];
-    //[self.backgroundView drawViewHierarchyInRect:rect afterScreenUpdates:YES];
+    CGRect drawedRect = self.backgroundView.bounds;
+    
+    CGPoint convertedPoint = [self.backgroundView convertPoint:self.frame.origin toView:self.backgroundView];
+    if ([self.backgroundView isKindOfClass:[UIScrollView class]]) {
+        UIScrollView *scrollView = (UIScrollView *)self.backgroundView;
+        convertedPoint.y -= scrollView.contentOffset.y;
+    }
+    
+    drawedRect.origin = CGPointMake(0, - convertedPoint.y);
+    BOOL snapshots = [self.backgroundView drawViewHierarchyInRect:drawedRect afterScreenUpdates:YES];
+    
+    if (snapshots == NO) {
+        return;
+    }
     
     UIImage *backgroundImage = UIGraphicsGetImageFromCurrentImageContext();
     
