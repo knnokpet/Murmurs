@@ -17,6 +17,8 @@
         // Initialization code
         self.userInteractionEnabled = YES;
         self.backgroundColor = [UIColor colorWithRed:0.95 green:0.95 blue:0.96 alpha:1.0];
+        self.opaque = YES;
+        self.clearsContextBeforeDrawing = YES;
     }
     return self;
 }
@@ -36,7 +38,7 @@
 {
     _mediaImage = mediaImage;
     self.image = mediaImage;
-    self.backgroundColor = (mediaImage) ? [UIColor clearColor] : [UIColor colorWithRed:0.95 green:0.95 blue:0.96 alpha:1.0];
+    self.backgroundColor = (mediaImage) ? [UIColor whiteColor] : [UIColor colorWithRed:0.95 green:0.95 blue:0.96 alpha:1.0];
 }
 
 #pragma mark - UIView
