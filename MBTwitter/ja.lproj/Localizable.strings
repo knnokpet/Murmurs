@@ -7,6 +7,7 @@
 */
 
 "Timeline" = "タイムライン";
+"@Tweet" = "自分宛て";
 "Reply" = "リプライ";
 "Message" = "メッセージ";
 "Profile" = "プロフィール";
@@ -22,18 +23,19 @@
 "Description" = "詳細";
 "Public" = "公開";
 
-"@Tweet" = "@ツイート";
 "Tweet" = "ツイート";
-"Cancel Retweet" = "リツイートを取り消す";
+"Cancel Retweet" = "キャンセル";
 "Retweet" = "リツイート";
-"Cancel Favorite" = "お気に入りを取り消す";
+"Cancel Favorite" = "キャンセル";
 "Favorite" = "お気に入り";
 "More" = "その他";
 "Follow!" = "フォロー!";
 "Following!" = "フォロー中!";
 "Follow Back!" = "フォローバック!";
-"Sent Request" = "フォローリクエスト";
+"Sent Request" = "リクエスト待ち";
 "Blocking" = "ブロック中";
+"Sent Follow Request!" = "フォローリクエストを送信しましょう！";
+"This account is Protected. When a request is accepted, you can see the information" = "このユーザーは非公開です。リクエストが受理されると、ユーザーの情報を見ることが可能になります。";
 
 /* 使ってないんじゃない？ */
 "Follow" = "フォロー";
@@ -125,11 +127,13 @@
 "Loading..." = "読み込み中...";
 
 "Location Service is Disabled." = "位置情報サービスが無効です。";
-"Setting > Privacy > Location. Set enable this App." = "Setting > Privacy > Location. 設定でこのアプリケーションを有効にしてください。";
+"Setting > Privacy > Location. Set enable this App." = "設定 > プライバシー > 位置情報サービス. 設定でこのアプリケーションを有効にしてください。";
 "Netwotk Error." = "ネットワークエラー";
 "Check Network Status. Try Again." = "ネットワークの状態をご確認の上、もう一度 実行してください。";
 "Twitter Setting" = "ツイッター設定";
 "Go Twitter. Be Enabled Twitter's Location Service." = "ツイッター公式ホームページの位置情報サービスを有効にしてください。";
 "Location Service is Restricted." = "位置情報サービスが制限されています。";
-"Setting > General > Restriction > Location Service. Uncheck this App." = "Setting > General > Restriction > Location Service. 機能制限の設定でこのアプリケーションのチェックを外してください。";
+"Setting > General > Restriction > Location Service. Uncheck this App." = "設定 > 一般 > 機能制限 > 位置情報サービス. 機能制限の設定でこのアプリケーションのチェックを外してください。";
 "Check Network, Restriction or Privacy." = "ネットワークの状態や機能制限、プライバシーの設定を確認してください。";
+
+"Retweeted by %@" = "%@ がリツイート";

@@ -46,7 +46,7 @@
     [viewControllers addObject:replyNavigation];
     UIImage *replyImage = [[UIImage alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"atMark-Line@2x" ofType:@"png"]];
     UIImage *selectedReplyImage = [[UIImage alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"atMark-Line-Selected@2x" ofType:@"png"]];
-    UITabBarItem *replyBarItem = [[UITabBarItem alloc] initWithTitle:NSLocalizedString(@"Reply", nil) image:replyImage selectedImage:selectedReplyImage];
+    UITabBarItem *replyBarItem = [[UITabBarItem alloc] initWithTitle:NSLocalizedString(@"@Tweet", nil) image:replyImage selectedImage:selectedReplyImage];
     replyTimelineViewController.tabBarItem = replyBarItem;
     
     MBSeparatedDirectMessageUserViewController *separatedDMUserViewController = [[MBSeparatedDirectMessageUserViewController alloc] initWithNibName:@"SeparatedDirectMessagesView" bundle:nil];

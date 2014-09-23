@@ -35,11 +35,19 @@
 - (void)configureImageView
 {
     CGSize boundsSize = self.bounds.size;
-    MBMediaImageView *imageView = [[MBMediaImageView alloc] initWithFrame:CGRectMake(0, 0, boundsSize.width, boundsSize.height)];
+    NSMutableArray *images = [NSMutableArray arrayWithCapacity:self.imageCount];
+    for (int i = 0; i < self.imageCount; i ++) {
+        MBMediaImageView *imageView = [[MBMediaImageView alloc] initWithFrame:CGRectZero];
+        [images addObject:imageView];
+    }
 
+    CGRect frame = CGRectMake(0, 0, boundsSize.width, boundsSize.height);
+    MBMediaImageView *imageView = [images firstObject];
+    imageView.frame = frame;
+    
     [self addSubview:imageView];
     
-    _imageViews = @[imageView];
+    _imageViews =images;
 }
 
 - (void)resetImageOfMediaImageView

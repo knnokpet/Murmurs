@@ -7,6 +7,7 @@
 */
 
 "Timeline" = "Timeline";
+"@Tweet" = "@Tweet";
 "Reply" = "Reply";
 "Message" = "Message";
 "Profile" = "Profile";
@@ -34,6 +35,8 @@
 "Follow Back!" = "Follow Back!";
 "Sent Request" = "Sent Request";
 "Blocking" = "Blocking";
+"Sent Follow Request!" = "Sent Follow Request!";
+"This account is Protected. When a request is accepted, you can see the information" = "This account is Protected. When a request is accepted, you can see the information";
 
 /* 使ってないんじゃない？ */
 "Follow" = "Follow";
@@ -132,3 +135,5 @@
 "Location Service is Restricted." = "Location Service is Restricted.";
 "Setting > General > Restriction > Location Service. Uncheck this App." = "Setting > General > Restriction > Location Service. Uncheck this App.";
 "Check Network, Restriction or Privacy." = "Check Network, Restriction or Privacy.";
+
+"Retweeted by %@" = "Retweeted by %@";
