@@ -20,6 +20,11 @@
         
         [[MBTweetManager sharedInstance] storeTweet:tweet];
         [[MBUserManager sharedInstance] storeUser:tweet.tweetUser];
+        if (tweet.tweetOfOriginInRetweet) {
+            [[MBTweetManager sharedInstance] storeTweet:tweet.tweetOfOriginInRetweet];
+            [[MBUserManager sharedInstance] storeUser:tweet.tweetOfOriginInRetweet.tweetUser];
+        }
+        
         NSArray *gotTweet = [NSArray arrayWithObject:tweet];
         self.completion(gotTweet);
     }
