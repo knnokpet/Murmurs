@@ -87,7 +87,7 @@
 - (void)updateNavigationTitleView
 {
     MBNavigationControllerTitleView *titleView = [[MBNavigationControllerTitleView alloc] initWithFrame:CGRectZero];
-    [titleView setTitle:NSLocalizedString(@"Reply", nil)];
+    [titleView setTitle:NSLocalizedString(@"@Tweet", nil)];
     [titleView sizeToFit];
     [self.navigationItem setTitleView:titleView];
 }
@@ -134,7 +134,7 @@
 - (UIBarButtonItem *)backButtonItem
 {
     UIBarButtonItem *backButtonitem = [[UIBarButtonItem alloc] init];
-    backButtonitem.title = NSLocalizedString(@"Reply", nil);
+    backButtonitem.title = NSLocalizedString(@"@Tweet", nil);
     return backButtonitem;
 }
 
