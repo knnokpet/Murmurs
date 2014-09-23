@@ -103,9 +103,9 @@
 
 - (void)didPushSearchButton
 {
-    MBSearchedTweetViewController *searchViewController = [[MBSearchedTweetViewController alloc] init];
-    UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:searchViewController];
-    [self.navigationController pushViewController:navigationController animated:YES];
+    MBSearchViewController *searchViewController = [[MBSearchViewController alloc] init];
+    [searchViewController setBecameFirstResponder:YES];
+    [self.navigationController pushViewController:searchViewController animated:YES];
 }
 
 /*
