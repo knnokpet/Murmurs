@@ -141,6 +141,7 @@
     self.tweetContainerView.endPoint = CGPointMake(tweetContainerViewRect.size.width - self.avatorImageView.frame.origin.x, tweetContainerViewRect.size.height - 48);
     
     // setting or downloading Image
+    self.avatorImageView.layer.cornerRadius = 2.0f;
     UIImage *avatorImage = [[MBImageCacher sharedInstance] cachedTimelineImageForUser:user.userIDStr];
     if (!avatorImage) {
         dispatch_queue_t globalQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0);
