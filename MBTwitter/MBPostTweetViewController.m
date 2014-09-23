@@ -120,9 +120,6 @@
     _aoAPICenter = [[MBAOuth_TwitterAPICenter alloc] init];
     _aoAPICenter.delegate = self;
     
-    _locationManager = [[CLLocationManager alloc] init];
-    _locationManager.delegate = self;
-    
     _photos = [NSMutableArray arrayWithCapacity:4];
     _place = [NSMutableDictionary dictionaryWithCapacity:0];
     _replys = [NSMutableArray arrayWithCapacity:0];
@@ -614,30 +611,17 @@
         return;
     }
     
-    
     BOOL locationEnabled = [CLLocationManager locationServicesEnabled];
-    if (YES == locationEnabled) {
-        
-        CLAuthorizationStatus status = [CLLocationManager authorizationStatus];
-        if (status == kCLAuthorizationStatusNotDetermined) {
-            [self setGeoIndicatorButton];
-            [self.locationManager startUpdatingLocation];
-            
-        } else if (status == kCLAuthorizationStatusAuthorized) {
-            [self setGeoIndicatorButton];
-            [self.locationManager startUpdatingLocation];
-            
-        } else if (status == kCLAuthorizationStatusRestricted) {
-            [self showLocationAlertViewWithTitle:NSLocalizedString(@"Location Service is Restricted.", nil) message:NSLocalizedString(@"Setting > General > Restriction > Location Service. Uncheck this App.", nil)];
-            
-        } else if (status == kCLAuthorizationStatusDenied) {
-            [self showLocationAlertViewWithTitle:NSLocalizedString(@"Location Service is Disabled.", nil) message:NSLocalizedString(@"Setting > Privacy > Location. Set enable this App.", nil)];
-            
-        }
-        
-    } else {
+    if (locationEnabled == NO) {
         [self showLocationAlertViewWithTitle:NSLocalizedString(@"Location Service is Disabled.", nil) message:NSLocalizedString(@"Check Network, Restriction or Privacy.", nil)];
+        return;
     }
+    
+    _locationManager = [[CLLocationManager alloc] init];
+    self.locationManager.delegate = self;
+    self.locationManager.desiredAccuracy = kCLLocationAccuracyKilometer;
+    self.locationManager.distanceFilter = 500; // meters
+    
 }
 
 - (void)didPushCancelGeoButton
@@ -847,6 +831,55 @@
 }
 
 #pragma mark CLLocationManager Delegate
+- (void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status
+{
+    NSLog(@"位置情報");
+    if (floor(NSFoundationVersionNumber) > NSFoundationVersionNumber_iOS_7_1) {
+        [self startUpdationgLocationForiOS8WithStatus:status];
+    } else {
+        [self startUpdationgLocationWithStatus:status];
+    }
+}
+
+- (void)startUpdationgLocationWithStatus:(CLAuthorizationStatus)status
+{
+    if (status == kCLAuthorizationStatusNotDetermined) {
+        [self setGeoIndicatorButton];
+        [self.locationManager startUpdatingLocation];
+        
+    } else if (status == kCLAuthorizationStatusAuthorized) {
+        [self setGeoIndicatorButton];
+        [self.locationManager startUpdatingLocation];
+        
+    } else if (status == kCLAuthorizationStatusRestricted) {
+        [self showLocationAlertViewWithTitle:NSLocalizedString(@"Location Service is Restricted.", nil) message:NSLocalizedString(@"Setting > General > Restriction > Location Service. Uncheck this App.", nil)];
+        [self setGeoButtonWithTappable:YES];
+        
+    } else if (status == kCLAuthorizationStatusDenied) {
+        [self showLocationAlertViewWithTitle:NSLocalizedString(@"Location Service is Disabled.", nil) message:NSLocalizedString(@"Setting > Privacy > Location. Set enable this App.", nil)];
+        [self setGeoButtonWithTappable:YES];
+    }
+}
+
+- (void)startUpdationgLocationForiOS8WithStatus:(CLAuthorizationStatus)status
+{
+    if (status == kCLAuthorizationStatusNotDetermined) {
+        [self.locationManager requestWhenInUseAuthorization];
+        
+    } else if (status == kCLAuthorizationStatusAuthorizedAlways || status == kCLAuthorizationStatusAuthorizedWhenInUse) {
+        [self setGeoIndicatorButton];
+        [self.locationManager startUpdatingLocation];
+        
+    } else if (status == kCLAuthorizationStatusRestricted) {
+        [self showLocationAlertViewWithTitle:NSLocalizedString(@"Location Service is Restricted.", nil) message:NSLocalizedString(@"Setting > General > Restriction > Location Service. Uncheck this App.", nil)];
+        [self setGeoButtonWithTappable:YES];
+        
+    } else if (status == kCLAuthorizationStatusDenied) {
+        [self showLocationAlertViewWithTitle:NSLocalizedString(@"Location Service is Disabled.", nil) message:NSLocalizedString(@"Setting > Privacy > Location. Set enable this App.", nil)];
+        [self setGeoButtonWithTappable:YES];
+    }
+}
+
 - (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations
 {
     if (0 < [locations count]) {
