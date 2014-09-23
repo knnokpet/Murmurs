@@ -232,6 +232,11 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
     [self updateVisibleCells];
 }
 
+- (void)dealloc
+{
+    self.tableView.delegate = nil;
+}
+
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
@@ -581,10 +586,10 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
 
         /* retweetView が必ずある状態で、という考えでここに */
         /* retweetTweet の代入もあるのでここに */
-        NSAttributedString *retweeterName = [MBTweetTextComposer attributedStringForTimelineRetweeter:tweetAtIndex.tweetUser font:[UIFont systemFontOfSize:15.0f]];
+        NSAttributedString *retweeterName = [MBTweetTextComposer attributedStringForTimelineRetweeter:tweetAtIndex.tweetUser font:[UIFont systemFontOfSize:14.0f]];
         MBUser *linkUser = tweetAtIndex.tweetUser;
         if (tweetAtIndex.isRetweeted) {
-            retweeterName = [MBTweetTextComposer attributedStringByRetweetedMeForTimelineWithfont:[UIFont systemFontOfSize:15.0f]];
+            retweeterName = [MBTweetTextComposer attributedStringByRetweetedMeForTimelineWithfont:[UIFont systemFontOfSize:14.0f]];
             linkUser = [[MBUserManager sharedInstance] storedUserForKey:[[MBAccountManager sharedInstance]currentAccount].userID];
         }
         [cell.retweeterView setRetweeterString:retweeterName];
@@ -702,7 +707,6 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
     cell.avatorImageView.avatorImage = nil;
     UIImage *avatorImage = [[MBImageCacher sharedInstance] cachedTimelineImageForUser:userAtIndexPath.userIDStr];
     if (!avatorImage) {
-        
         cell.avatorImageView.userIDStr = userAtIndexPath.userIDStr;
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
             
@@ -715,7 +719,10 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
                     
                     dispatch_async(dispatch_get_main_queue(), ^{
                         if ([cell.userIDStr isEqualToString:userAtIndexPath.userIDStr]) {
-                            if (!self.tableView.dragging && !self.tableView.decelerating) {
+                            if (self.tableView.dragging || self.tableView.decelerating) {
+                                cell.avatorImageView.userIDStr = userAtIndexPath.userIDStr;
+                                
+                            } else {
                                 cell.avatorImageView.userIDStr = userAtIndexPath.userIDStr;
                                 cell.avatorImageView.avatorImage = radiusImage;
                             }
@@ -761,16 +768,14 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
                     
                 }
                 
-                mediaImageView.delegate = self;
+                mediaImageView.delegate = weakSelf;
                 mediaImageView.mediaHTTPURLString = mediaLink.originalURLHttpsText;
                 
 
                 if (mediaImage) {
                     dispatch_async(dispatch_get_main_queue(), ^{
-                        if (!mediaImageView.mediaImage || ![mediaImageView.mediaIDStr isEqualToString:mediaLink.mediaIDStr]) {
-                            mediaImageView.mediaIDStr = mediaLink.mediaIDStr;
-                            mediaImageView.mediaImage = mediaImage;
-                        }
+                        mediaImageView.mediaIDStr = mediaLink.mediaIDStr;
+                        mediaImageView.mediaImage = mediaImage;
                         
                     });
                     
@@ -789,7 +794,7 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
                                 if (!mediaImageView.mediaImage || ![mediaImageView.mediaIDStr isEqualToString:mediaLink.mediaIDStr]) {
                                     mediaImageView.mediaIDStr = mediaLink.mediaIDStr;
                                     if (!weakSelf.tableView.dragging && !weakSelf.tableView.decelerating) {
-                                        mediaImageView.mediaImage = mediaImage;
+                                        mediaImageView.mediaImage = croppedImage;
                                     }
                                 }
                                 
