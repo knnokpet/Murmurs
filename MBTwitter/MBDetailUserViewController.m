@@ -24,6 +24,7 @@
 #import "MBTweetTextComposer.h"
 #import "MBDirectMessageManager.h"
 
+#import "MBProtectedUserDetailView.h"
 #import "MBProfileAvatorView.h"
 #import "MBProfileDesciptionView.h"
 #import "MBProfileInfomationView.h"
@@ -53,6 +54,8 @@ typedef enum ActionSheetTag {
 @property (nonatomic) MBProfileDesciptionView *profileDescriptionView;
 @property (nonatomic) MBProfileInfomationView *profileInformationView;
 @property (nonatomic) UIPageControl *pageControl;
+
+@property (nonatomic) MBProtectedUserDetailView *protectedUserView;
 
 @property (nonatomic) NSMutableArray *otherActions;
 
@@ -153,6 +156,8 @@ typedef enum ActionSheetTag {
     self.profileAvatorView.screenName = self.user.screenName;
     self.profileAvatorView.isProtected = self.user.isProtected;
     self.profileAvatorView.isVerified = self.user.isVerified;
+    self.profileAvatorView.avatorImageView.avatorImage = nil;
+    self.headerImageView.image = nil;
     
     UIImage *avatorImage = [[MBImageCacher sharedInstance] cachedProfileImageForUserID:self.user.userIDStr];
     if (nil == avatorImage) {
@@ -251,10 +256,7 @@ typedef enum ActionSheetTag {
 {
     [super viewWillAppear:animated];
 
-    NSIndexPath *selectedIndex = [self.tableView indexPathForSelectedRow];
-    if (selectedIndex) {
-        [self.tableView deselectRowAtIndexPath:selectedIndex animated:animated];
-    }
+    [self deselectTableViewCellWithAnimated:animated];
 }
 
 - (void)didReceiveMemoryWarning
@@ -265,6 +267,13 @@ typedef enum ActionSheetTag {
 
 #pragma mark -
 #pragma mark Instance Methods
+- (void)deselectTableViewCellWithAnimated:(BOOL)animated
+{
+    NSIndexPath *selectedIndex = [self.tableView indexPathForSelectedRow];
+    if (selectedIndex) {
+        [self.tableView deselectRowAtIndexPath:selectedIndex animated:animated];
+    }
+}
 
 - (void)downloadBannerImage
 {
@@ -276,7 +285,6 @@ typedef enum ActionSheetTag {
                     dispatch_async(dispatch_get_main_queue(), ^{
                         self.headerImageView.image = image;
                         [self.headerImageView setNeedsDisplay];
-                        
                     });
                 }
                 
@@ -344,6 +352,7 @@ typedef enum ActionSheetTag {
     [self.scrollView setNeedsDisplay];
     [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationAutomatic];
     
+    [self showProtectedView:NO animated:YES];
     
     [self fetchRelationship];
 
@@ -404,13 +413,36 @@ typedef enum ActionSheetTag {
     }
 }
 
+- (void)updateActionCell
+{
+    [self configureOtherActions];
+    UITableViewCell *actionCell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
+    [self updateActionCell:(MBDetailUserActionTableViewCell *)actionCell];
+}
+
+- (void)showProtectedView:(BOOL)shows animated:(BOOL)animated
+{
+    CGFloat duration = animated ? 0.3f : 0.0f;
+    CGFloat alpha = shows ? 1.0f : 0.0f;
+    
+    [UIView animateWithDuration:duration animations:^{
+        [self.protectedUserView setAlpha:alpha];
+    }completion:^ (BOOL finished) {
+        if (!shows && self.protectedUserView.superview) {
+            [self.protectedUserView removeFromSuperview];
+        }
+    }];
+}
+
 #pragma mark Button Action
+/*unused*/
 - (IBAction)didPushFollowButton:(id)sender {
     [self.aoAPICenter postFollowForUserID:[self.user.userID unsignedLongLongValue] screenName:self.user.screenName];
 }
 - (IBAction)didPushUnfollowButton:(id)sender {
     [self.aoAPICenter postUnfollowForUserID:[self.user.userID unsignedLongLongValue] screenName:self.user.screenName];
 }
+/*unused*/
 
 - (void)didPushFollowButton
 {
@@ -509,6 +541,16 @@ typedef enum ActionSheetTag {
     return 2;
 }
 
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    CGFloat height = 44.0f;
+    if (indexPath.section == 0) {
+        ;
+    }
+    
+    return height;
+}
+
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     if (0 == section) {
@@ -542,6 +584,11 @@ typedef enum ActionSheetTag {
 
 - (void)updateActionCell:(MBDetailUserActionTableViewCell *)cell
 {
+    // add Target
+    [cell.tweetButton addTarget:self action:@selector(didPushReplyButton) forControlEvents:UIControlEventTouchUpInside];
+    [cell.messageButton addTarget:self action:@selector(didPushMessageButton) forControlEvents:UIControlEventTouchUpInside];
+    [cell.followButton addTarget:self action:@selector(didPushFollowButton) forControlEvents:UIControlEventTouchUpInside];
+    [cell.otherButton addTarget:self action:@selector(didPushOtherButton) forControlEvents:UIControlEventTouchUpInside];
     
     if (self.user.relationship) {
         MBRelationship *relationship = self.user.relationship;
@@ -559,11 +606,7 @@ typedef enum ActionSheetTag {
         cell.isBlocking = relationship.isBlocking;
     }
     
-    // add Target
-    [cell.tweetButton addTarget:self action:@selector(didPushReplyButton) forControlEvents:UIControlEventTouchUpInside];
-    [cell.messageButton addTarget:self action:@selector(didPushMessageButton) forControlEvents:UIControlEventTouchUpInside];
-    [cell.followButton addTarget:self action:@selector(didPushFollowButton) forControlEvents:UIControlEventTouchUpInside];
-    [cell.otherButton addTarget:self action:@selector(didPushOtherButton) forControlEvents:UIControlEventTouchUpInside];
+    
     
     MBAccount *currentAccount = [MBAccountManager sharedInstance].currentAccount;
     if ([currentAccount.userID isEqualToString:self.user.userIDStr]) {
@@ -620,6 +663,21 @@ typedef enum ActionSheetTag {
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (0 == indexPath.section) {
+        return;
+    }
+    
+    // selected protected Account
+    if (indexPath.section == 1 && self.user.isProtected && !self.user.relationship.followdByTheUser && self.user.relationship) {
+        CGRect protectedRect = [self.tableView rectForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:1]];
+        self.protectedUserView = [[MBProtectedUserDetailView alloc] initWithFrame:CGRectMake(protectedRect.origin.x, protectedRect.origin.y, self.view.bounds.size.width, 220)];
+        self.protectedUserView.backgroundView = self.tableView;
+        self.protectedUserView.alpha = 0.0f;
+        [self.tableView addSubview:self.protectedUserView];
+        [self.protectedUserView setOperationString:NSLocalizedString(@"Sent Follow Request!", nil)];
+        [self.protectedUserView setDetailString:NSLocalizedString(@"This account is Protected. When a request is accepted, you can see the information", nil)];
+        [self deselectTableViewCellWithAnimated:YES];
+        [self showProtectedView:YES animated:YES];
+        
         return;
     }
     
@@ -711,6 +769,7 @@ typedef enum ActionSheetTag {
         
         [self configureOtherActions];
         [self updateViews];
+        [self updateActionCell];
     }
 }
 
@@ -722,11 +781,8 @@ typedef enum ActionSheetTag {
             [relationshipManager storeRelationship:relationship];
             if (NSOrderedSame == [self.user.userID compare:relationship.userID]) {
                 self.user.relationship = relationship;
-                NSLog(@"isf %hhd  sentFo %hhd fob %hhd ", relationship.isFollowing, relationship.sentFollowRequest, relationship.followdByTheUser);
                 
-                [self configureOtherActions];
-                UITableViewCell *actionCell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
-                [self updateActionCell:(MBDetailUserActionTableViewCell *)actionCell];
+                [self updateActionCell];
                 
             }
         }
@@ -735,6 +791,11 @@ typedef enum ActionSheetTag {
 }
 
 #pragma mark UIScrollViewDelegate
+- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
+{
+    [self showProtectedView:NO animated:YES];
+}
+
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
     if (self.tableView == scrollView) {
