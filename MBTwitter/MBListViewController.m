@@ -181,14 +181,13 @@ static NSString *listsCellIdentifier = @"ListsCellIdentifier";
     if (0 < self.listManager.subscriptionLists.count) {
         sectionCount ++;
     }
-    NSLog(@"sect count %d", sectionCount);
     return sectionCount;
 }
 
 - (NSInteger )tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     NSArray *listsAtIndex = [self.listManager.lists objectAtIndex:section];
-    NSLog(@"count %d", listsAtIndex.count);
+    
     return [listsAtIndex count];
 }
 
@@ -196,18 +195,20 @@ static NSString *listsCellIdentifier = @"ListsCellIdentifier";
 {
     MBAccount *currentAccount = [MBAccountManager sharedInstance].currentAccount;
     NSString *headername;
-    if (NSOrderedSame == [currentAccount.userID compare:self.user.userIDStr]) {
-        if (0 == section) {
-            headername = NSLocalizedString(@"Your List" , nil);
-        } else {
+    if ([currentAccount.userID isEqualToString:self.user.userIDStr]) {
+        headername = NSLocalizedString(@"Your List" , nil);
+        
+        MBList *firstList = [[self.listManager.lists objectAtIndex:section] firstObject];
+        if ([firstList.user.userIDStr isEqualToString:currentAccount.userID] == NO) {
             headername = NSLocalizedString(@"Subscriving List", nil);
         }
         
     } else {
-        if (0 == section) {
-            NSString *ownersList = NSLocalizedString(@"%@'s List", nil);
-            headername = [NSString stringWithFormat:ownersList, self.user.characterName];
-        } else {
+        NSString *ownersList = NSLocalizedString(@"%@'s List", nil);
+        headername = [NSString stringWithFormat:ownersList, self.user.characterName];
+        
+        MBList *firstList = [[self.listManager.lists objectAtIndex:section] firstObject];
+        if ([firstList.user.userIDStr isEqualToString:self.user.userIDStr] == NO) {
             NSString *subscrivingString = NSLocalizedString(@"%@'s Subscriving List", nil);
             headername = [NSString stringWithFormat:subscrivingString, self.user.characterName];
         }
