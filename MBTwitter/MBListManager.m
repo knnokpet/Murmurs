@@ -61,7 +61,9 @@
 {
     MBList *addingList = [lists firstObject];
     MBUser *ownerOfList = [addingList user];
-    
+    if (!self.owner.userID || !ownerOfList.userID) {
+        return; /* リストの登録の際に、自信のユーザーアカウントが読み込まれていない場合は追加しない。 */ /* NSNumber の compare は nil 駄目だし。 */
+    }
     if (NSOrderedSame == [self.owner.userID compare:ownerOfList.userID]) {
         [self.ownerShipLists addObjectsFromArray:lists];
     } else {
