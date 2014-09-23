@@ -35,7 +35,6 @@
     
     NSString *tweetText = tweet.tweetText;
     if (!tweetText) {
-        NSLog(@"%@", tweetText);
         return [[NSAttributedString alloc] init];
     }
     NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:tweetText attributes:@{(id)kCTForegroundColorAttributeName: (id)defaultTextColor, (id)kCTFontAttributeName: (__bridge id)fontRef}];
@@ -372,7 +371,8 @@
     if (!screenName) {
         screenName = NSLocalizedString(@"You", nil);
     }
-    NSString *retweetString = [NSString stringWithFormat:@"Retweeted by %@", screenName];
+    NSString *localizedString = NSLocalizedString(@"Retweeted by %@", nil);
+    NSString *retweetString = [NSString stringWithFormat:localizedString, screenName];
     
     NSAttributedString *attributedString = [[NSAttributedString alloc] initWithString:retweetString attributes:@{NSForegroundColorAttributeName : textColor, NSFontAttributeName : font}];
     
