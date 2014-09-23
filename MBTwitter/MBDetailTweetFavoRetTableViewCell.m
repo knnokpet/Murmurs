@@ -14,8 +14,8 @@
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
         [self commonInit];
-        UIColor  *titleColor = [UIColor grayColor];
-        UIFont *titleFont = [UIFont systemFontOfSize:17.0f];
+        UIColor  *titleColor = [UIColor blackColor];
+        UIFont *titleFont = [UIFont systemFontOfSize:15.0f];
         
         _favoriteButton = [UIButton buttonWithType:UIButtonTypeCustom];
         [self.favoriteButton setTitleColor:titleColor forState:UIControlStateNormal];
