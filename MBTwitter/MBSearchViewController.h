@@ -25,7 +25,9 @@
 @property (nonatomic, readonly) MBSearchedUsersViewController *usersViewController;
 @property (nonatomic, readonly) MBSegmentedContainerView *segmentedContainerView;
 @property (nonatomic, readonly) UISegmentedControl *segmentedControl;
+@property (nonatomic, readonly, assign) BOOL becameFirstResponder;
 
 - (void)setSearchingTweetQuery:(NSString *)searchingTweetQuery;
+- (void)setBecameFirstResponder:(BOOL)becameFirstResponder;
 
 @end

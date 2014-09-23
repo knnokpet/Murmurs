@@ -33,6 +33,11 @@
     _searchingTweetQuery = searchingTweetQuery;
 }
 
+- (void)setBecameFirstResponder:(BOOL)becameFirstResponder
+{
+    _becameFirstResponder = becameFirstResponder;
+}
+
 #pragma mark -View
 - (void)configureModel
 {
@@ -121,6 +126,13 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillHideNotification object:nil];
 }
 
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    
+    [self showKeyboard];
+}
+
 - (void)receiveChengedAccountNotification
 {
     [[NSNotificationCenter defaultCenter] addObserverForName:@"ChangeMyAccount" object:nil queue:nil usingBlock:^(NSNotification *notification) {
@@ -195,6 +207,16 @@
     [self.view addSubview:self.tweetViewController.view];
     
     self.searchingTweetQuery = nil;
+}
+
+- (void)showKeyboard
+{
+    if (!self.becameFirstResponder) {
+        return;
+    }
+    
+    [self.searchBar becomeFirstResponder];
+    self.becameFirstResponder = NO;
 }
 
 #pragma mark NavigationItem
