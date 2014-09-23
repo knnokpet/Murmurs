@@ -12,7 +12,8 @@
     CGSize defaultButtonSize;
 }
 
-@property (nonatomic)UIFont *titleFont;
+@property (nonatomic) UIFont *titleFont;
+@property (nonatomic) UIColor *highlitedColor;
 
 @end
 
@@ -33,25 +34,40 @@
 {    
     self.isMyAccount = NO;
     self.titleFont = [UIFont systemFontOfSize:15.0f];
+    
+    CGFloat red, gree, blu;
+    red = 0.8;
+    gree = 0.894;
+    blu = 1.0;
+    self.highlitedColor = [UIColor colorWithRed:red green:gree blue:blu alpha:1.0f];
     defaultButtonSize = CGSizeMake(44, 44);
 }
 
 - (void)commonView
 {
     _tweetButton = [[MBTitleWithImageButton alloc] initWithFrame:CGRectMake(0, 0, defaultButtonSize.width, defaultButtonSize.height) title:NSLocalizedString(@"Tweet", nil) image:[UIImage imageNamed:@"Pen-ActionCell"]];
+    [self.tweetButton setImage:[UIImage imageNamed:@"Pen-Selected-ActionCell"] forState:UIControlStateHighlighted];
     [self.tweetButton.titleLabel setFont:self.titleFont];
+    [self.tweetButton setTitleColor:self.highlitedColor forState:UIControlStateHighlighted];
+    [self.tweetButton setTitleColor:[UIColor darkGrayColor] forState:UIControlStateDisabled];
     [self.contentView addSubview:self.tweetButton];
     
     _messageButton = [[MBTitleWithImageButton alloc] initWithFrame:CGRectMake(0, 0, defaultButtonSize.width, defaultButtonSize.height) title:NSLocalizedString(@"Message", nil) image:[UIImage imageNamed:@"Message-ActionCell"]];
+    [self.messageButton setImage:[UIImage imageNamed:@"Message-Selected-ActionCell"] forState:UIControlStateHighlighted];
+    [self.messageButton setTitleColor:self.highlitedColor forState:UIControlStateHighlighted];
     [self.messageButton.titleLabel setFont:self.titleFont];
     
     
     _otherButton = [[MBTitleWithImageButton alloc] initWithFrame:CGRectMake(0, 0, defaultButtonSize.width, defaultButtonSize.height) title:NSLocalizedString(@"More", nil) image:[UIImage imageNamed:@"More-ActionCell"]];
+    [self.otherButton setImage:[UIImage imageNamed:@"More-Selected-ActionCell"] forState:UIControlStateHighlighted];
+    [self.otherButton setTitleColor:self.highlitedColor forState:UIControlStateHighlighted];
     [self.otherButton.titleLabel setFont:self.titleFont];
     [self.contentView addSubview:self.otherButton];
     
     _followButton = [[MBTitleWithImageButton alloc] initWithFrame:CGRectMake(0, 0, 48, 48) title:NSLocalizedString(@"Follow!", nil) image:[UIImage imageNamed:@"man-Plus-ActionCell"]];
+    [self.followButton setImage:[UIImage imageNamed:@"man-Plus-Selected-ActionCell"] forState:UIControlStateHighlighted];
     [self.followButton.titleLabel setFont:self.titleFont];
+    [self.followButton setTitleColor:self.highlitedColor forState:UIControlStateHighlighted];
     [self.contentView addSubview:self.followButton];
     
 }
@@ -94,6 +110,8 @@
         [self.followButton setButtonTitle:NSLocalizedString(@"Follow!", nil)];
         [self.followButton setButtonImage:[UIImage imageNamed:@"man-Plus-ActionCell"]];
         [self.followButton.titleLabel setFont:self.titleFont];
+        [self.followButton setImage:[UIImage imageNamed:@"man-Plus-Selected-ActionCell"] forState:UIControlStateHighlighted];
+        [self.followButton setTitleColor:self.highlitedColor forState:UIControlStateHighlighted];
         
     } else {
         self.followButton.enabled = NO;
@@ -111,6 +129,15 @@
     if (followsMyAccount) {
         if (self.canFollow) {
             [self.followButton setTitle:NSLocalizedString(@"Follow Back!", nil) forState:UIControlStateNormal];
+            [self.followButton setButtonImage:[UIImage imageNamed:@"man-Dual-Plus"]];
+            [self.followButton setImage:[UIImage imageNamed:@"man-Dual-Plus-Selected"] forState:UIControlStateHighlighted];
+            [self.followButton setTitleColor:self.highlitedColor forState:UIControlStateHighlighted];
+        } else {
+            self.followButton.enabled = NO;
+            [self.followButton setTitle:NSLocalizedString(@"Following!", nil) forState:UIControlStateNormal];
+            [self.followButton setButtonTitle:NSLocalizedString(@"Following!", nil)];
+            [self.followButton setButtonImage:[UIImage imageNamed:@"man-Dual-Plus-Disabled"]];
+            [self.followButton.titleLabel setFont:self.titleFont];
         }
     } else {
     }
@@ -139,12 +166,21 @@
 {
     _isBlocking = isBlocking;
     if (isBlocking) {
-        [self.followButton setTitle:NSLocalizedString(@"Blocking", nil) forState:UIControlStateNormal];
         self.followButton.enabled = NO;
+        [self.followButton setTitle:NSLocalizedString(@"Blocking", nil) forState:UIControlStateNormal];
+        
+        CGFloat red, green, blue;
+        
+        [self.followButton setImage:[UIImage imageNamed:@"man-Block"] forState:UIControlStateNormal];
+        red = 1.0;
+        green = 0.666;
+        blue = 0.643;
+        [self.followButton setTitleColor:[UIColor colorWithRed:red green:green blue:blue alpha:1.0] forState:UIControlStateDisabled];
+    } else {
+        
     }
     
     [self.followButton.titleLabel setFont:self.titleFont];
-    [self.followButton sizeToFit];
     
     [self setNeedsLayout];
 }
