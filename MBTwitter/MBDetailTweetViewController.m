@@ -216,8 +216,11 @@ static NSString *actionsCellIdentifier = @"ActionsCellIdentifier";
     [self.navigationController presentViewController:navigationController animated:YES completion:nil];
 }
 - (IBAction)didPushRetweetButton:(id)sender {
+    
+    [self.aoAPICenter postRetweetForTweetID:[self.tweet.tweetID unsignedLongLongValue]];
+    /*
     UIActionSheet *retweetActionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Retweet", @"Retweet with Coment", nil];
-    [retweetActionSheet showFromTabBar:self.tabBarController.tabBar];
+    [retweetActionSheet showFromTabBar:self.tabBarController.tabBar];*/
 }
 
 - (IBAction)didPushRetweetWithComentButton:(id)sender
@@ -231,7 +234,7 @@ static NSString *actionsCellIdentifier = @"ActionsCellIdentifier";
 
 - (void)didPushCancelRetweetButton
 {
-    UIActionSheet *retweetActionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:@"Delete Retweet" otherButtonTitles:nil];
+    UIActionSheet *retweetActionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) destructiveButtonTitle:NSLocalizedString(@"Cancel Retweet", nil) otherButtonTitles:nil];
     [retweetActionSheet showFromTabBar:self.tabBarController.tabBar];
 }
 
@@ -457,9 +460,9 @@ static NSString *actionsCellIdentifier = @"ActionsCellIdentifier";
     } else {
         cell.retweeterView.retweeterString  = [MBTweetTextComposer attributedStringForTimelineRetweeter:self.retweeter font:[UIFont systemFontOfSize:14.0f]];
         cell.retweeterView.delegate = self;
-        NSAttributedString *retweeterName = [MBTweetTextComposer attributedStringForTimelineRetweeter:self.retweeter font:[UIFont systemFontOfSize:15.0f]];
+        NSAttributedString *retweeterName = [MBTweetTextComposer attributedStringForTimelineRetweeter:self.retweeter font:[UIFont systemFontOfSize:14.0f]];
         if ([[MBAccountManager sharedInstance].currentAccount.userID isEqualToString:self.retweeter.userIDStr]) {
-            retweeterName = [MBTweetTextComposer attributedStringByRetweetedMeForTimelineWithfont:[UIFont systemFontOfSize:15.0f]];
+            retweeterName = [MBTweetTextComposer attributedStringByRetweetedMeForTimelineWithfont:[UIFont systemFontOfSize:14.0f]];
         }
         [cell.retweeterView setRetweeterString:retweeterName];
         [cell.retweeterView setUserLink:[[MBMentionUserLink alloc]initWithUserID:self.retweeter.userID IDStr:self.retweeter.userIDStr screenName:self.retweeter.screenName]];
@@ -670,8 +673,7 @@ static NSString *actionsCellIdentifier = @"ActionsCellIdentifier";
             self.retweeter = [[MBUserManager sharedInstance] storedUserForKey:[[[MBAccountManager sharedInstance] currentAccount] userID]];
         }
         self.currentUserRetweetedTweet = @{@"id": tweet.tweetID};
-        [self.tweet setIsRetweeted:YES];
-        self.tweet.retweetedCount = self.tweet.retweetedCount + 1;
+        self.tweet = tweet.tweetOfOriginInRetweet;
         [self.tableView reloadData];
         
     } else if (requestType == MBTwitterStatusesDestroyTweetRequest) {
