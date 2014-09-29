@@ -8,6 +8,7 @@
 
 #import "MBTweetManager.h"
 #import "MBTweet.h"
+#import "MBGapedTweet.h"
 #import "MBAccountManager.h"
 #import "MBAccount.h"
 #import "MBPlace.h"
@@ -191,6 +192,9 @@
     for (NSString *tweetID in tweets) {
         MBTweet *tweet = [self storedTweetForKey:tweetID];
         if (nil == tweet) {
+            return;
+        }
+        if ([tweet isKindOfClass:[MBGapedTweet class]]) {
             return;
         }
         
