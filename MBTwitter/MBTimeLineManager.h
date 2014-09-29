@@ -12,8 +12,12 @@
 
 @property (nonatomic) NSArray *tweets;
 @property (nonatomic, readonly) NSMutableArray *gaps;
+@property (nonatomic, readonly) NSInteger saveIndex;
+@property (nonatomic) CGPoint currentOffset;
 
 - (NSDictionary *)addTweets:(NSArray *)tweets;
 - (void)removeTweetAtIndex:(NSUInteger)index;
+- (void)addSaveIndex;
+- (void)stopLoadingSavedTweets;
 
 @end
