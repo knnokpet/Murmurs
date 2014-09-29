@@ -49,7 +49,6 @@
     [self.tweetButton setImage:[UIImage imageNamed:@"Pen-Selected-ActionCell"] forState:UIControlStateHighlighted];
     [self.tweetButton.titleLabel setFont:self.titleFont];
     [self.tweetButton setTitleColor:self.highlitedColor forState:UIControlStateHighlighted];
-    [self.tweetButton setTitleColor:[UIColor darkGrayColor] forState:UIControlStateDisabled];
     [self.contentView addSubview:self.tweetButton];
     
     _messageButton = [[MBTitleWithImageButton alloc] initWithFrame:CGRectMake(0, 0, defaultButtonSize.width, defaultButtonSize.height) title:NSLocalizedString(@"Message", nil) image:[UIImage imageNamed:@"Message-ActionCell"]];
