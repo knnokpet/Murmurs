@@ -29,7 +29,8 @@
 {
     [[NSNotificationCenter defaultCenter] addObserverForName:@"ChangeMyAccount" object:nil queue:nil usingBlock:^(NSNotification *notification) {
         NSLog(@"user change account to = %@", [[MBAccountManager sharedInstance] currentAccount].screenName);
-        
+        self.aoAPICenter.delegate = nil;
+        self.aoAPICenter = nil;
         [self commonConfigureModel];
         [self commonConfigureView];
         [self setttingMyUser];
