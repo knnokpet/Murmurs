@@ -12,6 +12,7 @@
 
 @property (nonatomic, readonly) UISearchBar *searchBar;
 @property (nonatomic, readonly) UIBarButtonItem *tweetButton;
+@property (nonatomic) UIView *viewForHiding;
 
 @end
 
@@ -72,6 +73,8 @@
     segmentedRect.origin.y = self.segmentedControl.superview.bounds.size.height / 2 - segmentedRect.size.height / 2;
     self.segmentedControl.frame = segmentedRect;
     
+    self.viewForHiding = [[UIView alloc] initWithFrame:self.view.bounds];
+    self.viewForHiding.backgroundColor = [UIColor whiteColor];
     
     [self configureNabigationItem];
 }
@@ -98,12 +101,15 @@
     self.usersViewController.delegate = self;
     self.usersViewController.view.frame = self.view.bounds;
     [self addChildViewController:self.usersViewController];
+    [self.view addSubview:self.usersViewController.view];
     
+    [self.view addSubview:self.tweetViewController.view];
     
     _viewControllers = @[self.tweetViewController, self.usersViewController];
     
     self.segmentedControl.selectedSegmentIndex = 0;
     
+    [self.view addSubview:self.viewForHiding];
     
     [self searchTweet];
     
@@ -184,6 +190,26 @@
     self.usersViewController.tableView.scrollIndicatorInsets = scrollInsets;
 }
 
+- (void)applyNonSegmentedInset
+{
+    CGFloat navigationbarOriginY = self.navigationController.navigationBar.frame.origin.y;
+    CGFloat navigationbarHeight = self.navigationController.navigationBar.bounds.size.height;
+    CGFloat bottomHeight = 0;
+    if (self.tabBarController) {
+        bottomHeight = self.tabBarController.tabBar.frame.size.height;
+    }
+    
+    // insets
+    UIEdgeInsets contentInsets = self.tweetViewController.tableView.contentInset;
+    contentInsets.top = navigationbarHeight + navigationbarOriginY;
+    contentInsets.bottom = bottomHeight;
+    self.tweetViewController.tableView.contentInset = contentInsets;
+    UIEdgeInsets indicatorInsets = self.tweetViewController.tableView.scrollIndicatorInsets;
+    indicatorInsets.top = navigationbarHeight + navigationbarOriginY;
+    indicatorInsets.bottom = bottomHeight;
+    self.tweetViewController.tableView.scrollIndicatorInsets = indicatorInsets;
+}
+
 - (void)searchTweet
 {
     if (!self.searchingTweetQuery || self.searchingTweetQuery.length == 0) {
@@ -194,17 +220,10 @@
     [self.searchBar resignFirstResponder];
     [self changeNavigationItemToTweetButtonWithAnimated:NO];
     
-    UIEdgeInsets contentInsets = self.tweetViewController.tableView.contentInset;
-    contentInsets.top = 0;
-    contentInsets.bottom = 0;
-    self.tweetViewController.tableView.contentInset = contentInsets;
-    UIEdgeInsets indicatorInsets = self.tweetViewController.tableView.scrollIndicatorInsets;
-    indicatorInsets.top  = 0;
-    indicatorInsets.bottom = 0;
-    self.tweetViewController.tableView.scrollIndicatorInsets = indicatorInsets;
-    
     self.tweetViewController.query = self.searchBar.text;
+    [self addChildViewController:self.tweetViewController];
     [self.view addSubview:self.tweetViewController.view];
+    [self applyNonSegmentedInset];
     
     self.searchingTweetQuery = nil;
 }
@@ -239,7 +258,7 @@
     unsigned int curve = [[userInfo objectForKey:UIKeyboardAnimationCurveUserInfoKey] unsignedIntValue];
     
     [UIView animateWithDuration:duration delay:0.0f options:curve animations:^{
-        self.view.backgroundColor = [UIColor grayColor];
+        self.viewForHiding.backgroundColor = [UIColor grayColor];
     }completion:nil];
 }
 
@@ -250,7 +269,7 @@
     unsigned int curve = [[userInfo objectForKey:UIKeyboardAnimationCurveUserInfoKey] unsignedIntValue];
     
     [UIView animateWithDuration:duration delay:0.0f options:curve animations:^{
-        self.view.backgroundColor = [UIColor whiteColor];
+        self.viewForHiding.backgroundColor = [UIColor whiteColor];
     }completion:nil];
 }
 
@@ -323,6 +342,8 @@
     }
     
     [self updateContainerView];
+    
+    [self.viewForHiding removeFromSuperview];
 }
 
 - (BOOL)searchBarShouldBeginEditing:(UISearchBar *)searchBar
@@ -342,7 +363,9 @@
             [self.usersViewController.view removeFromSuperview];
         }
         [self updateContainerView];
+        [self.view addSubview:self.viewForHiding];
     }
+    
 }
 
 #pragma mark SearchedTweetsViewController Delegate
