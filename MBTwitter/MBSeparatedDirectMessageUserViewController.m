@@ -118,6 +118,11 @@
         [self.tableView deselectRowAtIndexPath:selectedPath animated:animated];
     }
     
+    [self updateVisibleCells];
+}
+
+- (void)updateVisibleCells
+{
     for (MBSeparatedDirectMessageUserTableViewCell *cell in [self.tableView visibleCells]) {
         
         if (cell.avatorImageView.isSelected) {
@@ -142,6 +147,8 @@
     [[NSNotificationCenter defaultCenter] addObserverForName:@"ChangeMyAccount" object:nil queue:nil usingBlock:^(NSNotification *notification) {
         NSLog(@"user change account to = %@", [[MBAccountManager sharedInstance] currentAccount].screenName);
         [self updateNavigationTitleView];
+        self.aoAPICenter.delegate = nil;
+        _aoAPICenter = nil;
         [self configureModel];
         [self.tableView reloadData];
         [self fetchCurrentMessage];
@@ -285,7 +292,12 @@
     // avatorImage
     [cell setUserIDStr:user.userIDStr];
     cell.avatorImageView.delegate = self;
+    
+    if (cell.avatorImageView.avatorImage && [cell.avatorImageView.userIDStr isEqualToString:cell.userIDStr]) {
+        return ;
+    }
     cell.avatorImageView.avatorImage = nil;
+    cell.avatorImageView.userIDStr = user.userIDStr;
     UIImage *avatorImage = [[MBImageCacher sharedInstance] cachedProfileImageForUserID:user.userIDStr];
     if (!avatorImage) {
         
@@ -429,7 +441,7 @@
             }
             
             dispatch_async(dispatch_get_main_queue(), ^{
-                [self.tableView reloadData];
+                [self updateVisibleCells];
                 [self fetchUsersForStoredIds];
             });
         });
