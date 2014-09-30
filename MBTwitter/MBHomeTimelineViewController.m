@@ -52,16 +52,21 @@
 {
     [[NSNotificationCenter defaultCenter] addObserverForName:@"ChangeMyAccount" object:nil queue:nil usingBlock:^(NSNotification *notification) {
         NSLog(@"user change account to = %@", [[MBAccountManager sharedInstance] currentAccount].screenName);
-        MBAccount *currentAccount = [[MBAccountManager sharedInstance] currentAccount];
         
         [self updateNavigationTitleView];
-        self.timelineManager = currentAccount.timelineManager;
-        self.dataSource = self.timelineManager.tweets;
+        [self configureTimelineManager];
+        self.aoAPICenter.delegate = nil;/* 通信を切る。強引。 */
+        self.aoAPICenter = nil;/* 通信を切る。強引。 */
         self.aoAPICenter = [[MBAOuth_TwitterAPICenter alloc] init];
         self.aoAPICenter.delegate = self;
         self.enableBacking = YES;
         self.requireUpdatingDatasource = NO;
+        [self configureBackTimelineIndicatorView];
         [self.tableView reloadData];
+        
+        if (self.timelineManager.currentOffset.y > 0) {
+            [self.tableView setContentOffset:self.timelineManager.currentOffset];
+        }
         
         // アカウントを変更すると保存されていたものが再び読み込まれてしまうぞ
         if (0 == self.dataSource.count) {
