@@ -67,7 +67,6 @@
 - (void)setUserIDStr:(NSString *)userIDStr
 {
     _userIDStr = userIDStr;
-    [self.avatorImageView setUserIDStr:userIDStr];
 }
 
 - (void)setUserID:(NSNumber *)userID
