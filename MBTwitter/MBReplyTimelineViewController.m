@@ -57,12 +57,15 @@
         NSLog(@"user change account to = %@", [[MBAccountManager sharedInstance] currentAccount].screenName);
         [self updateNavigationTitleView];
         [self configureTimelineManager];
-        self.dataSource = self.timelineManager.tweets;
+        self.aoAPICenter.delegate = nil;
+        self.aoAPICenter = nil;
         self.aoAPICenter = [[MBAOuth_TwitterAPICenter alloc] init];
         self.aoAPICenter.delegate = self;
         self.enableBacking = YES;
         self.requireUpdatingDatasource = NO;
+        [self configureBackTimelineIndicatorView];
         [self.tableView reloadData];
+        [self.tableView setContentOffset:self.timelineManager.currentOffset];
         if (0 == self.dataSource.count) {
             [self goBacksAtIndex:0];
         } else {
