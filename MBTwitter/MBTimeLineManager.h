@@ -7,13 +7,14 @@
 //
 
 #import <Foundation/Foundation.h>
-
+@class MBGapedTweet;
 @interface MBTimeLineManager : NSObject
 
 @property (nonatomic) NSArray *tweets;
 @property (nonatomic, readonly) NSMutableArray *gaps;
 @property (nonatomic, readonly) NSInteger saveIndex;
 @property (nonatomic) CGPoint currentOffset;
+@property (nonatomic) MBGapedTweet *currentLoadingGapedTweet;
 
 - (NSDictionary *)addTweets:(NSArray *)tweets;
 - (void)removeTweetAtIndex:(NSUInteger)index;

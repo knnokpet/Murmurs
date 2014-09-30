@@ -48,7 +48,6 @@
 {
     NSMutableArray *tweets = [NSMutableArray arrayWithArray:self.sourceTweets];
     for (MBGapedTweet *gap in self.gaps) {
-        NSLog(@"add gap");
         NSInteger index = gap.index;
         [tweets insertObject:gap atIndex:index];
     }
@@ -61,10 +60,6 @@
 
 - (NSDictionary *)addTweets:(NSArray *)tweets
 {
-    if (tweets.count <= 1) {
-        /* sinceTweet がそのまま１つだけ帰ってきた場合、tableView の更新は行わないため */
-        //return nil;
-    }
     
     NSMutableDictionary *updates = [NSMutableDictionary dictionary];
     [updates setObject:tweets forKey:ADDING_DATA_KEY];
@@ -74,114 +69,119 @@
     if (0 < gapsCount) {
         
         NSInteger indexOfGap = 0;
+        BOOL isAddingGaps = NO;
         for (MBGapedTweet *gapedTweet in self.gaps) {
-            BOOL isAddingGaps = [self isAddingGaps:tweets gap:gapedTweet];
-            if (YES == isAddingGaps) {
-                MBTweet *firstExistingTweet = [[MBTweetManager sharedInstance] storedTweetForKey:_sourceTweets[gapedTweet.index]];
-                MBTweet *lastExistingTweet = [[MBTweetManager sharedInstance] storedTweetForKey:[_sourceTweets lastObject]];
-                
-                NSComparisonResult result = [self comparisonResultWithTweets:tweets existingFirst:firstExistingTweet existingLast:lastExistingTweet];
-                if (result == NSOrderedAscending) {
-                    NSInteger addingIndex = [tweets count];
-                    NSMutableIndexSet *indexSet = [NSMutableIndexSet indexSetWithIndexesInRange:NSMakeRange(gapedTweet.index, addingIndex)];
-                    [self.sourceTweets insertObjects:tweets atIndexes:indexSet];
-                    
-                    
-                    // 足された分、残りの Gap.index をずらす
-                    NSInteger indexOfAddingGap = 0;
-                    for (MBGapedTweet *gapedTweet in self.gaps) {
-                        if (indexOfAddingGap >= indexOfGap) {
-                            gapedTweet.index = gapedTweet.index + addingIndex;
-                        }
-                        indexOfAddingGap ++;
-                    }
-                    
-                    [updates setObject:[NSNumber numberWithBool:YES] forKey:UPDATE_KEY];
-                    [updates setObject:[NSNumber numberWithBool:YES] forKey:GAPS_KEY];
-                    
-                } else if (result == NSOrderedSame) {
-                    // 差分チェック用のオブジェクトが被るので追加データから削除
-                    NSMutableArray *addingTweets = tweets.mutableCopy;
-                    [addingTweets removeLastObject];
-                    [updates setObject:addingTweets forKey:ADDING_DATA_KEY];
-                    
-                    NSInteger addingIndex = [addingTweets count];
-                    NSMutableIndexSet *indexSet = [NSMutableIndexSet indexSetWithIndexesInRange:NSMakeRange(gapedTweet.index, addingIndex)];
-                    [self.sourceTweets insertObjects:addingTweets atIndexes:indexSet];
-
-                    
-                    // 足された分、残りの Gap.index をずらす
-                    NSInteger indexOfAddingGap = 0;
-                    for (MBGapedTweet *gapedTweet in self.gaps) {
-                        if (indexOfAddingGap > indexOfGap) {
-                            gapedTweet.index = gapedTweet.index + addingIndex;
-                        }
-                        indexOfAddingGap ++;
-                    }
-                    [self.gaps removeObjectAtIndex:indexOfGap];
-                    
-                    [updates setObject:[NSNumber numberWithBool:NO] forKey:UPDATE_KEY];
-                    [updates setObject:[NSNumber numberWithBool:NO] forKey:GAPS_KEY];
-                    
-                } else if (result == NSOrderedDescending) {
-                    NSLog(@"きてはならない");
-                }
-                [updates setObject:[NSNumber numberWithBool:YES] forKey:ADDING_GAP_KEY];
-                
-            } else { // Top or Bottom への追加。
-                
-                MBTweet *firstExistingTweet = [[MBTweetManager sharedInstance] storedTweetForKey:[_sourceTweets firstObject]];
-                MBTweet *lastExistingTweet = [[MBTweetManager sharedInstance] storedTweetForKey:[_sourceTweets lastObject]];
-                
-                NSComparisonResult result = [self comparisonResultWithTweets:tweets existingFirst:firstExistingTweet existingLast:lastExistingTweet];
-                if (result == NSOrderedAscending) {
-                    NSInteger addingTweetsIndex = [tweets count];
-                    
-                    NSMutableIndexSet *indexSet = [NSMutableIndexSet indexSetWithIndexesInRange:NSMakeRange(0, addingTweetsIndex)];
-                    [self.sourceTweets insertObjects:tweets atIndexes:indexSet];
-                    
-                    
-                    // 足された分、残りの Gap.index をずらす
-                    for (MBGapedTweet *gap in self.gaps) {
-                        gap.index = gap.index + addingTweetsIndex + 1;
-                    }
-                    MBGapedTweet *gapedTweets = [[MBGapedTweet alloc] initWithIndex:addingTweetsIndex];
-                    [self.gaps addObject:gapedTweets];
-                    
-                    [updates setObject:[NSNumber numberWithBool:YES] forKey:UPDATE_KEY];
-                    [updates setObject:[NSNumber numberWithBool:YES] forKey:GAPS_KEY];
-                    
-                } else if (result == NSOrderedSame) {
-                    // 差分チェック用のオブジェクトが被るので追加データから削除
-                    NSMutableArray *addingTweets = tweets.mutableCopy;
-                    [addingTweets removeLastObject];
-                    [updates setObject:addingTweets forKey:ADDING_DATA_KEY];
-                    
-                    NSInteger addingTweetsIndex = [addingTweets count];
-                    NSMutableIndexSet *indexSet = [NSMutableIndexSet indexSetWithIndexesInRange:NSMakeRange(0, addingTweetsIndex)];
-                    [self.sourceTweets insertObjects:addingTweets atIndexes:indexSet];
-                    
-                    
-                    // 足された分、残りの Gap.index をずらす
-                    for (MBGapedTweet *gap in self.gaps) {
-                        gap.index = gap.index + addingTweetsIndex;
-                    }
-                    
-                    [updates setObject:[NSNumber numberWithBool:YES] forKey:UPDATE_KEY];
-                    [updates setObject:[NSNumber numberWithBool:NO] forKey:GAPS_KEY];
-                    
-                } else if (result == NSOrderedDescending) {
-                    MBTweet *lastExistingTweet = [[MBTweetManager sharedInstance] storedTweetForKey:[self.sourceTweets lastObject]];
-                    [self.sourceTweets addObjectsFromArray:[self removeSavedDuplicatingTweets:tweets lastExistingTweet:lastExistingTweet]];
-                    
-                    [updates setObject:[NSNumber numberWithBool:NO] forKey:UPDATE_KEY];
-                    
-                }
+            isAddingGaps = [self isAddingGaps:tweets gap:gapedTweet indexOfGap:indexOfGap];
+            if (isAddingGaps) {
+                break;
             }
-            
             indexOfGap++;
         }
         
+        if (YES == isAddingGaps) {
+            MBGapedTweet *gapedTweet = self.gaps[indexOfGap];
+            NSInteger minusGapsIndex = gapedTweet.index - indexOfGap;
+            MBTweet *firstExistingTweet = [[MBTweetManager sharedInstance] storedTweetForKey:_sourceTweets[minusGapsIndex]];
+            MBTweet *lastExistingTweet = [[MBTweetManager sharedInstance] storedTweetForKey:[_sourceTweets lastObject]];
+            
+            NSComparisonResult result = [self comparisonResultWithTweets:tweets existingFirst:firstExistingTweet existingLast:lastExistingTweet];
+            if (result == NSOrderedAscending) {
+                NSInteger addingIndex = [tweets count];
+                NSMutableIndexSet *indexSet = [NSMutableIndexSet indexSetWithIndexesInRange:NSMakeRange(minusGapsIndex, addingIndex)];
+                [self.sourceTweets insertObjects:tweets atIndexes:indexSet];
+                
+                
+                // 足された分、残りの Gap.index をずらす
+                NSInteger indexOfAddingGap = 0;
+                for (MBGapedTweet *gapedTweet in self.gaps) {
+                    if (indexOfAddingGap >= indexOfGap) {
+                        gapedTweet.index = gapedTweet.index + addingIndex;
+                    }
+                    indexOfAddingGap ++;
+                }
+                
+                [updates setObject:[NSNumber numberWithBool:YES] forKey:UPDATE_KEY];
+                [updates setObject:[NSNumber numberWithBool:YES] forKey:GAPS_KEY];
+                
+            } else if (result == NSOrderedSame) {
+                // 差分チェック用のオブジェクトが被るので追加データから削除
+                NSMutableArray *addingTweets = tweets.mutableCopy;
+                [addingTweets removeLastObject];
+                [updates setObject:addingTweets forKey:ADDING_DATA_KEY];
+                
+                NSInteger addingIndex = [addingTweets count];
+                NSMutableIndexSet *indexSet = [NSMutableIndexSet indexSetWithIndexesInRange:NSMakeRange(minusGapsIndex, addingIndex)];
+                [self.sourceTweets insertObjects:addingTweets atIndexes:indexSet];
+                
+                
+                // 足された分、残りの Gap.index をずらす
+                NSInteger indexOfAddingGap = 0;
+                for (MBGapedTweet *gapedTweet in self.gaps) {
+                    if (indexOfAddingGap > indexOfGap) {
+                        gapedTweet.index = gapedTweet.index + addingIndex;
+                    }
+                    indexOfAddingGap ++;
+                }
+                [self.gaps removeObjectAtIndex:indexOfGap];
+                
+                [updates setObject:[NSNumber numberWithBool:NO] forKey:UPDATE_KEY];
+                [updates setObject:[NSNumber numberWithBool:NO] forKey:GAPS_KEY];
+                
+            } else if (result == NSOrderedDescending) {
+                NSLog(@"きてはならない");
+            }
+            [updates setObject:[NSNumber numberWithBool:YES] forKey:ADDING_GAP_KEY];
+            
+        } else { // Top or Bottom への追加。
+            
+            MBTweet *firstExistingTweet = [[MBTweetManager sharedInstance] storedTweetForKey:[_sourceTweets firstObject]];
+            MBTweet *lastExistingTweet = [[MBTweetManager sharedInstance] storedTweetForKey:[_sourceTweets lastObject]];
+            
+            NSComparisonResult result = [self comparisonResultWithTweets:tweets existingFirst:firstExistingTweet existingLast:lastExistingTweet];
+            if (result == NSOrderedAscending) {
+                NSInteger addingTweetsIndex = [tweets count];
+                
+                NSMutableIndexSet *indexSet = [NSMutableIndexSet indexSetWithIndexesInRange:NSMakeRange(0, addingTweetsIndex)];
+                [self.sourceTweets insertObjects:tweets atIndexes:indexSet];
+                
+                
+                // 足された分、残りの Gap.index をずらす
+                for (MBGapedTweet *gap in self.gaps) {
+                    gap.index = gap.index + addingTweetsIndex + 1;
+                }
+                MBGapedTweet *gapedTweet = [[MBGapedTweet alloc] initWithIndex:addingTweetsIndex];
+                [self addGapedTweet:gapedTweet];
+                
+                [updates setObject:[NSNumber numberWithBool:YES] forKey:UPDATE_KEY];
+                [updates setObject:[NSNumber numberWithBool:YES] forKey:GAPS_KEY];
+                
+            } else if (result == NSOrderedSame) {
+                // 差分チェック用のオブジェクトが被るので追加データから削除
+                NSMutableArray *addingTweets = tweets.mutableCopy;
+                [addingTweets removeLastObject];
+                [updates setObject:addingTweets forKey:ADDING_DATA_KEY];
+                
+                NSInteger addingTweetsIndex = [addingTweets count];
+                NSMutableIndexSet *indexSet = [NSMutableIndexSet indexSetWithIndexesInRange:NSMakeRange(0, addingTweetsIndex)];
+                [self.sourceTweets insertObjects:addingTweets atIndexes:indexSet];
+                
+                
+                // 足された分、残りの Gap.index をずらす
+                for (MBGapedTweet *gap in self.gaps) {
+                    gap.index = gap.index + addingTweetsIndex;
+                }
+                
+                [updates setObject:[NSNumber numberWithBool:YES] forKey:UPDATE_KEY];
+                [updates setObject:[NSNumber numberWithBool:NO] forKey:GAPS_KEY];
+                
+            } else if (result == NSOrderedDescending) {
+                MBTweet *lastExistingTweet = [[MBTweetManager sharedInstance] storedTweetForKey:[self.sourceTweets lastObject]];
+                [self.sourceTweets addObjectsFromArray:[self removeSavedDuplicatingTweets:tweets lastExistingTweet:lastExistingTweet]];
+                
+                [updates setObject:[NSNumber numberWithBool:NO] forKey:UPDATE_KEY];
+                
+            }
+        }
 
         return updates;
         
@@ -193,8 +193,8 @@
         
         if (result == NSOrderedAscending) {
             NSInteger addingTweetsIndex = [tweets count];
-            MBGapedTweet *gapedTweets = [[MBGapedTweet alloc] initWithIndex:addingTweetsIndex];
-            [self.gaps addObject:gapedTweets];
+            MBGapedTweet *gapedTweet = [[MBGapedTweet alloc] initWithIndex:addingTweetsIndex];
+            [self addGapedTweet:gapedTweet];
             NSMutableIndexSet *indexSet = [NSMutableIndexSet indexSetWithIndexesInRange:NSMakeRange(0, addingTweetsIndex)];
             [self.sourceTweets insertObjects:tweets atIndexes:indexSet];
             
@@ -215,7 +215,6 @@
             [updates setObject:[NSNumber numberWithBool:NO] forKey:GAPS_KEY];
             
         } else if (result == NSOrderedDescending) {
-            MBTweet *lastExistingTweet = [[MBTweetManager sharedInstance] storedTweetForKey:[self.sourceTweets lastObject]];
             [self.sourceTweets addObjectsFromArray:tweets];
             
             [updates setObject:[NSNumber numberWithBool:NO] forKey:UPDATE_KEY];
@@ -235,10 +234,6 @@
     if (!firstTweet || !lastTweet || !addingFirst || !addingLast) {
         return result;
     }
-    NSLog(@"first %llu : %@", firstTweet.tweetID.unsignedLongLongValue, firstTweet.tweetText);
-    NSLog(@"last %llu : %@", lastTweet.tweetID.unsignedLongLongValue, lastTweet.tweetText);
-    NSLog(@"addfirst %llu : %@", addingFirst.tweetID.unsignedLongLongValue, addingFirst.tweetText);
-    NSLog(@"lastfirst %llu : %@", addingLast.tweetID.unsignedLongLongValue, addingLast.tweetText);
     
     // check backTimeline
     if (([lastTweet.tweetID compare:addingFirst.tweetID] == NSOrderedDescending) && ([lastTweet.tweetID compare:addingLast.tweetID] == NSOrderedDescending)) {
@@ -267,23 +262,19 @@
     return [receivedTweet.tweetID compare:givenTweet.tweetID];
 }
 
-- (BOOL)isAddingGaps:(NSArray *)tweets gap:(MBGapedTweet *)gap
+- (BOOL)isAddingGaps:(NSArray *)tweets gap:(MBGapedTweet *)gap indexOfGap:(NSInteger)indexOfGap
 {
-    NSInteger abobeIndex = gap.index - 1;
-    NSInteger belowIndex = gap.index + 1;// gap が超えたらたらバグるね。
+    NSInteger indexMinusGaps = gap.index - indexOfGap; /* gap.index はギャップも含んだ値なので。 */
+    NSInteger abobeIndex = indexMinusGaps - 1;
+    NSInteger belowIndex = indexMinusGaps + 1;// gap が超えたらたらバグるね。
     MBTweet *existAbobe = [[MBTweetManager sharedInstance] storedTweetForKey:self.sourceTweets[abobeIndex]];
     MBTweet *existBelow = [[MBTweetManager sharedInstance] storedTweetForKey:self.sourceTweets[belowIndex]];
     MBTweet *addingAbobe = [[MBTweetManager sharedInstance] storedTweetForKey:[tweets firstObject]];
     MBTweet *addingBelow = [[MBTweetManager sharedInstance] storedTweetForKey:[tweets lastObject]];
-    
-    NSLog(@"first %llu : %@", existAbobe.tweetID.unsignedLongLongValue, existAbobe.tweetText);
-    NSLog(@"last %llu : %@", existBelow.tweetID.unsignedLongLongValue, existBelow.tweetText);
-    NSLog(@"addfirst %llu : %@", addingAbobe.tweetID.unsignedLongLongValue, addingAbobe.tweetText);
-    NSLog(@"lastfirst %llu : %@", addingBelow.tweetID.unsignedLongLongValue, addingBelow.tweetText);
 
     NSComparisonResult abobeResult = [self compareTweet:existAbobe with:addingAbobe];
     NSComparisonResult belowResult = [self compareTweet:existBelow with:addingBelow];
-    if (NSOrderedDescending == abobeResult && NSOrderedAscending == belowResult) {
+    if (abobeResult == NSOrderedDescending && belowResult == NSOrderedAscending) {
         return YES;
     }
     
@@ -338,6 +329,23 @@
     NSUInteger removeIndex = index - countOfEarlyGaps;
     [self.sourceTweets removeObjectAtIndex:removeIndex];
     
+}
+
+- (void)addGapedTweet:(MBGapedTweet *)addedTweet
+{
+    [self.gaps addObject:addedTweet];
+    NSSortDescriptor *descriptor = [[NSSortDescriptor alloc] initWithKey:@"index" ascending:YES];
+    [self.gaps sortUsingDescriptors:@[descriptor]];
+    /*
+    NSInteger index = 0;
+    for (MBGapedTweet *gaped in self.gaps) {
+        if (addedTweet.index > gaped.index) {
+            break;
+        }
+        index++;
+    }
+    
+    [self.gaps insertObject:addedTweet atIndex:index];*/
 }
 
 - (void)addSaveIndex
