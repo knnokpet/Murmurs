@@ -10,6 +10,5 @@
 
 @interface MBGapedTweetViewCell : UITableViewCell
 @property (weak, nonatomic) IBOutlet UIButton *gapButton;
-@property (nonatomic) NSInteger index;
 
 @end
