@@ -39,7 +39,6 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
 
 @property (nonatomic) MBZoomTransitioning *zoomTransitioning;
 
-@property (nonatomic) NSInteger saveIndex;
 @property (nonatomic, assign) BOOL backsTimeline;
 
 @property (nonatomic) CGFloat beginDraggingOffsetY;
@@ -77,8 +76,6 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
     self.enableBacking = YES;
     self.backsTimeline = NO;
     self.requireUpdatingDatasource = NO;
-    
-    self.saveIndex = 0;
 }
 
 #pragma mark -
@@ -140,21 +137,9 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
     view.backgroundColor = [UIColor clearColor];
     self.tableView.tableHeaderView = view;
     
-    // backTimelineIndicator
-    UIActivityIndicatorView *indicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-    [indicatorView startAnimating];
-    CGFloat bottomMargin = 4.0f;
-    CGFloat indicatorHeight = indicatorView.frame.size.height;
-    UIView *indicatorContanerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.tableView.bounds.size.width, indicatorHeight + bottomMargin * 2)];
-    [indicatorContanerView addSubview:indicatorView];
-    indicatorView.center = indicatorContanerView.center;
-    self.tableView.tableFooterView = indicatorContanerView;
+    [self configureBackTimelineIndicatorView];
     
-    
-    // refreshControl
-    _refreshControl = [[UIRefreshControl alloc] init];
-    [self.refreshControl addTarget:self action:@selector(refreshAction) forControlEvents:UIControlEventValueChanged];
-    [self.tableView addSubview:self.refreshControl];
+    [self configureRefrechControll];
     
     [self configureLoadingView];
 }
@@ -168,14 +153,6 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
 - (void)commonConfigureNavigationItem
 {
     [self configureNavigationItem];
-}
-
-- (void)configureLoadingView
-{
-    if (!self.loadingView.superview) {
-        _loadingView = [[MBLoadingView alloc] initWithFrame:self.view.bounds];
-        [self.view insertSubview:self.loadingView aboveSubview:self.tableView];
-    }
 }
 
 - (void)viewDidLoad
@@ -248,6 +225,14 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
 
 #pragma mark - 
 #pragma mark Instance Methods
+- (void)configureLoadingView
+{
+    if (!self.loadingView.superview) {
+        _loadingView = [[MBLoadingView alloc] initWithFrame:self.view.bounds];
+        [self.view insertSubview:self.loadingView aboveSubview:self.tableView];
+    }
+}
+
 - (void)removeLoadingView
 {
     // ラウンチ時に表示されている UIActivityView を remove
@@ -261,11 +246,30 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
     }
 }
 
+- (void)configureBackTimelineIndicatorView
+{
+    UIActivityIndicatorView *indicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    [indicatorView startAnimating];
+    CGFloat bottomMargin = 4.0f;
+    CGFloat indicatorHeight = indicatorView.frame.size.height;
+    UIView *indicatorContanerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.tableView.bounds.size.width, indicatorHeight + bottomMargin * 2)];
+    [indicatorContanerView addSubview:indicatorView];
+    indicatorView.center = indicatorContanerView.center;
+    self.tableView.tableFooterView = indicatorContanerView;
+}
+
 - (void)removeBackTimelineIndicatorView
 {
     UIView *view = [[UIView alloc] init];
     view.backgroundColor = [UIColor clearColor];
     self.tableView.tableFooterView = view;
+}
+
+- (void)configureRefrechControll
+{
+    _refreshControl = [[UIRefreshControl alloc] init];
+    [self.refreshControl addTarget:self action:@selector(refreshAction) forControlEvents:UIControlEventValueChanged];
+    [self.tableView addSubview:self.refreshControl];
 }
 
 - (void)updateVisibleCells
@@ -308,9 +312,9 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
         NSArray *savedTweets = [self savedTweetsAtIndex:index];
         if (0 < [savedTweets count]) {
             [self updateTableViewDataSource:savedTweets];
-            self.saveIndex++;
+            [self.timelineManager addSaveIndex];
         } else {
-            self.saveIndex = -1;
+            [self.timelineManager stopLoadingSavedTweets];
             [self backTimeline];
         }
     }else if (0 < index) {
@@ -318,10 +322,15 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
             NSArray *savedTweets = [self savedTweetsAtIndex:index];
             dispatch_async(dispatch_get_main_queue(), ^{
                 if (0 < [savedTweets count]) {
-                    [self updateTableViewDataSource:savedTweets];
-                    self.saveIndex++;
+                    if (self.tableView.dragging || self.tableView.decelerating) {
+                        self.requireUpdatingDatasource = YES;
+                        self.updatingDatasource = savedTweets;
+                    } else {
+                        [self updateTableViewDataSource:savedTweets];
+                    }
+                    [self.timelineManager addSaveIndex];
                 } else {
-                    self.saveIndex = -1;
+                    [self.timelineManager stopLoadingSavedTweets];
                     [self backTimeline];
                 }
             });
@@ -374,6 +383,8 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
         if ([sender isKindOfClass:[UIButton class]]) {
             UIButton *button = (UIButton *)sender;
             button.enabled = NO;
+            
+            self.timelineManager.currentLoadingGapedTweet = [self.dataSource objectAtIndex:button.tag];
             
             NSString *maxStr = [self.dataSource objectAtIndex:button.tag - 1];
             MBTweet *maxTweet = [[MBTweetManager sharedInstance] storedTweetForKey:maxStr];
@@ -701,32 +712,43 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
     cell.tweetTextView.delegate = self;
     
     // AvatorImageView
-    cell.userIDStr = userAtIndexPath.userIDStr;
-    cell.userID = userAtIndexPath.userID;
+    [self updateAvatorImageForCell:cell user:userAtIndexPath];
+    
+    
+    // mediaImage
+    [self updateMediaImageForCell:cell tweet:tweetAtIndexPath];
+    
+}
+
+- (void)updateAvatorImageForCell:(MBTweetViewCell *)cell user:(MBUser *)user
+{
+    cell.userID = user.userID;
     cell.avatorImageView.delegate = self;
+    
+    if (cell.avatorImageView.avatorImage && [cell.avatorImageView.userIDStr isEqualToString:user.userIDStr]) {
+        return;
+    }
+    
+    cell.userIDStr = user.userIDStr;
+    cell.avatorImageView.userIDStr = user.userIDStr;
     cell.avatorImageView.avatorImage = nil;
-    UIImage *avatorImage = [[MBImageCacher sharedInstance] cachedTimelineImageForUser:userAtIndexPath.userIDStr];
+    UIImage *avatorImage = [[MBImageCacher sharedInstance] cachedTimelineImageForUser:user.userIDStr];
     if (!avatorImage) {
-        cell.avatorImageView.userIDStr = userAtIndexPath.userIDStr;
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
             
-            [MBImageDownloader downloadOriginImageWithURL:userAtIndexPath.urlHTTPSAtProfileImage completionHandler:^(UIImage *image, NSData *imageData){
+            [MBImageDownloader downloadOriginImageWithURL:user.urlHTTPSAtProfileImage completionHandler:^(UIImage *image, NSData *imageData){
                 if (image) {
-                    [[MBImageCacher sharedInstance] storeProfileImage:image data:imageData forUserID:userAtIndexPath.userIDStr];
+                    [[MBImageCacher sharedInstance] storeProfileImage:image data:imageData forUserID:user.userIDStr];
                     CGSize imageSize = CGSizeMake(cell.avatorImageView.frame.size.width, cell.avatorImageView.frame.size.height);
                     UIImage *radiusImage = [MBImageApplyer imageForTwitter:image size:imageSize radius:cell.avatorImageView.layer.cornerRadius];
-                    [[MBImageCacher sharedInstance] storeTimelineImage:radiusImage forUserID:userAtIndexPath.userIDStr];
+                    [[MBImageCacher sharedInstance] storeTimelineImage:radiusImage forUserID:user.userIDStr];
                     
                     dispatch_async(dispatch_get_main_queue(), ^{
-                        if ([cell.userIDStr isEqualToString:userAtIndexPath.userIDStr]) {
+                        if ([cell.userIDStr isEqualToString:user.userIDStr]) {
                             if (self.tableView.dragging || self.tableView.decelerating) {
-                                cell.avatorImageView.userIDStr = userAtIndexPath.userIDStr;
-                                
-                            } else {
-                                cell.avatorImageView.userIDStr = userAtIndexPath.userIDStr;
-                                cell.avatorImageView.avatorImage = radiusImage;
+                                return;
                             }
-                            
+                            cell.avatorImageView.avatorImage = radiusImage;
                         }
                     });
                 }
@@ -737,78 +759,67 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
             
         });
     } else {
-        if (cell.avatorImageView.avatorImage && [cell.avatorImageView.userIDStr isEqualToString:userAtIndexPath.userIDStr]) {
-            
-        } else {
-            
-            cell.avatorImageView.userIDStr = userAtIndexPath.userIDStr;
-            cell.avatorImageView.avatorImage = avatorImage;
-        }
-        
+        cell.avatorImageView.avatorImage = avatorImage;
+    }
+}
+
+- (void)updateMediaImageForCell:(MBTweetViewCell *)cell tweet:(MBTweet *)tweet
+{
+    __weak MBTimelineViewController *weakSelf = self;
+    NSInteger imageCounts = tweet.entity.media.count;
+    if (imageCounts == 0) {
+        return;
     }
     
-    // mediaImage
-    __weak MBTimelineViewController *weakSelf = self;
-    NSInteger imageCounts = tweetAtIndexPath.entity.media.count;
-    if (imageCounts > 0) {
-        cell.imageContainerView.imageCount = imageCounts;
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
-
-            int i = 0;
-            for (MBMediaLink *mediaLink in tweetAtIndexPath.entity.media) {
-                UIImage *mediaImage = [[MBImageCacher sharedInstance] cachedCroppedMediaImageForMediaID:mediaLink.mediaIDStr];
-                MBMediaImageView *mediaImageView = [cell.imageContainerView.imageViews objectAtIndex:i];
-                if (mediaImageView.mediaImage && [mediaImageView.mediaIDStr isEqualToString:mediaLink.mediaIDStr]) {
-                    i++;
-                    continue;
-                } else {
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        mediaImageView.mediaImage = nil;
-                    });
-                    
-                }
-                
-                mediaImageView.delegate = weakSelf;
-                mediaImageView.mediaHTTPURLString = mediaLink.originalURLHttpsText;
-                
-
-                if (mediaImage) {
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        mediaImageView.mediaIDStr = mediaLink.mediaIDStr;
-                        mediaImageView.mediaImage = mediaImage;
+    cell.imageContainerView.imageCount = imageCounts;
+    
+    
+    int i = 0;
+    for (MBMediaLink *mediaLink in tweet.entity.media) {
+        MBMediaImageView *mediaImageView = [cell.imageContainerView.imageViews objectAtIndex:i];
+        if (mediaImageView.mediaImage && [mediaImageView.mediaIDStr isEqualToString:mediaLink.mediaIDStr]) {
+            i++;
+            continue;
+        } else {
+            mediaImageView.mediaImage = nil;
+        }
+        
+        mediaImageView.delegate = weakSelf;
+        mediaImageView.mediaHTTPURLString = mediaLink.originalURLHttpsText;
+        mediaImageView.mediaIDStr = mediaLink.mediaIDStr;
+        
+        UIImage *mediaImage = [[MBImageCacher sharedInstance] cachedCroppedMediaImageForMediaID:mediaLink.mediaIDStr];
+        if (mediaImage) {
+            mediaImageView.mediaImage = mediaImage;
+        } else {
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+                [MBImageDownloader downloadMediaImageWithURL:mediaLink.originalURLHttpsText completionHandler:^(UIImage *image, NSData *imageData) {
+                    if (image) {
+                        [[MBImageCacher sharedInstance] storeMediaImage:image data:imageData forMediaID:mediaLink.mediaIDStr];
                         
-                    });
-                    
-                } else {
-                    
-                    [MBImageDownloader downloadMediaImageWithURL:mediaLink.originalURLHttpsText completionHandler:^(UIImage *image, NSData *imageData) {
-                        if (image) {
-                            [[MBImageCacher sharedInstance] storeMediaImage:image data:imageData forMediaID:mediaLink.mediaIDStr];
-                            
-                            CGSize mediaImageSize = CGSizeMake(mediaImageView.frame.size.width, mediaImageView.frame.size.height);
-                            UIImage *croppedImage = [MBImageApplyer imageForMediaWithImage:image size:mediaImageSize];
-                            
-                            [[MBImageCacher sharedInstance] storeCroppedMediaImage:croppedImage forMediaID:mediaLink.mediaIDStr];
-                            
-                            dispatch_async(dispatch_get_main_queue(), ^{
-                                if (!mediaImageView.mediaImage || ![mediaImageView.mediaIDStr isEqualToString:mediaLink.mediaIDStr]) {
-                                    mediaImageView.mediaIDStr = mediaLink.mediaIDStr;
-                                    if (!weakSelf.tableView.dragging && !weakSelf.tableView.decelerating) {
-                                        mediaImageView.mediaImage = croppedImage;
-                                    }
+                        CGSize mediaImageSize = CGSizeMake(mediaImageView.frame.size.width, mediaImageView.frame.size.height);
+                        UIImage *croppedImage = [MBImageApplyer imageForMediaWithImage:image size:mediaImageSize];
+                        
+                        [[MBImageCacher sharedInstance] storeCroppedMediaImage:croppedImage forMediaID:mediaLink.mediaIDStr];
+                        
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            if ([mediaImageView.mediaIDStr isEqualToString:mediaLink.mediaIDStr]) {
+                                if (weakSelf.tableView.dragging || weakSelf.tableView.decelerating) {
+                                    return;
                                 }
-                                
-                            });
-                        }
-                        
-                    } failedHandler:^(NSURLResponse *response, NSError *error) {
-                        
-                    }];
-                }
-                i++;
-            }
-        });
+                                mediaImageView.mediaImage = croppedImage;
+                            }
+                        });
+                    }
+                    
+                } failedHandler:^(NSURLResponse *response, NSError *error) {
+                    
+                }];
+            });
+        }
+        i++;
     }
+
 }
 
 - (void)updateGapedCell:(MBGapedTweetViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
@@ -910,6 +921,7 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
                     weakSelf.enableBacking = YES;
                 }
                 
+                weakSelf.timelineManager.currentLoadingGapedTweet = nil;
                 weakSelf.backsTimeline = NO;
                 weakSelf.requireUpdatingDatasource = NO;
                 [weakSelf removeLoadingView];
@@ -920,12 +932,27 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
         
     } else {
         [self.refreshControl endRefreshing];
+        if (self.timelineManager.currentLoadingGapedTweet) {
+            
+            NSInteger index = self.timelineManager.gaps.count - 1;
+            for (MBGapedTweet *gapedTweet in [self.timelineManager.gaps reverseObjectEnumerator]) {
+                if (self.timelineManager.currentLoadingGapedTweet.index == gapedTweet.index) {
+                    break;
+                }
+                gapedTweet.index = gapedTweet.index - 1;
+                index--;
+            }
+            [self.timelineManager.gaps removeObjectAtIndex:index];
+            NSIndexPath *deleteIndexPath = [NSIndexPath indexPathForRow:self.timelineManager.currentLoadingGapedTweet.index inSection:0];
+            self.dataSource = self.timelineManager.tweets;
+            [self.tableView beginUpdates];
+            [self.tableView deleteRowsAtIndexPaths:@[deleteIndexPath] withRowAnimation:UITableViewRowAnimationFade];
+            [self.tableView endUpdates];
+            self.timelineManager.currentLoadingGapedTweet = nil;
+        }
+        
         self.enableBacking = YES;
         [self removeLoadingView];
-        if (self.backsTimeline) { // オフライン時にバグりそう。
-            self.enableBacking = NO;
-            [self removeBackTimelineIndicatorView];
-        }
         self.backsTimeline = NO;
         self.requireUpdatingDatasource = NO;
     }
@@ -971,6 +998,8 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
 #pragma mark ScrollView Delegate
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
+    self.timelineManager.currentOffset = self.tableView.contentOffset;
+    
     [self timelineScrollViewDidScroll:scrollView];
 }
 
@@ -984,7 +1013,9 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
 {
     if (self.requireUpdatingDatasource) {
-        [self updateTableViewDataSource:self.updatingDatasource];
+        NSArray *adding = self.updatingDatasource.copy;
+        self.updatingDatasource = nil;
+        [self updateTableViewDataSource:adding];
         return;
     }
     
@@ -998,7 +1029,9 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
     if (!decelerate) {
         
         if (self.requireUpdatingDatasource) {
-            [self updateTableViewDataSource:self.updatingDatasource];
+            NSArray *adding = self.updatingDatasource.copy;
+            self.updatingDatasource = nil;
+            [self updateTableViewDataSource:adding];
             return;
         }
         
@@ -1014,11 +1047,14 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
 {
     float max = scrollView.contentInset.top + scrollView.contentInset.bottom + scrollView.contentSize.height - scrollView.bounds.size.height;
     float current = scrollView.contentOffset.y + self.topLayoutGuide.length;
-    int intMax = max * 0.5;
+    int intMax = max * 0.8;
     int intCurrent = current;
-    if (intMax < intCurrent) {
+    if (intCurrent > intMax) {
         if (self.enableBacking && 0 != self.dataSource.count) {
-            [self goBacksAtIndex:self.saveIndex];
+            [self goBacksAtIndex:self.timelineManager.saveIndex];
+        } else {
+            NSLog(@"enable %hhd  count %d", self.enableBacking, self.dataSource.count);
+            
         }
     }
 }
@@ -1049,6 +1085,8 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
     }
     [[MBAccountManager sharedInstance] selectAccountAtIndex:0];
     [self refreshMyAccountUser];
+    
+    [self configureTimelineManager];
 }
 
 #pragma mark MBAuthorizationViewController Delegate
@@ -1114,6 +1152,19 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
         [self updateTableViewDataSource:tweets];
     }
     
+}
+
+- (void)twitterAPICenter:(MBAOuth_TwitterAPICenter *)center error:(NSError *)error
+{
+    [self.refreshControl endRefreshing];
+    self.enableBacking = YES;
+    [self removeLoadingView];
+    self.backsTimeline = NO;
+    self.requireUpdatingDatasource = NO;
+    if (error.code == 88) { /* rate limit */
+        self.enableBacking = NO;
+        [self removeBackTimelineIndicatorView];
+    }
 }
 
 #pragma mark MBPostTweetViewController Delegate

@@ -61,6 +61,7 @@
 - (void)configureTimelineManager;
 - (void)configureNavigationItem;
 - (void)configureLoadingView;
+- (void)configureBackTimelineIndicatorView;
 - (void)saveTimeline;
 - (void)didPushLeftBarButtonItem;
 - (void)didPushRightBarButtonItem;
