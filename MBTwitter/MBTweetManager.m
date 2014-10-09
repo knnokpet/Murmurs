@@ -251,6 +251,9 @@
         
         [self storeTweet:savedTweet];
         [tweetIDs addObject:savedTweet.tweetIDStr];
+        if (savedTweet.tweetOfOriginInRetweet) {
+            [self storeTweet:savedTweet.tweetOfOriginInRetweet];
+        }
     }
     
     return tweetIDs;
