@@ -533,6 +533,28 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
 {
     return [self.dataSource count];
 }
+/* for iOS 8 */
+- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if ([cell respondsToSelector:@selector(setSeparatorInset:)]) {
+        [cell setSeparatorInset:UIEdgeInsetsZero];
+    }
+    
+    if ([cell respondsToSelector:@selector(setLayoutMargins:)]) {
+        [cell setLayoutMargins:UIEdgeInsetsZero];
+    }
+}
+/* for iOS 8 */
+- (void)viewDidLayoutSubviews
+{
+    if ([self.tableView respondsToSelector:@selector(setSeparatorInset:)]) {
+        [self.tableView setSeparatorInset:UIEdgeInsetsZero];
+    }
+    
+    if ([self.tableView respondsToSelector:@selector(setLayoutManager:)]) {
+        [self.tableView setLayoutMargins:UIEdgeInsetsZero];
+    }
+}
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -555,7 +577,11 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
     
     // check retweet
     if (tweetAtIndex.tweetOfOriginInRetweet || tweetAtIndex.isRetweeted) {
-        tweetForUpdating = tweetAtIndex.tweetOfOriginInRetweet;
+        tweetForUpdating = [[MBTweetManager sharedInstance] storedTweetForKey:tweetAtIndex.tweetOfOriginInRetweet.tweetIDStr];
+        if (!tweetForUpdating && tweetAtIndex.isRetweeted) {
+            tweetForUpdating = tweetAtIndex;
+        }
+        
         NSInteger imageCount = [tweetForUpdating.entity.media count];
         requireRetweet = YES;
         
@@ -858,7 +884,10 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
     if (nil != selectedTweet.tweetOfOriginInRetweet) {
         [detailTweetViewController setRetweeter:selectedTweet.tweetUser];
         
-        MBTweet *retweetedTweet = selectedTweet.tweetOfOriginInRetweet;
+        MBTweet *retweetedTweet = [[MBTweetManager sharedInstance] storedTweetForKey:selectedTweet.tweetOfOriginInRetweet.tweetIDStr];
+        if (!retweetedTweet) {
+            retweetedTweet = selectedTweet.tweetOfOriginInRetweet;
+        }
         selectedTweet = retweetedTweet;
     } else if (selectedTweet.isRetweeted) {
         MBUser *myUser = [[MBUserManager sharedInstance] storedUserForKey:[MBAccountManager sharedInstance].currentAccount.userID];
@@ -1120,7 +1149,8 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
         
     } else if (requestType == MBTwitterStatusesDestroyTweetRequest) {
         MBTweet *tweet = [tweets firstObject];
-        
+        /* 自信のアカウントによるつぶやきなら削除。それ以外はビュー更新 */
+        __block BOOL requireReload = YES;
         [self.dataSource enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
             NSString *key = (NSString *)obj;
             if ([key isEqualToString:tweet.tweetIDStr]) {
@@ -1131,10 +1161,15 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
                 [self.tableView beginUpdates];
                 [self.tableView deleteRowsAtIndexPaths:@[targetIndex] withRowAnimation:UITableViewRowAnimationFade];
                 [self.tableView endUpdates];
+                requireReload = NO;
                 
                 *stop = YES;
             }
         }];
+        if (requireReload) {
+            [self.tableView reloadData];
+        }
+        
         return;
         
     } else if (requestType == MBTwitterStatusesUpdateRequest) {
@@ -1142,6 +1177,15 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
         if (postedTweet) {
             [self refreshAction];
         }
+        return;
+    } else if (requestType == MBTwitterStatusesRetweetsOfTweetRequest) {
+        [self.tableView reloadData];
+        return;
+    } else if (requestType == MBTwitterFavoritesCreateRequest) {
+        [self.tableView reloadData];
+        return;
+    } else if (requestType == MBTwitterFavoritesDestroyRequest) {
+        [self.tableView reloadData];
         return;
     }
     
@@ -1298,11 +1342,16 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
     NSIndexPath *selectedIndexPath = view.selectedIndexPath;
     NSString *tweetKey = [self.dataSource objectAtIndex:selectedIndexPath.row];
     MBTweet *tweet = [[MBTweetManager sharedInstance] storedTweetForKey:tweetKey];
+    MBTweet *targetTweet = tweet;
     if (tweet.tweetOfOriginInRetweet) {
-        tweet = tweet.tweetOfOriginInRetweet;
+        targetTweet = [[MBTweetManager sharedInstance] storedTweetForKey:tweet.tweetOfOriginInRetweet.tweetIDStr];
+        if (!targetTweet) {
+            targetTweet = tweet.tweetOfOriginInRetweet;
+        }
     }
+    [targetTweet setIsRetweeted:YES];
     
-    [self.aoAPICenter postRetweetForTweetID:[tweet.tweetID unsignedLongLongValue]];
+    [self.aoAPICenter postRetweetForTweetID:[targetTweet.tweetID unsignedLongLongValue]];
     
 }
 
@@ -1311,11 +1360,15 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
     NSIndexPath *selectedIndexPath = view.selectedIndexPath;
     NSString *tweetKey = [self.dataSource objectAtIndex:selectedIndexPath.row];
     MBTweet *tweet = [[MBTweetManager sharedInstance] storedTweetForKey:tweetKey];
+    MBTweet *targetedTweet = tweet;
     if (tweet.tweetOfOriginInRetweet) {
-        tweet = tweet.tweetOfOriginInRetweet;
+        targetedTweet = [[MBTweetManager sharedInstance] storedTweetForKey:tweet.tweetOfOriginInRetweet.tweetIDStr];
+        if (!targetedTweet) {
+            targetedTweet = tweet.tweetOfOriginInRetweet;
+        }
     }
     
-    [self.aoAPICenter postFavoriteForTweetID:[tweet.tweetID unsignedLongLongValue]];
+    [self.aoAPICenter postFavoriteForTweetID:[targetedTweet.tweetID unsignedLongLongValue]];
 }
 
 - (void)didPushCancelRetweetButtonOnActionView:(MBTimelineActionView *)view
@@ -1325,8 +1378,12 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
     MBTweet *tweet = [[MBTweetManager sharedInstance] storedTweetForKey:tweetKey];
     MBTweet *targetTweet = tweet;
     if (tweet.tweetOfOriginInRetweet) {
-        targetTweet = tweet.tweetOfOriginInRetweet;
+        targetTweet = [[MBTweetManager sharedInstance] storedTweetForKey:tweet.tweetOfOriginInRetweet.tweetIDStr];
+        if (!targetTweet) {
+            targetTweet = tweet.tweetOfOriginInRetweet;
+        }
     }
+    [targetTweet setIsRetweeted:NO];
     
     if (targetTweet.currentUserRetweetedTweet) {
         NSNumber *tweetID = [targetTweet.currentUserRetweetedTweet numberForKey:@"id"];
@@ -1344,7 +1401,10 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
     MBTweet *tweet = [[MBTweetManager sharedInstance] storedTweetForKey:tweetKey];
     MBTweet *targetTweet = tweet;
     if (tweet.tweetOfOriginInRetweet) {
-        targetTweet = tweet.tweetOfOriginInRetweet;
+        targetTweet = [[MBTweetManager sharedInstance] storedTweetForKey:tweet.tweetOfOriginInRetweet.tweetIDStr];
+        if (!targetTweet) {
+            targetTweet = tweet.tweetOfOriginInRetweet;
+        }
     }
     
     [self.aoAPICenter postDestroyFavoriteForTweetID:[targetTweet.tweetID unsignedLongLongValue]];
