@@ -26,6 +26,5 @@
 
 - (void)selectReceiverViewController:(MBMessageReceiverViewController *)controller user:(MBUser *)user;
 - (void)selectSearchReceiverViewController:(MBMessageReceiverViewController *)controller;
-- (void)scrollReceiverViewController:(MBMessageReceiverViewController *)controller;
 
 @end

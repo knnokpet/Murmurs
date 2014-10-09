@@ -42,6 +42,7 @@ static NSString *usersCellIdentifier = @"MBUsersTableViewCellIdentifier";
     // Do any additional setup after loading the view from its nib.
     self.tableView.dataSource = self;
     self.tableView.delegate = self;
+    self.tableView.keyboardDismissMode = UIScrollViewKeyboardDismissModeOnDrag;
     
     UINib *usersCellNib = [UINib nibWithNibName:@"MBUsersTableViewCell" bundle:nil];
     [self.tableView registerNib:usersCellNib forCellReuseIdentifier:usersCellIdentifier];
@@ -171,14 +172,6 @@ static NSString *usersCellIdentifier = @"MBUsersTableViewCellIdentifier";
         }
     }
     
-}
-
-#pragma mark ScrollviewDelegate
-- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
-{
-    if ([_delegate respondsToSelector:@selector(scrollReceiverViewController:)]) {
-        [_delegate scrollReceiverViewController:self];
-    }
 }
 
 @end
