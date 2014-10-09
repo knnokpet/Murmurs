@@ -423,36 +423,7 @@ static NSString *actionsCellIdentifier = @"ActionsCellIdentifier";
     //cell.tweetTextView.isSelectable = YES; ルーペを実装できないため。
     cell.tweetTextView.delegate = self;
     
-    // date
-    // parse 時に strp で locale を計算した createDate を作成しているので。
-    NSCalendar *calendaar = [NSCalendar currentCalendar];
-    NSTimeZone *currentTimezone = calendaar.timeZone;
-    NSDateComponents *components = [calendaar components:NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit | NSHourCalendarUnit | NSMinuteCalendarUnit fromDate:self.tweet.createdDate];
-    
-    NSInteger second = [currentTimezone secondsFromGMT];
-    long hour = second / (60 * 60);
-    if (hour < 1) {
-        long minute = second / 60;
-        [components setMinute:components.minute - minute];
-    } else {
-        [components setHour:components.hour - hour];
-        if (components.hour < 0) {
-            [components setDay:components.day - 1];
-            [components setHour:24 + components.hour];
-        }
-    }
-    
-    NSString *dateString = [NSString stringWithFormat:@"%ld/%02ld/%02ld %02ld:%02ld", [[NSNumber numberWithInteger: components.year] longValue], [[NSNumber numberWithInteger:components.month] longValue], [[NSNumber numberWithInteger: components.day] longValue], [[NSNumber numberWithInteger: components.hour] longValue],[[NSNumber numberWithInteger: components.minute] longValue]];
-    
-    cell.dateView.attributedString = [MBTweetTextComposer attributedStringForDetailTweetDate:dateString font:[UIFont systemFontOfSize:14.0f] screeName:self.tweet.tweetUser.screenName tweetID:[self.tweet.tweetID unsignedLongLongValue]];
-    cell.dateView.delegate = self;
-    
-    if (self.tweet.place) {
-        NSString *placeName = [NSString stringWithFormat:@"From %@", self.tweet.place.countryFullName];
-        cell.geoLabel.text = placeName;
-    } else {
-        [cell.geoLabel removeFromSuperview];
-    }
+    [self composeTweetDateCell:cell];
     
     // retweet
     if (!self.retweeter) {
@@ -524,6 +495,42 @@ static NSString *actionsCellIdentifier = @"ActionsCellIdentifier";
     }
 }
 
+- (void)composeTweetDateCell:(MBDetailTweetTextTableViewCell *)cell
+{
+    // parse 時に strp で locale を計算した createDate を作成しているので。
+    NSCalendar *calendaar = [NSCalendar currentCalendar];
+    NSTimeZone *currentTimezone = calendaar.timeZone;
+    if (!self.tweet.createdDate) {
+        return;
+    }
+    NSDateComponents *components = [calendaar components:NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit | NSHourCalendarUnit | NSMinuteCalendarUnit fromDate:self.tweet.createdDate];
+    
+    NSInteger second = [currentTimezone secondsFromGMT];
+    long hour = second / (60 * 60);
+    if (hour < 1) {
+        long minute = second / 60;
+        [components setMinute:components.minute - minute];
+    } else {
+        [components setHour:components.hour - hour];
+        if (components.hour < 0) {
+            [components setDay:components.day - 1];
+            [components setHour:24 + components.hour];
+        }
+    }
+    
+    NSString *dateString = [NSString stringWithFormat:@"%ld/%02ld/%02ld %02ld:%02ld", [[NSNumber numberWithInteger: components.year] longValue], [[NSNumber numberWithInteger:components.month] longValue], [[NSNumber numberWithInteger: components.day] longValue], [[NSNumber numberWithInteger: components.hour] longValue],[[NSNumber numberWithInteger: components.minute] longValue]];
+    
+    cell.dateView.attributedString = [MBTweetTextComposer attributedStringForDetailTweetDate:dateString font:[UIFont systemFontOfSize:14.0f] screeName:self.tweet.tweetUser.screenName tweetID:[self.tweet.tweetID unsignedLongLongValue]];
+    cell.dateView.delegate = self;
+    
+    if (self.tweet.place) {
+        NSString *placeName = [NSString stringWithFormat:@"From %@", self.tweet.place.countryFullName];
+        cell.geoLabel.text = placeName;
+    } else {
+        [cell.geoLabel removeFromSuperview];
+    }
+}
+
 - (void)updateCountCell:(MBDetailTweetFavoRetTableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
 {
     BOOL requireRetweet = NO;
@@ -576,7 +583,7 @@ static NSString *actionsCellIdentifier = @"ActionsCellIdentifier";
     
     // retweet
     if (self.tweet.isRetweeted) {
-        [cell.retweetButton setButtonTitle:NSLocalizedString(@"Cancel Retweet", nil)];
+        [cell.retweetButton setButtonTitle:NSLocalizedString(@"Cancel", nil)];
         [cell.retweetButton setButtonImage:[UIImage imageNamed:@"Retweet-Cacncel-TintBlue"]];
         [cell.retweetButton removeTarget:self action:@selector(didPushRetweetButton:) forControlEvents:UIControlEventTouchUpInside];
         [cell.retweetButton addTarget:self action:@selector(didPushCancelRetweetButton) forControlEvents:UIControlEventTouchUpInside];
@@ -594,7 +601,7 @@ static NSString *actionsCellIdentifier = @"ActionsCellIdentifier";
     
     // favorite
     if (self.tweet.isFavorited) {
-        [cell.favoriteButton setButtonTitle:NSLocalizedString(@"Cancel Favorite", nil)];
+        [cell.favoriteButton setButtonTitle:NSLocalizedString(@"Cancel", nil)];
         [cell.favoriteButton setButtonImage:[UIImage imageNamed:@"Star-Cancel-TintBlue"]];
         [cell.favoriteButton addTarget:self action:@selector(didPushCancelFavoriteButton:) forControlEvents:UIControlEventTouchUpInside];
     } else {
