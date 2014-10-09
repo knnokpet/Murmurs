@@ -30,6 +30,10 @@
     [self common];
     
     self.dateView.alignment = NSTextAlignmentRight;
+    
+    if (floor(NSFoundationVersionNumber) > NSFoundationVersionNumber_iOS_7_1) {
+        self.preservesSuperviewLayoutMargins = NO;
+    }
 }
 
 - (void)common
