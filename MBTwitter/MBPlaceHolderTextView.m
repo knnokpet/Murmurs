@@ -32,9 +32,9 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(textDidChange:) name:UITextViewTextDidChangeNotification object:nil];
     
     CGFloat labelMargin = 8.0f;
-    _placeHolderLabel = [[UILabel alloc] initWithFrame:CGRectMake(labelMargin / 2, labelMargin, self.bounds.size.width - labelMargin , 0)];
+    _placeHolderLabel = [[UILabel alloc] initWithFrame:CGRectMake(labelMargin / 2, labelMargin, self.bounds.size.width - labelMargin , 20)];
     self.placeHolder = @"";
-    self.placeHolderColor = [UIColor lightGrayColor];
+    self.placeHolderColor = [UIColor colorWithRed:0.36 green:0.36 blue:0.36 alpha:0.6];
     self.placeHolderLabel.lineBreakMode = NSLineBreakByWordWrapping;
     self.placeHolderLabel.numberOfLines = 0;
     self.placeHolderLabel.font = self.font;
@@ -77,17 +77,18 @@
 - (void)drawRect:(CGRect)rect {
     // Drawing code
 
+    [super drawRect:rect];
     
     if (self.placeHolderLabel.text.length > 0) {
         [self.placeHolderLabel sizeToFit];
         [self sendSubviewToBack:self.placeHolderLabel];
     }
-    NSLog(@"%@", self.placeHolder);
+    
     if (self.text.length == 0 && self.placeHolder.length > 0) {
         self.placeHolderLabel.alpha = 1.0;
     }
     
-    [super drawRect:rect];
+    
 }
 
 
