@@ -24,8 +24,10 @@
 @property (nonatomic, readonly) UIBarButtonItem *textViewButton;
 
 @property (nonatomic, readonly) UITextView *textView;
+@property (nonatomic, readonly) NSString *textViewText;
 
 - (void)setMaxSpace:(CGFloat)maxSpace;
+- (void)setTextViewText:(NSString *)textViewText;
 - (instancetype)initWithFrame:(CGRect)frame maxSpace:(CGFloat)space;
 
 @end

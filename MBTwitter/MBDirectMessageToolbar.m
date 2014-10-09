@@ -31,6 +31,13 @@
     return self;
 }
 
+- (void)setTextViewText:(NSString *)textViewText
+{
+    self.textView.text = textViewText;
+    [self changeFrame];
+    [self enableSendButton];
+}
+
 - (void)setMaxSpace:(CGFloat)maxSpace
 {
     _maxSpace = maxSpace;
@@ -65,8 +72,16 @@
 }
 */
 
-#pragma mark UITextViewDelegate
-- (void)textViewDidChangeSelection:(UITextView *)textView
+- (void)enableSendButton
+{
+    if (self.textView.text.length > 0) {
+        self.sendButton.enabled = YES;
+    } else {
+        self.sendButton.enabled = NO;
+    }
+}
+
+- (void)changeFrame
 {
     CGFloat barItemMargin = 3.0f;
     
@@ -88,12 +103,6 @@
         self.textView.scrollEnabled = NO;
     }
     
-    if (self.textView.text.length > 0) {
-        self.sendButton.enabled = YES;
-    } else {
-        self.sendButton.enabled = NO;
-    }
-    
     CGRect textRect = self.textView.frame;
     textRect.size.height = textHeight;
     self.textView.frame = textRect;
@@ -102,11 +111,28 @@
     selfRect.size.height = toolbarHeight;
     self.frame = selfRect;
     
-    
+    for (NSLayoutConstraint *constraint in self.inputAccessoryView.constraints) {
+        if (constraint.firstAttribute == NSLayoutAttributeHeight) {
+            [constraint setConstant:toolbarHeight];
+            break;
+        }
+    }
+}
+
+#pragma mark UITextViewDelegate
+- (void)textViewDidChangeSelection:(UITextView *)textView
+{
+    [self changeFrame];
+    [self enableSendButton];
     
     if ([_toolbarDelegate respondsToSelector:@selector(toolbarDidChangeText:)]) {
         [_toolbarDelegate toolbarDidChangeText:self];
     }
+}
+
+- (CGSize)intrinsicContentSize
+{
+    return CGSizeZero;
 }
 
 @end
