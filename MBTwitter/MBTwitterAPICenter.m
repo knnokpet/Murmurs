@@ -340,7 +340,7 @@
         [parameters setObject:[NSString stringWithFormat:@"%llu", tweetID] forKey:@"id"];
     }
     
-    return [self sendRequestMethod:HTTP_POST_METHOD resource:resource parameters:parameters requestType:MBTwitterStatusesDestroyTweetRequest responseType:MBTwitterStatuseResponse];
+    return [self sendRequestMethod:HTTP_POST_METHOD resource:resource parameters:parameters requestType:MBTwitterStatusesDestroyTweetRequest responseType:MBTwitterDestroyStatusResponse];
 }
 
 - (NSString *)postRetweetForTweetID:(unsigned long long)retweetID
