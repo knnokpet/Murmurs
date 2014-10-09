@@ -15,6 +15,7 @@
 #import "MBTweet_JSONParser.h"
 #import "MBTweets_JSONParser.h"
 #import "MBSearchedTweets_JSONParser.h"
+#import "MBDestroyTweet_JSONParser.h"
 #import "MBUser_JSONParser.h"
 #import "MBUsers_JSONParser.h"
 #import "MBUsersLookUp_JSONParser.h"
@@ -150,7 +151,16 @@
             });
         }];
         
-    } else if (responseType == MBTwitterUserResponse) {
+    } else if (responseType == MBTwitterDestroyStatusResponse) {
+        jsonParser = [[MBDestroyTweet_JSONParser alloc] initWithJSONData:jsonData completionHandler:^(NSArray *parsedObj) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if ([_delegate respondsToSelector:@selector(twitterAPICenter:requestType:parsedTweets:)]) {
+                    [_delegate twitterAPICenter:weakSelf requestType:(MBRequestType)requestType parsedTweets:parsedObj];
+                }
+            });
+        }];
+        
+    }else if (responseType == MBTwitterUserResponse) {
         jsonParser = [[MBUser_JSONParser alloc] initWithJSONData:jsonData completionHandler:^ (NSArray *parsedObj) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 if ([_delegate respondsToSelector:@selector(twitterAPICenter:requestType:parsedUsers:)]) {
