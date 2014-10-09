@@ -205,11 +205,7 @@ static NSString *sendCellIdentifier = @"SendCellIdentifier";
     
     [self configureMessageView];
     
-    if (self.dataSource.count > 0) {
-        [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:[self.dataSource count] - 1 inSection:0] atScrollPosition:UITableViewScrollPositionMiddle animated:NO];
-    }
-    
-    [self.tableView setContentOffset:CGPointMake(0, CGFLOAT_MAX)];
+    [self.tableView setContentOffset:CGPointMake(0, 1000)];
 }
 
 
@@ -281,10 +277,6 @@ static NSString *sendCellIdentifier = @"SendCellIdentifier";
         
         self.currentReceiverViewController.tableView.contentInset = contentInsets;
         self.currentReceiverViewController.tableView.scrollIndicatorInsets = scrollInsets;
-        
-        if (self.dataSource.count > 0) {
-            [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:[self.dataSource count] - 1 inSection:0] atScrollPosition:UITableViewScrollPositionMiddle animated:NO];
-        }
         
     }completion:^(BOOL stop) {
         
@@ -436,6 +428,10 @@ static NSString *sendCellIdentifier = @"SendCellIdentifier";
     NSString *suggestString = self.receiverTextField.text;
     
     if (self.currentReceiverViewController.view.superview) {
+        if ([self.currentReceiverViewController.inputedString isEqualToString:suggestString]) {
+            return;
+        }
+        
         [self.currentReceiverViewController removeFromParentViewController];
         [self.currentReceiverViewController.view removeFromSuperview];
     }
@@ -667,13 +663,6 @@ static NSString *sendCellIdentifier = @"SendCellIdentifier";
     }
 }
 
-- (void)scrollReceiverViewController:(MBMessageReceiverViewController *)controller
-{
-    [self.receiverTextField resignFirstResponder];
-    [self.displayToolbar.textView resignFirstResponder];
-    [self.keyboardToolbar.textView resignFirstResponder];
-}
-
 #pragma mark AOuthAPICenter Delegate
 - (void)twitterAPICenter:(MBAOuth_TwitterAPICenter *)center parsedDirectMessages:(NSArray *)messages
 {
@@ -709,7 +698,10 @@ static NSString *sendCellIdentifier = @"SendCellIdentifier";
 #pragma mark MBDirectMessageToolbarDelegate
 - (void)toolbarDidChangeText:(MBDirectMessageToolbar *)toolbar
 {
-    self.displayToolbar.textView.text = toolbar.textView.text;
+    [self.displayToolbar setTextViewText:toolbar.textView.text];
+    CGRect displayToolbarFrame = self.displayToolbar.frame;
+    displayToolbarFrame.origin.y = self.tabBarController.tabBar.frame.origin.y - displayToolbarFrame.size.height;
+    self.displayToolbar.frame = displayToolbarFrame;
 }
 
 @end
