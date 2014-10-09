@@ -418,17 +418,15 @@
 - (void)placePinViewWithBottomHeight:(CGFloat)BottomHeight
 {
     CGFloat pinMargin = 4.0f;
-    CGRect initialRect = self.geoPinView.frame;
-    CGRect placedRect = initialRect;
-    placedRect.origin.y = self.view.bounds.size.height - BottomHeight - initialRect.size.height - pinMargin;
+    CGRect placedRect = self.geoPinView.frame;
+    placedRect.origin.y = self.view.bounds.size.height - BottomHeight - self.geoPinView.bounds.size.height - pinMargin;
     self.geoPinView.frame = placedRect;
 }
 
-/* unused */
-- (void)placeGeoPlaceView
+- (void)placeGeoPlaceViewWithBottomHeight:(CGFloat)BottomHeight
 {
     CGRect geoPlaceRect = self.geoPlaceView.frame;
-    geoPlaceRect.origin.y -= geoPlaceRect.size.height;
+    geoPlaceRect.origin.y = self.view.bounds.size.height - BottomHeight - geoPlaceRect.size.height;
     self.geoPlaceView.frame = geoPlaceRect;
 }
 
@@ -502,6 +500,7 @@
         self.tweetTextView.scrollIndicatorInsets = scrollIndicatorInsets;
         
         [self placePinViewWithBottomHeight:size.height];
+        [self placeGeoPlaceViewWithBottomHeight:size.height];
         
     }completion:nil];
 }
