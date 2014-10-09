@@ -202,6 +202,7 @@
 		867A09C21949A89700741C2F /* MBRelationships_JSONParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 867A09C11949A89700741C2F /* MBRelationships_JSONParser.m */; };
 		867A09C51949BE8700741C2F /* MBRelationship.m in Sources */ = {isa = PBXBuildFile; fileRef = 867A09C41949BE8700741C2F /* MBRelationship.m */; };
 		867A09CB194BEFC400741C2F /* MBRelationshipManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 867A09CA194BEFC400741C2F /* MBRelationshipManager.m */; };
+		867CA1B619E5610500EBBE9F /* MBDestroyTweet_JSONParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 867CA1B519E5610500EBBE9F /* MBDestroyTweet_JSONParser.m */; };
 		8684FE8D18CB43BA00ECDD91 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8684FE8C18CB43BA00ECDD91 /* Foundation.framework */; };
 		8684FE8F18CB43BA00ECDD91 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8684FE8E18CB43BA00ECDD91 /* CoreGraphics.framework */; };
 		8684FE9118CB43BA00ECDD91 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8684FE9018CB43BA00ECDD91 /* UIKit.framework */; };
@@ -692,6 +693,8 @@
 		867A09C41949BE8700741C2F /* MBRelationship.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBRelationship.m; sourceTree = "<group>"; };
 		867A09C9194BEFC400741C2F /* MBRelationshipManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBRelationshipManager.h; sourceTree = "<group>"; };
 		867A09CA194BEFC400741C2F /* MBRelationshipManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBRelationshipManager.m; sourceTree = "<group>"; };
+		867CA1B419E5610500EBBE9F /* MBDestroyTweet_JSONParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBDestroyTweet_JSONParser.h; sourceTree = "<group>"; };
+		867CA1B519E5610500EBBE9F /* MBDestroyTweet_JSONParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBDestroyTweet_JSONParser.m; sourceTree = "<group>"; };
 		8684FE8918CB43BA00ECDD91 /* MBTwitter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MBTwitter.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8684FE8C18CB43BA00ECDD91 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		8684FE8E18CB43BA00ECDD91 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -1413,6 +1416,8 @@
 				86B6CA0C18FBA13E00D4C5DF /* MBTweets_JSONParser.m */,
 				86BC6209191777D900600EAD /* MBTweet_JSONParser.h */,
 				86BC620A191777D900600EAD /* MBTweet_JSONParser.m */,
+				867CA1B419E5610500EBBE9F /* MBDestroyTweet_JSONParser.h */,
+				867CA1B519E5610500EBBE9F /* MBDestroyTweet_JSONParser.m */,
 				8639E206196BE00D0078266B /* MBSearchedTweets_JSONParser.h */,
 				8639E207196BE00D0078266B /* MBSearchedTweets_JSONParser.m */,
 				86BC620C1917CABF00600EAD /* MBUser_JSONParser.h */,
@@ -2401,6 +2406,7 @@
 				86B5C5BD18EA80320035CDC3 /* MBLink.m in Sources */,
 				8623B8E819800397004380FF /* MBFollowRequestTableViewCell.m in Sources */,
 				86E5671419BD70AB00622419 /* MBTextViewTableViewCell.m in Sources */,
+				867CA1B619E5610500EBBE9F /* MBDestroyTweet_JSONParser.m in Sources */,
 				86B5C5B718EA7E2D0035CDC3 /* MBTextIndex.m in Sources */,
 				86E5671819BD89FD00622419 /* MBPlaceHolderTextView.m in Sources */,
 				864ADBE719A8A9E400489885 /* MBNavigationControllerTitleView.m in Sources */,
@@ -2602,6 +2608,7 @@
 				INFOPLIST_FILE = "MBTwitter/MBTwitter-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
+				TARGETED_DEVICE_FAMILY = 1;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -2618,6 +2625,7 @@
 				INFOPLIST_FILE = "MBTwitter/MBTwitter-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
+				TARGETED_DEVICE_FAMILY = 1;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

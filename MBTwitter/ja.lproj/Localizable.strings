@@ -24,9 +24,9 @@
 "Public" = "公開";
 
 "Tweet" = "ツイート";
-"Cancel Retweet" = "キャンセル";
+"Cancel Retweet" = "リツイートを取り消す";
 "Retweet" = "リツイート";
-"Cancel Favorite" = "キャンセル";
+"Cancel Favorite" = "お気に入りを取り消す";
 "Favorite" = "お気に入り";
 "More" = "その他";
 "Follow!" = "フォロー!";
