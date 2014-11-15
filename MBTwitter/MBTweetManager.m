@@ -94,7 +94,7 @@
 #pragma mark 
 - (NSString *)pathForIndex:(NSInteger)index directory:(NSString *)path
 {
-    NSString *indexKey = [NSString stringWithFormat:@"%X", index];
+    NSString *indexKey = [NSString stringWithFormat:@"%lX", (long)index];
     return [path stringByAppendingPathComponent:indexKey];
 }
 
@@ -144,7 +144,7 @@
 - (void)createSubPathAtPath:(NSString *)path
 {
     for (NSInteger i = 0; i < 20; i ++) {
-        NSString *subPath = [NSString stringWithFormat:@"%@/%X", path, i];
+        NSString *subPath = [NSString stringWithFormat:@"%@/%lX", path, (long)i];
         [self createDirectoryAtPath:subPath];
     }
 }

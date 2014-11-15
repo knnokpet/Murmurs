@@ -289,7 +289,7 @@ typedef enum ActionSheetTag {
                 }
                 
             }failedHandler:^ (NSURLResponse *response, NSError *error) {
-                NSLog(@"image error %@ code %lu", error.description, (unsigned long)error.code);
+                
             }];
         });
     }
@@ -651,7 +651,7 @@ typedef enum ActionSheetTag {
     cell.imageView.image = cellImage;
     // リストの数はユーザーが登録されているものしかとれないので表示しない
     if (4 != numberOfRow) {
-        cell.detailTextLabel.text = [NSString stringWithFormat:@"%d", detailInteger];
+        cell.detailTextLabel.text = [NSString stringWithFormat:@"%ld", (long)detailInteger];
     } else {
         cell.detailTextLabel.text = nil;
     }
@@ -786,7 +786,6 @@ typedef enum ActionSheetTag {
                 
             }
         }
-        NSLog(@"relation count = %d", relationships.count);
     }
 }
 

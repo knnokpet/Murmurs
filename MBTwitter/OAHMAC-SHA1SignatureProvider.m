@@ -9,6 +9,9 @@
 #import "OAHMAC-SHA1SignatureProvider.h"
 #include "hmac.h"
 #include "Base64Transcoder.h"
+#include <CommonCrypto/CommonDigest.h>
+#include <CommonCrypto/CommonHMAC.h>
+#import "Base64.h"
 
 #define HMAC_LENGTH 20;
 #define BASE_64_LENGTH 32;
@@ -47,6 +50,23 @@
     }
 
     return signature;
+}
+
+- (NSString *)hmacsha1:(NSString *)data secret:(NSString *)key
+{
+    const char *cKey = [key cStringUsingEncoding:NSASCIIStringEncoding];
+    const char *cData = [data cStringUsingEncoding:NSASCIIStringEncoding];
+    
+    unsigned char CHMAC[CC_SHA1_DIGEST_LENGTH];
+    
+    CCHmac(kCCHmacAlgSHA1, cKey, strlen(cKey), cData, strlen(cData), CHMAC);
+    
+    NSData *HMAC = [[NSData alloc] initWithBytes:CHMAC length:sizeof(CHMAC)];
+    
+    NSString *hash = [HMAC base64EncodedString];
+    
+    return hash;
+    
 }
 
 @end

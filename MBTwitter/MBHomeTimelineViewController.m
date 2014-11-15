@@ -43,7 +43,7 @@
     
     [self updateNavigationTitleView];
     
-   [self refreshMyAccountUser];
+    [self refreshMyAccountUser];
     
     [self receiveChangedAccountNotification];
 }
@@ -51,7 +51,6 @@
 - (void)receiveChangedAccountNotification
 {
     [[NSNotificationCenter defaultCenter] addObserverForName:@"ChangeMyAccount" object:nil queue:nil usingBlock:^(NSNotification *notification) {
-        NSLog(@"user change account to = %@", [[MBAccountManager sharedInstance] currentAccount].screenName);
         
         [self updateNavigationTitleView];
         [self configureTimelineManager];
@@ -105,7 +104,6 @@
 
 - (void)refreshMyAccountUser
 {
-    NSLog(@"refresh myaccount");
     NSArray *accounts = [[MBAccountManager sharedInstance] accounts];
     if (0 == accounts.count) {
         return;
@@ -186,7 +184,7 @@
 #pragma mark AOuthAPICenter Delegate
 - (void)twitterAPICenter:(MBAOuth_TwitterAPICenter *)center requestType:(MBRequestType)requestType parsedUsers:(NSArray *)users
 {
-    NSLog(@"user count = %d", users.count);
+    
 }
 
 @end

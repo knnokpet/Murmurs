@@ -372,7 +372,7 @@ contextInfo: (void *) contextInfo;
     if (error) {
         ;
     } else {
-        NSLog(@"save Image");
+        
     }
 }
 

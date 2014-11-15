@@ -22,6 +22,11 @@
             [[MBTweetManager sharedInstance] storeTweet:tweet];
             [[MBUserManager sharedInstance] storeUser:tweet.tweetUser];
             [gotTweets addObject:tweet.tweetIDStr];
+            if (tweet.tweetOfOriginInRetweet) {
+                MBTweet *originTeet = tweet.tweetOfOriginInRetweet;
+                [[MBTweetManager sharedInstance] storeTweet:originTeet];
+                [[MBUserManager sharedInstance] storeUser:originTeet.tweetUser];
+            }
         }
         
         self.completion(gotTweets);

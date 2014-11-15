@@ -145,7 +145,6 @@ typedef void (^FailedHandler)(NSHTTPURLResponse *);
         }
         
         
-        NSLog(@"Get Request Token !");
         NSString *dataString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
         if (!dataString) {
             return;
@@ -186,8 +185,6 @@ typedef void (^FailedHandler)(NSHTTPURLResponse *);
             return;
         }
         
-        
-        NSLog(@"Get Access Token !");
         NSString *dataString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
         if (!dataString) {
             return;
@@ -231,8 +228,6 @@ typedef void (^FailedHandler)(NSHTTPURLResponse *);
             return;
         }
         
-        NSLog(@"Get Reverse Token!");
-        
         NSString *dataString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
         if (!dataString) {
             return;
@@ -261,8 +256,6 @@ typedef void (^FailedHandler)(NSHTTPURLResponse *);
             NSLog(@"response Error");
             return;
         }
-        
-        NSLog(@"Get Reverse Access Token");
         
         NSString *dataString = [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding];
         if (!dataString) {
@@ -341,7 +334,6 @@ typedef void (^FailedHandler)(NSHTTPURLResponse *);
         [myAccountData setObject:value forKey:key];
     }
     
-    NSLog(@"token = %@, secret = %@, ID = %@, name = %@", userToken, userSecret, userID, userScreenName);
     
     MBAccountManager *accountManager = [MBAccountManager sharedInstance];
     [accountManager saveMyAccountWith:myAccountData];

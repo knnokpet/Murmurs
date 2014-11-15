@@ -12,5 +12,6 @@
 
 - (NSString *)name;
 - (NSString *)signatureText:(NSString *)text secret:(NSString *)secret;
+- (NSString *)hmacsha1:(NSString *)data secret:(NSString *)key;
 
 @end

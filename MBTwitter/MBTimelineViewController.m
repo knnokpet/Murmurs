@@ -1082,7 +1082,6 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
         if (self.enableBacking && 0 != self.dataSource.count) {
             [self goBacksAtIndex:self.timelineManager.saveIndex];
         } else {
-            NSLog(@"enable %hhd  count %d", self.enableBacking, self.dataSource.count);
             
         }
     }

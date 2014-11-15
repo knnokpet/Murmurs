@@ -59,7 +59,6 @@
 - (void)receiveChangedAccountNotification
 {
     [[NSNotificationCenter defaultCenter] addObserverForName:@"ChangeMyAccount" object:nil queue:nil usingBlock:^(NSNotification *notification) {
-        NSLog(@"user change account to = %@ in Profile", [[MBAccountManager sharedInstance] currentAccount].screenName);
         [self configureUserObject];
         [self configureModel];
         [self updateViews];

@@ -322,7 +322,7 @@
 - (NSInteger)countOfTweetText
 {
     NSRange httpsRange = [self.tweetTextView.text rangeOfString:@"https"];
-    NSLog(@"location %ld length %ld", (unsigned long)httpsRange.location, (unsigned long)httpsRange.length);
+
     return 0;
 }
 
@@ -832,7 +832,6 @@
 #pragma mark CLLocationManager Delegate
 - (void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status
 {
-    NSLog(@"位置情報");
     if (floor(NSFoundationVersionNumber) > NSFoundationVersionNumber_iOS_7_1) {
         [self startUpdationgLocationForiOS8WithStatus:status];
     } else {

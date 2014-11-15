@@ -145,7 +145,6 @@
 - (void)receiveChangedAccountNotification
 {
     [[NSNotificationCenter defaultCenter] addObserverForName:@"ChangeMyAccount" object:nil queue:nil usingBlock:^(NSNotification *notification) {
-        NSLog(@"user change account to = %@", [[MBAccountManager sharedInstance] currentAccount].screenName);
         [self updateNavigationTitleView];
         self.aoAPICenter.delegate = nil;
         _aoAPICenter = nil;
@@ -192,7 +191,6 @@
         MBDirectMessage *sent = [messageManager currentSentMessage];
         MBDirectMessage *deliverd = [messageManager currentDeliverdMessage];
         
-        NSLog(@"sent deli  %@ %@", sent.tweetText, deliverd.tweetText);
         
         [self.aoAPICenter getDeliveredDirectMessagesSinceID:[deliverd.tweetID unsignedLongLongValue] maxID:0];
         [self.aoAPICenter getSentDirectMessagesSinceID:[sent.tweetID unsignedLongLongValue] maxID:0];

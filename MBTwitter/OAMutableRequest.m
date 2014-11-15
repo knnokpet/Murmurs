@@ -63,9 +63,8 @@
     
     // configure signature
     NSString *signatureBasedString = [self signatureBasedStringWithParameters:self.parameters];
-    _signature = [self.signatureProvider signatureText:signatureBasedString secret:secretForSignature];
-    NSLog(@"basedSignature = %@", signatureBasedString);
-    NSLog(@"signature = %@", signatureBasedString);
+    _signature = [self.signatureProvider hmacsha1:signatureBasedString secret:secretForSignature];
+
     // if exist token
     NSString *oauthTokenString;
     if ([self.token.key isEqualToString:@""]) {
@@ -98,7 +97,7 @@
         oauthHeader = [oauthHeader stringByAppendingString:oauthPinAuth];
     }
     [self setValue:oauthHeader forHTTPHeaderField:@"Authorization"];
-    NSLog(@"header = %@", oauthHeader);
+    
 }
 
 
@@ -111,9 +110,8 @@
     
     // configure signature
     NSString *signatureBasedString = ([[self HTTPMethod] isEqualToString:@"GET"]) ? [self signatureBasedStringWithParameters:self.parameters] : [self signatureBasedStringForOAuthOnly];
-    _signature = [self.signatureProvider signatureText:signatureBasedString secret:secretForSignature];
-    NSLog(@"basedSignature = %@", signatureBasedString);
-    NSLog(@"signature = %@", signatureBasedString);
+    _signature = [self.signatureProvider hmacsha1:signatureBasedString secret:secretForSignature];
+
     // if exist token
     NSString *oauthTokenString;
     if ([self.token.key isEqualToString:@""]) {
@@ -146,7 +144,6 @@
         oauthHeader = [oauthHeader stringByAppendingString:oauthPinAuth];
     }
     [self setValue:oauthHeader forHTTPHeaderField:@"Authorization"];
-    NSLog(@"header = %@", oauthHeader);
 }
 
 
@@ -228,7 +225,6 @@
     for (NSString *pair in encodedParameterPair) {
         NSArray *separatedPair = [pair componentsSeparatedByString:@"="];
         OAParameter *requestParameter = [OAParameter requestParameterWithName:[separatedPair objectAtIndex:0] value:[separatedPair objectAtIndex:1]];
-        NSLog(@"requestParameter = %@, %@", requestParameter.name, requestParameter.value);
         [requestParameters addObject:requestParameter];
     }
     
@@ -279,7 +275,6 @@
     
     NSString *contentType = [NSString stringWithFormat:@"multipart/form-data; boundary=%@", boundary];
     [self setValue:contentType forHTTPHeaderField:@"Content-Type"];
-    //NSLog(@"contents = %@", [[NSString alloc] initWithData:[self HTTPBody] encoding:NSUTF8StringEncoding]);
 }
 
 - (NSData *)postBodyWithParameter:(NSDictionary *)param boundary:(NSString *)boundary
@@ -288,7 +283,6 @@
     for (NSString *key in param.allKeys) {
         
         id obj = param[key];
-        NSLog(@"key = %@", key);
         [body appendData:[[NSString stringWithFormat:@"--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
         
         NSData *paramData = nil;

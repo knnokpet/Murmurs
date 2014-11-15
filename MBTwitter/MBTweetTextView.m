@@ -524,7 +524,7 @@ typedef NS_ENUM(NSUInteger, MBToucheState) {
     
     CGRect targetRect = [self rectForEditMenu];
     targetRect.origin.x = 100;
-    NSLog(@"origin x = %f %f", targetRect.origin.x, targetRect.origin.y);
+    
     UIView *responderView = (self.isFirstResponder) ? self : self.selectionView;
     [menuController setTargetRect:targetRect inView:responderView];
     [menuController setMenuVisible:YES animated:YES];

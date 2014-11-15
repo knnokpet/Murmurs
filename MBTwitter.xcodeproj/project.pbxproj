@@ -127,7 +127,7 @@
 		862B624219C7E55300C7CE1B /* SentRequest.png in Resources */ = {isa = PBXBuildFile; fileRef = 862B624119C7E55300C7CE1B /* SentRequest.png */; };
 		862B624419C7E55E00C7CE1B /* SentRequest@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 862B624319C7E55E00C7CE1B /* SentRequest@2x.png */; };
 		862C4DF719911C27009ECA57 /* MBTitleWithImageButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 862C4DF619911C27009ECA57 /* MBTitleWithImageButton.m */; };
-		862C4DF9199127EF009ECA57 /* reply-Cell-Boarder-Tint@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 862C4DF8199127EF009ECA57 /* reply-Cell-Boarder-Tint@2x.png */; };
+		862FC0F01A020D3C004A1B29 /* Tweet-Cell-blue@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 862FC0EF1A020D3C004A1B29 /* Tweet-Cell-blue@2x.png */; };
 		8631BB4019A37BCC00B8012E /* MBSelectingListTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8631BB3E19A37BCC00B8012E /* MBSelectingListTableViewCell.m */; };
 		8631BB4119A37BCC00B8012E /* MBSelectingListTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8631BB3F19A37BCC00B8012E /* MBSelectingListTableViewCell.xib */; };
 		863969AD191B550A00A7D0AD /* MBListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 863969AB191B550A00A7D0AD /* MBListViewController.m */; };
@@ -175,6 +175,7 @@
 		863B3823192F798900063C83 /* MBMagnifierView.m in Sources */ = {isa = PBXBuildFile; fileRef = 863B3822192F798900063C83 /* MBMagnifierView.m */; };
 		863C1F3619307AAB00DA6371 /* MagnifierRangeMask@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 863C1F3319307AAB00DA6371 /* MagnifierRangeMask@2x.png */; };
 		863C1F391930809400DA6371 /* MBMagnifierRangeView.m in Sources */ = {isa = PBXBuildFile; fileRef = 863C1F381930809400DA6371 /* MBMagnifierRangeView.m */; };
+		8644D4E719F5207100D4453B /* Base64.m in Sources */ = {isa = PBXBuildFile; fileRef = 8644D4E619F5207100D4453B /* Base64.m */; };
 		864ADBE719A8A9E400489885 /* MBNavigationControllerTitleView.m in Sources */ = {isa = PBXBuildFile; fileRef = 864ADBE619A8A9E400489885 /* MBNavigationControllerTitleView.m */; };
 		864ADBE919A8C3B800489885 /* bird_blue_32.png in Resources */ = {isa = PBXBuildFile; fileRef = 864ADBE819A8C3B800489885 /* bird_blue_32.png */; };
 		864ADBEB19A8C41E00489885 /* bird_blue_16@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 864ADBEA19A8C41E00489885 /* bird_blue_16@2x.png */; };
@@ -564,7 +565,7 @@
 		862B624319C7E55E00C7CE1B /* SentRequest@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "SentRequest@2x.png"; sourceTree = "<group>"; };
 		862C4DF519911C27009ECA57 /* MBTitleWithImageButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBTitleWithImageButton.h; sourceTree = "<group>"; };
 		862C4DF619911C27009ECA57 /* MBTitleWithImageButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBTitleWithImageButton.m; sourceTree = "<group>"; };
-		862C4DF8199127EF009ECA57 /* reply-Cell-Boarder-Tint@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "reply-Cell-Boarder-Tint@2x.png"; sourceTree = "<group>"; };
+		862FC0EF1A020D3C004A1B29 /* Tweet-Cell-blue@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Tweet-Cell-blue@2x.png"; sourceTree = "<group>"; };
 		8631BB3D19A37BCC00B8012E /* MBSelectingListTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBSelectingListTableViewCell.h; sourceTree = "<group>"; };
 		8631BB3E19A37BCC00B8012E /* MBSelectingListTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBSelectingListTableViewCell.m; sourceTree = "<group>"; };
 		8631BB3F19A37BCC00B8012E /* MBSelectingListTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MBSelectingListTableViewCell.xib; sourceTree = "<group>"; };
@@ -646,6 +647,8 @@
 		863C1F3319307AAB00DA6371 /* MagnifierRangeMask@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "MagnifierRangeMask@2x.png"; sourceTree = "<group>"; };
 		863C1F371930809400DA6371 /* MBMagnifierRangeView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBMagnifierRangeView.h; sourceTree = "<group>"; };
 		863C1F381930809400DA6371 /* MBMagnifierRangeView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBMagnifierRangeView.m; sourceTree = "<group>"; };
+		8644D4E519F5207100D4453B /* Base64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Base64.h; sourceTree = "<group>"; };
+		8644D4E619F5207100D4453B /* Base64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Base64.m; sourceTree = "<group>"; };
 		864ADBE519A8A9E400489885 /* MBNavigationControllerTitleView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBNavigationControllerTitleView.h; sourceTree = "<group>"; };
 		864ADBE619A8A9E400489885 /* MBNavigationControllerTitleView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBNavigationControllerTitleView.m; sourceTree = "<group>"; };
 		864ADBE819A8C3B800489885 /* bird_blue_32.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bird_blue_32.png; sourceTree = "<group>"; };
@@ -1169,7 +1172,7 @@
 			isa = PBXGroup;
 			children = (
 				8623B91519892D27004380FF /* Favorite-Cell-blue@2x.png */,
-				862C4DF8199127EF009ECA57 /* reply-Cell-Boarder-Tint@2x.png */,
+				862FC0EF1A020D3C004A1B29 /* Tweet-Cell-blue@2x.png */,
 				862B61E119C56BEC00C7CE1B /* Man-Cell-blue@2x.png */,
 				862B61F319C5762600C7CE1B /* List-Cell-blue@2x.png */,
 			);
@@ -1220,6 +1223,8 @@
 				86B5C5DA18EE5BF40035CDC3 /* OAParameter.m */,
 				862B25F918D1738F004FC786 /* OAHMAC-SHA1SignatureProvider.h */,
 				862B25FA18D1738F004FC786 /* OAHMAC-SHA1SignatureProvider.m */,
+				8644D4E519F5207100D4453B /* Base64.h */,
+				8644D4E619F5207100D4453B /* Base64.m */,
 				862B261A18D5C506004FC786 /* OAAuthFetcher.h */,
 				862B261B18D5C506004FC786 /* OAAuthFetcher.m */,
 				862B260618D19702004FC786 /* NSString+OAURLEncodingAdditions.h */,
@@ -2202,6 +2207,7 @@
 				8690F5A419AE10F200E46995 /* Retweet-Line.png in Resources */,
 				861DA61E199CB0CB000F008F /* atMark-Line-Selected@2x.png in Resources */,
 				86BC61F6191391B600600EAD /* TweetDetailView.xib in Resources */,
+				862FC0F01A020D3C004A1B29 /* Tweet-Cell-blue@2x.png in Resources */,
 				8690F56019AE023700E46995 /* reply-White.png in Resources */,
 				8605928A1939B56D00559C33 /* DetailUserView.xib in Resources */,
 				862B61FB19C5790600C7CE1B /* Pen-Selected-ActionCell@2x.png in Resources */,
@@ -2225,7 +2231,6 @@
 				867A0980193FF77000741C2F /* MBEditListUserTableViewCell.xib in Resources */,
 				861AFA9D19264942006B736A /* MBTweetDetailView.xib in Resources */,
 				861AFAAC19264A30006B736A /* MBDetailTweetActionsTableViewCell.xib in Resources */,
-				862C4DF9199127EF009ECA57 /* reply-Cell-Boarder-Tint@2x.png in Resources */,
 				8623B8D8197A3F8C004380FF /* Timeline@2x.png in Resources */,
 				8690F54519ADFA2900E46995 /* Profile.png in Resources */,
 				8690F54119ADFA2000E46995 /* Profile-Selected-Line@2x.png in Resources */,
@@ -2439,6 +2444,7 @@
 				86705DBE18FE72DA002A23DD /* MBHelp_JSONParser.m in Sources */,
 				869F58BE195EA55E00927700 /* MBLoadingView.m in Sources */,
 				867A09CB194BEFC400741C2F /* MBRelationshipManager.m in Sources */,
+				8644D4E719F5207100D4453B /* Base64.m in Sources */,
 				869B48D11938A69F00221E38 /* UIImage+Radius.m in Sources */,
 				8690B570197029A6003DB47B /* MBUsersTableViewCell.m in Sources */,
 				8639E217196CEF8F0078266B /* MBSegmentedContainerView.m in Sources */,
@@ -2528,6 +2534,13 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = (
+					"$(ARCHS_STANDARD)",
+					Standard,
+					Architectures,
+					"(including",
+					"64-bit)",
+				);
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
@@ -2567,6 +2580,13 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = (
+					"$(ARCHS_STANDARD)",
+					Standard,
+					Architectures,
+					"(including",
+					"64-bit)",
+				);
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
@@ -2590,6 +2610,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
@@ -2606,6 +2627,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "MBTwitter/MBTwitter-Prefix.pch";
 				INFOPLIST_FILE = "MBTwitter/MBTwitter-Info.plist";
+				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = 1;
@@ -2623,6 +2645,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "MBTwitter/MBTwitter-Prefix.pch";
 				INFOPLIST_FILE = "MBTwitter/MBTwitter-Info.plist";
+				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = 1;

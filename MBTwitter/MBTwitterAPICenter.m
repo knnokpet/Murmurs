@@ -1321,7 +1321,7 @@
     if (0 == require) {
         return nil;
     }
-    NSLog(@"require = %llu", require);
+    
     [parameters setObject:[NSString stringWithFormat:@"%llu", require] forKey:@"id"];
     
     return [self sendRequestMethod:HTTP_POST_METHOD resource:resource parameters:parameters requestType:MBTwitterDirectMessagesDestroyRequest responseType:MBTwitterDirectMessageResponse];

@@ -24,7 +24,6 @@
             [self failedParsing:error];
         }
     } else if ([parsedObj isKindOfClass:[NSArray class]]) {
-        NSLog(@"parsed count = %d", [(NSArray *)parsedObj count]);
         NSMutableArray *gotMessages = [NSMutableArray arrayWithCapacity:200];
         for (NSDictionary *parsedMessage in (NSArray *)parsedObj) {
             MBDirectMessage *message = [[MBDirectMessage alloc] initWithDictionary:parsedMessage];

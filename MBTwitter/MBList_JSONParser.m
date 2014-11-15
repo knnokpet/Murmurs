@@ -12,7 +12,6 @@
 @implementation MBList_JSONParser
 - (void)configure:(id)parsedObj
 {
-    NSLog(@"listParse");
     if ([parsedObj isKindOfClass:[NSDictionary class]]) {
         NSDictionary *parsedListDict = (NSDictionary *)parsedObj;
         MBList *list = [[MBList alloc] initWithDictionary:parsedListDict];

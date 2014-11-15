@@ -54,7 +54,6 @@
 - (void)receiveChangedAccountnotification
 {
     [[NSNotificationCenter defaultCenter] addObserverForName:@"ChangeMyAccount" object:nil queue:nil usingBlock:^(NSNotification *notification) {
-        NSLog(@"user change account to = %@", [[MBAccountManager sharedInstance] currentAccount].screenName);
         [self updateNavigationTitleView];
         [self configureTimelineManager];
         self.aoAPICenter.delegate = nil;

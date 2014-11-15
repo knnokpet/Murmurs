@@ -665,7 +665,6 @@ static NSString *actionsCellIdentifier = @"ActionsCellIdentifier";
 #pragma mark AOuth_APICenterDelegate
 - (void)twitterAPICenter:(MBAOuth_TwitterAPICenter *)center requestType:(MBRequestType)requestType parsedTweets:(NSArray *)tweets
 {
-    NSLog(@"requesttype = %d", requestType);
     MBTweet *tweet = [tweets firstObject];
     if (!tweet) {
         return;

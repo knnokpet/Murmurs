@@ -182,7 +182,6 @@ static NSString *imageKey = @"ImageKey";
     [[NSNotificationCenter defaultCenter] addObserverForName:@"ChangeMyAccount" object:nil queue:nil usingBlock:^ (NSNotification *notification) {
         _aoAPICenter = [[MBAOuth_TwitterAPICenter alloc] init];
         _aoAPICenter.delegate = self;
-        NSLog(@"change Account %@ in MyAccountViewController", [[MBAccountManager sharedInstance] currentAccount].screenName);
     }];
 }
 
@@ -472,7 +471,7 @@ static NSString *imageKey = @"ImageKey";
     cell.textLabel.text = textLabel;
     detailInteger = (0 <= detailInteger) ? detailInteger : 0;
     if (4 != indexPath.row) {
-        cell.detailTextLabel.text = [NSString stringWithFormat:@"%d", detailInteger];
+        cell.detailTextLabel.text = [NSString stringWithFormat:@"%ld", (long)detailInteger];
     }
     
     cell.imageView.image = cellImage;
@@ -571,7 +570,6 @@ static NSString *imageKey = @"ImageKey";
     if (user) {
         self.currentUser = user;
     }
-    NSLog(@"%@ count = %d", user.userIDStr, user.tweetCount);
 }
 
 @end

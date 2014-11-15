@@ -371,9 +371,9 @@ static NSString *sendCellIdentifier = @"SendCellIdentifier";
     NSDateComponents *components = [calendaar components:NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit | NSHourCalendarUnit | NSMinuteCalendarUnit fromDate:message.createdDate];
     
     NSInteger second = [currentTimezone secondsFromGMT];
-    int hour = second / (60 * 60);
+    long hour = second / (60 * 60);
     if (hour < 1) {
-        int minute = second / 60;
+        long minute = second / 60;
         [components setMinute:components.minute - minute];
     } else {
         [components setHour:components.hour - hour];
@@ -383,7 +383,7 @@ static NSString *sendCellIdentifier = @"SendCellIdentifier";
         }
     }
     
-    NSString *dateString = [NSString stringWithFormat:@"%d/%02d/%02d %02d:%02d", components.year, components.month, components.day, components.hour, components.minute];
+    NSString *dateString = [NSString stringWithFormat:@"%ld/%02ld/%02ld %02ld:%02ld", (long)components.year, (long)components.month, (long)components.day, (long)components.hour, (long)components.minute];
     
     return dateString;
 }
