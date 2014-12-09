@@ -13,8 +13,9 @@
 + (NSString *)stringWithNewUUID
 {
     CFUUIDRef newUUID = CFUUIDCreate(kCFAllocatorDefault);
-    CFStringRef stringWithUUID = CFUUIDCreateString(kCFAllocatorDefault, newUUID);
-    return (__bridge NSString *)stringWithUUID;
+    NSString *uuidString = ( __bridge_transfer NSString *)CFUUIDCreateString(kCFAllocatorDefault, newUUID);
+    CFRelease(newUUID);
+    return uuidString;
 }
 
 @end
