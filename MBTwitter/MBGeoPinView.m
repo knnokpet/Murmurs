@@ -111,12 +111,7 @@
         // Dot
         CGFloat radius = 6.0f;
         _dotView = [[UIImageView alloc] initWithFrame:CGRectMake(self.frame.size.width / 2 - radius, 0, radius * 2, radius * 2)];
-        CGFloat r,g,b,a;
-        r = 122 / 255;
-        g = 255 / 255;
-        b = 60 / 255;
-        a = 1.0f;
-        //self.dotView.dotColor = [UIColor colorWithRed:r green:g blue:b alpha:a];
+
         self.dotView.image = [UIImage imageNamed:@"Dot-Green"];
         [self addSubview:self.dotView];
         

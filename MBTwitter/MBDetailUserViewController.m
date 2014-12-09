@@ -381,12 +381,13 @@ typedef enum ActionSheetTag {
         
         NSString *spamAction = NSLocalizedString(@"Spam Report", nil);
         
+        /* For Muting. unused.
         NSString *muteAction;
         if (relation.isMuting) {
             muteAction = NSLocalizedString(@"Cancel Mute", nil);
         } else {
             muteAction = NSLocalizedString(@"Mute", nil);
-        }
+        }*/
         
         
         if (relation.isBlocking) {

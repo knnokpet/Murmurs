@@ -90,7 +90,7 @@
         [NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
             [self setNetworkActivityIndicatorVisible:NO];
             if (error) {
-                NSLog(@"code %d error = %@", error.code, error.localizedDescription);
+                NSLog(@"code %ld error = %@", (long)error.code, error.localizedDescription);
             }
             if (nil == data) {
                 return ;

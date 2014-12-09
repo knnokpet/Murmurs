@@ -291,6 +291,9 @@
     if (!retweeter.screenName) {
         return [[NSAttributedString alloc] init];
     }
+    if (!font) {
+        font = [UIFont systemFontOfSize:14.0f];
+    }
     
     MBTweetTextComposer *composer = [[MBTweetTextComposer alloc] init];
     
@@ -299,9 +302,9 @@
 
 + (NSAttributedString *)attributedStringByRetweetedMeForTimelineWithfont:(UIFont *)font
 {
-    UIFont *textFont = font;
-    if (!textFont) {
-        textFont = [UIFont systemFontOfSize:15.0f];
+    
+    if (!font) {
+        font = [UIFont systemFontOfSize:15.0];
     }
     
     MBTweetTextComposer *composer = [[MBTweetTextComposer alloc] init];
@@ -373,6 +376,9 @@
     }
     NSString *localizedString = NSLocalizedString(@"Retweeted by %@", nil);
     NSString *retweetString = [NSString stringWithFormat:localizedString, screenName];
+    if (!font) {
+        font = [UIFont systemFontOfSize:14.0f];
+    }
     
     NSAttributedString *attributedString = [[NSAttributedString alloc] initWithString:retweetString attributes:@{NSForegroundColorAttributeName : textColor, NSFontAttributeName : font}];
     

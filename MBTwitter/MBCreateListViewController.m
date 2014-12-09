@@ -239,12 +239,9 @@
 
 - (void)updateTextFieldCell:(MBTextFieldTableViewCell  *)cell atIndexPath:(NSIndexPath *)indexPath
 {
-    NSString *textLabel;
     if (0 == indexPath.row) {
-        //textLabel = NSLocalizedString(@"Name", nil);
-        cell.textField.placeholder = NSLocalizedString(@"List Name. Fewer than  25 char.", nil);
+        cell.textField.placeholder = NSLocalizedString(@"List Name. Fewer than 25 char.", nil);
     } else if (1 == indexPath.row) {
-        textLabel = NSLocalizedString(@"Description", nil);
         cell.textField.placeholder = NSLocalizedString(@"List Detail. Ferwer than 100 char.", nil);
     }
     

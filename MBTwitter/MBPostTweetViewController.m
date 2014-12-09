@@ -321,7 +321,9 @@
 
 - (NSInteger)countOfTweetText
 {
-    NSRange httpsRange = [self.tweetTextView.text rangeOfString:@"https"];
+    /*リンクを短縮したカウントを表示しようとしていたもの。unused.
+     NSRange httpsRange = [self.tweetTextView.text rangeOfString:@"https"];
+     */
 
     return 0;
 }

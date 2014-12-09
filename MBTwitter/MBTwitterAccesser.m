@@ -310,27 +310,12 @@ typedef void (^FailedHandler)(NSHTTPURLResponse *);
     
     NSMutableDictionary *myAccountData = [NSMutableDictionary dictionary];
     
-    NSString *userToken;
-    NSString *userSecret;
-    NSString *userID;
-    NSString *userScreenName;
-    
     NSArray *nameValuePairs = [httpBody componentsSeparatedByString:@"&"];
     for (NSString *nameValuePair in nameValuePairs) {
         NSArray *keyAndValue = [nameValuePair componentsSeparatedByString:@"="];
         NSString *key = [keyAndValue objectAtIndex:0];
         NSString *value = [keyAndValue objectAtIndex:1];
-        
-        if (YES == [key isEqualToString:@"oauth_token"]) {
-            userToken = value;
-        } else if (YES == [key isEqualToString:@"oauth_token_secret"]) {
-            userSecret = value;
-        } else if (YES == [key isEqualToString:@"user_id"]) {
-            userID = value;
-        } else if (YES == [key isEqualToString:@"screen_name"]) {
-            userScreenName = value;
-        }
-        
+
         [myAccountData setObject:value forKey:key];
     }
     

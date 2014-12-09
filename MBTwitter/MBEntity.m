@@ -53,6 +53,10 @@
     NSMutableArray *entities = [NSMutableArray arrayWithCapacity:containsCount];
     
     for (NSDictionary *entity in fromArray) {
+        if (!entity) {
+            continue;
+        }
+        
         MBLink *linkObj;
         if (YES == [key isEqualToString:ENTITY_KEY_HASHTAG]) {
             linkObj = [[MBHashTagLink alloc] initWithDictionary:entity];
@@ -62,6 +66,10 @@
             linkObj = [[MBURLLink alloc] initWithDictionary:entity];
         } else if (YES == [key isEqualToString:ENTITY_KEY_USER_MENTHIONS]) {
             linkObj = [[MBMentionUserLink alloc] initWithDictionary:entity];
+        }
+        
+        if (!linkObj) {
+            continue;
         }
         
         [entities addObject:linkObj];

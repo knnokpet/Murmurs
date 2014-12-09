@@ -62,9 +62,9 @@
     
     CGFloat strokeR, strokeG, strokeB, strokeA;
     strokeA = 1.0;
-    if (self.popsFromRight) {
-        strokeR = strokeG = strokeB = 0.85;
-    }
+    strokeR = 0.85;
+    strokeG = 0.85;
+    strokeB = 0.85;
     CGFloat strokeWidth = 1.0;
     
     CGRect bouds = self.bounds;
