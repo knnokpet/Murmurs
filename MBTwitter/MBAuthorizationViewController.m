@@ -58,8 +58,6 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    [self commonConfigureView];
-    [self configureLoadingView];
     
     self.twitterAccesser.delegate = self;
     
@@ -69,6 +67,14 @@
     }
     
     self.title = NSLocalizedString(@"New Account", nil);
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    
+    [self commonConfigureView];
+    [self configureLoadingView];
 }
 
 - (void)didReceiveMemoryWarning

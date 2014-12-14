@@ -118,8 +118,7 @@ typedef enum ActionSheetTag {
     self.headerImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, tableHeaderHeight)];
     [self.tableView.tableHeaderView addSubview:self.headerImageView];
     
-    CGFloat navigationHeight = self.navigationController.navigationBar.frame.size.height + self.navigationController.navigationBar.frame.origin.y;
-    self.scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, navigationHeight, self.view.frame.size.width, tableHeaderHeight)];
+    self.scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, tableHeaderHeight)];
     self.scrollView.backgroundColor = [UIColor clearColor];
     self.scrollView.showsHorizontalScrollIndicator = NO;
     self.scrollView.pagingEnabled = YES;
@@ -134,13 +133,16 @@ typedef enum ActionSheetTag {
     
     
     self.pageControl = [[UIPageControl alloc] init];
-    self.pageControl.frame = CGRectMake(0, self.scrollView.frame.size.height - 30, self.view.frame.size.width, 30);
     [self.pageControl addTarget:self action:@selector(pageControll:) forControlEvents:UIControlEventValueChanged];
     self.pageControl.backgroundColor = [UIColor clearColor];
     self.pageControl.numberOfPages = pageCount;
     self.pageControl.currentPage = 0;
     self.pageControl.hidesForSinglePage = YES;
     [tableHeaderView addSubview:self.pageControl];
+    CGRect pageControlRect = self.pageControl.frame;
+    pageControlRect.origin = CGPointMake(self.view.bounds.size.width / 2,self.scrollView.bounds.size.height - 30);
+    pageControlRect.size = CGSizeMake(self.pageControl.bounds.size.width, 30);
+    self.pageControl.frame = pageControlRect;
     
     [self configureDescriptionView];
     [self configureInfomationView];
@@ -148,10 +150,8 @@ typedef enum ActionSheetTag {
 
 - (void)configureAvatorView
 {
-    if (!self.profileAvatorView.superview) {
-        self.profileAvatorView = [[MBProfileAvatorView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.headerImageView.bounds.size.height)];
-        [self.scrollView addSubview:self.profileAvatorView];
-    }
+    self.profileAvatorView = [[MBProfileAvatorView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.headerImageView.bounds.size.height)];
+    [self.scrollView addSubview:self.profileAvatorView];
     self.profileAvatorView.characterName = self.user.characterName;
     self.profileAvatorView.screenName = self.user.screenName;
     self.profileAvatorView.isProtected = self.user.isProtected;
@@ -182,11 +182,9 @@ typedef enum ActionSheetTag {
         return;
     }
     
-    if (!self.profileDescriptionView.superview) {
-        CGRect profileFrame = CGRectMake(self.view.frame.size.width, 0, self.view.frame.size.width, self.scrollView.frame.size.height);
-        self.profileDescriptionView = [[MBProfileDesciptionView alloc] initWithFrame:profileFrame];
-        [self.scrollView addSubview:self.profileDescriptionView];
-    }
+    CGRect profileFrame = CGRectMake(self.view.frame.size.width, 0, self.view.frame.size.width, self.scrollView.frame.size.height);
+    self.profileDescriptionView = [[MBProfileDesciptionView alloc] initWithFrame:profileFrame];
+    [self.scrollView addSubview:self.profileDescriptionView];
     
     if (0 < self.user.desctiprion.length) {
         NSAttributedString *descriptionText = [MBTweetTextComposer attributedStringForUser:self.user linkColor:nil];
@@ -200,11 +198,9 @@ typedef enum ActionSheetTag {
         return;
     }
 
-    if (!self.profileInformationView.superview) {
-        CGFloat xOrigin = self.view.frame.size.width + self.profileDescriptionView.frame.size.width;
-        self.profileInformationView = [[MBProfileInfomationView alloc] initWithFrame:CGRectMake(xOrigin, 0, self.view.frame.size.width, self.scrollView.frame.size.height)];
-        [self.scrollView addSubview:self.profileInformationView];
-    }
+    CGFloat xOrigin = self.view.frame.size.width + self.profileDescriptionView.frame.size.width;
+    self.profileInformationView = [[MBProfileInfomationView alloc] initWithFrame:CGRectMake(xOrigin, 0, self.view.frame.size.width, self.scrollView.frame.size.height)];
+    [self.scrollView addSubview:self.profileInformationView];
     
     if (0 < self.user.urlAtProfile.length || 0 < self.user.location.length) {
         [self.profileInformationView setLocationText:self.user.location];
@@ -222,10 +218,6 @@ typedef enum ActionSheetTag {
     [self configureModel];
     [self configureUserObject];
     [self fetchRelationship];
-    
-    [self configureView];
-    [self configureOtherActions];
-    
 }
 
 - (void)configureUserObject
@@ -255,6 +247,9 @@ typedef enum ActionSheetTag {
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
+    
+    [self configureView];
+    [self configureOtherActions];
 
     [self deselectTableViewCellWithAnimated:animated];
 }

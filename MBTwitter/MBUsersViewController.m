@@ -84,7 +84,7 @@ static NSString *usersCellIdentifier = @"UsersCellIdentifier";
     [indicatorView startAnimating];
     CGFloat bottomMargin = 4.0f;
     CGFloat indicatorHeight = indicatorView.frame.size.height;
-    UIView *indicatorContanerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.tableView.bounds.size.width, indicatorHeight + bottomMargin * 2)];
+    UIView *indicatorContanerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, indicatorHeight + bottomMargin * 2)];
     [indicatorContanerView addSubview:indicatorView];
     indicatorView.center = indicatorContanerView.center;
     self.tableView.tableFooterView = indicatorContanerView;
@@ -105,7 +105,6 @@ static NSString *usersCellIdentifier = @"UsersCellIdentifier";
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
     [self commonConfigureModel];
-    [self commonConfigureView];
     
     [self goBacksWithCursor:self.nextCursor];
 }
@@ -113,6 +112,8 @@ static NSString *usersCellIdentifier = @"UsersCellIdentifier";
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
+    
+    [self commonConfigureView];
     
     NSIndexPath *selectedPath = [self.tableView indexPathForSelectedRow];
     if (selectedPath) {

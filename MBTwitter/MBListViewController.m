@@ -68,13 +68,6 @@ static NSString *listsCellIdentifier = @"ListsCellIdentifier";
     [self.tableView setTableHeaderView:view];
     [self.tableView setTableFooterView:view];
     
-    if (self.listManager.ownerShipLists.count == 0 && self.listManager.subscriptionLists.count == 0) {
-        _loadingView = [[MBLoadingView alloc] initWithFrame:self.view.bounds];
-        [self.view insertSubview:self.loadingView aboveSubview:self.tableView];
-    } else {
-        [self removeLoadingView];
-    }
-    
     
     self.enableAdding = NO;
 }
@@ -98,12 +91,17 @@ static NSString *listsCellIdentifier = @"ListsCellIdentifier";
     
     [self commonConfigureModel];
     [self commonConfigureView];
-    
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
+    
+    if (self.listManager.ownerShipLists.count == 0 && self.listManager.subscriptionLists.count == 0) {
+        [self configureLoadingView];
+    } else {
+        [self removeLoadingView];
+    }
     
     NSIndexPath *selectedPath = [self.tableView indexPathForSelectedRow];
     if (selectedPath) {
@@ -144,6 +142,12 @@ static NSString *listsCellIdentifier = @"ListsCellIdentifier";
     } else {
         [self.aoAPICenter getListsOfSubscriptionWithUser:[self.user.userID unsignedLongLongValue] screenName:self.user.screenName cursor:cursor];
     }
+}
+
+- (void)configureLoadingView
+{
+    _loadingView = [[MBLoadingView alloc] initWithFrame:self.view.bounds];
+    [self.view insertSubview:self.loadingView aboveSubview:self.tableView];
 }
 
 - (void)removeLoadingView

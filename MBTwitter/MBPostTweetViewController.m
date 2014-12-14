@@ -207,13 +207,6 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    [self commonConfigureView];
-    
-    self.tweetTextView.text = self.tweetText;
-    
-    self.title = NSLocalizedString(@"New Tweet", nil);
-    
-    [self beEnableButtonForTextViewLength];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -223,6 +216,14 @@
     NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
     [notificationCenter addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
     [notificationCenter addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
+    
+    [self commonConfigureView];
+    
+    self.tweetTextView.text = self.tweetText;
+    
+    self.title = NSLocalizedString(@"New Tweet", nil);
+    
+    [self beEnableButtonForTextViewLength];
     
     [self.tweetTextView becomeFirstResponder];
 }
@@ -332,9 +333,9 @@
 - (void)applyConstraint
 {
     if (self.showsImageView) {
-        [self addImageViewConstraint];
+        //[self addImageViewConstraint];
     } else {
-        [self removeImageViewConstraint];
+        //[self removeImageViewConstraint];
     }
 }
 
@@ -349,11 +350,11 @@
 
 - (void)removeImageViewConstraint
 {
-    self.topConstraint.constant = 0.0f;
-    self.LeftHorizontalConstraint.constant = 0.0f;
-    self.horizontalConstraint.constant = 0.0f;
-    self.widthConstraint.constant = .0f;
-    self.heightConstraint.constant = .0f;
+    self.topConstraint.constant = 0.01f;
+    self.LeftHorizontalConstraint.constant = 0.01f;
+    self.horizontalConstraint.constant = 0.01f;
+    //self.widthConstraint.constant = .01f;
+    //self.heightConstraint.constant = .01f;
 }
 
 #pragma mark

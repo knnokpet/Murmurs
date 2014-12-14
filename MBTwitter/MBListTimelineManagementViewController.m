@@ -62,6 +62,62 @@
     self.segmentedController.frame = segmentRect;
     [self.segmentedController addTarget:self action:@selector(didChangeSegmentedControl) forControlEvents:UIControlEventValueChanged];
     
+    [self.segmentedController setTitle:NSLocalizedString(@"Tweet", nil) forSegmentAtIndex:0];
+    [self.segmentedController setTitle:NSLocalizedString(@"Member", nil) forSegmentAtIndex:1];
+    [self.view bringSubviewToFront:self.containerView];
+}
+
+- (void)configureChildViewControllers
+{
+    
+    MBListTimelineViewController *listTimelineViewController = [[MBListTimelineViewController alloc] initWithNibName:@"TimelineTableView" bundle:nil];
+    [listTimelineViewController setList:self.list];
+    [self addChildViewController:listTimelineViewController];
+    listTimelineViewController.view.frame = self.view.bounds;
+    self.currentController = listTimelineViewController;/* unused */
+    //listTimelineViewController.delegate = self;
+    
+    [self.view addSubview:listTimelineViewController.view];
+    self.listTimelineViewController = listTimelineViewController;
+    [self.listTimelineViewController didMoveToParentViewController:self];
+    
+    
+    MBListMembersViewController *listMembersViewController = [[MBListMembersViewController alloc] initWithNibName:@"MBUsersViewController" bundle:nil];
+    [listMembersViewController setList:self.list];
+    [self addChildViewController:listMembersViewController];
+    listMembersViewController.view.frame = self.view.bounds;
+    //listMembersViewController.scrollDelegate = self;/* unused */
+    
+    
+    self.listMembersViewController = listMembersViewController;
+    
+    
+    _viewControllers = [NSArray arrayWithObjects:listTimelineViewController, listMembersViewController, nil];
+}
+
+- (void)constraintChildViewControllers
+{
+    CGFloat containerHeight = defaultContainerHeight;
+    
+    // insets
+    UIEdgeInsets contentInsets = self.listTimelineViewController.tableView.contentInset;
+    contentInsets.top = contentInsets.top + containerHeight;
+    self.listTimelineViewController.tableView.contentInset = contentInsets;
+    UIEdgeInsets indicatorInsets = self.listTimelineViewController.tableView.scrollIndicatorInsets;
+    indicatorInsets.top = indicatorInsets.top + containerHeight;
+    self.listTimelineViewController.tableView.scrollIndicatorInsets = indicatorInsets;
+    
+    // insets
+    CGFloat navigationStatusBarHeight = self.navigationController.navigationBar.frame.size.height + [UIApplication sharedApplication].statusBarFrame.size.height;
+    CGFloat tabBarHeight = self.tabBarController.tabBar.frame.size.height;
+    UIEdgeInsets contInsets = self.listMembersViewController.tableView.contentInset;
+    contInsets.top = containerHeight + navigationStatusBarHeight;
+    contInsets.bottom = tabBarHeight;// + navigationStatusBarHeight;
+    self.listMembersViewController.tableView.contentInset = contInsets;
+    UIEdgeInsets scrollInsets = self.listMembersViewController.tableView.scrollIndicatorInsets;
+    scrollInsets.top = containerHeight + navigationStatusBarHeight;
+    scrollInsets.bottom = tabBarHeight ;//+ navigationStatusBarHeight;
+    self.listMembersViewController.tableView.scrollIndicatorInsets = scrollInsets;
 }
 
 - (void)configureNavigationItem
@@ -73,57 +129,18 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
-    [self commonConfigureModel];
-    [self configureView];
-    
-    CGFloat containerHeight = self.containerView.frame.size.height;
-    
-    MBListTimelineViewController *listTimelineViewController = [[MBListTimelineViewController alloc] initWithNibName:@"TimelineTableView" bundle:nil];
-    [listTimelineViewController setList:self.list];
-    [self addChildViewController:listTimelineViewController];
-    listTimelineViewController.view.frame = self.view.bounds;
-    self.currentController = listTimelineViewController;/* unused */
-    //listTimelineViewController.delegate = self;
-    // insets
-    UIEdgeInsets contentInsets = listTimelineViewController.tableView.contentInset;
-    contentInsets.top = contentInsets.top + containerHeight;
-    listTimelineViewController.tableView.contentInset = contentInsets;
-    UIEdgeInsets indicatorInsets = listTimelineViewController.tableView.scrollIndicatorInsets;
-    indicatorInsets.top = indicatorInsets.top + containerHeight;
-    listTimelineViewController.tableView.scrollIndicatorInsets = indicatorInsets;
-    [self.view addSubview:listTimelineViewController.view];
-    self.listTimelineViewController = listTimelineViewController;
-    [self.listTimelineViewController didMoveToParentViewController:self];
-
-    
-    MBListMembersViewController *listMembersViewController = [[MBListMembersViewController alloc] initWithNibName:@"MBUsersViewController" bundle:nil];
-    [listMembersViewController setList:self.list];
-    [self addChildViewController:listMembersViewController];
-    listMembersViewController.view.frame = self.view.bounds;
-    //listMembersViewController.scrollDelegate = self;/* unused */
-    // insets
-    CGFloat navigationStatusBarHeight = self.navigationController.navigationBar.frame.size.height + [UIApplication sharedApplication].statusBarFrame.size.height;
-    CGFloat tabBarHeight = self.tabBarController.tabBar.frame.size.height;
-    UIEdgeInsets contInsets = listMembersViewController.tableView.contentInset;
-    contInsets.top = containerHeight + navigationStatusBarHeight;
-    contInsets.bottom = tabBarHeight;// + navigationStatusBarHeight;
-    listMembersViewController.tableView.contentInset = contInsets;
-    UIEdgeInsets scrollInsets = listMembersViewController.tableView.scrollIndicatorInsets;
-    scrollInsets.top = containerHeight + navigationStatusBarHeight;
-    scrollInsets.bottom = tabBarHeight ;//+ navigationStatusBarHeight;
-    listMembersViewController.tableView.scrollIndicatorInsets = scrollInsets;
-    self.listMembersViewController = listMembersViewController;
-    
-    
-    _viewControllers = [NSArray arrayWithObjects:listTimelineViewController, listMembersViewController, nil];
-    
-    
-    [self.segmentedController setTitle:NSLocalizedString(@"Tweet", nil) forSegmentAtIndex:0];
-    [self.segmentedController setTitle:NSLocalizedString(@"Member", nil) forSegmentAtIndex:1];
-    
     self.title = self.list.name;
     
-    [self.view bringSubviewToFront:self.containerView];
+    [self commonConfigureModel];
+    [self configureChildViewControllers];
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    
+    [self configureView];
+    [self constraintChildViewControllers];
 }
 
 - (void)didReceiveMemoryWarning

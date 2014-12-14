@@ -174,7 +174,6 @@
     // Do any additional setup after loading the view from its nib.
     [self configureModel];
     [self configureView];
-    [self renewViews];
     
     if (self.tweet.requireLoading || self.tweet.isRetweeted) {
         [self.aoAPICenter getTweet:[self.tweet.tweetID unsignedLongLongValue]];
@@ -186,6 +185,9 @@
     [super viewDidAppear:animated];
     
     [[UIApplication sharedApplication] setStatusBarHidden:YES];
+    
+    
+    [self renewViews];
     
     if (!self.mediaImage) {
         [self downloadMediaImage];

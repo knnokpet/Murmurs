@@ -82,9 +82,6 @@
     [self.refreshControl addTarget:self action:@selector(fetchCurrentMessage) forControlEvents:UIControlEventValueChanged];
     [self.tableView addSubview:self.refreshControl];
     
-    
-    _loadingView = [[MBLoadingView alloc] initWithFrame:self.view.bounds];
-    [self.view insertSubview:self.loadingView aboveSubview:self.tableView];
 }
 
 - (void)configureNavigationItem
@@ -112,6 +109,8 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
+    
+    [self configureLoadgingView];
     
     NSIndexPath *selectedPath = [self.tableView indexPathForSelectedRow];
     if (selectedPath) {
@@ -161,6 +160,15 @@
     [titleView setTitle:NSLocalizedString(@"Message", nil)];
     [titleView sizeToFit];
     [self.navigationItem setTitleView:titleView];
+}
+
+- (void)configureLoadgingView
+{
+    if (self.dataSource == 0 && !self.loadingView.superview) {
+        CGRect loadingnRect = self.view.bounds;
+        _loadingView = [[MBLoadingView alloc] initWithFrame:loadingnRect];
+        [self.view insertSubview:self.loadingView aboveSubview:self.tableView];
+    }
 }
 
 - (void)removeLoadingView

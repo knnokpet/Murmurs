@@ -137,11 +137,7 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
     view.backgroundColor = [UIColor clearColor];
     self.tableView.tableHeaderView = view;
     
-    [self configureBackTimelineIndicatorView];
-    
     [self configureRefrechControll];
-    
-    [self configureLoadingView];
 }
 
 - (void)configureNavigationItem
@@ -197,10 +193,25 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
     
 }
 
+/* for iOS 8 */
+- (void)viewDidLayoutSubviews
+{
+    if ([self.tableView respondsToSelector:@selector(setSeparatorInset:)]) {
+        [self.tableView setSeparatorInset:UIEdgeInsetsZero];
+    }
+    
+    if ([self.tableView respondsToSelector:@selector(setLayoutManager:)]) {
+        [self.tableView setLayoutMargins:UIEdgeInsetsZero];
+    }
+    
+    [self configureBackTimelineIndicatorView];
+    [self configureLoadingView];
+}
+
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-        
+    
     NSIndexPath *selectedPath = [self.tableView indexPathForSelectedRow];
     if (selectedPath) {
         [self.tableView deselectRowAtIndexPath:selectedPath animated:animated];
@@ -227,8 +238,12 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
 #pragma mark Instance Methods
 - (void)configureLoadingView
 {
-    if (!self.loadingView.superview) {
-        _loadingView = [[MBLoadingView alloc] initWithFrame:self.view.bounds];
+    if (!self.loadingView.superview && self.dataSource.count == 0) {
+        CGRect loadingnRect = self.view.bounds;
+        /* iOS 8 以降は、SizeClass が導入されたせいか、self.view.bounds がスクリーンサイズに適応されるのが遅い。
+         追記:
+         というか、もとから viewDidLoad ではUI要素はロードされていない。クラスがロードされただけで、作成されているわけてはない。*/
+        _loadingView = [[MBLoadingView alloc] initWithFrame:loadingnRect];
         [self.view insertSubview:self.loadingView aboveSubview:self.tableView];
     }
 }
@@ -477,7 +492,7 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
     
     
     NSInteger textViewWidth = tableViewForCalculate.bounds.size.width - (64.0f + 8.0f);
-    CGRect textRect = [MBTweetTextView frameRectWithAttributedString:attributedString constraintSize:CGSizeMake(textViewWidth, CGFLOAT_MAX) lineSpace:LINE_SPACING font:[UIFont systemFontOfSize:FONT_SIZE]];
+    CGRect textRect = [MBTweetTextView frameRectWithAttributedString:attributedString constraintSize:CGSizeMake(textViewWidth, CGFLOAT_MAX) lineSpace:LINE_SPACING paragraghSpace:PARAGRAPF_SPACING font:[UIFont systemFontOfSize:FONT_SIZE]];
     
     CGFloat tweetViewSpace = 30.0f;
     CGFloat verticalMargin = 10.0f;
@@ -542,17 +557,6 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
     
     if ([cell respondsToSelector:@selector(setLayoutMargins:)]) {
         [cell setLayoutMargins:UIEdgeInsetsZero];
-    }
-}
-/* for iOS 8 */
-- (void)viewDidLayoutSubviews
-{
-    if ([self.tableView respondsToSelector:@selector(setSeparatorInset:)]) {
-        [self.tableView setSeparatorInset:UIEdgeInsetsZero];
-    }
-    
-    if ([self.tableView respondsToSelector:@selector(setLayoutManager:)]) {
-        [self.tableView setLayoutMargins:UIEdgeInsetsZero];
     }
 }
 

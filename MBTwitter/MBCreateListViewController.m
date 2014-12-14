@@ -58,7 +58,6 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
     [self commonConfigureModel];
-    [self commonConfigureView];
     
     self.title = NSLocalizedString(@"New List", nil);
 }
@@ -66,6 +65,8 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
+    
+    [self commonConfigureView];
     
     NSIndexPath *selectedIndexPath = [self.tableView indexPathForSelectedRow];
     if (selectedIndexPath) {

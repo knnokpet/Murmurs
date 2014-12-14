@@ -38,10 +38,10 @@
 
 #import "MBTwitterAccessibility.h"
 
-#define LINE_SPACING 2.0f
+#define LINE_SPACING 6.0f
 #define LINE_HEIGHT 0.0f
-#define PARAGRAPF_SPACING 0.0f
-#define FONT_SIZE 15.0f
+#define PARAGRAPF_SPACING 2.0f
+#define FONT_SIZE 18.0f
 
 @class MBTimeLineManager;
 @interface MBTimelineViewController : UIViewController <UIScrollViewDelegate, UITableViewDataSource, UITableViewDelegate, UIViewControllerTransitioningDelegate, MBTwitterAccesserDelegate,MBAOuth_TwitterAPICenterDelegate, MBPostTweetViewControllerDelegate, MBWebBrowsViewControllerDelegate, MBAvatorImageViewDelegate, MBMediaImageViewDelegate, MBTweetTextViewDelegate, MBtweetViewCellLongPressDelegate, MBImageViewControllerDelegate, MBTimelineActionViewDelegate, MBRetweetViewDelegate, MBAuthorizationViewControllerDelegate>

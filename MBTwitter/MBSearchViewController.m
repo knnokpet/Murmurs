@@ -89,6 +89,15 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
     [self configureModel];
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillAppear:) name:UIKeyboardWillShowNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillDisappear:) name:UIKeyboardWillHideNotification object:nil];
+    
     [self configureView];
     
     _tweetViewController = [[MBSearchedTweetViewController alloc] initWithNibName:@"TimelineTableView" bundle:nil];
@@ -114,14 +123,6 @@
     [self searchTweet];
     
     [self receiveChengedAccountNotification];
-}
-
-- (void)viewWillAppear:(BOOL)animated
-{
-    [super viewWillAppear:animated];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillAppear:) name:UIKeyboardWillShowNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillDisappear:) name:UIKeyboardWillHideNotification object:nil];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -260,7 +261,7 @@
     unsigned int curve = [[userInfo objectForKey:UIKeyboardAnimationCurveUserInfoKey] unsignedIntValue];
     
     [UIView animateWithDuration:duration delay:0.0f options:curve animations:^{
-        self.viewForHiding.backgroundColor = [UIColor grayColor];
+        self.viewForHiding.backgroundColor = [UIColor lightGrayColor];
     }completion:nil];
 }
 

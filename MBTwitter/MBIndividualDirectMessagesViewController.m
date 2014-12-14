@@ -200,12 +200,7 @@ static NSString *sendCellIdentifier = @"SendCellIdentifier";
     self.title = title;
     
     [self commonConfigureModel];
-    [self commonConfigureView];
     
-    
-    [self configureMessageView];
-    
-    [self.tableView setContentOffset:CGPointMake(0, 1000)];
 }
 
 
@@ -213,6 +208,12 @@ static NSString *sendCellIdentifier = @"SendCellIdentifier";
 {
     [super viewWillAppear:animated];
     
+    [self commonConfigureView];
+    
+    
+    [self configureMessageView];
+    
+    [self.tableView setContentOffset:CGPointMake(0, 1000)];
     
     NSNotificationCenter *nCenter = [NSNotificationCenter defaultCenter];
     [nCenter addObserver:self selector:@selector(keyBoardWillAppear:) name:UIKeyboardWillShowNotification object:nil];

@@ -47,6 +47,11 @@ static NSString *deleteListCellIdentifier = @"DeleteListCellIdentifier";
     self.removeListMembers = [NSMutableArray array];
     
     self.isDeleting = NO;
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
     
     UINib *userCell = [UINib nibWithNibName:@"MBEditListUserTableViewCell" bundle:nil];
     [self.tableView registerNib:userCell forCellReuseIdentifier:editListUserCellIdentifier];
