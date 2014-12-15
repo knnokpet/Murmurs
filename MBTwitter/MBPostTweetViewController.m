@@ -23,6 +23,7 @@
 #import "MBGradientMaskView.h"
 
 @interface UIActionSheet(NonBecomeFirstResponder)
+
 @end
 @implementation UIActionSheet(NonBecomeFirstResponder)
 
@@ -127,11 +128,10 @@
 
 - (void)commonConfigureView
 {
-    [self commonConfigureNavigationItem];
-    
-    self.showsImageView = NO;
+    CGSize imageViewSize = CGSizeMake(64.0f, 64.0f);
+    CGFloat topMarginForImageView = self.navigationController.navigationBar.frame.origin.y + self.navigationController.navigationBar.bounds.size.height + 12.0f;
+    self.mediaImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.bounds.size.width - imageViewSize.width - 4.0f, topMarginForImageView, imageViewSize.width, imageViewSize.height)];
     self.mediaImageView.backgroundColor = [UIColor lightGrayColor];
-    [self applyConstraint];
     
     self.tweetTextView.alwaysBounceVertical = YES;
     self.tweetTextView.delegate = self;
@@ -207,6 +207,10 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    self.title = NSLocalizedString(@"New Tweet", nil);
+    self.showsImageView = NO;
+    
+    [self commonConfigureNavigationItem];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -221,11 +225,11 @@
     
     self.tweetTextView.text = self.tweetText;
     
-    self.title = NSLocalizedString(@"New Tweet", nil);
-    
     [self beEnableButtonForTextViewLength];
     
     [self.tweetTextView becomeFirstResponder];
+    
+    [self applyLayoutForMediaImage];
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -330,31 +334,31 @@
 }
 
 #pragma mark
-- (void)applyConstraint
+- (void)applyLayoutForMediaImage
 {
     if (self.showsImageView) {
-        //[self addImageViewConstraint];
+        if (!self.mediaImageView.superview) {
+            [self.view addSubview:self.mediaImageView];
+            [self addTextViewConstraint];
+        }
+        
     } else {
-        //[self removeImageViewConstraint];
+        if (self.mediaImageView.superview) {
+            [self.mediaImageView removeFromSuperview];
+            [self resetTextViewConstraint];
+        }
+        
     }
 }
 
-- (void)addImageViewConstraint
+- (void)addTextViewConstraint
 {
-    self.topConstraint.constant = 12.0f + self.tweetTextView.contentInset.top;
-    self.LeftHorizontalConstraint.constant = 4.0f;
-    self.horizontalConstraint.constant = 10.0f;
-    self.widthConstraint.constant = 64.0f;
-    self.heightConstraint.constant = 64.0f;
+    self.textViewRightSpaceConstraint.constant = 72.0f;
 }
 
-- (void)removeImageViewConstraint
+- (void)resetTextViewConstraint
 {
-    self.topConstraint.constant = 0.01f;
-    self.LeftHorizontalConstraint.constant = 0.01f;
-    self.horizontalConstraint.constant = 0.01f;
-    //self.widthConstraint.constant = .01f;
-    //self.heightConstraint.constant = .01f;
+    self.textViewRightSpaceConstraint.constant = 4.0f;
 }
 
 #pragma mark
@@ -593,7 +597,7 @@
 {
     [self.photos removeAllObjects];
     self.showsImageView = NO;
-    [self applyConstraint];
+    [self applyLayoutForMediaImage];
     [self setCountOfBarButtonItem];
     [self settingToolBarItemWithAnimated:YES];
 }
@@ -691,6 +695,7 @@
 {
     [self beEnableButtonForTextViewLength];
     [self setCountOfBarButtonItem];
+    [self setText:textView.text];
 }
 
 #pragma mark ScrollView Delegate
@@ -732,19 +737,20 @@
 #pragma mark ImagePickerViewController Delegate
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
 {
-    [picker dismissViewControllerAnimated:YES completion:nil];
+    
     UIImage *selectedImage = [info objectForKey:UIImagePickerControllerOriginalImage];
     if (nil == selectedImage) {
+        [picker dismissViewControllerAnimated:YES completion:nil];
         return;
     }
     self.mediaImageView.image = nil;
     [self settingCancelableToolbarItemsWithAnimated:YES];
     self.compressingImage = selectedImage;
     self.showsImageView = YES;
-    [self applyConstraint];
     self.postBarButtonitem.enabled = NO;
     
     [self.aoAPICenter getHelpConfiguration];
+    [picker dismissViewControllerAnimated:YES completion:nil];
 }
 
 /*
@@ -803,8 +809,7 @@
     if (!medias || !photoSizeLimit || !self.compressingImage) {
         self.compressingImage = nil;
         self.showsImageView = NO;
-        [self applyConstraint];
-        [self removeImageViewConstraint];
+        [self applyLayoutForMediaImage];
         self.postBarButtonitem.enabled = YES;
         return;
     }
@@ -822,7 +827,7 @@
             [weakSelf.photos removeAllObjects];
         }
         [weakSelf.photos addObject:imageData64];
-        UIImage *resizedImage = [MBImageApplyer imageForTwitter:self.compressingImage size:CGSizeMake(weakSelf.mediaImageView.frame.size.width, weakSelf.mediaImageView.frame.size.height) radius:0.0f];
+        UIImage *resizedImage = [MBImageApplyer imageForTwitter:weakSelf.compressingImage size:CGSizeMake(weakSelf.mediaImageView.frame.size.width, weakSelf.mediaImageView.frame.size.height) radius:0.0f];
         self.compressingImage = nil;
         dispatch_async(dispatch_get_main_queue(), ^{
             weakSelf.mediaImageView.image = resizedImage;

@@ -19,12 +19,8 @@
 @property (nonatomic, readonly) MBAOuth_TwitterAPICenter *aoAPICenter;
 @property (nonatomic, readonly) MBTweet *referencedTweet;
 
-@property (weak, nonatomic) IBOutlet UIImageView *mediaImageView;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint *topConstraint;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint *LeftHorizontalConstraint;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint *horizontalConstraint;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint *widthConstraint;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint *heightConstraint;
+@property (nonatomic) UIImageView *mediaImageView;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *textViewRightSpaceConstraint;
 @property (weak, nonatomic) IBOutlet UITextView *tweetTextView;
 - (void)setText:(NSString *)text;
 
