@@ -42,12 +42,12 @@
 "Now Following" = "フォロー中";
 
 "User" = "ユーザー";
-"Add / Remove List" = "リストへの追加、削除";
+"Add / Remove List" = "リストへを追加、削除";
 "UnFollow" = "フォローを解除";
 "Block" = "ブロック";
 "Cancel Request" = "フォローリクエストを取り消す";
 "Cancel Blocking" = "ブロックを解除";
-"Block User" = "ユーザーのブロック";
+"Block User" = "ユーザーをブロック";
 "Spam Report" = "スパム報告";
 "Cancel Mute" = "ミュートを解除";
 "Mute" = "ミュート";
@@ -63,7 +63,7 @@
 "List" = "リスト";
 
 "Member" = "メンバー";
-"Delete List" = "リストの削除";
+"Delete List" = "リストを削除";
 
 "Save Image" = "画像を保存";
 
@@ -91,7 +91,7 @@
 "UnSubscrive" = "登録解除";
 "Subscrive" = "登録";
 "Delete" = "削除";
-"List Name. Fewer than  25 char." = "リスト名を 25 文字以内で。";
+"List Name. Fewer than 25 char." = "リスト名を 25 文字以内で。";
 "Enter List Detail" = "リストの詳細は 100 文字以内です。";
 "Ferwer than 25 char.\"-\", \"_\" and Number." = "25 文字以内。数字と\"-\", \"_\" も使用可能。";
 "List Detail. Ferwer than 100 char." = "リストの説明を 100 文字以内で。";
@@ -120,7 +120,7 @@
 "My List" = "マイリスト";
 "@%@'s List" = "%@ のリスト";
 "New List" = "新規リスト";
-"Edit List" = "リストの編集";
+"Edit List" = "リストを編集";
 
 "Loading Gapped Tweet" = "この間のつぶやきを読み込む";
 
