@@ -3,6 +3,7 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6247"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
@@ -35,11 +36,13 @@
                 </subviews>
                 <constraints>
                     <constraint firstAttribute="centerX" secondItem="4tV-pE-cIF" secondAttribute="centerX" constant="-0.5" id="10c-ex-jKa"/>
+                    <constraint firstAttribute="trailingMargin" relation="greaterThanOrEqual" secondItem="mTF-xC-gqu" secondAttribute="trailing" constant="16" id="G45-af-VnK"/>
                     <constraint firstAttribute="centerY" secondItem="tDP-c4-lIZ" secondAttribute="centerY" constant="-0.5" id="Huq-Od-BHy"/>
                     <constraint firstItem="4tV-pE-cIF" firstAttribute="leading" secondItem="tDP-c4-lIZ" secondAttribute="trailing" constant="48" id="SjE-Cj-lbm"/>
                     <constraint firstItem="mTF-xC-gqu" firstAttribute="leading" secondItem="4tV-pE-cIF" secondAttribute="trailing" constant="48" id="dKG-93-AUe"/>
                     <constraint firstAttribute="centerY" secondItem="mTF-xC-gqu" secondAttribute="centerY" constant="-0.5" id="pIL-rW-fSf"/>
                     <constraint firstAttribute="centerY" secondItem="4tV-pE-cIF" secondAttribute="centerY" constant="-0.5" id="pSu-4F-phB"/>
+                    <constraint firstItem="tDP-c4-lIZ" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="H2p-sc-9uM" secondAttribute="leadingMargin" constant="16" id="rlb-br-222"/>
                 </constraints>
             </tableViewCellContentView>
             <inset key="separatorInset" minX="15" minY="0.0" maxX="0.0" maxY="0.0"/>
