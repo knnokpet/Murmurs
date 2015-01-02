@@ -14,6 +14,12 @@
 {
     self.avatorImageView.layer.cornerRadius = 4.0f;
     self.avatorImageView.layer.masksToBounds = YES;
+    
+    UIEdgeInsets separatorInset = self.separatorInset;
+    separatorInset.left = self.bounds.size.width;
+    separatorInset.right = self.bounds.size.width;
+    separatorInset = UIEdgeInsetsZero;
+    //self.separatorInset = separatorInset;
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated

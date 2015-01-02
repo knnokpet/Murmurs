@@ -43,13 +43,18 @@
 {
     _aoAPICenter = [[MBAOuth_TwitterAPICenter alloc] init];
     _aoAPICenter.delegate = self;
+    
+    defaultContainerHeight = 44.0f;
 }
 
 - (void)configureView
 {
     [self configureNavigationItem];
     
-    defaultContainerHeight = 44.0f;
+    if (self.segmentedController) {
+        return;
+    }
+    
     defaultContainerOriginY = self.navigationController.navigationBar.frame.origin.y + self.navigationController.navigationBar.bounds.size.height;
     _containerView = [[MBSegmentedContainerView alloc] initWithFrame:CGRectMake(0, defaultContainerOriginY, self.view.bounds.size.width, defaultContainerHeight)];
     [self.view addSubview:self.containerView];
@@ -69,6 +74,9 @@
 
 - (void)configureChildViewControllers
 {
+    if (self.listTimelineViewController && self.listMembersViewController) {
+        return;
+    }
     
     MBListTimelineViewController *listTimelineViewController = [[MBListTimelineViewController alloc] initWithNibName:@"TimelineTableView" bundle:nil];
     [listTimelineViewController setList:self.list];
@@ -87,8 +95,6 @@
     [self addChildViewController:listMembersViewController];
     listMembersViewController.view.frame = self.view.bounds;
     //listMembersViewController.scrollDelegate = self;/* unused */
-    
-    
     self.listMembersViewController = listMembersViewController;
     
     
@@ -97,26 +103,41 @@
 
 - (void)constraintChildViewControllers
 {
-    CGFloat containerHeight = defaultContainerHeight;
-    
-    // insets
+    [self constraintTimelineViewController];
+    [self constraintMemberViewController];
+}
+
+- (void)constraintTimelineViewController
+{
     UIEdgeInsets contentInsets = self.listTimelineViewController.tableView.contentInset;
-    contentInsets.top = contentInsets.top + containerHeight;
+    contentInsets.top = contentInsets.top + defaultContainerHeight;
     self.listTimelineViewController.tableView.contentInset = contentInsets;
     UIEdgeInsets indicatorInsets = self.listTimelineViewController.tableView.scrollIndicatorInsets;
-    indicatorInsets.top = indicatorInsets.top + containerHeight;
+    indicatorInsets.top = indicatorInsets.top + defaultContainerHeight;
     self.listTimelineViewController.tableView.scrollIndicatorInsets = indicatorInsets;
-    
-    // insets
+}
+
+- (void)constraintMemberViewController
+{
     CGFloat navigationStatusBarHeight = self.navigationController.navigationBar.frame.size.height + [UIApplication sharedApplication].statusBarFrame.size.height;
     CGFloat tabBarHeight = self.tabBarController.tabBar.frame.size.height;
     UIEdgeInsets contInsets = self.listMembersViewController.tableView.contentInset;
-    contInsets.top = containerHeight + navigationStatusBarHeight;
-    contInsets.bottom = tabBarHeight;// + navigationStatusBarHeight;
+    contInsets.top =defaultContainerHeight + navigationStatusBarHeight;
+    contInsets.bottom = tabBarHeight;
     self.listMembersViewController.tableView.contentInset = contInsets;
     UIEdgeInsets scrollInsets = self.listMembersViewController.tableView.scrollIndicatorInsets;
-    scrollInsets.top = containerHeight + navigationStatusBarHeight;
-    scrollInsets.bottom = tabBarHeight ;//+ navigationStatusBarHeight;
+    scrollInsets.top = defaultContainerHeight + navigationStatusBarHeight;
+    scrollInsets.bottom = tabBarHeight;
+    self.listMembersViewController.tableView.scrollIndicatorInsets = scrollInsets;
+}
+
+- (void)constraintMemberViewControllerForViewWillAppear
+{
+    UIEdgeInsets contInsets = self.listMembersViewController.tableView.contentInset;
+    contInsets.top = defaultContainerHeight;
+    self.listMembersViewController.tableView.contentInset = contInsets;
+    UIEdgeInsets scrollInsets = self.listMembersViewController.tableView.scrollIndicatorInsets;
+    scrollInsets.top = defaultContainerHeight;
     self.listMembersViewController.tableView.scrollIndicatorInsets = scrollInsets;
 }
 

@@ -169,7 +169,7 @@
 - (void)settingDefaultToolbarItemsWithAnimated:(BOOL)animated
 {
     UIBarButtonItem *sparcer = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
-    NSArray *buttons = [NSArray arrayWithObjects:self.photoButton, sparcer, self.cameraButton, sparcer, self.geoButton, sparcer, sparcer, nil];
+    NSArray *buttons = [NSArray arrayWithObjects:sparcer, self.photoButton, sparcer, self.cameraButton, sparcer, self.geoButton, sparcer, nil];
     
     [self.toolbar setItems:buttons animated:animated];
 }
@@ -177,7 +177,7 @@
 - (void)settingCancelableToolbarItemsWithAnimated:(BOOL)animated
 {
     UIBarButtonItem *sparcer = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
-    NSArray *buttons = [NSArray arrayWithObjects:self.photoButton, sparcer, self.cameraButton, sparcer, self.geoButton, sparcer, self.suspendButton, nil];
+    NSArray *buttons = [NSArray arrayWithObjects:sparcer, self.photoButton, sparcer, self.cameraButton, sparcer, self.geoButton, sparcer, self.suspendButton, sparcer, nil];
     
     [self.toolbar setItems:buttons animated:animated];
 }

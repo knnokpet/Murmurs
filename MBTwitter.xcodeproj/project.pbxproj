@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8603EF521A566875009736E5 /* LaunchImage@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8603EF511A566875009736E5 /* LaunchImage@2x.png */; };
 		8605928619397AE900559C33 /* MagnifierMask@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8605928519397AE900559C33 /* MagnifierMask@2x.png */; };
 		860592881939858C00559C33 /* MagnifierMask-withWhite@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 860592871939858C00559C33 /* MagnifierMask-withWhite@2x.png */; };
 		8605928A1939B56D00559C33 /* DetailUserView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 860592891939B56D00559C33 /* DetailUserView.xib */; };
@@ -393,6 +394,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		8603EF511A566875009736E5 /* LaunchImage@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "LaunchImage@2x.png"; sourceTree = "<group>"; };
 		8605928519397AE900559C33 /* MagnifierMask@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "MagnifierMask@2x.png"; sourceTree = "<group>"; };
 		860592871939858C00559C33 /* MagnifierMask-withWhite@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "MagnifierMask-withWhite@2x.png"; sourceTree = "<group>"; };
 		860592891939B56D00559C33 /* DetailUserView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = DetailUserView.xib; sourceTree = "<group>"; };
@@ -1402,6 +1404,7 @@
 		863B3826192F7A9700063C83 /* Resource */ = {
 			isa = PBXGroup;
 			children = (
+				8603EF511A566875009736E5 /* LaunchImage@2x.png */,
 				862C4DFD1991CEFC009ECA57 /* @1x */,
 				862C4DFC1991CEBE009ECA57 /* @2x */,
 			);
@@ -2209,6 +2212,7 @@
 				86CB5408190FD33D0016A7F2 /* SeparatedDirectMessageTableViewCell.xib in Resources */,
 				8690F57819AE035500E46995 /* Star-Orange.png in Resources */,
 				86BFD2571974F7F800269D34 /* bird_blue_48.png in Resources */,
+				8603EF521A566875009736E5 /* LaunchImage@2x.png in Resources */,
 				8639E20A196CDBC10078266B /* Message-Fukidashi-Line@2x.png in Resources */,
 				861AFAA719264A16006B736A /* MBDetailTweetTextTableViewCell.xib in Resources */,
 				86B3ACE019C04915007EA035 /* goForward@2x.png in Resources */,

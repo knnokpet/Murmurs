@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="6245" systemVersion="13E28" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="6254" systemVersion="14B25" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
-        <deployment defaultVersion="1792" identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6238"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6247"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
@@ -65,7 +65,7 @@
                     <constraint firstItem="AZ5-dt-XlB" firstAttribute="leading" secondItem="Jux-ba-JOS" secondAttribute="trailing" constant="2" id="vPw-HQ-kjv"/>
                 </constraints>
             </tableViewCellContentView>
-            <inset key="separatorInset" minX="320" minY="0.0" maxX="0.0" maxY="0.0"/>
+            <inset key="separatorInset" minX="441" minY="0.0" maxX="0.0" maxY="0.0"/>
             <connections>
                 <outlet property="avatorImageView" destination="QPo-ZH-rwu" id="Ri8-1z-yDm"/>
                 <outlet property="characterNameLabel" destination="Jux-ba-JOS" id="dOD-j5-PBP"/>

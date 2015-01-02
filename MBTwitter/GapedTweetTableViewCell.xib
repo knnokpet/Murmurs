@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="6245" systemVersion="13E28" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="6254" systemVersion="14B25" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
-        <deployment defaultVersion="1792" identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6238"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6247"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
@@ -14,8 +14,8 @@
                 <rect key="frame" x="0.0" y="0.0" width="320" height="49"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gob-kw-K7R">
-                        <rect key="frame" x="38" y="10" width="244" height="30"/>
+                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gob-kw-K7R">
+                        <rect key="frame" x="55" y="10" width="210" height="30"/>
                         <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
                         <size key="titleShadowOffset" width="0.0" height="1"/>
                         <state key="normal" title="省略されたつぶやきを読み込む">
@@ -28,6 +28,10 @@
                     </button>
                 </subviews>
                 <color key="backgroundColor" red="0.94117647058823528" green="0.94117647058823528" blue="0.98039215686274506" alpha="0.59999999999999998" colorSpace="calibratedRGB"/>
+                <constraints>
+                    <constraint firstAttribute="centerY" secondItem="gob-kw-K7R" secondAttribute="centerY" constant="-0.5" id="YQu-rE-zh2"/>
+                    <constraint firstAttribute="centerX" secondItem="gob-kw-K7R" secondAttribute="centerX" id="diJ-LT-6c5"/>
+                </constraints>
             </tableViewCellContentView>
             <connections>
                 <outlet property="gapButton" destination="gob-kw-K7R" id="ebk-If-Rnv"/>

@@ -186,7 +186,7 @@
     
     [[UIApplication sharedApplication] setStatusBarHidden:YES];
     
-    
+    [self configureView];
     [self renewViews];
     
     if (!self.mediaImage) {

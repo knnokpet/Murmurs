@@ -7,6 +7,7 @@
 //
 
 #import "MBDetailTweetActionsTableViewCell.h"
+#import "MBTitleWithImageButton.h"
 
 @implementation MBDetailTweetActionsTableViewCell
 

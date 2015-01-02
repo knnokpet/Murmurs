@@ -20,12 +20,12 @@
         _favoriteButton = [UIButton buttonWithType:UIButtonTypeCustom];
         [self.favoriteButton setTitleColor:titleColor forState:UIControlStateNormal];
         [self.favoriteButton.titleLabel setFont:titleFont];
-        
+        self.favoriteButton.enabled = NO;
         
         _retweetButton = [UIButton buttonWithType:UIButtonTypeCustom];
         [self.retweetButton setTitleColor:titleColor forState:UIControlStateNormal];
         [self.retweetButton.titleLabel setFont:titleFont];
-        
+        self.retweetButton.enabled = NO;
         
         
         [self.contentView addSubview:self.favoriteButton];

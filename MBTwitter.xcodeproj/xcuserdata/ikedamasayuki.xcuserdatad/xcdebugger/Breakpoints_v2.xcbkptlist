@@ -146,11 +146,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "MBTwitter/MBPostTweetViewController.m"
-            timestampString = "440333633.352264"
+            timestampString = "441870676.291467"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "823"
-            endingLineNumber = "823"
+            startingLineNumber = "822"
+            endingLineNumber = "822"
             landmarkName = "-twitterAPICenter:maxMedias:photoSizeLimit:shortURLLength:"
             landmarkType = "5">
          </BreakpointContent>
