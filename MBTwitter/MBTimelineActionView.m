@@ -176,7 +176,7 @@
 {
     self.leftSideSpaceWidth = 0.0f;
     self.upSideSpaceWidth = 0.0f;
-    self.betweetSpaceWidth = 0.5f;
+    self.betweetSpaceWidth = 1.0f;
     
     NSInteger buttonCount = [self.buttonItems count];
     MBTimelineActionButton *sizingButton = [self.buttonItems firstObject];

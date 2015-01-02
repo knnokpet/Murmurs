@@ -201,32 +201,33 @@
     [super layoutSubviews];
     
     CGRect contentBounds = self.contentView.bounds;
-    CGFloat centerOriginY = self.contentView.bounds.size.height / 2;
+    CGFloat centerOriginY =  self.contentView.bounds.size.height / 2;
     CGFloat buttonMargin = 8.0f;
     CGFloat sideMargin = 16.0f;
+    CGFloat topMargin = 1.0f;
     [self fitButtonSizeForTitleAndImage:self.tweetButton];
     [self fitButtonSizeForTitleAndImage:self.messageButton];
     [self fitButtonSizeForTitleAndImage:self.otherButton];
     [self fitButtonSizeForTitleAndImage:self.followButton];
     
     CGRect tweetRect = self.tweetButton.frame;
-    tweetRect.origin = CGPointMake(contentBounds.origin.x + sideMargin, centerOriginY - tweetRect.size.height / 2);
+    tweetRect.origin = CGPointMake(contentBounds.origin.x + sideMargin, ceilf(centerOriginY - tweetRect.size.height / 2) + topMargin);
     self.tweetButton.frame = tweetRect;
     
     CGRect messageRect = self.messageButton.frame;
-    messageRect.origin = CGPointMake(self.tweetButton.frame.origin.x + self.tweetButton.frame.size.width + buttonMargin, centerOriginY - messageRect.size.height / 2);
+    messageRect.origin = CGPointMake(self.tweetButton.frame.origin.x + self.tweetButton.frame.size.width + buttonMargin, ceilf(centerOriginY - messageRect.size.height / 2) + topMargin);
     self.messageButton.frame = messageRect;
     
     CGRect otherRect = self.otherButton.frame;
     if (self.messageButton.superview) {
-        otherRect.origin = CGPointMake(self.messageButton.frame.origin.x + self.messageButton.frame.size.width + buttonMargin, centerOriginY - messageRect.size.height / 2);
+        otherRect.origin = CGPointMake(self.messageButton.frame.origin.x + self.messageButton.frame.size.width + buttonMargin, ceilf(centerOriginY - messageRect.size.height / 2) + topMargin);
     } else {
-        otherRect.origin = CGPointMake(self.tweetButton.frame.origin.x + self.tweetButton.frame.size.width + buttonMargin, centerOriginY - messageRect.size.height / 2);
+        otherRect.origin = CGPointMake(self.tweetButton.frame.origin.x + self.tweetButton.frame.size.width + buttonMargin, ceilf(centerOriginY - messageRect.size.height / 2) + topMargin);
     }
     self.otherButton.frame = otherRect;
     
     CGRect followRect = self.followButton.frame;
-    followRect.origin = CGPointMake(contentBounds.size.width - followRect.size.width - sideMargin , centerOriginY - followRect.size.height / 2);
+    followRect.origin = CGPointMake(contentBounds.size.width - followRect.size.width - sideMargin , ceilf(centerOriginY - followRect.size.height / 2) + topMargin);
     self.followButton.frame = followRect;
 }
 
@@ -243,7 +244,7 @@
     }
     
     CGRect buttonRect = button.frame;
-    buttonRect.size = CGSizeMake(width, height);
+    buttonRect.size = CGSizeMake(floorf(width), floorf(height));
     button.frame = buttonRect;
 }
 
