@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		8603EF521A566875009736E5 /* LaunchImage@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8603EF511A566875009736E5 /* LaunchImage@2x.png */; };
+		8603EF561A56ED01009736E5 /* Star-TintBlue@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8603EF541A56ED01009736E5 /* Star-TintBlue@2x.png */; };
+		8603EF5C1A56F59D009736E5 /* Retweet-TintBlue@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8603EF5B1A56F59D009736E5 /* Retweet-TintBlue@2x.png */; };
+		8603EF5E1A56FD89009736E5 /* LaunchImage@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8603EF5D1A56FD89009736E5 /* LaunchImage@3x.png */; };
 		8605928619397AE900559C33 /* MagnifierMask@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8605928519397AE900559C33 /* MagnifierMask@2x.png */; };
 		860592881939858C00559C33 /* MagnifierMask-withWhite@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 860592871939858C00559C33 /* MagnifierMask-withWhite@2x.png */; };
 		8605928A1939B56D00559C33 /* DetailUserView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 860592891939B56D00559C33 /* DetailUserView.xib */; };
@@ -244,8 +247,6 @@
 		8690F55D19AE023700E46995 /* Star-White.png in Resources */ = {isa = PBXBuildFile; fileRef = 8690F55819AE023700E46995 /* Star-White.png */; };
 		8690F55F19AE023700E46995 /* Retweet-White.png in Resources */ = {isa = PBXBuildFile; fileRef = 8690F55A19AE023700E46995 /* Retweet-White.png */; };
 		8690F56019AE023700E46995 /* reply-White.png in Resources */ = {isa = PBXBuildFile; fileRef = 8690F55B19AE023700E46995 /* reply-White.png */; };
-		8690F56819AE02A500E46995 /* Retweet-TintBlue@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8690F56319AE02A500E46995 /* Retweet-TintBlue@2x.png */; };
-		8690F56B19AE02A500E46995 /* Star-TintBlue@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8690F56619AE02A500E46995 /* Star-TintBlue@2x.png */; };
 		8690F56F19AE02BC00E46995 /* Retweet-Green@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8690F56D19AE02BC00E46995 /* Retweet-Green@2x.png */; };
 		8690F57019AE02BC00E46995 /* Star-Orange@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8690F56E19AE02BC00E46995 /* Star-Orange@2x.png */; };
 		8690F57719AE035500E46995 /* Retweet-Green.png in Resources */ = {isa = PBXBuildFile; fileRef = 8690F57519AE035500E46995 /* Retweet-Green.png */; };
@@ -395,6 +396,9 @@
 
 /* Begin PBXFileReference section */
 		8603EF511A566875009736E5 /* LaunchImage@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "LaunchImage@2x.png"; sourceTree = "<group>"; };
+		8603EF541A56ED01009736E5 /* Star-TintBlue@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Star-TintBlue@2x.png"; sourceTree = "<group>"; };
+		8603EF5B1A56F59D009736E5 /* Retweet-TintBlue@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Retweet-TintBlue@2x.png"; sourceTree = "<group>"; };
+		8603EF5D1A56FD89009736E5 /* LaunchImage@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "LaunchImage@3x.png"; sourceTree = "<group>"; };
 		8605928519397AE900559C33 /* MagnifierMask@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "MagnifierMask@2x.png"; sourceTree = "<group>"; };
 		860592871939858C00559C33 /* MagnifierMask-withWhite@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "MagnifierMask-withWhite@2x.png"; sourceTree = "<group>"; };
 		860592891939B56D00559C33 /* DetailUserView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = DetailUserView.xib; sourceTree = "<group>"; };
@@ -748,8 +752,6 @@
 		8690F55819AE023700E46995 /* Star-White.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Star-White.png"; sourceTree = "<group>"; };
 		8690F55A19AE023700E46995 /* Retweet-White.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Retweet-White.png"; sourceTree = "<group>"; };
 		8690F55B19AE023700E46995 /* reply-White.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "reply-White.png"; sourceTree = "<group>"; };
-		8690F56319AE02A500E46995 /* Retweet-TintBlue@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Retweet-TintBlue@2x.png"; sourceTree = "<group>"; };
-		8690F56619AE02A500E46995 /* Star-TintBlue@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Star-TintBlue@2x.png"; sourceTree = "<group>"; };
 		8690F56D19AE02BC00E46995 /* Retweet-Green@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Retweet-Green@2x.png"; sourceTree = "<group>"; };
 		8690F56E19AE02BC00E46995 /* Star-Orange@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Star-Orange@2x.png"; sourceTree = "<group>"; };
 		8690F57519AE035500E46995 /* Retweet-Green.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Retweet-Green.png"; sourceTree = "<group>"; };
@@ -1083,11 +1085,11 @@
 		8622AE20199372E600872E15 /* DetailTweetActionButton */ = {
 			isa = PBXGroup;
 			children = (
-				8690F56319AE02A500E46995 /* Retweet-TintBlue@2x.png */,
 				8690F58C19AE0BDD00E46995 /* Retweet-Cacncel-TintBlue@2x.png */,
 				8690F58D19AE0BDD00E46995 /* Star-Cancel-TintBlue@2x.png */,
 				8690F58E19AE0BDD00E46995 /* reply-TintBlue@2x.png */,
-				8690F56619AE02A500E46995 /* Star-TintBlue@2x.png */,
+				8603EF5B1A56F59D009736E5 /* Retweet-TintBlue@2x.png */,
+				8603EF541A56ED01009736E5 /* Star-TintBlue@2x.png */,
 				8690F59E19AE10C400E46995 /* Star-Line@2x.png */,
 				8690F59F19AE10C400E46995 /* Retweet-Line@2x.png */,
 				8690F56D19AE02BC00E46995 /* Retweet-Green@2x.png */,
@@ -1405,6 +1407,7 @@
 			isa = PBXGroup;
 			children = (
 				8603EF511A566875009736E5 /* LaunchImage@2x.png */,
+				8603EF5D1A56FD89009736E5 /* LaunchImage@3x.png */,
 				862C4DFD1991CEFC009ECA57 /* @1x */,
 				862C4DFC1991CEBE009ECA57 /* @2x */,
 			);
@@ -2127,12 +2130,14 @@
 				8690F59B19AE0C1600E46995 /* Star-Cancel-TintBlue.png in Resources */,
 				86BC61FD191514E800600EAD /* SeparatedDirectMessagesView.xib in Resources */,
 				863969AE191B550A00A7D0AD /* MBListViewController.xib in Resources */,
+				8603EF5C1A56F59D009736E5 /* Retweet-TintBlue@2x.png in Resources */,
 				861AEF3A1931E3B400C02A38 /* Magnifier-high@2x.png in Resources */,
 				8690F5A719AE313200E46995 /* Action@2x.png in Resources */,
 				8631BB4119A37BCC00B8012E /* MBSelectingListTableViewCell.xib in Resources */,
 				86E5671519BD70AB00622419 /* MBTextViewTableViewCell.xib in Resources */,
 				8690F56F19AE02BC00E46995 /* Retweet-Green@2x.png in Resources */,
 				86AFEA531A3C1E0A008B07AC /* Launch Screen.xib in Resources */,
+				8603EF561A56ED01009736E5 /* Star-TintBlue@2x.png in Resources */,
 				8623B8E919800397004380FF /* MBFollowRequestTableViewCell.xib in Resources */,
 				8690F55619AE022100E46995 /* reply-White@2x.png in Resources */,
 				861AEF3C1931E74300C02A38 /* Mask2@2x.png in Resources */,
@@ -2239,7 +2244,6 @@
 				862B61E219C56BEC00C7CE1B /* Man-Cell-blue@2x.png in Resources */,
 				8690F53319AC256D00E46995 /* VerifiedBadge@2x.png in Resources */,
 				863969C1191B97CA00A7D0AD /* MBListTimelineManagementViewController.xib in Resources */,
-				8690F56819AE02A500E46995 /* Retweet-TintBlue@2x.png in Resources */,
 				867A09891941BC9B00741C2F /* MBImageViewController.xib in Resources */,
 				862B61FA19C5790600C7CE1B /* Message-Selected-ActionCell@2x.png in Resources */,
 				8690F58919AE094200E46995 /* Retweet-Cancel-White@2x.png in Resources */,
@@ -2248,13 +2252,13 @@
 				864ADBE919A8C3B800489885 /* bird_blue_32.png in Resources */,
 				861DA61D199CB0CB000F008F /* Message-Selected@2x.png in Resources */,
 				8690F54619ADFA2900E46995 /* Profile-Selected-Line.png in Resources */,
+				8603EF5E1A56FD89009736E5 /* LaunchImage@3x.png in Resources */,
 				861DA63C199F7D9F000F008F /* TimelineDefaultImage@2x.png in Resources */,
 				8623B91919892D27004380FF /* Favorite-Cell-blue@2x.png in Resources */,
 				862B620319C5792700C7CE1B /* Pen-Selected-ActionCell.png in Resources */,
 				862B620819C5B00400C7CE1B /* man-Plus-Selected-ActionCell@2x.png in Resources */,
 				86C662CD19A715350033C5C8 /* Dot-Green@2x.png in Resources */,
 				8622AE3D199373E400872E15 /* Pen-ActionCell@2x.png in Resources */,
-				8690F56B19AE02A500E46995 /* Star-TintBlue@2x.png in Resources */,
 				867A09BF1948856500741C2F /* MBDetailUserTableViewCell.xib in Resources */,
 				8690B576197032B2003DB47B /* MBListsTableViewCell.xib in Resources */,
 				8622AE43199488DF00872E15 /* Message-ActionCell@2x.png in Resources */,
