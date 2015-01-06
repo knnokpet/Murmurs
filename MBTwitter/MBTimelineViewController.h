@@ -21,6 +21,7 @@
 #import "MBTweetTextView.h"
 #import "MBTimelineActionView.h"
 #import "MBLoadingView.h"
+#import "MBErrorView.h"
 
 #import "MBTwitterAccesser.h"
 #import "MBAOuth_TwitterAPICenter.h"

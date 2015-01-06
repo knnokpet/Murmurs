@@ -91,6 +91,11 @@
             [self setNetworkActivityIndicatorVisible:NO];
             if (error) {
                 NSLog(@"code %ld error = %@", (long)error.code, error.localizedDescription);
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    if ([_delegate respondsToSelector:@selector(twitterAPICenter:error:)]) {
+                        [_delegate twitterAPICenter:weakSelf error:error];
+                    }
+                });
             }
             if (nil == data) {
                 return ;
