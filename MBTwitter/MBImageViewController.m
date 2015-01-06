@@ -173,7 +173,7 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
     [self configureModel];
-    [self configureView];
+    [self configureTweetView];
     
     if (self.tweet.requireLoading || self.tweet.isRetweeted) {
         [self.aoAPICenter getTweet:[self.tweet.tweetID unsignedLongLongValue]];
@@ -234,7 +234,7 @@
     float hScale, vScale, minScale, maxScale;
     hScale = CGRectGetWidth(bounds) / self.mediaImage.size.width;
     vScale = CGRectGetHeight(bounds) / self.mediaImage.size.height;
-    
+
     /*
     BOOL imagePortrait = self.mediaImage.size.height > self.mediaImage.size.width;
     BOOL phonePortrait = bounds.size.height > bounds.size.width;
