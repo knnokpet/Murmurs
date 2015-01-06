@@ -37,7 +37,7 @@
 #import "MBDetailTweetUserTableViewCell.h"
 #import "MBDetailTweetTextTableViewCell.h"
 #import "MBDetailTweetActionsTableViewCell.h"
-#import "MBDetailTweetFavoRetTableViewCell.h"
+#import "MBDetailTweetFavoriteRetweetTableViewCell.h"
 
 #define DETAIL_LINE_SPACING 4.0f
 #define DETAIL_LINE_HEIGHT 0.0f
@@ -130,8 +130,8 @@ static NSString *actionsCellIdentifier = @"ActionsCellIdentifier";
     [self.tableView registerNib:retweetCell forCellReuseIdentifier:retweetCellIdentifier];
     UINib *retweetWithImageCell = [UINib nibWithNibName:@"MBDetailTweetTextTableViewCell" bundle:nil];
     [self.tableView registerNib:retweetWithImageCell forCellReuseIdentifier:retweetWithImageCellIdentifier];
-    //UINib *countCell = [UINib nibWithNibName:@"MBDetailTweetFavoRetTableViewCell" bundle:nil];
-    //[self.tableView registerNib:countCell forCellReuseIdentifier:countCellIdentifier];
+    UINib *countCell = [UINib nibWithNibName:@"MBDetailTweetFavoriteRetweetTableViewCell" bundle:nil];
+    [self.tableView registerNib:countCell forCellReuseIdentifier:countCellIdentifier];
     UINib *actionsCell = [UINib nibWithNibName:@"MBDetailTweetActionsTableViewCell" bundle:nil];
     [self.tableView registerNib:actionsCell forCellReuseIdentifier:actionsCellIdentifier];
     
@@ -362,9 +362,9 @@ static NSString *actionsCellIdentifier = @"ActionsCellIdentifier";
     }else {
         cell = [self.tableView dequeueReusableCellWithIdentifier:countCellIdentifier];
         if (!cell) {
-            cell = [[MBDetailTweetFavoRetTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:countCellIdentifier];
+            cell = [[MBDetailTweetFavoriteRetweetTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:countCellIdentifier];
         }
-        [self updateCountCell:(MBDetailTweetFavoRetTableViewCell *)cell atIndexPath:indexPath];
+        [self updateCountCell:(MBDetailTweetFavoriteRetweetTableViewCell *)cell atIndexPath:indexPath];
     }
     
     return cell;
@@ -531,47 +531,12 @@ static NSString *actionsCellIdentifier = @"ActionsCellIdentifier";
     }
 }
 
-- (void)updateCountCell:(MBDetailTweetFavoRetTableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
+- (void)updateCountCell:(MBDetailTweetFavoriteRetweetTableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
 {
-    BOOL requireRetweet = NO;
-    BOOL requireFavorite = NO;
-    NSString *retCountStr = nil;
-    NSString *favoCountStr = nil;
-    if (self.tweet.favoritedCount > 0 && self.tweet.retweetedCount > 0) {
-        requireRetweet = requireFavorite = YES;
-        retCountStr = [NSString stringWithFormat:@"%ld", (long)self.tweet.retweetedCount];
-        favoCountStr = [NSString stringWithFormat:@"%ld", (long)self.tweet.favoritedCount];
-        
-    } else if (self.tweet.favoritedCount > 0) {
-        requireFavorite = YES;
-        favoCountStr = [NSString stringWithFormat:@"%ld", (long)self.tweet.favoritedCount];
-        
-    } else if (self.tweet.retweetedCount > 0) {
-        requireRetweet = YES;
-        retCountStr = [NSString stringWithFormat:@"%ld", (long)self.tweet.retweetedCount];
-    }
-    [cell setRetweetCountStr:retCountStr];
-    [cell setFavoriteCountStr:favoCountStr];
-    [cell setRequireRetweet:requireRetweet];
-    [cell setRequireFavorite:requireFavorite];
-    
-    
-    
-    if (self.tweet.isFavorited) {
-        [cell setFavoriteImage:[UIImage imageNamed:@"Star-Orange"]];
-        [cell.favoriteButton addTarget:self action:@selector(didPushCancelFavoriteButton:) forControlEvents:UIControlEventTouchUpInside];
-    } else {
-        [cell setFavoriteImage:[UIImage imageNamed:@"Star-Line"]];
-        [cell.favoriteButton addTarget:self action:@selector(didPushFavoriteButton:) forControlEvents:UIControlEventTouchUpInside];
-    }
-    
-    if (self.tweet.isRetweeted) {
-        [cell setRetweetImage:[UIImage imageNamed:@"Retweet-Green"]];
-        [cell.retweetButton addTarget:self action:@selector(didPushCancelRetweetButton) forControlEvents:UIControlEventTouchUpInside];
-    } else {
-        [cell setRetweetImage:[UIImage imageNamed:@"Retweet-Line"]];
-        [cell.retweetButton addTarget:self action:@selector(didPushRetweetButton:) forControlEvents:UIControlEventTouchUpInside];
-    }
+    [cell setIsRetweeted:self.tweet.isRetweeted];
+    [cell setIsFavorited:self.tweet.isFavorited];
+    [cell setRetweetCount:self.tweet.retweetedCount];
+    [cell setFavoriteCount:self.tweet.favoritedCount];
 }
 
 - (void)updateActionsCell:(MBDetailTweetActionsTableViewCell *)cell
