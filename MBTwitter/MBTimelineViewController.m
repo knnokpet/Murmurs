@@ -34,6 +34,12 @@ static NSString *favoriteRetweetPlaceWithImageCellIdentifier = @"FavoriteRetweet
 static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
 
 @interface MBTimelineViewController ()
+{
+    CGFloat lineSpacing;
+    CGFloat lineHeight;
+    CGFloat paragraphSpacing;
+    CGFloat tweetFontSize;
+}
 
 @property (nonatomic) MBTwitterAccesser *twitterAccesser;
 
@@ -43,7 +49,6 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
 
 @property (nonatomic) CGFloat beginDraggingOffsetY;
 @property (nonatomic) CGFloat endScrollingOffsetY;
-
 
 @end
 
@@ -56,8 +61,25 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // Custom initialization
+        [self initializeConstantNumber];
     }
     return self;
+}
+
+- (void)initializeConstantNumber
+{
+    CGSize screenSize = [UIScreen mainScreen].bounds.size;
+    if (screenSize.width > 320) {
+        lineSpacing = 6.0f;
+        lineHeight = 0.0f;
+        paragraphSpacing = 2.0f;
+        tweetFontSize = 18.0f;
+    } else {
+        lineSpacing = 2.0f;
+        lineHeight = 0.0f;
+        paragraphSpacing = 0.0f;
+        tweetFontSize = 15.0f;
+    }
 }
 
 - (void)configureTimelineManager
@@ -508,7 +530,7 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
     
     
     NSInteger textViewWidth = tableViewForCalculate.bounds.size.width - (64.0f + 8.0f);
-    CGRect textRect = [MBTweetTextView frameRectWithAttributedString:attributedString constraintSize:CGSizeMake(textViewWidth, CGFLOAT_MAX) lineSpace:LINE_SPACING paragraghSpace:PARAGRAPF_SPACING font:[UIFont systemFontOfSize:FONT_SIZE]];
+    CGRect textRect = [MBTweetTextView frameRectWithAttributedString:attributedString constraintSize:CGSizeMake(textViewWidth, CGFLOAT_MAX) lineSpace:lineSpacing paragraghSpace:paragraphSpacing font:[UIFont systemFontOfSize:tweetFontSize]];
     
     CGFloat tweetViewSpace = 30.0f;
     CGFloat verticalMargin = 10.0f;
@@ -750,10 +772,10 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
     [cell setCharaScreenString:[MBTweetTextComposer attributedStringForTimelineUser:tweetAtIndexPath.tweetUser charFont:[UIFont boldSystemFontOfSize:15.0f] screenFont:[UIFont systemFontOfSize:14.0f]]];
     
     // tweetText
-    cell.tweetTextView.font = [UIFont systemFontOfSize:FONT_SIZE];
-    cell.tweetTextView.lineSpace = LINE_SPACING;
-    cell.tweetTextView.lineHeight = LINE_HEIGHT;
-    cell.tweetTextView.paragraphSpace = PARAGRAPF_SPACING;
+    cell.tweetTextView.font = [UIFont systemFontOfSize:tweetFontSize];
+    cell.tweetTextView.lineSpace = lineSpacing;
+    cell.tweetTextView.lineHeight = lineHeight;
+    cell.tweetTextView.paragraphSpace = paragraphSpacing;
     cell.tweetTextView.attributedString = [MBTweetTextComposer attributedStringForTweet:tweetAtIndexPath tintColor:[self.navigationController.navigationBar tintColor]];
     cell.tweetTextView.delegate = self;
     
@@ -780,6 +802,11 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
     cell.avatorImageView.avatorImage = nil;
     UIImage *avatorImage = [[MBImageCacher sharedInstance] cachedTimelineImageForUser:user.userIDStr];
     if (!avatorImage) {
+        if ([self isDownloadingImageWithUrlString:user.urlHTTPSAtProfileImage]) {
+            return;
+        }
+        
+        __weak MBTimelineViewController *weakSelf = self;
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
             
             [MBImageDownloader downloadOriginImageWithURL:user.urlHTTPSAtProfileImage completionHandler:^(UIImage *image, NSData *imageData){
@@ -789,23 +816,25 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
                     UIImage *radiusImage = [MBImageApplyer imageForTwitter:image size:imageSize radius:cell.avatorImageView.layer.cornerRadius];
                     [[MBImageCacher sharedInstance] storeTimelineImage:radiusImage forUserID:user.userIDStr];
                     
+                    [[MBImageCacher sharedInstance] removeUrlStrForDownloadingImage:user.urlHTTPSAtProfileImage];
+                    
                     dispatch_async(dispatch_get_main_queue(), ^{
                         if ([cell.userIDStr isEqualToString:user.userIDStr]) {
-                            if (self.tableView.dragging || self.tableView.decelerating) {
+                            if (weakSelf.tableView.dragging || weakSelf.tableView.decelerating) {
                                 return;
                             }
-                            cell.avatorImageView.avatorImage = radiusImage;
+                            [cell addAvatorImage:radiusImage];
                         }
                     });
                 }
                 
             }failedHandler:^(NSURLResponse *response, NSError *error){
-                
+                [[MBImageCacher sharedInstance] removeUrlStrForDownloadingImage:user.urlHTTPSAtProfileImage];
             }];
             
         });
     } else {
-        cell.avatorImageView.avatorImage = avatorImage;
+        [cell addAvatorImage:avatorImage];
     }
 }
 
@@ -836,8 +865,15 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
         
         UIImage *mediaImage = [[MBImageCacher sharedInstance] cachedCroppedMediaImageForMediaID:mediaLink.mediaIDStr];
         if (mediaImage) {
+            /* Require refactoring!!! */
+            mediaImageView.alpha = 0;
             mediaImageView.mediaImage = mediaImage;
+            [UIView animateWithDuration:0.3f animations:^{
+                mediaImageView.alpha = 1.0;
+            }];
         } else {
+            [[MBImageCacher sharedInstance] addUrlStrForDownloadingImage:mediaLink.originalURLHttpsText];
+            
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
                 [MBImageDownloader downloadMediaImageWithURL:mediaLink.originalURLHttpsText completionHandler:^(UIImage *image, NSData *imageData) {
                     if (image) {
@@ -848,24 +884,37 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
                         
                         [[MBImageCacher sharedInstance] storeCroppedMediaImage:croppedImage forMediaID:mediaLink.mediaIDStr];
                         
+                        [[MBImageCacher sharedInstance] removeUrlStrForDownloadingImage:mediaLink.originalURLHttpsText];
+                        
                         dispatch_async(dispatch_get_main_queue(), ^{
                             if ([mediaImageView.mediaIDStr isEqualToString:mediaLink.mediaIDStr]) {
                                 if (weakSelf.tableView.dragging || weakSelf.tableView.decelerating) {
                                     return;
                                 }
+                                mediaImageView.alpha = 0;
                                 mediaImageView.mediaImage = croppedImage;
+                                [UIView animateWithDuration:0.3f animations:^{
+                                    mediaImageView.alpha = 1.0;
+                                }];
                             }
                         });
                     }
                     
                 } failedHandler:^(NSURLResponse *response, NSError *error) {
-                    
+                    [[MBImageCacher sharedInstance] removeUrlStrForDownloadingImage:mediaLink.originalURLHttpsText];
                 }];
             });
         }
         i++;
     }
 
+}
+
+- (BOOL)isDownloadingImageWithUrlString:(NSString *)urlString
+{
+    BOOL isDownloading = [[MBImageCacher sharedInstance] isDownloadingImageWithUrlStr:urlString];
+    
+    return isDownloading;
 }
 
 - (void)updateGapedCell:(MBGapedTweetViewCell *)cell atIndexPath:(NSIndexPath *)indexPath

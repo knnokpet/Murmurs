@@ -104,11 +104,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "MBTwitter/MBTimelineViewController.m"
-            timestampString = "442238605.624977"
+            timestampString = "442331959.088921"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "719"
-            endingLineNumber = "719"
+            startingLineNumber = "741"
+            endingLineNumber = "741"
             landmarkName = "-updateCell:tweet:AtIndexPath:"
             landmarkType = "5">
          </BreakpointContent>
