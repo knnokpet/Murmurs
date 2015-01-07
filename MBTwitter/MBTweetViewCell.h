@@ -39,6 +39,8 @@
 @property (nonatomic, readonly) NSAttributedString *dateString;
 @property (nonatomic, readonly) NSAttributedString *charaScreenString;
 
+- (void)addAvatorImage:(UIImage *)image;
+
 - (void)removeRetweetView;
 - (void)removePlaceNameView;
 - (void)removeFavoriteView;

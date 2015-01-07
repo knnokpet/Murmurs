@@ -80,6 +80,14 @@
 }
 
 #pragma mark -
+- (void)addAvatorImage:(UIImage *)image
+{
+    self.avatorImageView.alpha = 0;
+    self.avatorImageView.avatorImage = image;
+    [UIView animateWithDuration:0.3f animations:^{
+        self.avatorImageView.alpha = 1.0f;
+    }];
+}
 
 - (void)removeRetweetView
 {
