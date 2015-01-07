@@ -54,17 +54,8 @@
 
 #pragma mark -
 #pragma mark global
-- (void)prepareOAuthRequest
+- (void)configureOAuthHeader
 {
-    // configure secret
-    NSString *consumerSecret = [self.consumer.secret encodedString];
-    NSString *tokenSecret = [self.token.secret encodedString];
-    NSString *secretForSignature = [NSString stringWithFormat:@"%@&%@", consumerSecret, tokenSecret];
-    
-    // configure signature
-    NSString *signatureBasedString = [self signatureBasedStringWithParameters:self.parameters];
-    _signature = [self.signatureProvider hmacsha1:signatureBasedString secret:secretForSignature];
-
     // if exist token
     NSString *oauthTokenString;
     if ([self.token.key isEqualToString:@""]) {
@@ -73,7 +64,6 @@
         oauthTokenString = [NSString stringWithFormat:@"oauth_token=\"%@\", ", [self encodedString:self.token.key]];
     }
     
-    // configure oauthHeader
     NSString *oauthRealm = [self.realm encodedString];
     NSString *oauthConsumerKey = [self.consumer.key encodedString];
     NSString *oauthNonce = [self.nonce encodedString];
@@ -97,7 +87,20 @@
         oauthHeader = [oauthHeader stringByAppendingString:oauthPinAuth];
     }
     [self setValue:oauthHeader forHTTPHeaderField:@"Authorization"];
+}
+
+- (void)prepareOAuthRequest
+{
+    // configure secret
+    NSString *consumerSecret = [self.consumer.secret encodedString];
+    NSString *tokenSecret = [self.token.secret encodedString];
+    NSString *secretForSignature = [NSString stringWithFormat:@"%@&%@", consumerSecret, tokenSecret];
     
+    // configure signature
+    NSString *signatureBasedString = [self signatureBasedStringWithParameters:self.parameters];
+    _signature = [self.signatureProvider hmacsha1:signatureBasedString secret:secretForSignature];
+
+    [self configureOAuthHeader];
 }
 
 
@@ -112,38 +115,7 @@
     NSString *signatureBasedString = ([[self HTTPMethod] isEqualToString:@"GET"]) ? [self signatureBasedStringWithParameters:self.parameters] : [self signatureBasedStringForOAuthOnly];
     _signature = [self.signatureProvider hmacsha1:signatureBasedString secret:secretForSignature];
 
-    // if exist token
-    NSString *oauthTokenString;
-    if ([self.token.key isEqualToString:@""]) {
-        oauthTokenString = @"";
-    } else {
-        oauthTokenString = [NSString stringWithFormat:@"oauth_token=\"%@\", ", [self encodedString:self.token.key]];
-    }
-    
-    // configure oauthHeader
-    NSString *oauthRealm = [self.realm encodedString];
-    NSString *oauthConsumerKey = [self.consumer.key encodedString];
-    NSString *oauthNonce = [self.nonce encodedString];
-    NSString *oauthSignature = [self.signature encodedString];
-    NSString *oauthSignatureMethod = [[self.signatureProvider name] encodedString];
-    NSString *oauthTimeStamp = [self.timeStamp encodedString];
-    NSString *oauthVersion = [OAUTH_VERSION encodedString];
-    
-    NSString *oauthHeader = [NSString stringWithFormat:@"OAuth realm=\"%@\", oauth_consumer_key=\"%@\", oauth_nonce=\"%@\", oauth_signature=\"%@\", oauth_signature_method=\"%@\", oauth_timestamp=\"%@\", %@oauth_version=\"%@\"",
-                             oauthRealm,
-                             oauthConsumerKey,
-                             oauthNonce,
-                             oauthSignature,
-                             oauthSignatureMethod,
-                             oauthTimeStamp,
-                             oauthTokenString,
-                             oauthVersion];
-    
-    if (self.token.pin.length > 0) {
-        NSString *oauthPinAuth = [NSString stringWithFormat:@", oauth_verifier=\"%@\"", self.token.pin];
-        oauthHeader = [oauthHeader stringByAppendingString:oauthPinAuth];
-    }
-    [self setValue:oauthHeader forHTTPHeaderField:@"Authorization"];
+    [self configureOAuthHeader];
 }
 
 
