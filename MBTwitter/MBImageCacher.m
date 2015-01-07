@@ -22,6 +22,7 @@
 @property (nonatomic, readonly) NSCache *mediaImageCache;
 @property (nonatomic, readonly) NSCache *croppedMediaImageCache;
 
+@property (nonatomic, readonly) NSMutableDictionary *urlStringsForDownloadingImage;
 
 @end
 
@@ -59,6 +60,7 @@
         _croppedMediaImageCache = [[NSCache alloc] init];
         self.croppedMediaImageCache.countLimit = 50;
         
+        _urlStringsForDownloadingImage = [NSMutableDictionary dictionary];
     }
     
     return self;
@@ -249,6 +251,31 @@
 }
 
 #pragma mark -
+#pragma mark cache downloadingURL
+- (BOOL)isDownloadingImageWithUrlStr:(NSString *)urlStr
+{
+    BOOL isDownloading = NO;
+    NSString *urlOfDownloading = [self.urlStringsForDownloadingImage objectForKey:urlStr];
+    if (urlOfDownloading) {
+        isDownloading = YES;
+    } else {
+        [self addUrlStrForDownloadingImage:urlStr];
+    }
+    
+    return isDownloading;
+}
+
+- (void)addUrlStrForDownloadingImage:(NSString *)urlStr
+{
+    [self.urlStringsForDownloadingImage setObject:urlStr forKey:urlStr];
+}
+
+- (void)removeUrlStrForDownloadingImage:(NSString *)urlStr
+{
+    [self.urlStringsForDownloadingImage setObject:urlStr forKey:urlStr];
+}
+
+#pragma mark -
 #pragma mark crear Cache
 - (void)clearMemoryCache
 {
@@ -267,6 +294,5 @@
         }
     }
 }
-
 
 @end

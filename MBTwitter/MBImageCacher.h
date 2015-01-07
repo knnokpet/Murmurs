@@ -24,6 +24,10 @@
 - (UIImage *)cachedTimelineImageForUser:(NSString *)userID;
 - (void)storeTimelineImage:(UIImage *)image forUserID:(NSString *)userID;
 
+- (BOOL)isDownloadingImageWithUrlStr:(NSString *)urlStr;
+- (void)addUrlStrForDownloadingImage:(NSString *)urlStr;
+- (void)removeUrlStrForDownloadingImage:(NSString *)urlStr;
+
 - (void)clearMemoryCache;
 - (void)deleteAllCacheFiles;
 
