@@ -305,6 +305,7 @@ static NSString *imageKey = @"ImageKey";
     [self.navigationController presentViewController:navigationController animated:YES completion:nil];
 }
 
+/* For Testing */
 - (void)didPushDeleteButton
 {
     MBAccountManager *accountManager = [MBAccountManager sharedInstance];
