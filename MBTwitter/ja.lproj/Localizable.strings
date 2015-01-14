@@ -126,6 +126,7 @@
 
 "Loading..." = "読み込み中...";
 
+"Settings" = "設定";
 "Location Service is Disabled." = "位置情報サービスが無効です。";
 "Setting > Privacy > Location. Set enable this App." = "設定 > プライバシー > 位置情報サービス. 設定でこのアプリケーションを有効にしてください。";
 "Netwotk Error." = "ネットワークエラー";

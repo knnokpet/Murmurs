@@ -130,11 +130,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "MBTwitter/MBPostTweetViewController.m"
-            timestampString = "440333633.352264"
+            timestampString = "442918043.256315"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "811"
-            endingLineNumber = "811"
+            startingLineNumber = "824"
+            endingLineNumber = "824"
             landmarkName = "-twitterAPICenter:maxMedias:photoSizeLimit:shortURLLength:"
             landmarkType = "5">
          </BreakpointContent>
@@ -146,11 +146,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "MBTwitter/MBPostTweetViewController.m"
-            timestampString = "441870676.291467"
+            timestampString = "442918043.256315"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "822"
-            endingLineNumber = "822"
+            startingLineNumber = "835"
+            endingLineNumber = "835"
             landmarkName = "-twitterAPICenter:maxMedias:photoSizeLimit:shortURLLength:"
             landmarkType = "5">
          </BreakpointContent>

@@ -289,8 +289,21 @@
 
 - (void)showLocationAlertViewWithTitle:(NSString *)title message:(NSString *)message
 {
-    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:title message:message delegate:nil cancelButtonTitle:nil otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
-    [alertView show];
+    if (NSFoundationVersionNumber > NSFoundationVersionNumber_iOS_7_1) {
+        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
+        [alertController addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Settings", nil) style:UIAlertActionStyleDefault handler:^(UIAlertAction *action){
+            
+            NSURL *url = [NSURL URLWithString:UIApplicationOpenSettingsURLString];
+            [[UIApplication sharedApplication] openURL:url];
+        }]];
+        [alertController addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Close", nil) style:UIAlertActionStyleCancel handler:nil]];
+        
+        [self presentViewController:alertController animated:YES completion:nil];
+        
+    } else {
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:title message:message delegate:nil cancelButtonTitle:nil otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
+        [alertView show];
+    }
 }
 
 #pragma mark
@@ -840,22 +853,23 @@
 #pragma mark CLLocationManager Delegate
 - (void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status
 {
-    if (floor(NSFoundationVersionNumber) > NSFoundationVersionNumber_iOS_7_1) {
-        [self startUpdationgLocationForiOS8WithStatus:status];
-    } else {
-        [self startUpdationgLocationWithStatus:status];
-    }
+    [self startUpdationgLocationWithManager:manager status:status];
 }
 
-- (void)startUpdationgLocationWithStatus:(CLAuthorizationStatus)status
+- (void)startUpdationgLocationWithManager:(CLLocationManager *)manager status:(CLAuthorizationStatus)status
 {
     if (status == kCLAuthorizationStatusNotDetermined) {
-        [self setGeoIndicatorButton];
-        [self.locationManager startUpdatingLocation];
+        if ([manager respondsToSelector:@selector(requestWhenInUseAuthorization)]) {
+            [manager requestWhenInUseAuthorization];
+        }
         
-    } else if (status == kCLAuthorizationStatusAuthorized) {
+    } else if (status == kCLAuthorizationStatusAuthorized) { /* iOS 7 */
         [self setGeoIndicatorButton];
-        [self.locationManager startUpdatingLocation];
+        [manager startUpdatingLocation];
+        
+    } else if (status == kCLAuthorizationStatusAuthorizedAlways || status == kCLAuthorizationStatusAuthorizedWhenInUse) { /* iOS 8 */
+        [self setGeoIndicatorButton];
+        [manager startUpdatingLocation];
         
     } else if (status == kCLAuthorizationStatusRestricted) {
         [self showLocationAlertViewWithTitle:NSLocalizedString(@"Location Service is Restricted.", nil) message:NSLocalizedString(@"Setting > General > Restriction > Location Service. Uncheck this App.", nil)];
