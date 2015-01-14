@@ -24,6 +24,9 @@
 - (UIImage *)cachedTimelineImageForUser:(NSString *)userID;
 - (void)storeTimelineImage:(UIImage *)image forUserID:(NSString *)userID;
 
+- (UIImage *)cachedBannerImageForUserID:(NSString *)userID;
+- (void)storeBannerImage:(UIImage *)image forUserID:(NSString *)userID;
+
 - (BOOL)isDownloadingImageWithUrlStr:(NSString *)urlStr;
 - (void)addUrlStrForDownloadingImage:(NSString *)urlStr;
 - (void)removeUrlStrForDownloadingImage:(NSString *)urlStr;

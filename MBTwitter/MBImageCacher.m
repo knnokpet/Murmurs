@@ -21,6 +21,7 @@
 @property (nonatomic, readonly) NSCache *timelineImageCache;
 @property (nonatomic, readonly) NSCache *mediaImageCache;
 @property (nonatomic, readonly) NSCache *croppedMediaImageCache;
+@property (nonatomic, readonly) NSCache *bannerImageCache;
 
 @property (nonatomic, readonly) NSMutableDictionary *urlStringsForDownloadingImage;
 
@@ -59,6 +60,8 @@
         self.mediaImageCache.countLimit = 50;
         _croppedMediaImageCache = [[NSCache alloc] init];
         self.croppedMediaImageCache.countLimit = 50;
+        _bannerImageCache = [[NSCache alloc] init];
+        self.bannerImageCache.countLimit = 30;
         
         _urlStringsForDownloadingImage = [NSMutableDictionary dictionary];
     }
@@ -136,7 +139,7 @@
 }
 
 #pragma mark -
-#pragma mark image
+#pragma mark Cached Image
 - (UIImage *)cachedProfileImageForUserID:(NSString *)userID
 {
     return [self cachedProfileImageForUserID:userID defaultImage:nil];
@@ -209,6 +212,21 @@
     return nil;
 }
 
+- (UIImage *)cachedBannerImageForUserID:(NSString *)userID
+{
+    if (!userID || userID.length == 0) {
+        return nil;
+    }
+    UIImage *cachedImage = [self.bannerImageCache objectForKey:userID];
+    if (cachedImage) {
+        return cachedImage;
+    }
+    
+    return nil;
+}
+
+#pragma mark Store Image
+
 - (void)storeProfileImage:(UIImage *)image data:(NSData *)data forUserID:(NSString *)userID
 {
     [self storeImage:image data:data forID:userID to:self.profileImageCache directory:self.profileImageDirectory];
@@ -248,6 +266,15 @@
     }
     
     [self.croppedMediaImageCache setObject:image forKey:mediaID];
+}
+
+- (void)storeBannerImage:(UIImage *)image forUserID:(NSString *)userID
+{
+    if (!image || !userID || userID.length == 0) {
+        return;
+    }
+    
+    [self.bannerImageCache setObject:image forKey:userID];
 }
 
 #pragma mark -
