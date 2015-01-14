@@ -162,4 +162,15 @@
     self.protectImageView.frame = protectedImageViewRect;
 }
 
+#pragma mark - Instance Methods
+- (void)addAvatorImage:(UIImage *)image animated:(BOOL)animated
+{
+    NSInteger duration = (animated) ? 0.3f : 0;
+    self.avatorImageView.alpha = 0.0f;
+    self.avatorImageView.avatorImage = image;
+    [UIView animateWithDuration:duration animations:^{
+        self.avatorImageView.alpha = 1.0f;
+    }];
+}
+
 @end

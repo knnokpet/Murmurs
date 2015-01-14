@@ -27,4 +27,6 @@
 - (void)setIsProtected:(BOOL)isProtected;
 - (void)setIsVerified:(BOOL)isVerified;
 
+- (void)addAvatorImage:(UIImage *)image animated:(BOOL)animated;
+
 @end
