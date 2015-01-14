@@ -168,12 +168,17 @@ typedef enum ActionSheetTag {
             UIImage *radiusImage = [MBImageApplyer imageForTwitter:avatorImage size:imageSize radius:self.profileAvatorView.avatorImageView.layer.cornerRadius];
             
             dispatch_async(dispatch_get_main_queue(), ^{
-                self.profileAvatorView.avatorImageView.avatorImage = radiusImage;
-                [self.profileAvatorView setNeedsDisplay];
+                [self.profileAvatorView addAvatorImage:radiusImage animated:NO];
             });
         });
     }
-    [self downloadBannerImage];
+    
+    UIImage *bannerImage = [[MBImageCacher sharedInstance] cachedBannerImageForUserID:self.user.userIDStr];
+    if (!bannerImage) {
+        [self downloadBannerImage];
+    } else {
+        self.headerImageView.image = bannerImage;
+    }
 }
 
 - (void)configureDescriptionView
@@ -277,9 +282,14 @@ typedef enum ActionSheetTag {
             
             [MBImageDownloader downloadBannerImageMobileRetina:self.user.urlAtProfileBanner completionHandler:^ (UIImage *image, NSData *imageData){
                 if (image) {
+                    [[MBImageCacher sharedInstance] storeBannerImage:image forUserID:self.user.userIDStr];
+                    
                     dispatch_async(dispatch_get_main_queue(), ^{
+                        self.headerImageView.alpha = 0.0f;
                         self.headerImageView.image = image;
-                        [self.headerImageView setNeedsDisplay];
+                        [UIView animateWithDuration:0.3f animations:^{
+                            self.headerImageView.alpha = 1.0f;
+                        }];
                     });
                 }
                 
@@ -303,8 +313,7 @@ typedef enum ActionSheetTag {
                     UIImage *radiusImage = [MBImageApplyer imageForTwitter:image size:imageSize radius:self.profileAvatorView.avatorImageView.layer.cornerRadius];
                     
                     dispatch_async(dispatch_get_main_queue(), ^{
-                        self.profileAvatorView.avatorImageView.avatorImage = radiusImage;
-                        [self.profileAvatorView setNeedsDisplay];
+                        [self.profileAvatorView addAvatorImage:radiusImage animated:YES];
                     });
                 }
                 
