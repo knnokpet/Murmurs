@@ -164,7 +164,7 @@
 
 - (void)configureLoadgingView
 {
-    if (self.dataSource == 0 && !self.loadingView.superview) {
+    if (!self.loadingView.superview) {
         CGRect loadingnRect = self.view.bounds;
         _loadingView = [[MBLoadingView alloc] initWithFrame:loadingnRect];
         [self.view insertSubview:self.loadingView aboveSubview:self.tableView];
@@ -173,7 +173,7 @@
 
 - (void)removeLoadingView
 {
-    if (self.loadingView.superview) {
+    if (self.loadingView.superview && [self.loadingView.layer animationKeys].count == 0) {
         [UIView animateWithDuration:0.3f animations:^{
             self.loadingView.alpha  = 0.0f;
         }completion:^(BOOL finished){
