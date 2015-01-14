@@ -109,8 +109,19 @@
 {
     BOOL isOK = YES;
     if (25 < listName.length) {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Over Limit", nil) message:NSLocalizedString(@"List Name is ferwer than 25.", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
-        [alert show];
+        NSString *alertTitle = NSLocalizedString(@"Over Limit", nil);
+        NSString *alertMessage = NSLocalizedString(@"List Name is ferwer than 25.", nil);
+        NSString *alertOtherButtonTitle = NSLocalizedString(@"OK", nil);
+        
+        if (NSFoundationVersionNumber > NSFoundationVersionNumber_iOS_7_1) {
+            UIAlertController *alertController = [UIAlertController alertControllerWithTitle:alertTitle message:alertMessage preferredStyle:UIAlertControllerStyleAlert];
+            [alertController addAction:[UIAlertAction actionWithTitle:alertOtherButtonTitle style:UIAlertActionStyleDefault handler:nil]];
+            [self presentViewController:alertController animated:YES completion:nil];
+        } else {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:alertTitle message:alertMessage delegate:nil cancelButtonTitle:nil otherButtonTitles:alertOtherButtonTitle, nil];
+            [alert show];
+        }
+        
         isOK = NO;
     }
     return isOK;

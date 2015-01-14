@@ -131,8 +131,18 @@
 - (void)didPushAddListButton
 {
     if ([self reachsTheLimitOfList]) {
-        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil message:NSLocalizedString(@"Reach the Limit of List", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
-        [alertView show];
+        NSString *alertTitle = nil;
+        NSString *alertMessage = NSLocalizedString(@"Reach the Limit of List", nil);
+        NSString *alertOtherButtonTitle = NSLocalizedString(@"OK", nil);
+        
+        if (NSFoundationVersionNumber > NSFoundationVersionNumber_iOS_7_1) {
+            UIAlertController *alertController = [UIAlertController alertControllerWithTitle:alertTitle message:alertMessage preferredStyle:UIAlertControllerStyleAlert];
+            [alertController addAction:[UIAlertAction actionWithTitle:alertOtherButtonTitle style:UIAlertActionStyleDefault handler:nil]];
+            [self presentViewController:alertController animated:YES completion:nil];
+        } else {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:alertTitle message:alertMessage delegate:nil cancelButtonTitle:nil otherButtonTitles:alertOtherButtonTitle, nil];
+            [alert show];
+        }
     }
     
     MBCreateListViewController *createListViewController = [[MBCreateListViewController alloc] init];
