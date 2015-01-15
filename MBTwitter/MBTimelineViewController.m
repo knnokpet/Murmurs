@@ -761,7 +761,7 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
     
     
     // favorite & geo
-    cell.placeNameView.placeString = [MBTweetTextComposer attributedStringForTimelinePlace:tweetAtIndexPath.place font:[UIFont systemFontOfSize:15.0f]];
+    cell.placeString = [MBTweetTextComposer attributedStringForTimelinePlace:tweetAtIndexPath.place font:[UIFont systemFontOfSize:15.0f]];
     
     // timeView
     NSString *timeIntervalString = [NSString timeMarginWithDate:tweetAtIndexPath.createdDate];
@@ -812,8 +812,7 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
             [MBImageDownloader downloadOriginImageWithURL:user.urlHTTPSAtProfileImage completionHandler:^(UIImage *image, NSData *imageData){
                 if (image) {
                     [[MBImageCacher sharedInstance] storeProfileImage:image data:imageData forUserID:user.userIDStr];
-                    CGSize imageSize = CGSizeMake(cell.avatorImageView.frame.size.width, cell.avatorImageView.frame.size.height);
-                    UIImage *radiusImage = [MBImageApplyer imageForTwitter:image size:imageSize radius:cell.avatorImageView.layer.cornerRadius];
+                    UIImage *radiusImage = [MBImageApplyer imageForTwitter:image size:cell.avatorImageViewSize radius:cell.avatorImageViewRadius];
                     [[MBImageCacher sharedInstance] storeTimelineImage:radiusImage forUserID:user.userIDStr];
                     
                     [[MBImageCacher sharedInstance] removeUrlStrForDownloadingImage:user.urlHTTPSAtProfileImage];
@@ -847,7 +846,6 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
     }
     
     cell.imageContainerView.imageCount = imageCounts;
-    
     
     int i = 0;
     for (MBMediaLink *mediaLink in tweet.entity.media) {

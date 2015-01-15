@@ -193,14 +193,10 @@ static NSString *usersCellIdentifier = @"UsersCellIdentifier";
             [MBImageDownloader downloadOriginImageWithURL:userAtIndex.urlHTTPSAtProfileImage completionHandler:^(UIImage *image, NSData *imageData){
                 if (image) {
                     [[MBImageCacher sharedInstance] storeProfileImage:image data:imageData forUserID:userAtIndex.userIDStr];
-                    CGSize imageSize = CGSizeMake(cell.avatorImageView.frame.size.width, cell.avatorImageView.frame.size.height);
-                    UIImage *radiusImage = [MBImageApplyer imageForTwitter:image size:imageSize radius:cell.avatorImageView.layer.cornerRadius];
+                    UIImage *radiusImage = [self changedSizeRadiusImage:image forUsersCell:cell];
                     
                     dispatch_async(dispatch_get_main_queue(), ^{
-                        if (!cell.avatorImageView.avatorImage && [cell.avatorImageView.userIDStr isEqualToString:userAtIndex.userIDStr]) {
-                            cell.avatorImageView.avatorImage = radiusImage;
-                            
-                        }
+                        [self addAvatorImage:radiusImage ForUsersCell:cell forUserIDString:userAtIndex.userIDStr];
                         
                     });
                 }
@@ -219,15 +215,26 @@ static NSString *usersCellIdentifier = @"UsersCellIdentifier";
         }
         
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
-            CGSize imageSize = CGSizeMake(cell.avatorImageView.frame.size.width, cell.avatorImageView.frame.size.height);
-            UIImage *radiusImage = [MBImageApplyer imageForTwitter:avatorImage size:imageSize radius:cell.avatorImageView.layer.cornerRadius];
+            UIImage *radiusImage = [self changedSizeRadiusImage:avatorImage forUsersCell:cell];
             dispatch_async(dispatch_get_main_queue(), ^{
-                if (!cell.avatorImageView.avatorImage && [cell.avatorImageView.userIDStr isEqualToString:userAtIndex.userIDStr]) {
-                    cell.avatorImageView.avatorImage = radiusImage;
-                    
-                }
+                [self addAvatorImage:radiusImage ForUsersCell:cell forUserIDString:userAtIndex.userIDStr];
+                
             });
         });
+    }
+}
+
+- (UIImage *)changedSizeRadiusImage:(UIImage *)targetedImage forUsersCell:(MBUsersTableViewCell *)cell
+{
+    CGSize changingSize = cell.avatorImageViewSize;
+    UIImage *changedRadiusImage = [MBImageApplyer imageForTwitter:targetedImage size:changingSize radius:cell.avatorImageViewRadius];
+    return changedRadiusImage;
+}
+
+- (void)addAvatorImage:(UIImage *)image ForUsersCell:(MBUsersTableViewCell *)cell forUserIDString:(NSString *)userIDStr
+{
+    if (!cell.avatorImageView.avatorImage && [cell.avatorImageView.userIDStr isEqualToString:userIDStr]) {
+        [cell addAvatorImage:image];
     }
 }
 
