@@ -772,9 +772,11 @@ typedef enum ActionSheetTag {
             self.user.relationship.isBlocking = YES;
         }
         
-        [self configureOtherActions];
         [self updateViews];
-        [self updateActionCell];
+        [UIView animateWithDuration:0.3f animations:^{
+            [self updateActionCell];
+        }];
+        
     }
 }
 
@@ -787,8 +789,9 @@ typedef enum ActionSheetTag {
             if (NSOrderedSame == [self.user.userID compare:relationship.userID]) {
                 self.user.relationship = relationship;
                 
-                [self updateActionCell];
-                
+                [UIView animateWithDuration:0.3f animations:^{
+                    [self updateActionCell];
+                }];                
             }
         }
     }
