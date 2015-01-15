@@ -299,7 +299,7 @@
 
 - (void)removeUrlStrForDownloadingImage:(NSString *)urlStr
 {
-    [self.urlStringsForDownloadingImage setObject:urlStr forKey:urlStr];
+    [self.urlStringsForDownloadingImage removeObjectForKey:urlStr];
 }
 
 #pragma mark -
