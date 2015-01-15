@@ -19,4 +19,8 @@
 @property (nonatomic, assign) BOOL isPublic;
 - (void)setIsPublic:(BOOL)isPublic;
 
+- (void)addAvatorImage:(UIImage *)image;
+- (CGSize)avatorImageViewSize;
+- (CGFloat)avatorImageViewRadius;
+
 @end

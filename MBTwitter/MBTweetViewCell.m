@@ -8,9 +8,11 @@
 
 #import "MBTweetViewCell.h"
 
+#import "MBCharacterScreenNameView.h"
 #import "MBTweetTextView.h"
-#import "MBTextLayout.h"
-#import "MBLinkText.h"
+#import "MBRetweetView.h"
+#import "MBFavoriteView.h"
+#import "MBPlaceWithGeoIconView.h"
 
 @implementation MBTweetViewCell
 #pragma mark -
@@ -56,6 +58,17 @@
     // Configure the view for the selected state
 }
 
+- (void)setUserIDStr:(NSString *)userIDStr
+{
+    _userIDStr = userIDStr;
+}
+
+- (void)setUserID:(NSNumber *)userID
+{
+    _userID = userID;
+    [self.avatorImageView setUserID:userID];
+}
+
 - (void)setDateString:(NSAttributedString *)dateString
 {
     _dateString = dateString;
@@ -68,25 +81,36 @@
     self.characterScreenNameView.characterScreenString = charaScreenString;
 }
 
-- (void)setUserIDStr:(NSString *)userIDStr
+- (void)setPlaceString:(NSAttributedString *)placeString
 {
-    _userIDStr = userIDStr;
-}
-
-- (void)setUserID:(NSNumber *)userID
-{
-    _userID = userID;
-    [self.avatorImageView setUserID:userID];
+    _placeString = placeString;
+    self.placeNameView.placeString = placeString;
 }
 
 #pragma mark -
 - (void)addAvatorImage:(UIImage *)image
 {
+    if (!image) {
+        return;
+    }
+    
     self.avatorImageView.alpha = 0;
     self.avatorImageView.avatorImage = image;
     [UIView animateWithDuration:0.3f animations:^{
         self.avatorImageView.alpha = 1.0f;
     }];
+}
+
+- (CGSize)avatorImageViewSize
+{
+    CGSize avatorImageSize = CGSizeMake(self.avatorImageView.bounds.size.width, self.avatorImageView.bounds.size.height);
+    return avatorImageSize;
+}
+
+- (CGFloat)avatorImageViewRadius
+{
+    CGFloat radius = self.avatorImageView.layer.cornerRadius;
+    return radius;
 }
 
 - (void)removeRetweetView

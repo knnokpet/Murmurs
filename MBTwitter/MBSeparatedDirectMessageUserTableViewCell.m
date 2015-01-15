@@ -7,6 +7,8 @@
 //
 
 #import "MBSeparatedDirectMessageUserTableViewCell.h"
+#import "MBAvatorImageView.h"
+#import "MBCharacterScreenNameView.h"
 
 @implementation MBSeparatedDirectMessageUserTableViewCell
 
@@ -64,6 +66,31 @@
 - (void)setUserIDStr:(NSString *)userIDStr
 {
     _userIDStr = userIDStr;
+}
+
+- (void)addAvatorImage:(UIImage *)image
+{
+    if (!image) {
+        return;
+    }
+    
+    self.avatorImageView.alpha = 0;
+    self.avatorImageView.image = image;
+    [UIView animateWithDuration:0.3f animations:^{
+        self.avatorImageView.alpha = 1.0f;
+    }];
+}
+
+- (CGSize)avatorImageViewSize
+{
+    CGSize viewSize = CGSizeMake(self.avatorImageView.bounds.size.width, self.avatorImageView.bounds.size.height);
+    return viewSize;
+}
+
+- (CGFloat)avatorImageViewRadius
+{
+    CGFloat radius = self.avatorImageView.layer.cornerRadius;
+    return radius;
 }
 
 @end

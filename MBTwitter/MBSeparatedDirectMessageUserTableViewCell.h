@@ -7,9 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "MBAvatorImageView.h"
-#import "MBCharacterScreenNameView.h"
 
+@class MBAvatorImageView;
+@class MBCharacterScreenNameView;
 @interface MBSeparatedDirectMessageUserTableViewCell : UITableViewCell
 
 @property (weak, nonatomic) IBOutlet MBAvatorImageView *avatorImageView;
@@ -27,5 +27,9 @@
 - (void)setCharaScreenString:(NSAttributedString *)charaScreenString;
 - (void)setSubtitleString:(NSString *)subtitleString;
 - (void)setUserIDStr:(NSString *)userIDStr;
+
+- (void)addAvatorImage:(UIImage *)image;
+- (CGSize)avatorImageViewSize;
+- (CGFloat)avatorImageViewRadius;
 
 @end

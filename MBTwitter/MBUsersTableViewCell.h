@@ -17,4 +17,8 @@
 @property (nonatomic, readonly) NSString *screenName;
 - (void)setScreenName:(NSString *)screenName;
 
+- (void)addAvatorImage:(UIImage *)image;
+- (CGSize)avatorImageViewSize;
+- (CGFloat)avatorImageViewRadius;
+
 @end

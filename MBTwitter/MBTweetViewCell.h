@@ -8,13 +8,13 @@
 
 #import <UIKit/UIKit.h>
 #import "MBAvatorImageView.h"
-#import "MBTweetTextView.h"
-#import "MBCharacterScreenNameView.h"
-#import "MBFavoriteView.h"
-#import "MBRetweetView.h"
-#import "MBPlaceWithGeoIconView.h"
 #import "MBTimelineImageContainerView.h"
 
+@class MBTweetTextView;
+@class MBCharacterScreenNameView;
+@class MBRetweetView;
+@class MBFavoriteView;
+@class MBPlaceWithGeoIconView;
 @protocol MBtweetViewCellLongPressDelegate;
 @interface MBTweetViewCell : UITableViewCell
 
@@ -38,8 +38,11 @@
 @property (nonatomic) NSString *userIDStr;
 @property (nonatomic, readonly) NSAttributedString *dateString;
 @property (nonatomic, readonly) NSAttributedString *charaScreenString;
+@property (nonatomic, readonly) NSAttributedString *placeString;
 
 - (void)addAvatorImage:(UIImage *)image;
+- (CGSize)avatorImageViewSize;
+- (CGFloat)avatorImageViewRadius;
 
 - (void)removeRetweetView;
 - (void)removePlaceNameView;
@@ -48,6 +51,7 @@
 
 - (void)setDateString:(NSAttributedString *)dateString;
 - (void)setCharaScreenString:(NSAttributedString *)charaScreenString;
+- (void)setPlaceString:(NSAttributedString *)placeString;
 
 @end
 
