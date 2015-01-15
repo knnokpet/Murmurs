@@ -16,20 +16,19 @@
         return self;
     }
     
-    CALayer *layser = [CALayer layer];
+    CALayer *layer = [CALayer layer];
     CGSize size = CGSizeMake(self.size.width, self.size.height);
-    layser.frame = CGRectMake(0, 0, size.width, size.height);
-    layser.contents = (id)self.CGImage;
-    layser.masksToBounds = YES;
-    layser.cornerRadius = radius;
+    layer.frame = CGRectMake(0, 0, size.width, size.height);
+    layer.contents = (id)self.CGImage;
+    layer.masksToBounds = YES;
+    layer.cornerRadius = radius;
     
     UIGraphicsBeginImageContextWithOptions(size, NO, 0.0);
     CGContextRef context = UIGraphicsGetCurrentContext();
     CGContextSetInterpolationQuality(context, kCGInterpolationHigh);
-    [layser renderInContext:context];
+    [layer renderInContext:context];
     UIImage *roundedImage = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
-    
     
     return roundedImage;
 }
