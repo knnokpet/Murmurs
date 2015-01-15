@@ -164,7 +164,7 @@
 
 - (void)configureLoadgingView
 {
-    if (!self.loadingView.superview) {
+    if (!self.loadingView.superview && self.dataSource.count == 0) {
         CGRect loadingnRect = self.view.bounds;
         _loadingView = [[MBLoadingView alloc] initWithFrame:loadingnRect];
         [self.view insertSubview:self.loadingView aboveSubview:self.tableView];
@@ -312,11 +312,10 @@
                 if (image) {
                     [[MBImageCacher sharedInstance] storeProfileImage:image data:imageData forUserID:user.userIDStr];
                     
-                    CGSize imageSize = CGSizeMake(cell.avatorImageView.frame.size.width, cell.avatorImageView.frame.size.height);
-                    UIImage *radiusImage = [MBImageApplyer imageForTwitter:image size:imageSize radius:cell.avatorImageView.layer.cornerRadius];
+                    UIImage *radiusImage = [MBImageApplyer imageForTwitter:image size:cell.avatorImageViewSize radius:cell.avatorImageViewRadius];
                     
                     dispatch_async(dispatch_get_main_queue(), ^{
-                        cell.avatorImageView.avatorImage = radiusImage;
+                        [cell addAvatorImage:radiusImage];
                     });
                 }
             }failedHandler:^(NSURLResponse *response, NSError *error){
@@ -325,11 +324,10 @@
         });
     } else {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
-            CGSize imageSize = CGSizeMake(cell.avatorImageView.frame.size.width, cell.avatorImageView.frame.size.height);
-            UIImage *radiusImage = [MBImageApplyer imageForTwitter:avatorImage size:imageSize radius:cell.avatorImageView.layer.cornerRadius];
+            UIImage *radiusImage = [MBImageApplyer imageForTwitter:avatorImage size:cell.avatorImageViewSize radius:cell.avatorImageViewRadius];
             
             dispatch_async(dispatch_get_main_queue(), ^{
-                cell.avatorImageView.avatorImage = radiusImage;
+                [cell addAvatorImage:radiusImage];
             });
         });
     }
@@ -349,6 +347,7 @@
                 [weakSelf.tableView reloadData];
                 [weakSelf.refreshControl endRefreshing];
                 [weakSelf removeLoadingView];
+
             });
         });
     }
