@@ -47,7 +47,10 @@
 }
 
 #pragma mark -InstanceMethods
-
+- (void)configureReloadButton
+{
+    self.resultView.requireReloadButton = NO;
+}
 
 #pragma mark - Navigation
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath

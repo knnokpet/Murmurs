@@ -25,6 +25,8 @@
 #import "MBUserIDManager.h"
 
 #import "MBLoadingView.h"
+#import "MBNoResultView.h"
+#import "MBErrorView.h"
 #import "MBNavigationControllerTitleView.h"
 #import "MBSeparatedDirectMessageUserTableViewCell.h"
 
@@ -35,6 +37,7 @@
 @property (nonatomic) NSArray *dataSource;
 
 @property (nonatomic, readonly) MBLoadingView *loadingView;
+@property (nonatomic) MBNoResultView *resultView;
 
 @end
 
@@ -183,6 +186,46 @@
     }
 }
 
+- (void)configureNoResultView
+{
+    if (self.resultView) {
+        return;
+    }
+    self.resultView = [[MBNoResultView alloc] initWithFrame:self.view.bounds];
+    self.resultView.noResultText = NSLocalizedString(@"No Message...", nil);
+    [self.resultView.reloadButton addTarget:self action:@selector(didPushReloadButton) forControlEvents:UIControlEventTouchUpInside];
+    [self.view insertSubview:self.resultView aboveSubview:self.tableView];
+}
+
+- (void)removeNoResultView
+{
+    if (!self.resultView.superview) {
+        return;
+    }
+    [UIView animateWithDuration:0.3f animations:^{
+        self.resultView.alpha = 0;
+    }completion:^(BOOL finished) {
+        [self.resultView removeFromSuperview];
+        self.resultView = nil;
+    }];
+}
+
+- (void)showErrorViewWithErrorText:(NSString *)errorText
+{
+    MBErrorView *errorView = [[MBErrorView alloc] initWithErrorText:errorText];
+    errorView.center = self.view.center;
+    
+    [UIView animateWithDuration:0.1 animations:^{
+        [self.view addSubview:errorView];
+    }completion:^(BOOL finished) {
+        [UIView animateKeyframesWithDuration:0.5 delay:0.5 options:0 animations:^{
+            errorView.alpha = 0.0;
+        }completion:^(BOOL finished) {
+            [errorView removeFromSuperview];
+        }];
+    }];
+}
+
 - (void)loadMessages
 {
     if ([[MBAccountManager sharedInstance] isSelectedAccount]) {
@@ -250,6 +293,12 @@
     [messageViewController setIsEditing:YES];
     [messageViewController setUserIDManager:self.followerIDManager];
     [self.navigationController pushViewController:messageViewController animated:YES];
+}
+
+- (void)didPushReloadButton
+{
+    [self.resultView setIsReloading:YES withAnimated:NO];
+    [self loadMessages];
 }
 
 #pragma mark -
@@ -337,6 +386,11 @@
 {
     if (/*0 == [messages count] ||*/ nil == messages) {
         [self.refreshControl endRefreshing];
+        if (self.dataSource.count == 0) {
+            [self configureNoResultView];
+        } else {
+            [self removeNoResultView];
+        }
         [self removeLoadingView];
     } else {
         
@@ -346,6 +400,11 @@
             dispatch_async(dispatch_get_main_queue(), ^{
                 [weakSelf.tableView reloadData];
                 [weakSelf.refreshControl endRefreshing];
+                if (self.dataSource.count == 0) {
+                    [self configureNoResultView];
+                } else {
+                    [self removeNoResultView];
+                }
                 [weakSelf removeLoadingView];
 
             });
@@ -451,6 +510,14 @@
             });
         });
     }
+}
+
+- (void)twitterAPICenter:(MBAOuth_TwitterAPICenter *)center error:(NSError *)error
+{
+    [self showErrorViewWithErrorText:error.localizedDescription];
+    
+    [self removeLoadingView];
+    [self configureNoResultView];
 }
 
 #pragma mark IndividualViewController Delegate

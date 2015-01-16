@@ -324,6 +324,7 @@
 		86B6CA0D18FBA13E00D4C5DF /* MBTweets_JSONParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 86B6CA0C18FBA13E00D4C5DF /* MBTweets_JSONParser.m */; };
 		86B6CA1018FBC1F700D4C5DF /* MBDetailTweetViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 86B6CA0F18FBC1F700D4C5DF /* MBDetailTweetViewController.m */; };
 		86B6CA1318FBDB2700D4C5DF /* MBDetailUserViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 86B6CA1218FBDB2700D4C5DF /* MBDetailUserViewController.m */; };
+		86BC21A41A680B10000C0374 /* MBNoResultView.m in Sources */ = {isa = PBXBuildFile; fileRef = 86BC21A31A680B10000C0374 /* MBNoResultView.m */; };
 		86BC619A191284F000600EAD /* TimelineTableView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 86BC6199191284F000600EAD /* TimelineTableView.xib */; };
 		86BC61EE19136DB600600EAD /* MBHomeTimelineViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 86BC61ED19136DB600600EAD /* MBHomeTimelineViewController.m */; };
 		86BC61F019137F4800600EAD /* MyAccountView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 86BC61EF19137F4800600EAD /* MyAccountView.xib */; };
@@ -883,6 +884,8 @@
 		86B6CA0F18FBC1F700D4C5DF /* MBDetailTweetViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBDetailTweetViewController.m; sourceTree = "<group>"; };
 		86B6CA1118FBDB2700D4C5DF /* MBDetailUserViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBDetailUserViewController.h; sourceTree = "<group>"; };
 		86B6CA1218FBDB2700D4C5DF /* MBDetailUserViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBDetailUserViewController.m; sourceTree = "<group>"; };
+		86BC21A21A680B10000C0374 /* MBNoResultView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBNoResultView.h; sourceTree = "<group>"; };
+		86BC21A31A680B10000C0374 /* MBNoResultView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBNoResultView.m; sourceTree = "<group>"; };
 		86BC6199191284F000600EAD /* TimelineTableView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TimelineTableView.xib; sourceTree = "<group>"; };
 		86BC61EC19136DB600600EAD /* MBHomeTimelineViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBHomeTimelineViewController.h; sourceTree = "<group>"; };
 		86BC61ED19136DB600600EAD /* MBHomeTimelineViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBHomeTimelineViewController.m; sourceTree = "<group>"; };
@@ -1017,6 +1020,8 @@
 				860592AC193BAE4900559C33 /* MBReplyTextView.m */,
 				869F58BC195EA55E00927700 /* MBLoadingView.h */,
 				869F58BD195EA55E00927700 /* MBLoadingView.m */,
+				86BC21A21A680B10000C0374 /* MBNoResultView.h */,
+				86BC21A31A680B10000C0374 /* MBNoResultView.m */,
 				8639E215196CEF8F0078266B /* MBSegmentedContainerView.h */,
 				8639E216196CEF8F0078266B /* MBSegmentedContainerView.m */,
 				867A09A819444EDF00741C2F /* MBBlurView.h */,
@@ -1378,8 +1383,6 @@
 			children = (
 				863969AA191B550A00A7D0AD /* MBListViewController.h */,
 				863969AB191B550A00A7D0AD /* MBListViewController.m */,
-				86BFD249197385DB00269D34 /* MBSelecting_ListViewController.h */,
-				86BFD24A197385DB00269D34 /* MBSelecting_ListViewController.m */,
 				863969F1191F7A0200A7D0AD /* MBMyListViewController.h */,
 				863969F2191F7A0200A7D0AD /* MBMyListViewController.m */,
 				868CB22819C3EC4500B886AC /* MBMyListTabViewController.h */,
@@ -1396,6 +1399,8 @@
 				863969B9191B79D200A7D0AD /* MBListTimelineViewController.m */,
 				863969E3191F411800A7D0AD /* MBListMembersViewController.h */,
 				863969E4191F411800A7D0AD /* MBListMembersViewController.m */,
+				86BFD249197385DB00269D34 /* MBSelecting_ListViewController.h */,
+				86BFD24A197385DB00269D34 /* MBSelecting_ListViewController.m */,
 				863969FA1924AA9900A7D0AD /* MBCreateListViewController.h */,
 				863969FB1924AA9900A7D0AD /* MBCreateListViewController.m */,
 				863969FC1924AA9900A7D0AD /* MBCreateListViewController.xib */,
@@ -2314,6 +2319,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				86396A281925F18B00A7D0AD /* MBAvatorImageView.m in Sources */,
+				86BC21A41A680B10000C0374 /* MBNoResultView.m in Sources */,
 				867A09C21949A89700741C2F /* MBRelationships_JSONParser.m in Sources */,
 				86705E1C1907AFC2002A23DD /* MBLinkText.m in Sources */,
 				862B260318D179C4004FC786 /* hmac.c in Sources */,

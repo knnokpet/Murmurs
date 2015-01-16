@@ -162,6 +162,48 @@ static NSString *listsCellIdentifier = @"ListsCellIdentifier";
     }
 }
 
+- (void)configureNoResultView
+{
+    
+    if (!self.resultView && self.listManager.ownerShipLists.count == 0 && self.listManager.subscriptionLists.count == 0) {
+        _resultView = [[MBNoResultView alloc] initWithFrame:self.view.bounds];
+        self.resultView.noResultText = NSLocalizedString(@"No List...", nil);
+        [self configureReloadButton];
+        [self.view insertSubview:self.resultView aboveSubview:self.tableView];
+    }
+}
+
+- (void)configureReloadButton
+{
+    [self.resultView.reloadButton addTarget:self action:@selector(didPushReloadButton) forControlEvents:UIControlEventTouchUpInside];
+}
+
+- (void)removeNoResultView
+{
+    [UIView animateWithDuration:0.f animations:^{
+        self.resultView.alpha = 0;
+    }completion:^(BOOL finished) {
+        [self.resultView removeFromSuperview];
+        _resultView = nil;
+    }];
+}
+
+- (void)showErrorViewWithErrorText:(NSString *)errorText
+{
+    MBErrorView *errorView = [[MBErrorView alloc] initWithErrorText:errorText];
+    errorView.center = self.view.center;
+    
+    [UIView animateWithDuration:0.1 animations:^{
+        [self.view addSubview:errorView];
+    }completion:^(BOOL finished) {
+        [UIView animateKeyframesWithDuration:0.5 delay:0.5 options:0 animations:^{
+            errorView.alpha = 0.0;
+        }completion:^(BOOL finished) {
+            [errorView removeFromSuperview];
+        }];
+    }];
+}
+
 #pragma mark Action
 - (void)didPushRefreshButton
 {
@@ -173,6 +215,11 @@ static NSString *listsCellIdentifier = @"ListsCellIdentifier";
     
 }
 
+- (void)didPushReloadButton
+{
+    [self commonConfigureModel];
+    [self goBacksLists];
+}
 
 #pragma mark -
 #pragma mark UITableView Datasource & Delegate
@@ -310,15 +357,14 @@ static NSString *listsCellIdentifier = @"ListsCellIdentifier";
 {
     
     if (0 == [addingData count]) {
-        ;
+        
     } else {
         [self.listManager addLists:addingData];
         [self.tableView reloadData];
+        [self removeNoResultView];
+        [self removeLoadingView];
     }
     self.enableAdding = YES;
-    
-    // ラウンチ時に表示されている UIActivityView を remove
-    [self removeLoadingView];
     
 }
 
@@ -328,18 +374,19 @@ static NSString *listsCellIdentifier = @"ListsCellIdentifier";
 {
     if (!lists || !next || !previous) {
         [self removeLoadingView];
+        [self configureNoResultView];
         return;
     }
     
     
     MBList *addingList = [lists firstObject];
     if (!addingList) {
-        [self removeLoadingView];
-        return ;
+        
     }
     MBUser *ownerOfList = addingList.user;
     if (!ownerOfList) {
         [self removeLoadingView];
+        [self configureNoResultView];
         return;
     }
     
@@ -357,6 +404,14 @@ static NSString *listsCellIdentifier = @"ListsCellIdentifier";
         }
     }
     
+}
+
+- (void)twitterAPICenter:(MBAOuth_TwitterAPICenter *)center error:(NSError *)error
+{
+    [self showErrorViewWithErrorText:error.localizedDescription];
+    
+    [self removeLoadingView];
+    [self configureNoResultView];
 }
 
 @end

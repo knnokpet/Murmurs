@@ -9,6 +9,8 @@
 #import <UIKit/UIKit.h>
 
 #import "MBLoadingView.h"
+#import "MBNoResultView.h"
+#import "MBErrorView.h"
 
 #import "MBAOuth_TwitterAPICenter.h"
 #import "MBAccountManager.h"
@@ -28,6 +30,7 @@
 
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 @property (nonatomic, readonly) MBLoadingView *loadingView;
+@property (nonatomic, readonly) MBNoResultView *resultView;
 
 - (void)setUser:(MBUser *)user;
 
@@ -35,9 +38,11 @@
 - (void)commonConfigureModel;
 - (void)commonConfigureView;
 - (void)configureCell;
+- (void)configureReloadButton;
 - (void)configureNavigationitem;
 - (void)didPushRefreshButton;
 - (void)didPushAddListButton;
+- (void)didPushReloadButton;
 
 - (void)goBacksLists;
 - (void)backOwnerLists;
