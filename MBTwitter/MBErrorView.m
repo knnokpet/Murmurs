@@ -26,9 +26,9 @@
 - (void)commonInit
 {
     self.layer.cornerRadius = 16.0f;
-    self.backgroundColor = [UIColor darkGrayColor];
+    self.backgroundColor = [UIColor blackColor];
     self.userInteractionEnabled = NO;
-    self.alpha = 0.9;
+    self.alpha = 0.8;
 }
 
 - (void)configureTextViewWithText:(NSString *)errorText
