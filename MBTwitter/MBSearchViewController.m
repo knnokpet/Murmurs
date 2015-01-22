@@ -50,7 +50,6 @@
 {
     // searchBar
     _searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width - 20, 44)];
-    [self.searchBar setSearchFieldBackgroundImage:[UIImage imageNamed:@"searchBarBackgroundImage"] forState:UIControlStateNormal];
     NSString *searchBarPlaceHolder = NSLocalizedString(@"Search Tweet or User", nil);
     [self.searchBar setPlaceholder:searchBarPlaceHolder];
     self.searchBar.delegate = self;
@@ -67,11 +66,7 @@
     
     [self.segmentedControl addTarget:self action:@selector(didChangeSegmentedControlValue) forControlEvents:UIControlEventValueChanged];
     [self.segmentedContainerView addSubview:self.segmentedControl];
-    CGRect segmentedRect = self.segmentedControl.frame;
-    segmentedRect.size.width = self.view.bounds.size.width - 40;
-    segmentedRect.origin.x = self.segmentedControl.superview.bounds.size.width / 2 - segmentedRect.size.width / 2;
-    segmentedRect.origin.y = self.segmentedControl.superview.bounds.size.height / 2 - segmentedRect.size.height / 2;
-    self.segmentedControl.frame = segmentedRect;
+    self.segmentedControl.selectedSegmentIndex = 0;
     
     self.viewForHiding = [[UIView alloc] initWithFrame:self.view.bounds];
     self.viewForHiding.backgroundColor = [UIColor whiteColor];
@@ -79,27 +74,8 @@
     [self configureNabigationItem];
 }
 
-- (void)configureNabigationItem
+- (void)configureChildViewControllers
 {
-    _tweetButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCompose target:self action:@selector(didPushTweetButton)];
-}
-
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
-    // Do any additional setup after loading the view from its nib.
-    [self configureModel];
-}
-
-- (void)viewWillAppear:(BOOL)animated
-{
-    [super viewWillAppear:animated];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillAppear:) name:UIKeyboardWillShowNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillDisappear:) name:UIKeyboardWillHideNotification object:nil];
-    
-    [self configureView];
-    
     _tweetViewController = [[MBSearchedTweetViewController alloc] initWithNibName:@"TimelineTableView" bundle:nil];
     self.tweetViewController.delegate = self;
     self.tweetViewController.view.frame = self.view.bounds;/* bounds であることが重要 */
@@ -115,10 +91,45 @@
     [self.view addSubview:self.tweetViewController.view];
     
     _viewControllers = @[self.tweetViewController, self.usersViewController];
+}
+
+- (void)configureNabigationItem
+{
+    _tweetButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCompose target:self action:@selector(didPushTweetButton)];
+}
+
+- (void)layoutViews
+{
+    self.segmentedContainerView.frame = CGRectMake(0, self.navigationController.navigationBar.frame.origin.y + self.navigationController.navigationBar.frame.size.height, self.view.bounds.size.width, 45);
     
-    self.segmentedControl.selectedSegmentIndex = 0;
+    CGRect segmentedRect = self.segmentedControl.frame;
+    segmentedRect.size.width = self.view.bounds.size.width - 40;
+    segmentedRect.origin.x = self.segmentedControl.superview.bounds.size.width / 2 - segmentedRect.size.width / 2;
+    segmentedRect.origin.y = self.segmentedControl.superview.bounds.size.height / 2 - segmentedRect.size.height / 2;
+    self.segmentedControl.frame = segmentedRect;;
+    
+    self.viewForHiding.frame = self.view.bounds;
+}
+
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+    // Do any additional setup after loading the view from its nib.
+    [self configureModel];
+    [self configureView];
+    [self configureChildViewControllers];
     
     [self.view addSubview:self.viewForHiding];
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillAppear:) name:UIKeyboardWillShowNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillDisappear:) name:UIKeyboardWillHideNotification object:nil];
+    
+    [self layoutViews];
     
     [self searchTweet];
     
