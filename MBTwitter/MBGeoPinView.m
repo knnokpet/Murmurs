@@ -112,7 +112,7 @@
         CGFloat radius = 6.0f;
         _dotView = [[UIImageView alloc] initWithFrame:CGRectMake(self.frame.size.width / 2 - radius, 0, radius * 2, radius * 2)];
 
-        self.dotView.image = [UIImage imageNamed:@"Dot-Green"];
+        self.dotView.image = [UIImage imageNamed:@"Dot"];
         [self addSubview:self.dotView];
         
         // Pint
@@ -121,7 +121,7 @@
         CGRect pinRect = CGRectMake(self.frame.size.width / 2 - pinWidth / 2, pinOriginY, pinWidth, self.frame.size.height - pinOriginY);
         _pinView = [[UIImageView alloc] initWithFrame:pinRect];
         self.pinView.image = [UIImage imageNamed:@"Pin"];
-        [self addSubview:self.pinView];
+        [self insertSubview:self.pinView belowSubview:self.dotView];
         
         // PinHole
         CGFloat pinHoleWidth = 2.0f;
