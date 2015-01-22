@@ -32,7 +32,7 @@
 {
     self.containAvatorImageView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 72, 72)];
     CGRect containerFrame = self.containAvatorImageView.frame;
-    containerFrame.origin.x = self.frame.size.width / 2 - self.containAvatorImageView.frame.size.width / 2;
+    containerFrame.origin.x = ceilf(self.frame.size.width / 2 - self.containAvatorImageView.frame.size.width / 2);
     containerFrame.origin.y = 16;
     self.containAvatorImageView.frame = containerFrame;
     self.containAvatorImageView.layer.cornerRadius = 8.0f;
@@ -43,8 +43,8 @@
     
     self.avatorImageView = [[MBAvatorImageView alloc] initWithFrame:CGRectMake(0, 0, 62, 62)];
     CGRect avatorFrame = self.avatorImageView.frame;
-    avatorFrame.origin.x = self.containAvatorImageView.frame.size.width / 2 - self.avatorImageView.frame.size.width / 2;
-    avatorFrame.origin.y = self.containAvatorImageView.frame.size.height / 2 - self.avatorImageView.frame.size.height / 2;
+    avatorFrame.origin.x = ceilf(self.containAvatorImageView.frame.size.width / 2 - self.avatorImageView.frame.size.width / 2);
+    avatorFrame.origin.y = ceilf(self.containAvatorImageView.frame.size.height / 2 - self.avatorImageView.frame.size.height / 2);
     self.avatorImageView.frame = avatorFrame;
     self.avatorImageView.layer.cornerRadius = 8.0f;
     [self.containAvatorImageView addSubview:self.avatorImageView];
