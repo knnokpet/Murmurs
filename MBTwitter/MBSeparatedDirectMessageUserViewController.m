@@ -188,13 +188,12 @@
 
 - (void)configureNoResultView
 {
-    if (self.resultView) {
-        return;
+    if (!self.resultView && self.dataSource.count == 0) {
+        self.resultView = [[MBNoResultView alloc] initWithFrame:self.view.bounds];
+        self.resultView.noResultText = NSLocalizedString(@"No Messages...", nil);
+        [self.resultView.reloadButton addTarget:self action:@selector(didPushReloadButton) forControlEvents:UIControlEventTouchUpInside];
+        [self.view insertSubview:self.resultView aboveSubview:self.tableView];
     }
-    self.resultView = [[MBNoResultView alloc] initWithFrame:self.view.bounds];
-    self.resultView.noResultText = NSLocalizedString(@"No Message...", nil);
-    [self.resultView.reloadButton addTarget:self action:@selector(didPushReloadButton) forControlEvents:UIControlEventTouchUpInside];
-    [self.view insertSubview:self.resultView aboveSubview:self.tableView];
 }
 
 - (void)removeNoResultView
