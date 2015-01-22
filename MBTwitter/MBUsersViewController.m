@@ -14,9 +14,14 @@
 #import "MBImageApplyer.h"
 #import "MBImageCacher.h"
 
+#import "MBNoResultView.h"
+#import "MBErrorView.h"
+
 static NSString *usersCellIdentifier = @"UsersCellIdentifier";
 
 @interface MBUsersViewController ()
+
+@property (nonatomic, readonly) MBNoResultView *resultView;
 
 @end
 
@@ -159,6 +164,51 @@ static NSString *usersCellIdentifier = @"UsersCellIdentifier";
     self.tableView.tableFooterView = view;
 }
 
+- (void)configureNoResultView
+{
+    if (!self.resultView && self.users.count == 0) {
+        _resultView = [[MBNoResultView alloc] initWithFrame:self.view.bounds];
+        self.resultView.noResultText = NSLocalizedString(@"No Users...", nil);
+        [self.resultView.reloadButton addTarget:self action:@selector(didPushReloadButton) forControlEvents:UIControlEventTouchUpInside];
+        [self.view insertSubview:self.resultView aboveSubview:self.tableView];
+    }
+}
+
+- (void)removeNoResultView
+{
+    if (!self.resultView.superview) {
+        return;
+    }
+    [UIView animateWithDuration:0.3f animations:^{
+        self.resultView.alpha = 0;
+    }completion:^(BOOL finished) {
+        [self.resultView removeFromSuperview];
+        _resultView = nil;
+    }];
+}
+
+- (void)showErrorViewWithErrorText:(NSString *)errorText
+{
+    MBErrorView *errorView = [[MBErrorView alloc] initWithErrorText:errorText];
+    errorView.center = self.view.center;
+    
+    [UIView animateWithDuration:0.1 animations:^{
+        [self.view addSubview:errorView];
+    }completion:^(BOOL finished) {
+        [UIView animateKeyframesWithDuration:0.5 delay:0.5 options:0 animations:^{
+            errorView.alpha = 0.0;
+        }completion:^(BOOL finished) {
+            [errorView removeFromSuperview];
+        }];
+    }];
+}
+
+#pragma mark Action
+- (void)didPushReloadButton
+{
+    [self goBacksWithCursor:[NSNumber numberWithInt:-1]];
+}
+
 #pragma mark -
 #pragma mark UITableview Delegate
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
@@ -258,6 +308,12 @@ static NSString *usersCellIdentifier = @"UsersCellIdentifier";
         [self removeBackTimelineIndicatorView];
     }
     
+    if (self.users.count == 0) {
+        [self configureNoResultView];
+    } else {
+        [self removeNoResultView];
+    }
+    
     self.enableAdding = YES;
 }
 
@@ -335,6 +391,12 @@ static NSString *usersCellIdentifier = @"UsersCellIdentifier";
     }
     
     [self updateTableViewDataSource:users];
+}
+
+- (void)twitterAPICenter:(MBAOuth_TwitterAPICenter *)center error:(NSError *)error
+{
+    [self showErrorViewWithErrorText:error.localizedDescription];
+    [self configureNoResultView];
 }
 
 @end
