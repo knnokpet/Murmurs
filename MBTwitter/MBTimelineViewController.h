@@ -22,6 +22,7 @@
 #import "MBTimelineActionView.h"
 #import "MBLoadingView.h"
 #import "MBErrorView.h"
+#import "MBNoResultView.h"
 
 #import "MBTwitterAccesser.h"
 #import "MBAOuth_TwitterAPICenter.h"
@@ -52,6 +53,7 @@
 
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 @property (nonatomic, readonly) MBLoadingView *loadingView;
+@property (nonatomic, readonly) MBNoResultView *resultView;
 @property (nonatomic) UIRefreshControl *refreshControl;
 
 - (void)configureTimelineManager;

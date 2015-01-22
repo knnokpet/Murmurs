@@ -187,30 +187,7 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
     if (YES == [[MBAccountManager sharedInstance] isSelectedAccount] ) {
         [self goBacksAtIndex:0];
     } else {
-        MBAccountManager *accountManager = [MBAccountManager sharedInstance];
-        [accountManager requestAccessToAccountWithCompletionHandler:^ (BOOL granted, NSArray *accounts, NSError *error) {
-
-            if (!granted || accounts.count == 0) {
-                
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    MBAuthorizationViewController *authorizationViewController = [[MBAuthorizationViewController alloc] initWithNibName:@"AuthorizationView" bundle:nil];
-                    authorizationViewController.delegate = self;
-                    self.twitterAccesser = [[MBTwitterAccesser alloc] init];
-                    self.twitterAccesser.delegate = self;
-                    authorizationViewController.twitterAccesser = [[MBTwitterAccesser alloc] init];
-                    UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:authorizationViewController];
-                    [self.navigationController presentViewController:navigationController animated:YES completion:nil];
-                });
-            } else {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    self.twitterAccesser = [[MBTwitterAccesser alloc] init];
-                    self.twitterAccesser.delegate = self;
-                    for (ACAccount *account in accounts) {
-                        [self.twitterAccesser requestReverseRequestTokenWithAccount:account];
-                    }
-                });
-            }
-        }];
+        [self requestAccessToAccount];
     }
     
 }
@@ -258,6 +235,34 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
 
 #pragma mark - 
 #pragma mark Instance Methods
+- (void)requestAccessToAccount
+{
+    MBAccountManager *accountManager = [MBAccountManager sharedInstance];
+    [accountManager requestAccessToAccountWithCompletionHandler:^ (BOOL granted, NSArray *accounts, NSError *error) {
+        
+        if (!granted || accounts.count == 0) {
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                MBAuthorizationViewController *authorizationViewController = [[MBAuthorizationViewController alloc] initWithNibName:@"AuthorizationView" bundle:nil];
+                authorizationViewController.delegate = self;
+                self.twitterAccesser = [[MBTwitterAccesser alloc] init];
+                self.twitterAccesser.delegate = self;
+                authorizationViewController.twitterAccesser = [[MBTwitterAccesser alloc] init];
+                UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:authorizationViewController];
+                [self.navigationController presentViewController:navigationController animated:YES completion:nil];
+            });
+        } else {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                self.twitterAccesser = [[MBTwitterAccesser alloc] init];
+                self.twitterAccesser.delegate = self;
+                for (ACAccount *account in accounts) {
+                    [self.twitterAccesser requestReverseRequestTokenWithAccount:account];
+                }
+            });
+        }
+    }];
+}
+
 - (void)configureLoadingView
 {
     if (!self.loadingView.superview && self.dataSource.count == 0) {
@@ -281,6 +286,29 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
             _loadingView = nil;
         }];
     }
+}
+
+- (void)configureNoResultView
+{
+    if (!self.resultView && self.dataSource.count == 0) {
+        _resultView = [[MBNoResultView alloc] initWithFrame:self.view.bounds];
+        self.resultView.noResultText = NSLocalizedString(@"No Tweets...", nil);
+        [self.resultView.reloadButton addTarget:self action:@selector(didPushReloadButton) forControlEvents:UIControlEventTouchUpInside];
+        [self.view insertSubview:self.resultView aboveSubview:self.tableView];
+    }
+}
+
+- (void)removeNoResultView
+{
+    if (!self.resultView.superview) {
+        return;
+    }
+    [UIView animateWithDuration:0.3f animations:^{
+        self.resultView.alpha = 0;
+    }completion:^(BOOL finished) {
+        [self.resultView removeFromSuperview];
+        _resultView = nil;
+    }];
 }
 
 - (void)configureBackTimelineIndicatorView
@@ -448,6 +476,15 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
             unsigned long long sinceID = [sinceTweet.tweetID unsignedLongLongValue];
             [self didPushGapButtonSinceID:sinceID max:maxID];
         }
+    }
+}
+
+- (void)didPushReloadButton
+{
+    if (YES == [[MBAccountManager sharedInstance] isSelectedAccount] ) {
+        [self goBacksAtIndex:0];
+    } else {
+        [self requestAccessToAccount];
     }
 }
 
@@ -1021,6 +1058,7 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
                 weakSelf.backsTimeline = NO;
                 weakSelf.requireUpdatingDatasource = NO;
                 [weakSelf removeLoadingView];
+                [weakSelf removeNoResultView];
                 
             });
             
@@ -1045,6 +1083,12 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
             [self.tableView deleteRowsAtIndexPaths:@[deleteIndexPath] withRowAnimation:UITableViewRowAnimationFade];
             [self.tableView endUpdates];
             self.timelineManager.currentLoadingGapedTweet = nil;
+        }
+        
+        if (self.dataSource.count == 0) {
+            [self configureNoResultView];
+        } else {
+            [self removeNoResultView];
         }
         
         self.enableBacking = YES;
@@ -1270,6 +1314,7 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
     
     [self.refreshControl endRefreshing];
     self.enableBacking = YES;
+    [self configureNoResultView];
     [self removeLoadingView];
     self.backsTimeline = NO;
     self.requireUpdatingDatasource = NO;
