@@ -75,16 +75,17 @@
     [super layoutSubviews];
         
     CGRect bounds = self.bounds;
-    CGPoint center = CGPointMake(floorf(bounds.size.width / 2), floorf(bounds.size.height / 2));
+    CGPoint center = CGPointMake(ceilf(bounds.size.width / 2), ceilf(bounds.size.height / 2));
     CGFloat topMargin = 2.0f;
     
+    [self.imageView sizeToFit];
     CGRect imageFrame = self.imageView.frame;
-    imageFrame.origin = CGPointMake(floorf(center.x - imageFrame.size.width / 2), floorf(center.y - imageFrame.size.height) + topMargin);
+    imageFrame.origin = CGPointMake(ceilf(center.x - imageFrame.size.width / 2), ceilf(center.y - imageFrame.size.height) + topMargin);
     self.imageView.frame = imageFrame;
-    
+
     [self.titleLabel sizeToFit];
     CGRect titleFrame = self.titleLabel.frame;
-    titleFrame.origin = CGPointMake(floor(center.x - titleFrame.size.width / 2), center.y + topMargin);
+    titleFrame.origin = CGPointMake(ceilf(center.x - titleFrame.size.width / 2), ceilf(center.y + topMargin));
     self.titleLabel.frame = titleFrame;
 
 }
