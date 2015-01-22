@@ -36,24 +36,24 @@
     MBHomeTimelineViewController *homeViewController = [[MBHomeTimelineViewController alloc] initWithNibName:@"TimelineTableView" bundle:nil];
     UINavigationController *timelineNavigationController = [[UINavigationController alloc] initWithRootViewController:homeViewController];
     [viewControllers addObject:timelineNavigationController];
-    UIImage *homeImage = [[UIImage alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"Timeline@2x" ofType:@"png"]];
-    UIImage *homeSelectedImage = [[UIImage alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"Timeline-Selected@2x" ofType:@"png"]];
+    UIImage *homeImage = [[UIImage alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"Timeline" ofType:@"png"]];
+    UIImage *homeSelectedImage = [[UIImage alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"Timeline-Selected" ofType:@"png"]];
     UITabBarItem *homeBarItem = [[UITabBarItem alloc] initWithTitle:NSLocalizedString(@"Timeline", nil) image:homeImage selectedImage:homeSelectedImage];
     homeViewController.tabBarItem = homeBarItem;
     
     MBReplyTimelineViewController *replyTimelineViewController = [[MBReplyTimelineViewController alloc] initWithNibName:@"TimelineTableView" bundle:nil];
     UINavigationController *replyNavigation = [[UINavigationController alloc] initWithRootViewController:replyTimelineViewController];
     [viewControllers addObject:replyNavigation];
-    UIImage *replyImage = [[UIImage alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"atMark-Line@2x" ofType:@"png"]];
-    UIImage *selectedReplyImage = [[UIImage alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"atMark-Line-Selected@2x" ofType:@"png"]];
+    UIImage *replyImage = [[UIImage alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"atMark-Line" ofType:@"png"]];
+    UIImage *selectedReplyImage = [[UIImage alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"atMark-Line-Selected" ofType:@"png"]];
     UITabBarItem *replyBarItem = [[UITabBarItem alloc] initWithTitle:NSLocalizedString(@"@Tweet", nil) image:replyImage selectedImage:selectedReplyImage];
     replyTimelineViewController.tabBarItem = replyBarItem;
     
     MBSeparatedDirectMessageUserViewController *separatedDMUserViewController = [[MBSeparatedDirectMessageUserViewController alloc] initWithNibName:@"SeparatedDirectMessagesView" bundle:nil];
     UINavigationController *dmUserNavigation = [[UINavigationController alloc] initWithRootViewController:separatedDMUserViewController];
     [viewControllers addObject:dmUserNavigation];
-    UIImage *messageImage = [[UIImage alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"Message@2x" ofType:@"png"]];
-    UIImage *messageSelectedImage = [[UIImage alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"Message-Selected@2x" ofType:@"png"]];
+    UIImage *messageImage = [[UIImage alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"Message" ofType:@"png"]];
+    UIImage *messageSelectedImage = [[UIImage alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"Message-Selected" ofType:@"png"]];
     UITabBarItem *messageBarItem = [[UITabBarItem alloc] initWithTitle:NSLocalizedString(@"Message", nil) image:messageImage selectedImage:messageSelectedImage];
     separatedDMUserViewController.tabBarItem = messageBarItem;
     
