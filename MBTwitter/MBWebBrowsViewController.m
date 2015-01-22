@@ -59,9 +59,10 @@
     
     _goBackBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"goBack"] style:UIBarButtonItemStylePlain target:self action:@selector(goBack)];
     _goForwardBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"goForward"] style:UIBarButtonItemStylePlain target:self action:@selector(goForward)];
+    UIBarButtonItem *space = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
     UIBarButtonItem *space2 = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
     UIBarButtonItem *space3 = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
-    [self setToolbarItems:@[self.goBackBarButtonItem, self.goForwardBarButtonItem, space2, space3] animated:NO];
+    [self setToolbarItems:@[self.goBackBarButtonItem, space, self.goForwardBarButtonItem, space2, space3] animated:NO];
     [self.navigationController setToolbarHidden:YES];
 }
 
