@@ -29,6 +29,7 @@
 #import "MBProfileDesciptionView.h"
 #import "MBProfileInfomationView.h"
 #import "MBDetailUserActionTableViewCell.h"
+#import "MBErrorView.h"
 
 static NSString *detailUserTableViewCellIdentifier = @"MBDetailUserTableViewCellIdentifier";
 
@@ -439,6 +440,22 @@ typedef enum ActionSheetTag {
     }];
 }
 
+- (void)showErrorViewWithErrorText:(NSString *)errorText
+{
+    MBErrorView *errorView = [[MBErrorView alloc] initWithErrorText:errorText];
+    errorView.center = self.view.center;
+    
+    [UIView animateWithDuration:0.1 animations:^{
+        [self.view addSubview:errorView];
+    }completion:^(BOOL finished) {
+        [UIView animateKeyframesWithDuration:0.5 delay:0.5 options:0 animations:^{
+            errorView.alpha = 0.0;
+        }completion:^(BOOL finished) {
+            [errorView removeFromSuperview];
+        }];
+    }];
+}
+
 #pragma mark Button Action
 /*unused*/
 - (IBAction)didPushFollowButton:(id)sender {
@@ -795,6 +812,11 @@ typedef enum ActionSheetTag {
             }
         }
     }
+}
+
+- (void)twitterAPICenter:(MBAOuth_TwitterAPICenter *)center error:(NSError *)error
+{
+    [self showErrorViewWithErrorText:error.localizedDescription];
 }
 
 #pragma mark UIScrollViewDelegate
