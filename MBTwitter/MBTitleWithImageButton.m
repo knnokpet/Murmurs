@@ -56,13 +56,14 @@
     CGRect bounds = self.bounds;
     CGPoint center = CGPointMake(bounds.size.width / 2, bounds.size.height / 2);
     
+    [self.imageView sizeToFit];
     CGRect imageViewRect = self.imageView.frame;
-    imageViewRect.origin = CGPointMake(center.x - imageViewRect.size.width / 2, center.y - imageViewRect.size.height);
+    imageViewRect.origin = CGPointMake(ceilf(center.x - imageViewRect.size.width / 2), ceilf(center.y - imageViewRect.size.height));
     self.imageView.frame = imageViewRect;
     
     [self.titleLabel sizeToFit];
     CGRect titleLabelRect = self.titleLabel.frame;
-    titleLabelRect.origin = CGPointMake(center.x - titleLabelRect.size.width / 2, center.y);
+    titleLabelRect.origin = CGPointMake(ceilf(center.x - titleLabelRect.size.width / 2), ceilf(center.y));
     self.titleLabel.frame = titleLabelRect;
 }
 
