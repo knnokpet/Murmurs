@@ -167,7 +167,7 @@ static NSString *listsCellIdentifier = @"ListsCellIdentifier";
     
     if (!self.resultView && self.listManager.ownerShipLists.count == 0 && self.listManager.subscriptionLists.count == 0) {
         _resultView = [[MBNoResultView alloc] initWithFrame:self.view.bounds];
-        self.resultView.noResultText = NSLocalizedString(@"No List...", nil);
+        self.resultView.noResultText = NSLocalizedString(@"No Lists...", nil);
         [self configureReloadButton];
         [self.view insertSubview:self.resultView aboveSubview:self.tableView];
     }
