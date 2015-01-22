@@ -54,7 +54,8 @@
     if (self.segmentedController) {
         return;
     }
-    
+    self.listTimelineViewController.view.frame = self.view.frame;
+    self.listMembersViewController.view.frame = self.view.frame;
     defaultContainerOriginY = self.navigationController.navigationBar.frame.origin.y + self.navigationController.navigationBar.bounds.size.height;
     _containerView = [[MBSegmentedContainerView alloc] initWithFrame:CGRectMake(0, defaultContainerOriginY, self.view.bounds.size.width, defaultContainerHeight)];
     [self.view addSubview:self.containerView];
@@ -110,10 +111,10 @@
 - (void)constraintTimelineViewController
 {
     UIEdgeInsets contentInsets = self.listTimelineViewController.tableView.contentInset;
-    contentInsets.top = contentInsets.top + defaultContainerHeight;
+    contentInsets.top = defaultContainerHeight;
     self.listTimelineViewController.tableView.contentInset = contentInsets;
     UIEdgeInsets indicatorInsets = self.listTimelineViewController.tableView.scrollIndicatorInsets;
-    indicatorInsets.top = indicatorInsets.top + defaultContainerHeight;
+    indicatorInsets.top = defaultContainerHeight;
     self.listTimelineViewController.tableView.scrollIndicatorInsets = indicatorInsets;
 }
 
@@ -154,6 +155,7 @@
     
     [self commonConfigureModel];
     [self configureChildViewControllers];
+    [self constraintChildViewControllers];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -161,7 +163,6 @@
     [super viewWillAppear:animated];
     
     [self configureView];
-    [self constraintChildViewControllers];
 }
 
 - (void)didReceiveMemoryWarning
