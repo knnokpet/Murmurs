@@ -138,3 +138,9 @@
 "Check Network, Restriction or Privacy." = "ネットワークの状態や機能制限、プライバシーの設定を確認してください。";
 
 "Retweeted by %@" = "%@ がリツイート";
+
+"Reload" = "再読み込み";
+"No Tweets..." = "つぶやきはありません...";
+"No Users..." = "ユーザーはありません...";
+"No Lists..." = "リストはありません...";
+"No Messages..." = "メッセージはありません...";
