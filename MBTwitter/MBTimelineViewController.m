@@ -373,6 +373,13 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
     }
 }
 
+- (void)updateVisibleCellsAndCellHeight
+{
+    [self.tableView beginUpdates];
+    [self updateVisibleCells];
+    [self.tableView endUpdates];
+}
+
 - (void)showErrorViewWithErrorText:(NSString *)errorText
 {
     MBErrorView *errorView = [[MBErrorView alloc] initWithErrorText:errorText];
@@ -1190,7 +1197,7 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
             }
         }];
         if (requireReload) {
-            [self.tableView reloadData];
+            [self updateVisibleCellsAndCellHeight];
         }
         
         return;
@@ -1202,14 +1209,17 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
         }
         return;
     } else if (requestType == MBTwitterStatusesRetweetsOfTweetRequest) {
-        [self.tableView reloadData];
+        [self updateVisibleCellsAndCellHeight];
         return;
+        
     } else if (requestType == MBTwitterFavoritesCreateRequest) {
-        [self.tableView reloadData];
+        [self updateVisibleCellsAndCellHeight];
         return;
+        
     } else if (requestType == MBTwitterFavoritesDestroyRequest) {
-        [self.tableView reloadData];
+        [self updateVisibleCellsAndCellHeight];
         return;
+        
     }
     
     if (self.tableView.dragging || self.tableView.decelerating) {
@@ -1324,13 +1334,13 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
     NSIndexPath *selectedIndexPath = [self.tableView indexPathForCell:cell];
     [actionView setSelectedIndexPath: selectedIndexPath];
     NSString *tweetKey = [self.dataSource objectAtIndex:selectedIndexPath.row];
-    MBTweet *selectedTweet = [[MBTweetManager sharedInstance] storedTweetForKey:tweetKey];
-    if (nil != selectedTweet.tweetOfOriginInRetweet) {
-        MBTweet *retweetedTweet = selectedTweet.tweetOfOriginInRetweet;
-        selectedTweet = retweetedTweet;
+    MBTweet *tweetAtIndex = [[MBTweetManager sharedInstance] storedTweetForKey:tweetKey];
+    MBTweet *selectedTweet = tweetAtIndex;
+    if (tweetAtIndex.tweetOfOriginInRetweet) {
+        selectedTweet = tweetAtIndex.tweetOfOriginInRetweet;
     }
     
-    [actionView setSelectedTweet:selectedTweet];
+    [actionView setSelectedTweet:tweetAtIndex];
     
     [actionView showViews:YES animated:YES inView:self.navigationController.view];
     
@@ -1385,14 +1395,7 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
 {
     NSIndexPath *selectedIndexPath = view.selectedIndexPath;
     NSString *tweetKey = [self.dataSource objectAtIndex:selectedIndexPath.row];
-    MBTweet *tweet = [[MBTweetManager sharedInstance] storedTweetForKey:tweetKey];
-    MBTweet *targetedTweet = tweet;
-    if (tweet.tweetOfOriginInRetweet) {
-        targetedTweet = [[MBTweetManager sharedInstance] storedTweetForKey:tweet.tweetOfOriginInRetweet.tweetIDStr];
-        if (!targetedTweet) {
-            targetedTweet = tweet.tweetOfOriginInRetweet;
-        }
-    }
+    MBTweet *targetedTweet = [[MBTweetManager sharedInstance] storedTweetForKey:tweetKey];
     
     [self.aoAPICenter postFavoriteForTweetID:[targetedTweet.tweetID unsignedLongLongValue]];
 }
@@ -1425,15 +1428,8 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
     NSIndexPath *selectedIndexPath = view.selectedIndexPath;
     NSString *tweetKey = [self.dataSource objectAtIndex:selectedIndexPath.row];
     MBTweet *tweet = [[MBTweetManager sharedInstance] storedTweetForKey:tweetKey];
-    MBTweet *targetTweet = tweet;
-    if (tweet.tweetOfOriginInRetweet) {
-        targetTweet = [[MBTweetManager sharedInstance] storedTweetForKey:tweet.tweetOfOriginInRetweet.tweetIDStr];
-        if (!targetTweet) {
-            targetTweet = tweet.tweetOfOriginInRetweet;
-        }
-    }
     
-    [self.aoAPICenter postDestroyFavoriteForTweetID:[targetTweet.tweetID unsignedLongLongValue]];
+    [self.aoAPICenter postDestroyFavoriteForTweetID:[tweet.tweetID unsignedLongLongValue]];
 }
 
 #pragma mark WebBrowsViewController Delegate
