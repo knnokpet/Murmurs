@@ -31,18 +31,18 @@
     if (self) {
         // Initialization code
         NSString *path = [[NSBundle mainBundle] pathForResource:@"MagnifierMask-withWhite@2x" ofType:@"png"];
-        UIImage *maskImage = [[UIImage alloc] initWithContentsOfFile:path];
+        UIImage *maskImage = [UIImage imageNamed:path];
         self.maskImage = maskImage;
         CGImageRef imageRef = self.maskImage.CGImage;
         CGImageRef maskRef = CGImageMaskCreate(CGImageGetWidth(imageRef), CGImageGetHeight(imageRef), CGImageGetBitsPerComponent(imageRef), CGImageGetBitsPerPixel(imageRef), CGImageGetBytesPerRow(imageRef), CGImageGetDataProvider(imageRef), NULL, false);
         maskImageRef = maskRef;
         
         path = [[NSBundle mainBundle] pathForResource:@"Magnifier-low@2x" ofType:@"png"];
-        UIImage *loupeLowImage = [[UIImage alloc] initWithContentsOfFile:path];
+        UIImage *loupeLowImage = [UIImage imageNamed:path];
         self.loupeLowImage = loupeLowImage;
         
         path = [[NSBundle mainBundle] pathForResource:@"Magnifier-high@2x" ofType:@"png"];
-        UIImage *loupeHighImage = [[UIImage alloc] initWithContentsOfFile:path];
+        UIImage *loupeHighImage = [UIImage imageNamed:path];
         self.loupeHighimage = loupeHighImage;
         
     }

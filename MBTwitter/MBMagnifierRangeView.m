@@ -26,7 +26,7 @@
     if (self) {
         // Initialization code
         NSString *path = [[NSBundle mainBundle] pathForResource:@"MagnifierRangeMask@2x" ofType:@"png"];
-        UIImage *maskImage = [[UIImage alloc] initWithContentsOfFile:path];
+        UIImage *maskImage = [UIImage imageNamed:path];
         self.maskImage = maskImage;
     }
     return self;
