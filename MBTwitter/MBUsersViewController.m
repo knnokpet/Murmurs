@@ -230,13 +230,11 @@ static NSString *usersCellIdentifier = @"UsersCellIdentifier";
     
     cell.characterNameLabel.text = userAtIndex.characterName;
     cell.screenName = userAtIndex.screenName;
-    //cell.avatorImageView.userIDStr = userAtIndex.userIDStr;
-    //cell.avatorImageView.avatorImage = nil;
+    
     UIImage *avatorImage = [[MBImageCacher sharedInstance] cachedProfileImageForUserID:userAtIndex.userIDStr];
     
     if (!avatorImage) {
-        cell.avatorImageView.userIDStr = userAtIndex.userIDStr;
-        cell.avatorImageView.avatorImage = nil;
+        cell.avatorImageView.image = nil;
         
         dispatch_queue_t globalQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0);
         dispatch_async(globalQueue, ^{
@@ -257,11 +255,10 @@ static NSString *usersCellIdentifier = @"UsersCellIdentifier";
             
         });
     } else {
-        if (cell.avatorImageView.avatorImage && [cell.avatorImageView.userIDStr isEqualToString:userAtIndex.userIDStr]) {
+        if (cell.avatorImageView.image) {
             return;
         } else {
-            cell.avatorImageView.userIDStr = userAtIndex.userIDStr;
-            cell.avatorImageView.avatorImage = nil;
+            cell.avatorImageView.image = nil;
         }
         
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
@@ -283,7 +280,7 @@ static NSString *usersCellIdentifier = @"UsersCellIdentifier";
 
 - (void)addAvatorImage:(UIImage *)image ForUsersCell:(MBUsersTableViewCell *)cell forUserIDString:(NSString *)userIDStr
 {
-    if (!cell.avatorImageView.avatorImage && [cell.avatorImageView.userIDStr isEqualToString:userIDStr]) {
+    if (!cell.avatorImageView.image) {
         [cell addAvatorImage:image];
     }
 }
