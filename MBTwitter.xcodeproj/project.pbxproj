@@ -398,6 +398,7 @@
 		86BC620819168F0C00600EAD /* MBUserTimelineViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 86BC620719168F0C00600EAD /* MBUserTimelineViewController.m */; };
 		86BC620B191777D900600EAD /* MBTweet_JSONParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 86BC620A191777D900600EAD /* MBTweet_JSONParser.m */; };
 		86BC620E1917CABF00600EAD /* MBUser_JSONParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 86BC620D1917CABF00600EAD /* MBUser_JSONParser.m */; };
+		86BEA0081A73F6FC00CBEDE5 /* MBTextCacher.m in Sources */ = {isa = PBXBuildFile; fileRef = 86BEA0071A73F6FC00CBEDE5 /* MBTextCacher.m */; };
 		86BFD24B197385DB00269D34 /* MBSelecting_ListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 86BFD24A197385DB00269D34 /* MBSelecting_ListViewController.m */; };
 		86BFD24E19741D2700269D34 /* MBDetailUserActionTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 86BFD24D19741D2700269D34 /* MBDetailUserActionTableViewCell.m */; };
 		86BFD2551974F7F800269D34 /* bird_blue_16.png in Resources */ = {isa = PBXBuildFile; fileRef = 86BFD2521974F7F800269D34 /* bird_blue_16.png */; };
@@ -1012,6 +1013,8 @@
 		86BC620A191777D900600EAD /* MBTweet_JSONParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBTweet_JSONParser.m; sourceTree = "<group>"; };
 		86BC620C1917CABF00600EAD /* MBUser_JSONParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBUser_JSONParser.h; sourceTree = "<group>"; };
 		86BC620D1917CABF00600EAD /* MBUser_JSONParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBUser_JSONParser.m; sourceTree = "<group>"; };
+		86BEA0061A73F6FB00CBEDE5 /* MBTextCacher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBTextCacher.h; sourceTree = "<group>"; };
+		86BEA0071A73F6FC00CBEDE5 /* MBTextCacher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBTextCacher.m; sourceTree = "<group>"; };
 		86BFD249197385DB00269D34 /* MBSelecting_ListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBSelecting_ListViewController.h; sourceTree = "<group>"; };
 		86BFD24A197385DB00269D34 /* MBSelecting_ListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBSelecting_ListViewController.m; sourceTree = "<group>"; };
 		86BFD24C19741D2700269D34 /* MBDetailUserActionTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBDetailUserActionTableViewCell.h; sourceTree = "<group>"; };
@@ -1900,6 +1903,8 @@
 				863969B3191B6EFA00A7D0AD /* MBListManager.m */,
 				86B5C5EB18F521A70035CDC3 /* MBImageCacher.h */,
 				86B5C5EC18F521A70035CDC3 /* MBImageCacher.m */,
+				86BEA0061A73F6FB00CBEDE5 /* MBTextCacher.h */,
+				86BEA0071A73F6FC00CBEDE5 /* MBTextCacher.m */,
 			);
 			name = Logic;
 			sourceTree = "<group>";
@@ -2012,7 +2017,7 @@
 		86BC61FA1915012200600EAD /* cell */ = {
 			isa = PBXGroup;
 			children = (
-				86CB53E51908EA3E0016A7F2 /* TweetTavbleViewCell.xib */,
+				86BEA0091A7617A200CBEDE5 /* 没 */,
 				86CB53EA190A98E50016A7F2 /* GapedTweetTableViewCell.xib */,
 				86CB5407190FD33D0016A7F2 /* SeparatedDirectMessageTableViewCell.xib */,
 			);
@@ -2034,6 +2039,14 @@
 				860592AA193B56AE00559C33 /* 没 */,
 			);
 			name = ViewController;
+			sourceTree = "<group>";
+		};
+		86BEA0091A7617A200CBEDE5 /* 没 */ = {
+			isa = PBXGroup;
+			children = (
+				86CB53E51908EA3E0016A7F2 /* TweetTavbleViewCell.xib */,
+			);
+			name = "没";
 			sourceTree = "<group>";
 		};
 		86BFD24F1974C4EF00269D34 /* 没 */ = {
@@ -2621,6 +2634,7 @@
 				862D46E91A5BC04700D65D67 /* MBDetailTweetFavoriteRetweetTableViewCell.m in Sources */,
 				867A09CB194BEFC400741C2F /* MBRelationshipManager.m in Sources */,
 				8644D4E719F5207100D4453B /* Base64.m in Sources */,
+				86BEA0081A73F6FC00CBEDE5 /* MBTextCacher.m in Sources */,
 				869B48D11938A69F00221E38 /* UIImage+Radius.m in Sources */,
 				8690B570197029A6003DB47B /* MBUsersTableViewCell.m in Sources */,
 				8639E217196CEF8F0078266B /* MBSegmentedContainerView.m in Sources */,
