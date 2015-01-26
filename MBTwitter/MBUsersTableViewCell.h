@@ -8,9 +8,9 @@
 
 #import <UIKit/UIKit.h>
 
-@class MBAvatorImageView;
 @interface MBUsersTableViewCell : UITableViewCell
-@property (weak, nonatomic) IBOutlet MBAvatorImageView *avatorImageView;
+
+@property (weak, nonatomic) IBOutlet UIImageView *avatorImageView;
 @property (weak, nonatomic) IBOutlet UILabel *characterNameLabel;
 @property (weak, nonatomic) IBOutlet UILabel *screenNameLabel;
 

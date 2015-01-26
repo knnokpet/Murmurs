@@ -7,7 +7,6 @@
 //
 
 #import "MBUsersTableViewCell.h"
-#import "MBAvatorImageView.h"
 
 @implementation MBUsersTableViewCell
 
@@ -18,7 +17,7 @@
 }
 
 - (void)common
-{
+{    
     self.avatorImageView.backgroundColor = [UIColor clearColor];
     self.avatorImageView.layer.cornerRadius = 4.0f;
     self.avatorImageView.layer.masksToBounds = NO;
@@ -46,7 +45,7 @@
     if (!image) {
         return;
     }
-    
+
     self.avatorImageView.alpha = 0;
     self.avatorImageView.image = image;
     [UIView animateWithDuration:0.3f animations:^{
