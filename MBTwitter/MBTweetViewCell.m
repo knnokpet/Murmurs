@@ -80,9 +80,11 @@ struct Layouts {
         
     } else if (isRetweet) {
         bottomHeight = (retweetViewLayouts.top + attachedViewHeight + retweetViewLayouts.bottom);
+        minimumHeight = (avatorImageViewWidthHeight + avatorImageViewLayouts.top) + bottomHeight;
         
     } else if (isPlace) {
         bottomHeight = (placeNameViewLayouts.top + attachedViewHeight + placeNameViewLayouts.bottom);
+        minimumHeight = (avatorImageViewWidthHeight + avatorImageViewLayouts.top) + bottomHeight;
         
     } else if (isMedia) {
         bottomHeight = (mediaImageContainerViewLayouts.top + mediaImageHeight + mediaImageContainerViewLayouts.bottom);
