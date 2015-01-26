@@ -115,7 +115,7 @@ static NSString *usersCellIdentifier = @"MBUsersTableViewCellIdentifier";
     cell.screenName = userAtIndex.screenName;
     cell.textLabel.textColor = [UIColor blackColor];
     
-    cell.avatorImageView.avatorImage = nil;
+    cell.avatorImageView.image = nil;
     UIImage *avatorImage = [[MBImageCacher sharedInstance] cachedProfileImageForUserID:userAtIndex.userIDStr];
     if (!avatorImage) {
         
@@ -129,7 +129,7 @@ static NSString *usersCellIdentifier = @"MBUsersTableViewCellIdentifier";
                     [[MBImageCacher sharedInstance] storeTimelineImage:radiusImage forUserID:userAtIndex.userIDStr];
                     
                     dispatch_async(dispatch_get_main_queue(), ^{
-                        cell.avatorImageView.avatorImage = radiusImage;
+                        cell.avatorImageView.image = radiusImage;
                     });
                 }
                 
@@ -143,7 +143,7 @@ static NSString *usersCellIdentifier = @"MBUsersTableViewCellIdentifier";
             CGSize imageSize = CGSizeMake(cell.avatorImageView.frame.size.width, cell.avatorImageView.frame.size.height);
             UIImage *radiusImage = [MBImageApplyer imageForTwitter:avatorImage size:imageSize radius:cell.avatorImageView.layer.cornerRadius];
             dispatch_async(dispatch_get_main_queue(), ^{
-                cell.avatorImageView.avatorImage = radiusImage;
+                cell.avatorImageView.image = radiusImage;
             });
         });
     }
