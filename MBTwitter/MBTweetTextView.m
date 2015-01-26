@@ -67,9 +67,12 @@ typedef NS_ENUM(NSUInteger, MBToucheState) {
         
     [self setIsSelectable:NO];
     
-    [self configureTextSelections];
+    /* unused */
+    //[self configureTextSelections];
+    
+    /* unused
     self.magnifierView = [[MBMagnifierView alloc] init];
-    self.magnifierRangeView = [[MBMagnifierRangeView alloc] init];
+    self.magnifierRangeView = [[MBMagnifierRangeView alloc] init];*/
 }
 
 - (void)configureTextSelections
