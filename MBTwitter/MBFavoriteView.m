@@ -15,11 +15,17 @@
     self = [super initWithFrame:frame];
     if (self) {
         // Initialization code
+        [self commonInit];
     }
     return self;
 }
 
 - (void)awakeFromNib
+{
+    [self commonInit];
+}
+
+- (void)commonInit
 {
     self.backgroundColor = [UIColor clearColor];
 }
