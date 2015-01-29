@@ -19,11 +19,13 @@
 
 @class MBTweet;
 @class MBUser;
-@interface MBDetailTweetViewController : UIViewController <UIViewControllerTransitioningDelegate, MBPostTweetViewControllerDelegate, MBAOuth_TwitterAPICenterDelegate, MBTweetTextViewDelegate, MBWebBrowsViewControllerDelegate, MBMediaImageViewDelegate, MBImageViewControllerDelegate, MBRetweetViewDelegate>
+@interface MBDetailTweetViewController : UIViewController <UIViewControllerTransitioningDelegate, MBPostTweetViewControllerDelegate, MBAOuth_TwitterAPICenterDelegate, MBTweetTextViewDelegate, MBWebBrowsViewControllerDelegate, /*MBMediaImageViewDelegate, MBImageViewControllerDelegate,*/ MBRetweetViewDelegate>
 
 @property (nonatomic, readonly) MBTweet *tweet;
 @property (nonatomic, readonly) MBUser *retweeter;
-@property (weak, nonatomic) IBOutlet UITableView *tableView;
+@property (nonatomic)  UITableView *tableView;
+
+- (instancetype)initWithTweet:(MBTweet *)tweet;
 
 - (void)setTweet:(MBTweet *)tweet;
 - (void)setRetweeter:(MBUser *)retweeter;
