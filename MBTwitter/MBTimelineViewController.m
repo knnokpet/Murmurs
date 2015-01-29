@@ -11,26 +11,6 @@
 #import "MBSearchViewController.h"
 #import "MBTextCacher.h"
 
-static NSString *tweetCellIdentifier = @"TweetTableViewCellIdentifier";
-static NSString *tweetWithImageCellIdentifier = @"TweetWithImageTableViewCellIdentifier";
-static NSString *favoriteCellIdentifier = @"FavoriteTableViewCellIdentifier";
-static NSString *favoriteWithImageCellIdentifier = @"FavoriteWithImageTableViewCellIdentifier";
-
-static NSString *placeCellIdentifier = @"PlaceTableViewCellIdentifier";
-static NSString *placeWithImageCellIdentifier = @"PlaceWithImageTableViewCellIdentifier";
-static NSString *placeFavoriteCellIdentifier = @"PlaceFavoriteTableViewCellIdentifier";
-static NSString *placeFavoriteWithImageCellIdentifier = @"PlaceFavoriteWithImageTableViewCellIdentifier";
-
-static NSString *retweetCellIdentifier = @"RetweetTableViewCellIdentifier";
-static NSString *retweetWithImageCellIdentifier = @"RetweetWithImageTableViewCellIdentifier";
-static NSString *favoriteRetweetCellIdentifier = @"FavoriteRetweetTableViewCellIdentifier";
-static NSString *favoriteRetweetWithImageCellIdentifier = @"FavoriteRetweetWithImageTableViewCellIdentifier";
-
-static NSString *retweetPlaceCellIdentifier = @"RetweetPlaceTableViewCellIdentifier";
-static NSString *retweetPlaceWithImageCellIdentifier = @"RetweePlacetWithImageTableViewCellIdentifier";
-static NSString *favoriteRetweetPlaceCellIdentifier = @"FavoriteRetweetPlaceTableViewCellIdentifier";
-static NSString *favoriteRetweetPlaceWithImageCellIdentifier = @"FavoriteRetweetPlaceWithImageTableViewCellIdentifier";
-
 static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
 
 @interface MBTimelineViewController ()
@@ -108,48 +88,6 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
     
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
-    
-    // cell
-    UINib *cellNib = [UINib nibWithNibName:@"TweetTavbleViewCell" bundle:nil];
-    [self.tableView registerNib:cellNib forCellReuseIdentifier:tweetCellIdentifier];
-    UINib *retweetCel = [UINib nibWithNibName:@"TweetTavbleViewCell" bundle:nil];
-    [self.tableView registerNib:retweetCel forCellReuseIdentifier:retweetCellIdentifier];
-    UINib *favoriteCell = [UINib nibWithNibName:@"TweetTavbleViewCell" bundle:nil];
-    [self.tableView registerNib:favoriteCell forCellReuseIdentifier:favoriteCellIdentifier];
-    UINib *favoriteRetweetCell = [UINib nibWithNibName:@"TweetTavbleViewCell" bundle:nil];
-    [self.tableView registerNib:favoriteRetweetCell forCellReuseIdentifier:favoriteRetweetCellIdentifier];
-    
-        // place
-    UINib *placeCellNib = [UINib nibWithNibName:@"TweetTavbleViewCell" bundle:nil];
-    [self.tableView registerNib:placeCellNib forCellReuseIdentifier:placeCellIdentifier];
-    UINib *retweetPlaceCel = [UINib nibWithNibName:@"TweetTavbleViewCell" bundle:nil];
-    [self.tableView registerNib:retweetPlaceCel forCellReuseIdentifier:retweetPlaceCellIdentifier];
-    UINib *favoritePlaceCell = [UINib nibWithNibName:@"TweetTavbleViewCell" bundle:nil];
-    [self.tableView registerNib:favoritePlaceCell forCellReuseIdentifier:placeFavoriteCellIdentifier];
-    UINib *favoriteRetweetPlaceCell = [UINib nibWithNibName:@"TweetTavbleViewCell" bundle:nil];
-    [self.tableView registerNib:favoriteRetweetPlaceCell forCellReuseIdentifier:favoriteRetweetPlaceCellIdentifier];
-    
-    
-    // imageCell
-    UINib *cellWithImageNib = [UINib nibWithNibName:@"TweetTavbleViewCell" bundle:nil];
-    [self.tableView registerNib:cellWithImageNib forCellReuseIdentifier:tweetWithImageCellIdentifier];
-    UINib *retweetWithImageCell = [UINib nibWithNibName:@"TweetTavbleViewCell" bundle:nil];
-    [self.tableView registerNib:retweetWithImageCell forCellReuseIdentifier:retweetWithImageCellIdentifier];
-    UINib *favoriteWithImageCell = [UINib nibWithNibName:@"TweetTavbleViewCell" bundle:nil];
-    [self.tableView registerNib:favoriteWithImageCell forCellReuseIdentifier:favoriteWithImageCellIdentifier];
-    UINib *favoriteRetweetWithImageCell = [UINib nibWithNibName:@"TweetTavbleViewCell" bundle:nil];
-    [self.tableView registerNib:favoriteRetweetWithImageCell forCellReuseIdentifier:favoriteRetweetWithImageCellIdentifier];
-    
-        // place
-    UINib *placeCellWithImageNib = [UINib nibWithNibName:@"TweetTavbleViewCell" bundle:nil];
-    [self.tableView registerNib:placeCellWithImageNib forCellReuseIdentifier:placeWithImageCellIdentifier];
-    UINib *retweetPlaceWithImageCell = [UINib nibWithNibName:@"TweetTavbleViewCell" bundle:nil];
-    [self.tableView registerNib:retweetPlaceWithImageCell forCellReuseIdentifier:retweetPlaceWithImageCellIdentifier];
-    UINib *placeFavoriteWithImageCell = [UINib nibWithNibName:@"TweetTavbleViewCell" bundle:nil];
-    [self.tableView registerNib:placeFavoriteWithImageCell forCellReuseIdentifier:placeFavoriteWithImageCellIdentifier];
-    UINib *placeFavoriteRetweetWithImageCell = [UINib nibWithNibName:@"TweetTavbleViewCell" bundle:nil];
-    [self.tableView registerNib:placeFavoriteRetweetWithImageCell forCellReuseIdentifier:favoriteRetweetPlaceWithImageCellIdentifier];
-    
     
     UINib *gapedCellNib = [UINib nibWithNibName:@"GapedTweetTableViewCell" bundle:nil];
     [self.tableView registerNib:gapedCellNib forCellReuseIdentifier:gapedCellIdentifier];
@@ -899,22 +837,23 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
 {
     NSString *selectedID = self.dataSource[indexPath.row];
     MBTweet *selectedTweet = [[MBTweetManager sharedInstance] storedTweetForKey:selectedID];
-    
-    MBDetailTweetViewController *detailTweetViewController = [[MBDetailTweetViewController alloc] initWithNibName:@"MBTweetDetailView" bundle:nil];
+    MBUser *retweeter = nil;
+
     if (nil != selectedTweet.tweetOfOriginInRetweet) {
-        [detailTweetViewController setRetweeter:selectedTweet.tweetUser];
-        
+        retweeter = selectedTweet.tweetUser;
         MBTweet *retweetedTweet = [[MBTweetManager sharedInstance] storedTweetForKey:selectedTweet.tweetOfOriginInRetweet.tweetIDStr];
         if (!retweetedTweet) {
             retweetedTweet = selectedTweet.tweetOfOriginInRetweet;
         }
         selectedTweet = retweetedTweet;
+        
     } else if (selectedTweet.isRetweeted) {
-        MBUser *myUser = [[MBUserManager sharedInstance] storedUserForKey:[MBAccountManager sharedInstance].currentAccount.userID];
-        [detailTweetViewController setRetweeter:myUser];
+        retweeter = [[MBUserManager sharedInstance] storedUserForKey:[MBAccountManager sharedInstance].currentAccount.userID];
+        
     }
     
-    [detailTweetViewController setTweet:selectedTweet];
+    MBDetailTweetViewController *detailTweetViewController = [[MBDetailTweetViewController alloc] initWithTweet:selectedTweet];
+    [detailTweetViewController setRetweeter:retweeter];
     
     self.navigationItem.backBarButtonItem = [self backButtonItem];
     [self.navigationController pushViewController:detailTweetViewController animated:YES];
