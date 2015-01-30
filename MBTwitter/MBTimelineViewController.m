@@ -265,7 +265,10 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
 {
     UIView *view = [[UIView alloc] init];
     view.backgroundColor = [UIColor clearColor];
-    self.tableView.tableFooterView = view;
+    [UIView animateWithDuration:0.3f animations:^{
+        self.tableView.tableFooterView = view;
+    }];
+    
 }
 
 - (void)configureRefrechControll
@@ -553,7 +556,7 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if ([cell respondsToSelector:@selector(setSeparatorInset:)]) {
-        [cell setSeparatorInset:UIEdgeInsetsZero];
+        [cell setSeparatorInset:UIEdgeInsetsMake(0, 8, 0, 0)];
     }
     
     if ([cell respondsToSelector:@selector(setLayoutMargins:)]) {
@@ -1219,8 +1222,7 @@ static NSString *gapedCellIdentifier = @"GapedTweetTableViewCellIdentifier";
 - (void)didTapImageView:(MBMediaImageView *)imageView mediaIDStr:(NSString *)mediaIDStr urlString:(NSString *)urlString touchedPoint:(CGPoint)touchedPoint rect:(CGRect)rect
 {
     CGPoint convertedPointToTableView = [self.tableView convertPoint:touchedPoint fromView:imageView];
-    CGPoint center = CGPointMake(rect.origin.x + rect.size.width / 2, rect.origin.y + rect.size.height / 2);
-    CGPoint convertedPointToSelfView = [self.view convertPoint:center fromView:imageView];
+    CGPoint convertedPointToSelfView = [self.view convertPoint:convertedPointToTableView fromView:self.tableView];
     
     NSIndexPath *selectedIndexpath = [self.tableView indexPathForRowAtPoint:convertedPointToTableView];
     NSString *selectedID = self.dataSource[selectedIndexpath.row];

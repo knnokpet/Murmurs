@@ -298,6 +298,7 @@
 		864D8A3119BFFD7000D39505 /* MBTimelineActionBoarderLineView.m in Sources */ = {isa = PBXBuildFile; fileRef = 864D8A3019BFFD7000D39505 /* MBTimelineActionBoarderLineView.m */; };
 		86533C2319506E8500AF37EA /* MBMessageReceiverViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 86533C2119506E8500AF37EA /* MBMessageReceiverViewController.m */; };
 		86533C2419506E8500AF37EA /* MBMessageReceiverViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 86533C2219506E8500AF37EA /* MBMessageReceiverViewController.xib */; };
+		865B25541A7A0F4500BF246D /* MBDetailTweetImageTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 865B25531A7A0F4500BF246D /* MBDetailTweetImageTableViewCell.m */; };
 		86705DBE18FE72DA002A23DD /* MBHelp_JSONParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 86705DBD18FE72DA002A23DD /* MBHelp_JSONParser.m */; };
 		86705DC018FF8403002A23DD /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 86705DBF18FF8403002A23DD /* CoreText.framework */; };
 		86705DC318FFD1B4002A23DD /* MBLineLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 86705DC218FFD1B4002A23DD /* MBLineLayout.m */; };
@@ -832,6 +833,8 @@
 		86533C2019506E8500AF37EA /* MBMessageReceiverViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBMessageReceiverViewController.h; sourceTree = "<group>"; };
 		86533C2119506E8500AF37EA /* MBMessageReceiverViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBMessageReceiverViewController.m; sourceTree = "<group>"; };
 		86533C2219506E8500AF37EA /* MBMessageReceiverViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MBMessageReceiverViewController.xib; sourceTree = "<group>"; };
+		865B25521A7A0F4500BF246D /* MBDetailTweetImageTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBDetailTweetImageTableViewCell.h; sourceTree = "<group>"; };
+		865B25531A7A0F4500BF246D /* MBDetailTweetImageTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBDetailTweetImageTableViewCell.m; sourceTree = "<group>"; };
 		86705DBC18FE72DA002A23DD /* MBHelp_JSONParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBHelp_JSONParser.h; sourceTree = "<group>"; };
 		86705DBD18FE72DA002A23DD /* MBHelp_JSONParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBHelp_JSONParser.m; sourceTree = "<group>"; };
 		86705DBF18FF8403002A23DD /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
@@ -1708,6 +1711,8 @@
 				861AFAA819264A30006B736A /* MBDetailTweetActionsTableViewCell.h */,
 				861AFAA919264A30006B736A /* MBDetailTweetActionsTableViewCell.m */,
 				861AFAAA19264A30006B736A /* MBDetailTweetActionsTableViewCell.xib */,
+				865B25521A7A0F4500BF246D /* MBDetailTweetImageTableViewCell.h */,
+				865B25531A7A0F4500BF246D /* MBDetailTweetImageTableViewCell.m */,
 			);
 			name = DetailTweet;
 			sourceTree = "<group>";
@@ -2028,7 +2033,6 @@
 			isa = PBXGroup;
 			children = (
 				86BC6199191284F000600EAD /* TimelineTableView.xib */,
-				861AFA9C19264942006B736A /* MBTweetDetailView.xib */,
 				863969AC191B550A00A7D0AD /* MBListViewController.xib */,
 				863969BF191B97CA00A7D0AD /* MBListTimelineManagementViewController.xib */,
 				863969C7191CAD5800A7D0AD /* MBListUserViewController.xib */,
@@ -2045,6 +2049,7 @@
 			isa = PBXGroup;
 			children = (
 				86CB53E51908EA3E0016A7F2 /* TweetTavbleViewCell.xib */,
+				861AFA9C19264942006B736A /* MBTweetDetailView.xib */,
 			);
 			name = "没";
 			sourceTree = "<group>";
@@ -2542,6 +2547,7 @@
 				864D8A3119BFFD7000D39505 /* MBTimelineActionBoarderLineView.m in Sources */,
 				86AF51DC193320C100646D28 /* UIImage+Resize.m in Sources */,
 				86B5C5B118E93CA40035CDC3 /* MBEntity.m in Sources */,
+				865B25541A7A0F4500BF246D /* MBDetailTweetImageTableViewCell.m in Sources */,
 				8639E204196BC1AB0078266B /* MBSearchViewController.m in Sources */,
 				861AFAB219272F90006B736A /* MBSelectionView.m in Sources */,
 				86CB5403190E89F90016A7F2 /* MBDirectMessageManager.m in Sources */,
