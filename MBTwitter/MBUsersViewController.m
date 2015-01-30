@@ -161,7 +161,9 @@ static NSString *usersCellIdentifier = @"UsersCellIdentifier";
 {
     UIView *view = [[UIView alloc] init];
     view.backgroundColor = [UIColor clearColor];
-    self.tableView.tableFooterView = view;
+    [UIView animateWithDuration:0.3f animations:^{
+        self.tableView.tableFooterView = view;
+    }];
 }
 
 - (void)configureNoResultView
