@@ -12,6 +12,10 @@
 
 - (UIImage *)imageForResizing:(UIImage *)image ToSize:(CGSize)size
 {
+    if (!image || size.width == 0 || size.height == 0) {
+        return nil;
+    }
+    
     if (UIGraphicsBeginImageContextWithOptions != NULL) {
         UIGraphicsBeginImageContextWithOptions(size, NO, [UIScreen mainScreen].scale);
     } else {
