@@ -128,6 +128,11 @@ struct Layouts {
 
 - (void)common
 {
+    if (floor(NSFoundationVersionNumber) > NSFoundationVersionNumber_iOS_7_1) {
+        self.preservesSuperviewLayoutMargins = NO;
+    }
+    self.separatorInset = UIEdgeInsetsMake(0, 8, 0, 0);
+    
     self.avatorImageView.layer.cornerRadius = 4.0f;
     self.avatorImageView.layer.masksToBounds = NO;
     self.avatorImageView.layer.shouldRasterize = YES;
