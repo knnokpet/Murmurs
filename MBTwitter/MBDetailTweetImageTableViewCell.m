@@ -9,6 +9,7 @@
 #import "MBDetailTweetImageTableViewCell.h"
 
 static CGFloat defaultHeight = 240;
+static CGFloat topBottomMargin = 10;
 
 @interface MBDetailTweetImageTableViewCell()
 
@@ -30,12 +31,17 @@ static CGFloat defaultHeight = 240;
         CGFloat heightScale = 1.0;
         if (image.size.width > constraintSize.width) {
             heightScale = constraintSize.width / image.size.width;
+            height = ceilf(image.size.height * heightScale);
+        } else {
+            CGFloat widthScale = constraintSize.width / image.size.width;
+            height = ceilf(image.size.height * widthScale);
         }
-        height = ceilf(image.size.height * heightScale);
+        
         
     } else {
         if (image.size.height < defaultHeight) {
-            height = image.size.height;
+            CGFloat widthScale = constraintSize.width / image.size.width;
+            height = ceilf(image.size.height * widthScale);
             
         } else {
             if (image.size.width > constraintSize.width) {
@@ -43,12 +49,13 @@ static CGFloat defaultHeight = 240;
                 height = ceilf(image.size.height * widthScale);
                 
             } else {
-                height = image.size.height;
+                CGFloat widthScale = constraintSize.width / image.size.width;
+                height = ceilf(image.size.height * widthScale);
             }
         }
     }
     
-    return height;
+    return height + (topBottomMargin * 2);
 }
 
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
@@ -97,9 +104,12 @@ static CGFloat defaultHeight = 240;
 #pragma mark Instance Methods
 - (void)compositeMediaImageViewSize
 {
+    CGSize mediaImageViewSize = CGSizeZero;
+    
     if (!self.mediaImageView.image) {
         self.mediaImageView.frame = CGRectMake(0, 0, self.bounds.size.width, defaultHeight);
         return;
+        
     }
     
     UIImage *mediaImage = self.mediaImageView.image;
@@ -108,20 +118,32 @@ static CGFloat defaultHeight = 240;
         CGFloat heightScale = 1.0;
         if (mediaImage.size.width > self.bounds.size.width) {
             heightScale = self.bounds.size.width / mediaImage.size.width;
+            mediaImageViewSize = CGSizeMake(self.bounds.size.width, ceilf(mediaImage.size.height * heightScale));
+            
+        } else {
+            CGFloat widthScale = self.bounds.size.width / mediaImage.size.width;
+            mediaImageViewSize = CGSizeMake(ceilf(mediaImage.size.width * widthScale), ceilf(mediaImage.size.height * widthScale));
         }
-        self.mediaImageView.frame = CGRectMake(0, 0, self.bounds.size.width, ceilf(mediaImage.size.height * heightScale));
+        
     } else {
         if (mediaImage.size.height < defaultHeight) {
-            self.mediaImageView.frame = CGRectMake(0, 0, mediaImage.size.width, mediaImage.size.height);
+            CGFloat widthScale = self.bounds.size.width / mediaImage.size.width;
+            mediaImageViewSize = CGSizeMake(ceilf(mediaImage.size.width * widthScale), ceilf(mediaImage.size.height * widthScale));
+            
         } else {
             if (mediaImage.size.width > self.bounds.size.width) {
                 CGFloat widthScale = self.bounds.size.width / mediaImage.size.width;
-                self.mediaImageView.frame = CGRectMake(0, 0, self.bounds.size.width, ceilf(mediaImage.size.height * widthScale));
+                mediaImageViewSize = CGSizeMake(self.bounds.size.width, ceilf(mediaImage.size.height * widthScale));
+                
             } else {
-                self.mediaImageView.frame = CGRectMake(0, 0, mediaImage.size.width, mediaImage.size.height);
+                CGFloat widthScale = self.bounds.size.width / mediaImage.size.width;
+                mediaImageViewSize = CGSizeMake(ceilf(mediaImage.size.width * widthScale), ceilf(mediaImage.size.height * widthScale));
+                
             }
         }
     }
+    self.mediaImageView.frame = CGRectMake( ceilf(self.bounds.size.width / 2 - mediaImageViewSize.width / 2), topBottomMargin, mediaImageViewSize.width, mediaImageViewSize.height);
+    
 }
 
 #pragma mark 
