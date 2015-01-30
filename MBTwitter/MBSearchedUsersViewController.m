@@ -64,9 +64,11 @@
 - (void)backUsersAtCursor:(long long)cursor
 {
     /* 検索結果は page で表現されるため、強引にメソッドを page 用に変更 */
-    if (self.query.length > 0) {
+    if (self.query.length > 0 && cursor >= 0) {
         self.enableAdding = NO;
         [self.aoAPICenter getSearchedUsersWithQuery:self.query page:page];
+    } else {
+        [self removeBackTimelineIndicatorView];
     }
 }
 
