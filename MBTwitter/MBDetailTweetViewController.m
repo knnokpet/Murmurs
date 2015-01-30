@@ -131,6 +131,7 @@ static NSString *kReply = @"ReplyKey";
 - (void)setTweet:(MBTweet *)tweet
 {
     _tweet = tweet;
+    [self configureDatasource];
 }
 
 - (void)setRetweeter:(MBUser *)retweeter
@@ -159,6 +160,8 @@ static NSString *kReply = @"ReplyKey";
         return;
     }
     
+    [self.dataSource removeAllObjects];
+    
     NSArray *mainTweet = [self tweetCompositionsWithTweet:self.tweet];
     [self.dataSource addObject:mainTweet];
     
@@ -174,7 +177,7 @@ static NSString *kReply = @"ReplyKey";
     }
     
     NSMutableArray *compositions = [NSMutableArray arrayWithObjects:kUser, kTweet, nil];
-    if (tweet.favoritedCount > 0 || tweet. retweetedCount > 0) {
+    if (tweet.favoritedCount > 0 || tweet.retweetedCount > 0) {
         [compositions addObject:kCount];
     }
     
@@ -1100,11 +1103,29 @@ static NSString *kReply = @"ReplyKey";
         
     } else if (requestType == MBTwitterFavoritesCreateRequest) {
         [self setTweet:tweet];
-        [self.tableView reloadData];
+        if (tweet.favoritedCount == 1) {
+            [self.tableView reloadData];
+        } else {
+            NSIndexPath *countCellPath = [NSIndexPath indexPathForRow:2 inSection:0];
+            MBDetailTweetFavoriteRetweetTableViewCell *cell = (MBDetailTweetFavoriteRetweetTableViewCell *)[self.tableView cellForRowAtIndexPath:countCellPath];
+            [self updateCountCell:cell atIndexPath:countCellPath];
+            NSIndexPath *actionsCellPath = [NSIndexPath indexPathForRow:countCellPath.row + 1 inSection:0];
+            MBDetailTweetActionsTableViewCell *actionsCell = (MBDetailTweetActionsTableViewCell *)[self.tableView cellForRowAtIndexPath:actionsCellPath];
+            [self updateActionsCell:actionsCell];
+        }
         
     } else if (requestType == MBTwitterFavoritesDestroyRequest) {
         [self setTweet:tweet];
-        [self.tableView reloadData];
+        if (tweet.favoritedCount == 0) {
+            [self.tableView reloadData];
+        } else {
+            NSIndexPath *countCellPath = [NSIndexPath indexPathForRow:2 inSection:0];
+            MBDetailTweetFavoriteRetweetTableViewCell *cell = (MBDetailTweetFavoriteRetweetTableViewCell *)[self.tableView cellForRowAtIndexPath:countCellPath];
+            [self updateCountCell:cell atIndexPath:countCellPath];
+            NSIndexPath *actionsCellPath = [NSIndexPath indexPathForRow:countCellPath.row + 1 inSection:0];
+            MBDetailTweetActionsTableViewCell *actionsCell = (MBDetailTweetActionsTableViewCell *)[self.tableView cellForRowAtIndexPath:actionsCellPath];
+            [self updateActionsCell:actionsCell];
+        }
         
     } else if (requestType == MBTwitterStatusesUpdateRequest) {
         
