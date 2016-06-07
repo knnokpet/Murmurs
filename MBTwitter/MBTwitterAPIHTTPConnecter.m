@@ -9,15 +9,11 @@
 #import "MBTwitterAPIHTTPConnecter.h"
 #import "NSString+UUID.h"
 
-@interface MBTwitterAPIHTTPConnecter() <NSURLConnectionDataDelegate, NSURLConnectionDelegate>
+@interface MBTwitterAPIHTTPConnecter()
 {
     MBRequestType _requestType;
     MBResponseType _responseType;
 }
-
-@property (nonatomic) NSURLConnection *connection;
-@property (nonatomic) NSMutableData *connectionData;
-@property (nonatomic) NSURLResponse *response;
 
 @end
 
@@ -54,45 +50,23 @@
 #pragma mark Connection
 - (void)start
 {
-    if (self.connection) {
-        self.connection = nil;
-    }
-    
-    self.connectionData = [NSMutableData data];
-    self.connection = [[NSURLConnection alloc] initWithRequest:self.request delegate:self];
-}
-
-#pragma mark Connection Delegate
-- (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response
-{
-    if (self.response) {
-        self.response = nil;
-    }
-    
-    self.response = response;
-}
-
-- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data
-{
-    [self.connectionData appendData:data];
-}
-
-- (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error
-{
-    dispatch_async(dispatch_get_main_queue(), ^{
-        if ([_delegate respondsToSelector:@selector(failedConnecter:error:responseType:)]) {
-            [_delegate failedConnecter:self error:error responseType:self.responseType];
+    NSURLSessionDataTask *dataTask = [[NSURLSession sharedSession] dataTaskWithRequest:self.request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+        if (error) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if ([_delegate respondsToSelector:@selector(failedConnecter:error:responseType:)]) {
+                    [_delegate failedConnecter:self error:error responseType:self.responseType];
+                }
+            });
+        } else {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if ([_delegate respondsToSelector:@selector(finishedConnecter:data:responseType:)]) {
+                    [_delegate finishedConnecter:self data:data responseType:self.responseType];
+                }
+            });
         }
-    });
-}
-
-- (void)connectionDidFinishLoading:(NSURLConnection *)connection
-{
-    dispatch_async(dispatch_get_main_queue(), ^{
-        if ([_delegate respondsToSelector:@selector(finishedConnecter:data:responseType:)]) {
-            [_delegate finishedConnecter:self data:self.connectionData responseType:self.responseType];
-        }
-    });
+    }];
+    
+    [dataTask resume];
 }
 
 @end
