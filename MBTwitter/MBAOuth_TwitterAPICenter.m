@@ -87,7 +87,7 @@
     
     id __weak weakSelf = self;
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        [NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
+        NSURLSessionDataTask *dataTask = [[NSURLSession sharedSession] dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
             [self setNetworkActivityIndicatorVisible:NO];
             if (error) {
                 NSLog(@"code %ld error = %@", (long)error.code, error.localizedDescription);
@@ -101,9 +101,9 @@
                 return ;
             }
             
-            
             [weakSelf parseJSONData:data responseType:responseType requestType:requestType];
         }];
+        [dataTask resume];
         
     });
     
