@@ -40,6 +40,7 @@
                   continueAfterRunningActions = "No"
                   symbolName = "-[MBTimeLineManager addTweets:]"
                   moduleName = "MBTwitter"
+                  usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/ikedamasayuki/%E9%96%8B%E7%99%BA/MBTwitter20140701/MBTwitter/MBTimeLineManager.m"
                   timestampString = "433748534.219777"
                   startingColumnNumber = "9223372036854775807"
@@ -54,6 +55,7 @@
                   continueAfterRunningActions = "No"
                   symbolName = "-[MBTimeLineManager addTweets:]"
                   moduleName = "MBTwitter"
+                  usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/ikedamasayuki/%E9%96%8B%E7%99%BA/MBTwitter20140701/MBTwitter/MBTimeLineManager.m"
                   timestampString = "433748534.22027"
                   startingColumnNumber = "9223372036854775807"
@@ -121,6 +123,17 @@
             continueAfterRunningActions = "No"
             symbolName = "CGPostError"
             moduleName = "">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "CGPostError"
+                  moduleName = "CoreGraphics"
+                  usesParentBreakpointCondition = "Yes"
+                  offsetFromSymbolStart = "0">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy

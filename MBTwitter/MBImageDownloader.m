@@ -42,36 +42,36 @@
     if (nil == imageURL || nil == completionHandler || nil == failedHandler) {
         return;
     }
-    
     NSURL *requestURL = [NSURL URLWithString:imageURL];
-    NSURLRequest *imageRequest = [NSURLRequest requestWithURL:requestURL cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:60.0];
-    NSURLResponse *response = nil;
-    NSError *error = nil;
-    NSData *connectedData = [NSURLConnection sendSynchronousRequest:imageRequest returningResponse:&response error:&error];
-    if (!error) {
-        UIImage *receivedImage = [[UIImage alloc] initWithData:connectedData];
-        if (receivedImage) {
-
-            dispatch_async(dispatch_get_main_queue(), ^{
-                completionHandler(receivedImage, connectedData);
-            });
-            
-            
+    NSURLRequest *imageRequest = [NSURLRequest requestWithURL:requestURL];
+    NSURLSession *session = [NSURLSession sharedSession];
+    NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:imageRequest completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+        if (!error) {
+            UIImage *receivedImage = [[UIImage alloc] initWithData:data];
+            if (receivedImage) {
+                
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    completionHandler(receivedImage, data);
+                });
+                
+                
+            } else {
+                NSLog(@"not image");
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    NSError *error = [NSError errorWithDomain:NSURLErrorDomain code:NSURLErrorUnknown userInfo:nil];
+                    failedHandler(response, error);
+                });
+                
+            }
         } else {
-            NSLog(@"not image");
+            NSLog(@"occur error image");
             dispatch_async(dispatch_get_main_queue(), ^{
-                NSError *error = [NSError errorWithDomain:NSURLErrorDomain code:NSURLErrorUnknown userInfo:nil];
                 failedHandler(response, error);
             });
             
         }
-    } else {
-        NSLog(@"occur error image");
-        dispatch_async(dispatch_get_main_queue(), ^{
-            failedHandler(response, error);
-        });
-        
-    }
+    }];
+    [dataTask resume];
 }
 
 @end
