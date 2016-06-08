@@ -24,6 +24,9 @@
 - (UIImage *)cachedTimelineImageForUser:(NSString *)userID;
 - (void)storeTimelineImage:(UIImage *)image forUserID:(NSString *)userID;
 
+- (UIImage *)cachedUsersImageForUser:(NSString *)userID;
+- (void)storeUsersImage:(UIImage *)image forUserID:(NSString *)userID;
+
 - (UIImage *)cachedBannerImageForUserID:(NSString *)userID;
 - (void)storeBannerImage:(UIImage *)image forUserID:(NSString *)userID;
 

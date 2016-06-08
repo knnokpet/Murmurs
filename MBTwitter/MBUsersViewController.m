@@ -230,23 +230,24 @@ static NSString *usersCellIdentifier = @"UsersCellIdentifier";
     
     cell.characterNameLabel.text = userAtIndex.characterName;
     cell.screenName = userAtIndex.screenName;
-    //cell.avatorImageView.userIDStr = userAtIndex.userIDStr;
-    //cell.avatorImageView.avatorImage = nil;
-    UIImage *avatorImage = [[MBImageCacher sharedInstance] cachedProfileImageForUserID:userAtIndex.userIDStr];
+
+    UIImage *avatorImage = [[MBImageCacher sharedInstance] cachedUsersImageForUser:userAtIndex.userIDStr];
     
     if (!avatorImage) {
         cell.avatorImageView.userIDStr = userAtIndex.userIDStr;
         cell.avatorImageView.avatorImage = nil;
         
+        MBUsersViewController __weak *weakSelf = self;
         dispatch_queue_t globalQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0);
         dispatch_async(globalQueue, ^{
             [MBImageDownloader downloadOriginImageWithURL:userAtIndex.urlHTTPSAtProfileImage completionHandler:^(UIImage *image, NSData *imageData){
                 if (image) {
                     [[MBImageCacher sharedInstance] storeProfileImage:image data:imageData forUserID:userAtIndex.userIDStr];
-                    UIImage *radiusImage = [self changedSizeRadiusImage:image forUsersCell:cell];
+                    UIImage *radiusImage = [weakSelf changedSizeRadiusImage:image forUsersCell:cell];
+                    [[MBImageCacher sharedInstance] storeUsersImage:radiusImage forUserID:userAtIndex.userIDStr];
                     
                     dispatch_async(dispatch_get_main_queue(), ^{
-                        [self addAvatorImage:radiusImage ForUsersCell:cell forUserIDString:userAtIndex.userIDStr];
+                        [weakSelf addAvatorImage:radiusImage ForUsersCell:cell forUserIDString:userAtIndex.userIDStr];
                         
                     });
                 }
@@ -257,20 +258,7 @@ static NSString *usersCellIdentifier = @"UsersCellIdentifier";
             
         });
     } else {
-        if (cell.avatorImageView.avatorImage && [cell.avatorImageView.userIDStr isEqualToString:userAtIndex.userIDStr]) {
-            return;
-        } else {
-            cell.avatorImageView.userIDStr = userAtIndex.userIDStr;
-            cell.avatorImageView.avatorImage = nil;
-        }
-        
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
-            UIImage *radiusImage = [self changedSizeRadiusImage:avatorImage forUsersCell:cell];
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [self addAvatorImage:radiusImage ForUsersCell:cell forUserIDString:userAtIndex.userIDStr];
-                
-            });
-        });
+        cell.avatorImageView.image = avatorImage;
     }
 }
 

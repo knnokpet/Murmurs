@@ -19,6 +19,7 @@
 
 @property (nonatomic, readonly) NSCache *profileImageCache;
 @property (nonatomic, readonly) NSCache *timelineImageCache;
+@property (nonatomic, readonly) NSCache *usersImageCache;
 @property (nonatomic, readonly) NSCache *mediaImageCache;
 @property (nonatomic, readonly) NSCache *croppedMediaImageCache;
 @property (nonatomic, readonly) NSCache *bannerImageCache;
@@ -56,6 +57,8 @@
         self.profileImageCache.countLimit = 100;
         _timelineImageCache = [[NSCache alloc] init];
         self.timelineImageCache.countLimit = 500;
+        _usersImageCache = [[NSCache alloc] init];
+        self.usersImageCache.countLimit = 1000;
         _mediaImageCache = [[NSCache alloc] init];
         self.mediaImageCache.countLimit = 50;
         _croppedMediaImageCache = [[NSCache alloc] init];
@@ -186,6 +189,19 @@
     return nil;
 }
 
+- (UIImage *)cachedUsersImageForUser:(NSString *)userID
+{
+    if (nil == userID) {
+        return nil;
+    }
+    
+    UIImage *cachedImage = [self.usersImageCache objectForKey:userID];
+    if (cachedImage) {
+        return cachedImage;
+    }
+    return nil;
+}
+
 - (UIImage *)cachedMediaImageForMediaID:(NSString *)mediaID
 {
     if (!mediaID || mediaID.length == 0) {
@@ -257,6 +273,15 @@
     }
     
     [self.timelineImageCache setObject:image forKey:userID];
+}
+
+- (void)storeUsersImage:(UIImage *)image forUserID:(NSString *)userID
+{
+    if (nil == image || nil == userID) {
+        return;
+    }
+    
+    [self.usersImageCache setObject:image forKey:userID];
 }
 
 - (void)storeCroppedMediaImage:(UIImage *)image forMediaID:(NSString *)mediaID
