@@ -178,62 +178,35 @@
 
 - (UIImage *)cachedTimelineImageForUser:(NSString *)userID
 {
-    if (nil == userID) {
-        return nil;
-    }
-    
-    UIImage *cachedImage = [self.timelineImageCache objectForKey:userID];
-    if (cachedImage) {
-        return cachedImage;
-    }
-    return nil;
+    return [self cachedImageInCache:self.timelineImageCache forKey:userID];
 }
 
 - (UIImage *)cachedUsersImageForUser:(NSString *)userID
 {
-    if (nil == userID) {
-        return nil;
-    }
-    
-    UIImage *cachedImage = [self.usersImageCache objectForKey:userID];
-    if (cachedImage) {
-        return cachedImage;
-    }
-    return nil;
+    return [self cachedImageInCache:self.usersImageCache forKey:userID];
 }
 
 - (UIImage *)cachedMediaImageForMediaID:(NSString *)mediaID
 {
-    if (!mediaID || mediaID.length == 0) {
-        return nil;
-    }
-    UIImage *cachedImage = [self.mediaImageCache objectForKey:mediaID];
-    if (cachedImage) {
-        return cachedImage;
-    }
-    
-    return nil;
+    return [self cachedImageInCache:self.mediaImageCache forKey:mediaID];
 }
 
 - (UIImage *)cachedCroppedMediaImageForMediaID:(NSString *)mediaID
 {
-    if (!mediaID || mediaID.length == 0) {
-        return nil;
-    }
-    UIImage *cachedImage = [self.croppedMediaImageCache objectForKey:mediaID];
-    if (cachedImage) {
-        return cachedImage;
-    }
-    
-    return nil;
+    return [self cachedImageInCache:self.croppedMediaImageCache forKey:mediaID];
 }
 
 - (UIImage *)cachedBannerImageForUserID:(NSString *)userID
 {
-    if (!userID || userID.length == 0) {
+    return [self cachedImageInCache:self.bannerImageCache forKey:userID];
+}
+
+- (UIImage *)cachedImageInCache:(NSCache *)cache forKey:(NSString *)key {
+    if (!key || key.length == 0) {
         return nil;
     }
-    UIImage *cachedImage = [self.bannerImageCache objectForKey:userID];
+    
+    UIImage *cachedImage = [cache objectForKey:key];
     if (cachedImage) {
         return cachedImage;
     }
@@ -268,38 +241,31 @@
 
 - (void)storeTimelineImage:(UIImage *)image forUserID:(NSString *)userID
 {
-    if (nil == image || nil == userID) {
-        return;
-    }
-    
-    [self.timelineImageCache setObject:image forKey:userID];
+    [self storeImage:image InCache:self.timelineImageCache forKey:userID];
 }
 
 - (void)storeUsersImage:(UIImage *)image forUserID:(NSString *)userID
 {
-    if (nil == image || nil == userID) {
-        return;
-    }
-    
-    [self.usersImageCache setObject:image forKey:userID];
+    [self storeImage:image InCache:self.usersImageCache forKey:userID];
 }
 
 - (void)storeCroppedMediaImage:(UIImage *)image forMediaID:(NSString *)mediaID
 {
-    if (!image || !mediaID || mediaID.length == 0) {
-        return;
-    }
-    
-    [self.croppedMediaImageCache setObject:image forKey:mediaID];
+    [self storeImage:image InCache:self.croppedMediaImageCache forKey:mediaID];
 }
 
 - (void)storeBannerImage:(UIImage *)image forUserID:(NSString *)userID
 {
-    if (!image || !userID || userID.length == 0) {
-        return;
+    [self storeImage:image InCache:self.bannerImageCache forKey:userID];
+}
+
+- (BOOL)storeImage:(UIImage *)image InCache:(NSCache *)cache forKey:(NSString *)key {
+    if (!image || !key || key.length == 0) {
+        return false;
     }
     
-    [self.bannerImageCache setObject:image forKey:userID];
+    [cache setObject:image forKey:key];
+    return true;
 }
 
 #pragma mark -
