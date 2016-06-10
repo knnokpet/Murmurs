@@ -28,7 +28,7 @@
 #define PARAMETER_VALUE_REVERSE_AUTH @"reverse_auth"
 #define PARAMETER_VALUE_X_REVERSE_AUTH_PARAMETERS @"x_reverse_auth_parameters"
 
-typedef void (^CompletionHandler)(NSMutableData *, NSHTTPURLResponse *);
+typedef void (^CompletionHandler)(NSData *, NSHTTPURLResponse *);
 typedef void (^FailedHandler)(NSHTTPURLResponse *);
 
 @interface MBTwitterAccesser()
@@ -132,7 +132,7 @@ typedef void (^FailedHandler)(NSHTTPURLResponse *);
 {
     NSURL *url = [NSURL URLWithString:REQUEST_TOKEN_URL];
 
-    [self sendRequestURL:url token:nil completionHandler:^(NSMutableData *data, NSHTTPURLResponse *response){
+    [self sendRequestURL:url token:nil completionHandler:^(NSData *data, NSHTTPURLResponse *response){
         NSUInteger status = [response statusCode];
 
         if (!(status >= 200 && status < 300) || !data) {
@@ -174,7 +174,7 @@ typedef void (^FailedHandler)(NSHTTPURLResponse *);
 {
     NSURL *url = [NSURL URLWithString:ACCESS_TOKEN_URL];
     
-    [self sendRequestURL:url token:_requestToken completionHandler:^(NSMutableData *data, NSHTTPURLResponse *response){
+    [self sendRequestURL:url token:_requestToken completionHandler:^(NSData *data, NSHTTPURLResponse *response){
         NSUInteger status = [response statusCode];
         if (!(status >= 200 && status < 300) || !data) {
             NSLog(@"response ");
@@ -220,11 +220,12 @@ typedef void (^FailedHandler)(NSHTTPURLResponse *);
     OAParameter *param = [OAParameter requestParameterWithName:PARAMETER_KEY_X_AUTH_MODE value:PARAMETER_VALUE_REVERSE_AUTH];
     NSArray *parameters = [NSArray arrayWithObject:param];
     
-    [self sendRequestURL:url token:nil completionHandler:^ (NSMutableData *data, NSHTTPURLResponse *response) {
+    [self sendRequestURL:url token:nil completionHandler:^ (NSData *data, NSHTTPURLResponse *response) {
         NSInteger status = [response statusCode];
         
         if (!(status >= 200 && status < 300) || !data) {
-            NSLog(@"response Error");
+            NSLog(@"data: %@", data.description);
+            NSLog(@"response Error: %ld", (long)response.statusCode);
             return;
         }
         
@@ -296,8 +297,9 @@ typedef void (^FailedHandler)(NSHTTPURLResponse *);
     }
     [request setParameters:addingParameters];
     
-    OAAuthFetcher *fetcher = [[OAAuthFetcher alloc] initWithRequest:request completionHandler:completion failedHandler:failed];
-    [fetcher start];
+    [OAAuthFetcher fetchWithRequest:request completionHandler:completion failedHandler:failed];
+    //OAAuthFetcher *fetcher = [[OAAuthFetcher alloc] initWithRequest:request completionHandler:completion failedHandler:failed];
+    //[fetcher start];
 }
 
 #pragma mark -

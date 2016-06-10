@@ -22,7 +22,7 @@
 #pragma mark - init
 - (id)initWithURL:(NSURL *)URL consumer:(OAConsumer *)consumer token:(OAToken *)token realm:(NSString *)realm signatureProvider:(id<OASignatureProvider>)signatureProvider
 {
-    self = [super initWithURL:URL cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:10.0];
+    self = [super initWithURL:URL];
     if (self) {
         _consumer = consumer;
         

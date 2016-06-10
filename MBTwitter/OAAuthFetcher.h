@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "OAMutableRequest.h"
 
-typedef void (^CompletionHandler)(NSMutableData *data, NSHTTPURLResponse *response);
+typedef void (^CompletionHandler)(NSData *data, NSHTTPURLResponse *response);
 typedef void (^FailedHandler)(NSHTTPURLResponse *response);
 
 @interface OAAuthFetcher : NSObject
@@ -19,8 +19,8 @@ typedef void (^FailedHandler)(NSHTTPURLResponse *response);
 @property (nonatomic, readonly) FailedHandler failedHandler;
 
 - (id)initWithRequest:(OAMutableRequest *)request completionHandler:(CompletionHandler)cHandler failedHandler:(FailedHandler)fHandler;
++ (void)fetchWithRequest:(OAMutableRequest *)request completionHandler:(CompletionHandler)cHandler failedHandler:(FailedHandler)fHandler;
 
-- (void)start;
 - (void)cancel;
 
 @end

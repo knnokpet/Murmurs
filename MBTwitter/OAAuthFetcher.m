@@ -8,11 +8,9 @@
 
 #import "OAAuthFetcher.h"
 
-@interface OAAuthFetcher() < NSURLConnectionDelegate, NSURLConnectionDataDelegate>
+@interface OAAuthFetcher() <NSURLSessionDelegate>
 
-@property (nonatomic) NSURLConnection *connection;
-@property (nonatomic) NSMutableData *connectionData;
-@property (nonatomic) NSURLResponse *response;
+@property (nonatomic) NSURLSessionDataTask *dataTask;
 
 @end
 
@@ -30,53 +28,24 @@
     return self;
 }
 
-#pragma mark -
-- (void)start
-{
-    [self.request prepareOAuthRequest];
-    
-    if (self.connection) {
-        self.connection = nil;
-    }
-    
-    self.connectionData = [NSMutableData data];
-    
-    self.connection = [[NSURLConnection alloc] initWithRequest:self.request delegate:self startImmediately:YES];
++ (void)fetchWithRequest:(OAMutableRequest *)request completionHandler:(CompletionHandler)cHandler failedHandler:(FailedHandler)fHandler {
+    [request prepareOAuthRequest];
+    NSURLSessionDataTask *dataTask = [[NSURLSession sharedSession] dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+        if (error) {
+            NSLog(@"%@, %@, %@", error.localizedDescription, error.localizedFailureReason, error.localizedRecoverySuggestion);
+            fHandler((NSHTTPURLResponse *)response);
+        } else {
+            cHandler(data, (NSHTTPURLResponse *)response);
+        }
+    }];
+    [dataTask resume];
 }
+
+#pragma mark -
 
 - (void)cancel
 {
-    if (self.connection) {
-        [self.connection cancel];
-        self.connection = nil;
-    }
-}
-
-#pragma mark - 
-#pragma mark NSURLConnection Delegate Method
-- (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response
-{
-    
-    if (self.response) {
-        self.response = nil;
-    }
-    
-    self.response = response;
-}
-
-- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data
-{
-    [self.connectionData appendData:data];
-}
-
-- (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error
-{
-    self.failedHandler((NSHTTPURLResponse *)self.response);
-}
-
-- (void)connectionDidFinishLoading:(NSURLConnection *)connection
-{
-    self.completionHandler(self.connectionData, (NSHTTPURLResponse *)self.response);
+    [self.dataTask cancel];
 }
 
 @end
